@@ -184,6 +184,63 @@ const orderSchema = new mongoose.Schema(
       default: "",
       trim: true,
     },
+    
+    trackingNumber: {
+  type: String,
+  default: "",
+},
+estimatedDelivery: {
+  type: Date,
+  default: null,
+},
+paymentDetails: {
+  type: new mongoose.Schema(
+    {
+      transactionId: {
+        type: String,
+        default: "",
+      },
+      razorpayOrderId: {
+        type: String,
+        default: "",
+      },
+      razorpayPaymentId: {
+        type: String,
+        default: "",
+      },
+      razorpaySignature: {
+        type: String,
+        default: "",
+      },
+    },
+    { _id: false }
+  ),
+  default: {},
+},
+statusHistory: [
+  {
+    status: {
+      type: String,
+      enum: [
+        "Pending",
+        "Confirmed",
+        "Processing",
+        "Shipped",
+        "Delivered",
+        "Cancelled",
+      ],
+      required: true,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+],
+    cancelledAt: {
+  type: Date,
+  default: null,
+},
 
     isDeleted: {
       type: Boolean,
@@ -194,6 +251,13 @@ const orderSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+orderSchema.index({ user: 1 });
+orderSchema.index({ orderStatus: 1 });
+orderSchema.index({ paymentStatus: 1 });
+orderSchema.index({ createdAt: -1 });
+orderSchema.index({ orderNumber: 1 });
+orderSchema.index({ "shippingAddress.phone": 1 });
 
 const Order = mongoose.model("Order", orderSchema);
 

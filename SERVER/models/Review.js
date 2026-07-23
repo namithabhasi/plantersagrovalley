@@ -16,25 +16,21 @@ const reviewSchema = new mongoose.Schema(
 
     rating: {
       type: Number,
-      required: [true, "Rating is required"],
+      required: true,
       min: 1,
       max: 5,
     },
 
     comment: {
       type: String,
-      required: [true, "Review comment is required"],
+      required: true,
       trim: true,
+      maxlength: 1000,
     },
 
     isApproved: {
       type: Boolean,
-      default: false,
-    },
-
-    isDeleted: {
-      type: Boolean,
-      default: false,
+      default: true, // Change to false if admin approval is required
     },
   },
   {
@@ -42,7 +38,6 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
-// One user can review one product only
 reviewSchema.index({ user: 1, product: 1 }, { unique: true });
 
 const Review = mongoose.model("Review", reviewSchema);

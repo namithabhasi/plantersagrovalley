@@ -8,6 +8,12 @@ import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import bannerRoutes from "./routes/bannerRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
+import wishlistRoutes from "./routes/wishlistRoutes.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
+import adminDashboardRoutes from "./routes/adminDashboardRoutes.js";
+
 
 const app = express();
 
@@ -34,6 +40,16 @@ app.use("/api/products", productRoutes);
 app.use("/api/banners", bannerRoutes);
 
 app.use("/api/cart", cartRoutes);
+
+app.use("/api/wishlist", wishlistRoutes);
+
+app.use("/api/reviews", reviewRoutes);
+
+app.use("/api/orders", orderRoutes);
+
+app.use("/api/payment", paymentRoutes);
+
+app.use("/api/admin/dashboard", adminDashboardRoutes);
 
 // Health Check
 app.get("/", (req, res) => {

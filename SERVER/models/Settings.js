@@ -8,60 +8,45 @@ const settingsSchema = new mongoose.Schema(
       trim: true,
     },
 
-    storeLogo: {
-      type: String,
-      default: "",
-    },
+   storeLogo: {
+  url: {
+    type: String,
+    default: "",
+  },
+  public_id: {
+    type: String,
+    default: "",
+  },
+},
 
     storeEmail: {
-      type: String,
-      required: true,
-      lowercase: true,
-      trim: true,
-    },
+  type: String,
+  required: true,
+  lowercase: true,
+  trim: true,
+  match: [
+    /^\S+@\S+\.\S+$/,
+    "Please enter a valid email address",
+  ],
+},
 
     storePhone: {
       type: String,
       required: true,
       trim: true,
+      match: [
+  /^[0-9]{10,15}$/,
+  "Please enter a valid phone number",
+],
     },
 
-    address: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    city: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    state: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    country: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    postalCode: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    currency: {
-      type: String,
-      default: "INR",
-      uppercase: true,
-    },
-
+   address: {
+  line1: String,
+  city: String,
+  state: String,
+  country: String,
+  postalCode: String,
+},
     currencySymbol: {
       type: String,
       default: "₹",
@@ -115,7 +100,49 @@ const settingsSchema = new mongoose.Schema(
         type: String,
         default: "",
       },
+
+      isDefault: {
+  type: Boolean,
+  default: true,
+  unique: true,
+},
     },
+    paymentGateway: {
+  razorpayKeyId: {
+    type: String,
+    default: "",
+  },
+
+  razorpayEnabled: {
+    type: Boolean,
+    default: true,
+  },
+
+  codEnabled: {
+    type: Boolean,
+    default: true,
+  },
+},
+seo: {
+  metaTitle: String,
+  metaDescription: String,
+  metaKeywords: String,
+},
+productsPerPage: {
+  type: Number,
+  default: 12,
+},
+orderSettings: {
+  allowCancellation: {
+    type: Boolean,
+    default: true,
+  },
+
+  cancellationHours: {
+    type: Number,
+    default: 24,
+  },
+},
   },
   {
     timestamps: true,
