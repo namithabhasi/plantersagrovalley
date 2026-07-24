@@ -81,7 +81,7 @@ export const calculateOrderAmounts = async (
 /**
  * Reduce Product Stock
  */
-export const reduceStock = async (cart) => {
+export const reduceStock = async (cart, session) => {
   for (const item of cart.items) {
     await Product.findByIdAndUpdate(
       item.product._id,
@@ -90,7 +90,8 @@ export const reduceStock = async (cart) => {
           stock: -item.quantity,
           sold: item.quantity,
         },
-      }
+      },
+      { session }
     );
   }
 };
@@ -115,14 +116,15 @@ export const restoreStock = async (order) => {
 /**
  * Clear Cart
  */
-export const clearCart = async (userId) => {
+export const clearCart = async (userId, session) => {
   await Cart.findOneAndUpdate(
     { user: userId },
     {
       items: [],
       totalItems: 0,
       totalPrice: 0,
-    }
+    },
+    { session }
   );
 };
 
@@ -156,6 +158,89 @@ export const updateCouponUsage = async (
 /**
  * Create Order
  */
-export const createOrder = async (orderData) => {
-  return await Order.create(orderData);
+export const createOrder = async (orderData, session) => {
+  const [order] = await Order.create([orderData], { session });
+  return order;
+};
+
+/**
+ * Validate Coupon
+ */
+export const validateCoupon = async (
+  couponCode,
+  subtotal,
+  userId
+) => {
+  if (!couponCode) {
+    return {
+      coupon: null,
+      discount: 0,
+    };
+  }
+
+  const coupon = await Coupon.findOne({
+    code: couponCode.toUpperCase(),
+    isActive: true,
+  });
+
+  if (!coupon) {
+    throw new Error("Invalid coupon.");
+  }
+
+  const now = new Date();
+
+  if (
+    coupon.validFrom &&
+    coupon.validFrom > now
+  ) {
+    throw new Error("Coupon is not active yet.");
+  }
+
+  if (
+    coupon.validUntil &&
+    coupon.validUntil < now
+  ) {
+    throw new Error("Coupon has expired.");
+  }
+
+  if (coupon.usedCount >= coupon.usageLimit) {
+    throw new Error("Coupon usage limit exceeded.");
+  }
+
+  if (subtotal < coupon.minimumOrderAmount) {
+    throw new Error(
+      `Minimum order amount is ₹${coupon.minimumOrderAmount}.`
+    );
+  }
+
+  const userUsage = coupon.usedBy.find(
+    (item) => item.user.toString() === userId.toString()
+  );
+
+  if (
+    userUsage &&
+    userUsage.count >= coupon.usagePerUser
+  ) {
+    throw new Error("Coupon usage limit exceeded for this user.");
+  }
+
+  let discount = 0;
+
+  if (coupon.discountType === "percentage") {
+    discount = (subtotal * coupon.discountValue) / 100;
+
+    if (
+      coupon.maximumDiscountAmount &&
+      discount > coupon.maximumDiscountAmount
+    ) {
+      discount = coupon.maximumDiscountAmount;
+    }
+  } else {
+    discount = coupon.discountValue;
+  }
+
+  return {
+    coupon,
+    discount,
+  };
 };

@@ -36,7 +36,7 @@ export const register = async (req, res) => {
       email: email.toLowerCase(),
       password,
       phone,
-      role: role || "customer",
+     role: "customer",
     });
 
     // Generate JWT
@@ -80,8 +80,8 @@ export const login = async (req, res) => {
 
     // Find user (include password)
     const user = await User.findOne({
-      email: email.toLowerCase(),
-    });
+  email: email.toLowerCase(),
+}).select("+password");
 
     if (!user) {
       return res.status(401).json({

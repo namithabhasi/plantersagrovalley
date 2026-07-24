@@ -1,7 +1,7 @@
-import Order from "../models/orderModel.js";
-import Product from "../models/productModel.js";
-import Category from "../models/categoryModel.js";
-import User from "../models/userModel.js";
+import Order from "../models/Order.js";
+import Product from "../models/Product.js";
+import Category from "../models/Category.js";
+import User from "../models/User.js";
 
 export const getDashboard = async (req, res) => {
   try {
@@ -27,7 +27,7 @@ export const getDashboard = async (req, res) => {
     ] = await Promise.all([
       User.countDocuments({
         role: "customer",
-        isDeleted: false,
+  isActive: true,
       }),
 
       Product.countDocuments({
@@ -94,7 +94,7 @@ export const getDashboard = async (req, res) => {
       ]),
 
       Order.find()
-        .populate("user", "name email")
+        .populate("user", "firstName lastName email phone")
         .sort({ createdAt: -1 })
         .limit(10)
         .lean(),
