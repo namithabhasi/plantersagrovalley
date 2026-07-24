@@ -1,1 +1,252 @@
 @import "tailwindcss";
+
+:root {
+  /* Brand Colors */
+  --primary-color: #06331F;       /* Dark Green (Announcement bar & buttons) */
+  --secondary-color: #EBF3EC;     /* Light Green (from the 3rd pic's section box) */
+  --third-color: #2E7D32;         /* Green requested for navbar & highlights */
+  --accent-color: #dd3e21;        /* Red/Orange (from the price/discount tags earlier) */
+  
+  /* Background & Text */
+  --bg-color: #FFFFFF;            /* Standard white background */
+  --text-main: #212326;           /* Main dark text (from the Header) */
+  --text-muted: #2D2D2D;          /* Slightly softer text (from the List Items) */
+
+  /* Typography */
+  --font-main: 'Assistant', sans-serif; /* Font extracted from all screenshots */
+}
+
+/* =========================================
+   Feature/Benefits Box (3rd Picture)
+========================================= */
+.benefits-section {
+  background-color: var(--secondary-color);
+  border-radius: 8px; /* Slight rounding on the corners */
+  padding: 20px;
+  max-width: 465px; /* Matches the width from the inspector */
+}
+
+.benefits-title {
+  color: var(--primary-color);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.benefits-list {
+  list-style-type: none; /* Removes default bullets so you can use custom checkmarks */
+}
+
+.benefits-list li {
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 22.4px; /* Exact height from inspector */
+  letter-spacing: 0.6px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* =========================================
+   Product Card Container
+========================================= */
+.product-card {
+  width: 276px;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Assistant', sans-serif;
+  background-color: #ffffff;
+  box-sizing: border-box;
+}
+
+/* =========================================
+   Media & Image
+========================================= */
+.product-media {
+  position: relative;
+  width: 100%;
+  height: 341px; /* Exact height from inspector */
+  overflow: hidden; /* Matches overflow: clip */
+  background-color: #f4f4f4; /* Default grey background for images */
+  margin-bottom: 12px;
+}
+
+.product-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.discount-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #dd3e21; /* Match the red/orange from the image */
+  color: #ffffff;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  z-index: 2;
+}
+
+/* =========================================
+   Product Information
+========================================= */
+.product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* Min-height ensures buttons line up even if titles are short */
+  min-height: 152px; 
+}
+
+.product-title {
+  font-size: 16px;
+  line-height: 28.8px;
+  letter-spacing: 0.6px;
+  color: #06492D; /* Brand dark green */
+  text-decoration: none;
+  
+  /* Prevents text from overflowing to a third line */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-title:hover {
+  text-decoration: underline;
+}
+
+/* =========================================
+   Pricing
+========================================= */
+.product-price-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.price-old {
+  text-decoration: line-through;
+  color: #888888;
+}
+
+.price-new {
+  color: #dd3e21;
+  font-weight: 700;
+}
+
+.button--small {
+  /* Font & Text */
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2.4px;
+  line-height: 14.4px;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  word-spacing: 0px;
+
+  /* Color & Background */
+  background-color: #06331F;
+  color: #FFFFFF;
+
+  /* Box */
+  height: 40px;
+  width: 276px;
+  border: 1px solid #06331F;
+  padding: 8px 20px 6px 20px;
+  min-height: 40px;
+  min-width: auto;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  /* Positioning */
+  display: flex;
+  position: relative;
+  z-index: 1;
+  /* Top, bottom, left, right were 0px in relative positioning, which is the default, so they are omitted to keep your code clean */
+
+  /* Miscellaneous */
+  overflow: hidden;
+  cursor: pointer;
+
+  /* Effects */
+  transition: color 0.5s, transform 0.25s, opacity 0.25s;
+}
+
+.section-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 40px;
+  letter-spacing: 0.6px;
+  line-height: 52px;
+  text-align: center;
+  color: var(--primary-color); /* This uses the #06331F you set earlier */
+}
+
+.sub-nav-item {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  line-height: 21px;
+  color: #282828; /* The dark grey from the inspector */
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.sub-nav-item:hover {
+  /* Optional: adds a subtle interaction when users hover over dropdown items */
+  text-decoration: underline; 
+}
+
+/* =========================================
+   Category Banners & Overlays
+========================================= */
+.category-overlay-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.6px;
+  line-height: 26px;
+  white-space: nowrap;
+  color: #FFFFFF;
+}
+
+/* =========================================
+   Product Card Typography
+========================================= */
+.product-card-title {
+  font-family: 'Assistant', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.6px;
+  line-height: 28.8px;
+  color: #212326;
+  text-decoration: none;
+}
+
+.product-card-title:hover {
+  text-decoration: underline;
+}
+
+/* =========================================
+   Small Captions & Microcopy
+========================================= */
+.shipping-caption {
+  font-family: 'Assistant', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.7px;
+  line-height: 20.4px;
+  color: #212326;
+}
+
+/* =========================================
+   Feature Lists
+========================================= */
+.feature-list-item {
+  font-family: 'Assistant', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.6px;
+  line-height: 22.4px;
+}
