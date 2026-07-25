@@ -9,6 +9,9 @@ import AddUser from "./PAGES/admin/users/AddUser";
 import Categories from "./PAGES/admin/Categories";
 import Products from "./PAGES/admin/Products";
 import Orders from "./PAGES/admin/Orders";
+import Coupons from "./PAGES/admin/Coupons";
+import Reports from "./PAGES/admin/Reports";
+import Settings from "./PAGES/admin/Settings";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -20,7 +23,7 @@ function App() {
        <Route path="/dashboard" element={<AdminLayout />}>
     <Route index element={<Dashboard />} />
       <Route path="users" element={<AllUsers />} />
-      <Route path="users/super-admins" element={<AllUsers key="super-admins" preselectedRole="super-admin" />} />
+      <Route key="super-admins" path="users/super-admins" element={<AllUsers preselectedRole="super-admin" />} />
       <Route key="admins" path="users/admins" element={<AllUsers preselectedRole="admin" />} />
       <Route key="shipping-managers" path="users/shipping-managers" element={<AllUsers preselectedRole="shipping-manager" />} />
       <Route key="customers" path="users/customers" element={<AllUsers preselectedRole="customer" />} />
@@ -28,6 +31,9 @@ function App() {
       <Route path="categories" element={<Categories />} />
       <Route path="products" element={<Products />} />
       <Route path="orders" element={<Orders />} />
+      <Route path="coupons" element={<Coupons />} />
+      <Route path="reports" element={<Reports />} />
+      <Route path="settings" element={<Settings />} />
      </Route>
       </Routes>
 

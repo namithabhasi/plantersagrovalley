@@ -14,6 +14,8 @@ import orderRoutes from "./routes/orderRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import adminDashboardRoutes from "./routes/adminDashboardRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import couponRoutes from "./routes/couponRoutes.js";
+import settingsRoutes from "./routes/settingsRoutes.js";
 
 
 const app = express();
@@ -49,6 +51,10 @@ app.use("/api/reviews", reviewRoutes);
 app.use("/api/orders", orderRoutes);
 
 app.use("/api/payment", paymentRoutes);
+
+app.use("/api/coupons", couponRoutes);
+
+app.use("/api/settings", settingsRoutes);
 
 app.use("/api/admin/dashboard", adminDashboardRoutes);
 app.use("/api/admin", adminRoutes);

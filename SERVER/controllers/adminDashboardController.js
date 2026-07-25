@@ -132,13 +132,13 @@ export const getDashboard = async (req, res) => {
     // Top Selling Products
     const topSellingProducts = await Order.aggregate([
       {
-        $unwind: "$orderItems",
+        $unwind: "$items",
       },
       {
         $group: {
-          _id: "$orderItems.product",
+          _id: "$items.product",
           quantitySold: {
-            $sum: "$orderItems.quantity",
+            $sum: "$items.quantity",
           },
         },
       },

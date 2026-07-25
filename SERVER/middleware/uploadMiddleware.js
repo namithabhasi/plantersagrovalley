@@ -116,3 +116,11 @@ export const uploadUserImage = multer({
     fileSize: 2 * 1024 * 1024,
   },
 });
+
+export const uploadSettingsLogo = multer({
+  storage: categoryStorage,
+  fileFilter,
+  limits: {
+    fileSize: 2 * 1024 * 1024,
+  },
+});
