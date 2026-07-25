@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../api/axiosInstance";
 import { toast } from "react-toastify";
 
-const Navbar = () => {
+const AdminNavbar = () => {
   const navigate = useNavigate();
   const drawerWidth = 260;
 
@@ -132,4 +132,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default AdminNavbar;
