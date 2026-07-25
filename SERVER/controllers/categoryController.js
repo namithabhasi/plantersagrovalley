@@ -7,7 +7,14 @@ import Category from "../models/Category.js";
  */
 export const createCategory = async (req, res) => {
   try {
-    const { name, slug, description, image, parentCategory } = req.body;
+    const { name, slug, description, parentCategory } = req.body;
+    let imageUrl = "";
+
+    if (req.file) {
+      imageUrl = req.file.path;
+    } else if (req.body.image) {
+      imageUrl = req.body.image;
+    }
 
     const exists = await Category.findOne({
       $or: [{ name }, { slug }],
@@ -25,8 +32,8 @@ export const createCategory = async (req, res) => {
       name,
       slug,
       description,
-      image,
-      parentCategory: parentCategory || null,
+      image: imageUrl,
+      parentCategory: (parentCategory === "none" || parentCategory === "" || parentCategory === "null") ? null : parentCategory,
     });
 
     res.status(201).json({
@@ -49,10 +56,14 @@ export const createCategory = async (req, res) => {
  */
 export const getCategories = async (req, res) => {
   try {
-    const categories = await Category.find({
-      isDeleted: false,
-      isActive: true,
-    }).populate("parentCategory", "name");
+    const query = { isDeleted: false };
+
+    // Only filter by active status if activeOnly query param is true
+    if (req.query.activeOnly === "true") {
+      query.isActive = true;
+    }
+
+    const categories = await Category.find(query).populate("parentCategory", "name");
 
     res.status(200).json({
       success: true,
@@ -112,7 +123,23 @@ export const updateCategory = async (req, res) => {
       });
     }
 
-    Object.assign(category, req.body);
+    const updateData = { ...req.body };
+
+    // Handle uploaded file if present
+    if (req.file) {
+      updateData.image = req.file.path;
+    }
+
+    // Handle parentCategory defaults
+    if (updateData.parentCategory === "none" || updateData.parentCategory === "" || updateData.parentCategory === "null") {
+      updateData.parentCategory = null;
+    }
+
+    // Handle boolean values sent as strings via FormData
+    if (updateData.isActive === "true") updateData.isActive = true;
+    if (updateData.isActive === "false") updateData.isActive = false;
+
+    Object.assign(category, updateData);
 
     await category.save();
 

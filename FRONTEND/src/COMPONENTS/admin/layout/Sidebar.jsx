@@ -118,7 +118,10 @@ const Sidebar = () => {
           <List component="div" disablePadding>
 
             <ListItemButton
-              sx={{ pl: 4 }}
+              sx={{
+                pl: 4,
+                ...(location.pathname === "/dashboard/users" ? activeStyle : {}),
+              }}
               component={Link}
               to="/dashboard/users"
             >
@@ -130,7 +133,10 @@ const Sidebar = () => {
             </ListItemButton>
 
             <ListItemButton
-              sx={{ pl: 4 }}
+              sx={{
+                pl: 4,
+                ...(location.pathname === "/dashboard/users/super-admins" ? activeStyle : {}),
+              }}
               component={Link}
               to="/dashboard/users/super-admins"
             >
@@ -142,7 +148,10 @@ const Sidebar = () => {
             </ListItemButton>
 
             <ListItemButton
-              sx={{ pl: 4 }}
+              sx={{
+                pl: 4,
+                ...(location.pathname === "/dashboard/users/admins" ? activeStyle : {}),
+              }}
               component={Link}
               to="/dashboard/users/admins"
             >
@@ -154,7 +163,10 @@ const Sidebar = () => {
             </ListItemButton>
 
             <ListItemButton
-              sx={{ pl: 4 }}
+              sx={{
+                pl: 4,
+                ...(location.pathname === "/dashboard/users/shipping-managers" ? activeStyle : {}),
+              }}
               component={Link}
               to="/dashboard/users/shipping-managers"
             >
@@ -166,7 +178,10 @@ const Sidebar = () => {
             </ListItemButton>
 
             <ListItemButton
-              sx={{ pl: 4 }}
+              sx={{
+                pl: 4,
+                ...(location.pathname === "/dashboard/users/customers" ? activeStyle : {}),
+              }}
               component={Link}
               to="/dashboard/users/customers"
             >
@@ -206,7 +221,10 @@ const Sidebar = () => {
           <List component="div" disablePadding>
 
             <ListItemButton
-              sx={{ pl: 4 }}
+              sx={{
+                pl: 4,
+                ...(location.pathname === "/dashboard/categories" ? activeStyle : {}),
+              }}
               component={Link}
               to="/dashboard/categories"
             >
@@ -218,7 +236,10 @@ const Sidebar = () => {
             </ListItemButton>
 
             <ListItemButton
-              sx={{ pl: 4 }}
+              sx={{
+                pl: 4,
+                ...(location.pathname === "/dashboard/products" ? activeStyle : {}),
+              }}
               component={Link}
               to="/dashboard/products"
             >
@@ -237,6 +258,11 @@ const Sidebar = () => {
         <ListItemButton
           component={Link}
           to="/dashboard/orders"
+          sx={
+            location.pathname === "/dashboard/orders"
+              ? activeStyle
+              : {}
+          }
         >
           <ListItemIcon>
             <ShoppingCart />
@@ -250,6 +276,11 @@ const Sidebar = () => {
         <ListItemButton
           component={Link}
           to="/dashboard/coupons"
+          sx={
+            location.pathname === "/dashboard/coupons"
+              ? activeStyle
+              : {}
+          }
         >
           <ListItemIcon>
             <LocalOffer />
@@ -263,6 +294,11 @@ const Sidebar = () => {
         <ListItemButton
           component={Link}
           to="/dashboard/reports"
+          sx={
+            location.pathname === "/dashboard/reports"
+              ? activeStyle
+              : {}
+          }
         >
           <ListItemIcon>
             <BarChart />
@@ -276,6 +312,11 @@ const Sidebar = () => {
         <ListItemButton
           component={Link}
           to="/dashboard/settings"
+          sx={
+            location.pathname === "/dashboard/settings"
+              ? activeStyle
+              : {}
+          }
         >
           <ListItemIcon>
             <Settings />

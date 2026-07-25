@@ -6,6 +6,9 @@ import SuperAdminLogin from "./PAGES/admin/SuperAdminLogin";
 import AdminLayout from "./layouts/AdminLayout";
 import AllUsers from "./PAGES/admin/users/AllUsers";
 import AddUser from "./PAGES/admin/users/AddUser";
+import Categories from "./PAGES/admin/Categories";
+import Products from "./PAGES/admin/Products";
+import Orders from "./PAGES/admin/Orders";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -18,10 +21,13 @@ function App() {
     <Route index element={<Dashboard />} />
       <Route path="users" element={<AllUsers />} />
       <Route path="users/super-admins" element={<AllUsers key="super-admins" preselectedRole="super-admin" />} />
-      <Route path="users/admins" element={<AllUsers key="admins" preselectedRole="admin" />} />
-      <Route path="users/shipping-managers" element={<AllUsers key="shipping-managers" preselectedRole="shipping-manager" />} />
-      <Route path="users/customers" element={<AllUsers key="customers" preselectedRole="customer" />} />
+      <Route key="admins" path="users/admins" element={<AllUsers preselectedRole="admin" />} />
+      <Route key="shipping-managers" path="users/shipping-managers" element={<AllUsers preselectedRole="shipping-manager" />} />
+      <Route key="customers" path="users/customers" element={<AllUsers preselectedRole="customer" />} />
       <Route path="users/add" element={<AddUser />} />
+      <Route path="categories" element={<Categories />} />
+      <Route path="products" element={<Products />} />
+      <Route path="orders" element={<Orders />} />
      </Route>
       </Routes>
 

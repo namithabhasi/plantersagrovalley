@@ -76,6 +76,17 @@ export const productValidator = [
 
   body("tags")
     .optional()
+    .customSanitizer((value) => {
+      if (typeof value === "string") {
+        try {
+          const parsed = JSON.parse(value);
+          if (Array.isArray(parsed)) return parsed;
+        } catch (e) {
+          return value.split(",").map(t => t.trim()).filter(Boolean);
+        }
+      }
+      return value;
+    })
     .isArray()
     .withMessage("Tags must be an array."),
 

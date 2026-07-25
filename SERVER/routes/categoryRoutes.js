@@ -34,6 +34,7 @@ router.put(
   "/:id",
   authenticate,
   authorizeRoles("super-admin", "admin"),
+  uploadCategoryImage.single("image"),
   categoryValidator,
   updateCategory
 );
