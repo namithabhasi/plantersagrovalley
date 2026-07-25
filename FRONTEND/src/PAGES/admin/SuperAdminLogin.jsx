@@ -20,7 +20,7 @@ const SuperAdminLogin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-
+console.log("Redux user:", user);
   useEffect(() => {
     if (user) {
       navigate("/dashboard");

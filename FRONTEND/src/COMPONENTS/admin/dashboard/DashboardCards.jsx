@@ -32,7 +32,7 @@ const DashboardCards = ({ role = "super-admin", statistics = {} }) => {
 
   if (role === "super-admin") {
     return (
-      <Grid container spacing={3} sx={{ mb: 4 }}>
+      <Grid container spacing={3} sx={{ mb: 4 }} justifyContent="center">
         <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
           <StatCard
             title="Total Revenue"
@@ -69,7 +69,7 @@ const DashboardCards = ({ role = "super-admin", statistics = {} }) => {
           />
         </Grid>
 
-        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 4 }}>
           <StatCard
             title="Total Customers"
             value={customersCount}
@@ -78,7 +78,7 @@ const DashboardCards = ({ role = "super-admin", statistics = {} }) => {
           />
         </Grid>
 
-        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 4 }}>
           <StatCard
             title="Total Admins"
             value={totalAdmins}
@@ -87,7 +87,7 @@ const DashboardCards = ({ role = "super-admin", statistics = {} }) => {
           />
         </Grid>
 
-        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 4 }}>
           <StatCard
             title="Total Shipping Managers"
             value={totalShippingManagers}
