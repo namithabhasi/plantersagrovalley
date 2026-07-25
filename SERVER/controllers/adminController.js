@@ -1,4 +1,7 @@
 import User from "../models/User.js";
+import Product from "../models/Product.js";
+import Order from "../models/Order.js";
+import Category from "../models/Category.js";
 
 /**
  * @desc    Get all users with pagination, search, and filtering
@@ -276,3 +279,89 @@ export const deleteUser = async (req, res) => {
     });
   }
 };
+
+/**
+ * @desc    Global search across Products, Orders, Categories, and Users
+ * @route   GET /api/admin/global-search
+ * @access  Private (Admin, Super Admin, Shipping Manager)
+ */
+export const globalSearch = async (req, res) => {
+  try {
+    const queryStr = req.query.query || "";
+    if (!queryStr.trim()) {
+      return res.status(200).json({
+        success: true,
+        results: {
+          products: [],
+          orders: [],
+          categories: [],
+          users: [],
+        },
+      });
+    }
+
+    const regex = new RegExp(queryStr, "i");
+
+    // 1. Search Products
+    const products = await Product.find({
+      $or: [
+        { name: regex },
+        { brand: regex },
+        { sku: regex },
+        { tags: regex },
+      ],
+      isDeleted: false,
+    })
+      .limit(5)
+      .select("name price salePrice images sku");
+
+    // 2. Search Orders
+    const orders = await Order.find({
+      $or: [
+        { orderNumber: regex },
+      ],
+      isDeleted: false,
+    })
+      .limit(5)
+      .select("orderNumber totalAmount orderStatus createdAt")
+      .populate("user", "firstName lastName");
+
+    // 3. Search Categories
+    const categories = await Category.find({
+      name: regex,
+      isDeleted: false,
+    })
+      .limit(5)
+      .select("name parentCategory");
+
+    // 4. Search Users
+    const users = await User.find({
+      $or: [
+        { firstName: regex },
+        { lastName: regex },
+        { email: regex },
+        { phone: regex },
+      ],
+    })
+      .limit(5)
+      .select("firstName lastName email role");
+
+    return res.status(200).json({
+      success: true,
+      results: {
+        products,
+        orders,
+        categories,
+        users,
+      },
+    });
+  } catch (error) {
+    console.error("Global Search Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Global search failed.",
+      error: error.message,
+    });
+  }
+};
+

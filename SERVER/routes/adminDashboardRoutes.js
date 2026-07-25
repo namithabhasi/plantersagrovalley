@@ -15,7 +15,7 @@ const router = express.Router();
 router.get(
   "/",
   authenticate,
-  authorizeRoles("super-admin", "admin"),
+  authorizeRoles("super-admin", "admin", "shipping-manager"),
   getDashboard
 );
 

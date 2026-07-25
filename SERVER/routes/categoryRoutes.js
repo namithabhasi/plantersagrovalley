@@ -39,11 +39,11 @@ router.put(
   updateCategory
 );
 
-// Super Admin Only
+// Admin & Super Admin Only for Delete
 router.delete(
   "/:id",
   authenticate,
-  authorizeRoles("super-admin"),
+  authorizeRoles("super-admin", "admin"),
   deleteCategory
 );
 

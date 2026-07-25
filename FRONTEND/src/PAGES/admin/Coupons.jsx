@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setSearchQuery as setSearchQueryRedux } from "../../redux/search/searchSlice";
 import {
   Box,
   Button,
@@ -40,6 +42,9 @@ import { toast } from "react-toastify";
 import axios from "../../api/axiosInstance";
 
 const Coupons = () => {
+  const dispatch = useDispatch();
+  const globalSearchQuery = useSelector((state) => state.search.query);
+
   const [coupons, setCoupons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -100,6 +105,11 @@ const Coupons = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    setSearchQuery(globalSearchQuery);
+    setPage(1);
+  }, [globalSearchQuery]);
 
   useEffect(() => {
     fetchCoupons();
@@ -283,6 +293,7 @@ const Coupons = () => {
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
+                  dispatch(setSearchQueryRedux(e.target.value));
                   setPage(1);
                 }}
                 slotProps={{

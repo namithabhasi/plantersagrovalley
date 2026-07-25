@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setSearchQuery as setSearchQueryRedux } from "../../redux/search/searchSlice";
 import {
   Box,
   Button,
@@ -40,6 +42,9 @@ import { toast } from "react-toastify";
 import axios from "../../api/axiosInstance";
 
 const Categories = () => {
+  const dispatch = useDispatch();
+  const globalSearchQuery = useSelector((state) => state.search.query);
+
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -80,6 +85,10 @@ const Categories = () => {
   useEffect(() => {
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    setSearchQuery(globalSearchQuery);
+  }, [globalSearchQuery]);
 
   // Handle auto-slugification from category name
   const handleNameChange = (e) => {
@@ -284,7 +293,10 @@ const Categories = () => {
             fullWidth
             placeholder="Search categories by name or description..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              dispatch(setSearchQueryRedux(e.target.value));
+            }}
             slotProps={{
               input: {
                 startAdornment: <SearchIcon sx={{ color: "text.secondary", mr: 1 }} />,
