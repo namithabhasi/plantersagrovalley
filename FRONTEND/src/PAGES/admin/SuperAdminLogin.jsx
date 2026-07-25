@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   Box,
@@ -13,9 +14,18 @@ import {
 
 import axiosInstance from "../../api/axiosInstance";
 import { toast } from "react-toastify";
+import { setUser } from "../../redux/auth/authSlice";
 
 const SuperAdminLogin = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -49,11 +59,15 @@ const SuperAdminLogin = () => {
         return;
       }
 
-      // Allow only Super Admin
-      if (data.user.role !== "super-admin") {
-        toast.error("Access denied. Super Admin only.");
+      // Allow Super Admin, Admin, and Shipping Manager
+      const allowedRoles = ["super-admin", "admin", "shipping-manager"];
+      if (!allowedRoles.includes(data.user.role)) {
+        toast.error("Access denied. Unauthorized role.");
         return;
       }
+
+      // Save user to Redux
+      dispatch(setUser(data.user));
 
       toast.success("Login successful");
 
@@ -85,7 +99,7 @@ const SuperAdminLogin = () => {
               textAlign="center"
               mb={1}
             >
-              Super Admin Login
+              Admin Portal Login
             </Typography>
 
             <Typography

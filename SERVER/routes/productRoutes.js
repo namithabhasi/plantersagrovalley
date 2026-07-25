@@ -62,7 +62,7 @@ router.put(
 router.delete(
   "/:id",
   authenticate,
-  authorizeRoles("super-admin"),
+  authorizeRoles("super-admin", "admin"),
   deleteProduct
 );
 

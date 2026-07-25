@@ -1,5 +1,6 @@
 import Review from "../models/Review.js";
 import Product from "../models/Product.js";
+import { createAdminNotification } from "../utils/notificationHelper.js";
 
 /**
  * Add Review
@@ -34,6 +35,14 @@ export const addReview = async (req, res) => {
       product: productId,
       rating,
       comment,
+    });
+
+    // Trigger Admin Notification for New Review
+    await createAdminNotification({
+      title: "New Product Review",
+      message: `A new ${rating}-star review has been posted on "${product.name}" by user ${req.user.firstName} ${req.user.lastName}.`,
+      type: "review",
+      productId: product._id,
     });
 
     res.status(201).json({

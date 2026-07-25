@@ -3,6 +3,7 @@ import Cart from "../models/Cart.js";
 import Product from "../models/Product.js";
 import Coupon from "../models/Coupon.js";
 import Settings from "../models/Settings.js";
+import { createAdminNotification } from "../utils/notificationHelper.js";
 
 /**
  * Helper: Generate unique order number
@@ -220,9 +221,20 @@ export const placeOrder = async (req, res) => {
 
     // 6. Update Product Stocks
     for (const item of orderItems) {
-      await Product.findByIdAndUpdate(item.product, {
-        $inc: { stock: -item.quantity },
-      });
+      const updatedProduct = await Product.findByIdAndUpdate(
+        item.product,
+        { $inc: { stock: -item.quantity } },
+        { new: true }
+      );
+
+      if (updatedProduct && updatedProduct.stock <= 5) {
+        await createAdminNotification({
+          title: "Inventory Alert: Low Stock",
+          message: `Product "${updatedProduct.name}" is low in stock (${updatedProduct.stock} items left).`,
+          type: "inventory",
+          productId: updatedProduct._id,
+        });
+      }
     }
 
     // 7. Increment Coupon usage if applicable
@@ -254,6 +266,14 @@ export const placeOrder = async (req, res) => {
     });
 
     await order.save();
+
+    // Trigger Admin Notification for New Order
+    await createAdminNotification({
+      title: "New Order Placed",
+      message: `Order #${order.orderNumber} has been placed by user ${req.user.firstName} ${req.user.lastName} (Total: $${order.totalAmount.toFixed(2)})`,
+      type: "order",
+      orderId: order._id,
+    });
 
     // 9. Clear the user's cart
     cart.items = [];
@@ -521,7 +541,7 @@ export const cancelOrder = async (req, res) => {
     if (!isAdmin && !["Pending", "Confirmed", "Processing"].includes(order.orderStatus)) {
       return res.status(400).json({
         success: false,
-        message: `Order status is "${order.orderStatus}". Shipped or delivered orders cannot be cancelled by customer.`,
+        message: `Order status is "${order.orderStatus}". Packed, shipped or delivered orders cannot be cancelled by customer.`,
       });
     }
 
@@ -693,6 +713,12 @@ export const updateOrderStatus = async (req, res) => {
     }
 
     if (paymentStatus && paymentStatus !== order.paymentStatus) {
+      if (paymentStatus === "Refunded" && !["super-admin", "admin"].includes(req.user.role)) {
+        return res.status(403).json({
+          success: false,
+          message: "Only Admins and Super Admins can refund orders.",
+        });
+      }
       order.paymentStatus = paymentStatus;
       if (paymentStatus === "Paid") {
         order.paidAt = new Date();

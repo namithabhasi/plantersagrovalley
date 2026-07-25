@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setSearchQuery as setSearchQueryRedux } from "../../../redux/search/searchSlice";
 import { Link } from "react-router-dom";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -10,6 +12,9 @@ import UserPagination from "../../../COMPONENTS/admin/users/UserPagination";
 import axios from "../../../api/axiosInstance";
 
 const AllUsers = ({ preselectedRole }) => {
+  const dispatch = useDispatch();
+  const globalSearchQuery = useSelector((state) => state.search.query);
+
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -57,11 +62,17 @@ const AllUsers = ({ preselectedRole }) => {
   };
 
   useEffect(() => {
+    setSearch(globalSearchQuery);
+    setPage(1);
+  }, [globalSearchQuery]);
+
+  useEffect(() => {
     getUsers();
   }, [page, search, role, status]);
 
   const handleSearchChange = (value) => {
     setSearch(value);
+    dispatch(setSearchQueryRedux(value));
     setPage(1);
   };
 

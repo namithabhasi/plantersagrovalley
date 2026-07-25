@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setSearchQuery as setSearchQueryRedux } from "../../redux/search/searchSlice";
 import {
   Box,
   Button,
@@ -45,6 +47,9 @@ import { toast } from "react-toastify";
 import axios from "../../api/axiosInstance";
 
 const Products = () => {
+  const dispatch = useDispatch();
+  const globalSearchQuery = useSelector((state) => state.search.query);
+
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -131,6 +136,11 @@ const Products = () => {
   useEffect(() => {
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    setSearchQuery(globalSearchQuery);
+    setPage(1);
+  }, [globalSearchQuery]);
 
   useEffect(() => {
     fetchProducts();
@@ -375,6 +385,7 @@ const Products = () => {
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
+                  dispatch(setSearchQueryRedux(e.target.value));
                   setPage(1);
                 }}
                 slotProps={{

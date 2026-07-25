@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setSearchQuery as setSearchQueryRedux } from "../../redux/search/searchSlice";
 import {
   Box,
   Button,
@@ -44,10 +46,12 @@ import {
 import { toast } from "react-toastify";
 import axios from "../../api/axiosInstance";
 
+
 const OrderStatusColors = {
   Pending: { bg: "#fff3e0", color: "#e65100" },
   Confirmed: { bg: "#e8eaf6", color: "#1a237e" },
   Processing: { bg: "#e1f5fe", color: "#01579b" },
+  Packed: { bg: "#e0f2f1", color: "#00695c" },
   Shipped: { bg: "#f3e5f5", color: "#4a148c" },
   Delivered: { bg: "#e8f5e9", color: "#1b5e20" },
   Cancelled: { bg: "#ffebee", color: "#b71c1c" },
@@ -61,6 +65,11 @@ const PaymentStatusColors = {
 };
 
 const Orders = () => {
+  const dispatch = useDispatch();
+  const globalSearchQuery = useSelector((state) => state.search.query);
+  const { user } = useSelector((state) => state.auth);
+  const role = user?.role;
+
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -120,6 +129,11 @@ const Orders = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    setSearchQuery(globalSearchQuery);
+    setPage(1);
+  }, [globalSearchQuery]);
 
   useEffect(() => {
     fetchOrders();
@@ -239,6 +253,7 @@ const Orders = () => {
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
+                  dispatch(setSearchQueryRedux(e.target.value));
                   setPage(1);
                 }}
                 slotProps={{
@@ -272,6 +287,7 @@ const Orders = () => {
                   <MenuItem value="Pending">Pending</MenuItem>
                   <MenuItem value="Confirmed">Confirmed</MenuItem>
                   <MenuItem value="Processing">Processing</MenuItem>
+                  <MenuItem value="Packed">Packed</MenuItem>
                   <MenuItem value="Shipped">Shipped</MenuItem>
                   <MenuItem value="Delivered">Delivered</MenuItem>
                   <MenuItem value="Cancelled">Cancelled</MenuItem>
@@ -444,7 +460,7 @@ const Orders = () => {
                           </IconButton>
                         </Tooltip>
 
-                        {order.orderStatus !== "Cancelled" && order.orderStatus !== "Delivered" && (
+                        {role !== "shipping-manager" && order.orderStatus !== "Cancelled" && order.orderStatus !== "Delivered" && (
                           <Tooltip title="Cancel Order">
                             <IconButton
                               color="warning"
@@ -457,16 +473,18 @@ const Orders = () => {
                           </Tooltip>
                         )}
 
-                        <Tooltip title="Delete Order (Soft)">
-                          <IconButton
-                            color="error"
-                            size="small"
-                            onClick={() => handleOpenDeleteDialog(order)}
-                            sx={{ bgcolor: "#ffebee", "&:hover": { bgcolor: "#ffcdd2" } }}
-                          >
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
+                        {role === "super-admin" && (
+                          <Tooltip title="Delete Order (Soft)">
+                            <IconButton
+                              color="error"
+                              size="small"
+                              onClick={() => handleOpenDeleteDialog(order)}
+                              sx={{ bgcolor: "#ffebee", "&:hover": { bgcolor: "#ffcdd2" } }}
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        )}
                       </Stack>
                     </TableCell>
                   </TableRow>
@@ -504,15 +522,15 @@ const Orders = () => {
               <Grid item xs={12}>
                 <Stepper
                   activeStep={
-                    ["Pending", "Confirmed", "Processing", "Shipped", "Delivered"].indexOf(selectedOrder.orderStatus)
+                    ["Pending", "Confirmed", "Processing", "Packed", "Shipped", "Delivered"].indexOf(selectedOrder.orderStatus)
                   }
                   alternativeLabel
                 >
-                  {["Pending", "Confirmed", "Processing", "Shipped", "Delivered"].map((status) => (
+                  {["Pending", "Confirmed", "Processing", "Packed", "Shipped", "Delivered"].map((status) => (
                     <Step key={status} completed={
                       selectedOrder.orderStatus === "Cancelled" 
                         ? false 
-                        : ["Pending", "Confirmed", "Processing", "Shipped", "Delivered"].indexOf(selectedOrder.orderStatus) >= ["Pending", "Confirmed", "Processing", "Shipped", "Delivered"].indexOf(status)
+                        : ["Pending", "Confirmed", "Processing", "Packed", "Shipped", "Delivered"].indexOf(selectedOrder.orderStatus) >= ["Pending", "Confirmed", "Processing", "Packed", "Shipped", "Delivered"].indexOf(status)
                     }>
                       <StepLabel>{status}</StepLabel>
                     </Step>
@@ -696,6 +714,7 @@ const Orders = () => {
                   <MenuItem value="Pending">Pending</MenuItem>
                   <MenuItem value="Confirmed">Confirmed</MenuItem>
                   <MenuItem value="Processing">Processing</MenuItem>
+                  <MenuItem value="Packed">Packed</MenuItem>
                   <MenuItem value="Shipped">Shipped</MenuItem>
                   <MenuItem value="Delivered">Delivered</MenuItem>
                   <MenuItem value="Cancelled">Cancelled</MenuItem>
@@ -714,7 +733,7 @@ const Orders = () => {
                   <MenuItem value="Pending">Pending</MenuItem>
                   <MenuItem value="Paid">Paid</MenuItem>
                   <MenuItem value="Failed">Failed</MenuItem>
-                  <MenuItem value="Refunded">Refunded</MenuItem>
+                  <MenuItem value="Refunded" disabled={role === "shipping-manager"}>Refunded</MenuItem>
                 </Select>
               </FormControl>
 

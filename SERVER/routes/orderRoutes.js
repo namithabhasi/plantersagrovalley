@@ -84,7 +84,7 @@ router.put(
 
 router.delete(
   "/:id",
-  authorizeRoles("super-admin", "admin"),
+  authorizeRoles("super-admin"),
   orderIdValidator,
   validationMiddleware,
   deleteOrder

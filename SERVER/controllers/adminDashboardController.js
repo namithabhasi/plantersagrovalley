@@ -24,10 +24,14 @@ export const getDashboard = async (req, res) => {
       totalRevenueData,
       todayRevenueData,
       recentOrders,
+      totalAdmins,
+      totalShippingManagers,
+      packedOrders,
+      shippedOrders,
     ] = await Promise.all([
       User.countDocuments({
         role: "customer",
-  isActive: true,
+        isActive: true,
       }),
 
       Product.countDocuments({
@@ -98,6 +102,24 @@ export const getDashboard = async (req, res) => {
         .sort({ createdAt: -1 })
         .limit(10)
         .lean(),
+
+      User.countDocuments({
+        role: "admin",
+        isActive: true,
+      }),
+
+      User.countDocuments({
+        role: "shipping-manager",
+        isActive: true,
+      }),
+
+      Order.countDocuments({
+        orderStatus: "Packed",
+      }),
+
+      Order.countDocuments({
+        orderStatus: "Shipped",
+      }),
     ]);
 
     // Monthly Sales (Last 12 Months)
@@ -178,6 +200,7 @@ export const getDashboard = async (req, res) => {
       data: {
         statistics: {
           totalUsers,
+          totalCustomers: totalUsers,
           totalProducts,
           totalCategories,
           totalOrders,
@@ -193,6 +216,10 @@ export const getDashboard = async (req, res) => {
             todayRevenueData.length > 0
               ? todayRevenueData[0].todayRevenue
               : 0,
+          totalAdmins,
+          totalShippingManagers,
+          packedOrders,
+          shippedOrders,
         },
 
         recentOrders,

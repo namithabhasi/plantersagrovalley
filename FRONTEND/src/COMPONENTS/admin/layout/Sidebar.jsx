@@ -29,11 +29,14 @@ import {
 } from "@mui/icons-material";
 
 import { Link, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const drawerWidth = 260;
 
 const Sidebar = () => {
   const location = useLocation();
+  const { user } = useSelector((state) => state.auth);
+  const role = user?.role;
 
   const [openUsers, setOpenUsers] = useState(false);
   const [openCatalog, setOpenCatalog] = useState(false);
@@ -48,18 +51,18 @@ const Sidebar = () => {
 
   return (
     <Box
-  sx={{
-    width: drawerWidth,
-    flexShrink: 0,
-    position: "fixed",
-    left: 0,
-    top: 0,
-    height: "100vh",
-    bgcolor: "#fff",
-    borderRight: "1px solid #e0e0e0",
-    overflowY: "auto",
-  }}
->
+      sx={{
+        width: drawerWidth,
+        flexShrink: 0,
+        position: "fixed",
+        left: 0,
+        top: 0,
+        height: "100vh",
+        bgcolor: "#fff",
+        borderRight: "1px solid #e0e0e0",
+        overflowY: "auto",
+      }}
+    >
       <Toolbar>
         <Typography
           variant="h6"
@@ -94,164 +97,172 @@ const Sidebar = () => {
 
         {/* User Management */}
 
-        <ListItemButton
-          onClick={() => setOpenUsers(!openUsers)}
-        >
-          <ListItemIcon>
-            <People />
-          </ListItemIcon>
-
-          <ListItemText primary="User Management" />
-
-          {openUsers ? (
-            <ExpandLess />
-          ) : (
-            <ExpandMore />
-          )}
-        </ListItemButton>
-
-        <Collapse
-          in={openUsers}
-          timeout="auto"
-          unmountOnExit
-        >
-          <List component="div" disablePadding>
-
+        {role === "super-admin" && (
+          <>
             <ListItemButton
-              sx={{
-                pl: 4,
-                ...(location.pathname === "/dashboard/users" ? activeStyle : {}),
-              }}
-              component={Link}
-              to="/dashboard/users"
+              onClick={() => setOpenUsers(!openUsers)}
             >
               <ListItemIcon>
                 <People />
               </ListItemIcon>
 
-              <ListItemText primary="All Users" />
+              <ListItemText primary="User Management" />
+
+              {openUsers ? (
+                <ExpandLess />
+              ) : (
+                <ExpandMore />
+              )}
             </ListItemButton>
 
-            <ListItemButton
-              sx={{
-                pl: 4,
-                ...(location.pathname === "/dashboard/users/super-admins" ? activeStyle : {}),
-              }}
-              component={Link}
-              to="/dashboard/users/super-admins"
+            <Collapse
+              in={openUsers}
+              timeout="auto"
+              unmountOnExit
             >
-              <ListItemIcon>
-                <AdminPanelSettings />
-              </ListItemIcon>
+              <List component="div" disablePadding>
 
-              <ListItemText primary="Super Admins" />
-            </ListItemButton>
+                <ListItemButton
+                  sx={{
+                    pl: 4,
+                    ...(location.pathname === "/dashboard/users" ? activeStyle : {}),
+                  }}
+                  component={Link}
+                  to="/dashboard/users"
+                >
+                  <ListItemIcon>
+                    <People />
+                  </ListItemIcon>
 
-            <ListItemButton
-              sx={{
-                pl: 4,
-                ...(location.pathname === "/dashboard/users/admins" ? activeStyle : {}),
-              }}
-              component={Link}
-              to="/dashboard/users/admins"
-            >
-              <ListItemIcon>
-                <ManageAccounts />
-              </ListItemIcon>
+                  <ListItemText primary="All Users" />
+                </ListItemButton>
 
-              <ListItemText primary="Admins" />
-            </ListItemButton>
+                <ListItemButton
+                  sx={{
+                    pl: 4,
+                    ...(location.pathname === "/dashboard/users/super-admins" ? activeStyle : {}),
+                  }}
+                  component={Link}
+                  to="/dashboard/users/super-admins"
+                >
+                  <ListItemIcon>
+                    <AdminPanelSettings />
+                  </ListItemIcon>
 
-            <ListItemButton
-              sx={{
-                pl: 4,
-                ...(location.pathname === "/dashboard/users/shipping-managers" ? activeStyle : {}),
-              }}
-              component={Link}
-              to="/dashboard/users/shipping-managers"
-            >
-              <ListItemIcon>
-                <LocalShipping />
-              </ListItemIcon>
+                  <ListItemText primary="Super Admins" />
+                </ListItemButton>
 
-              <ListItemText primary="Shipping Managers" />
-            </ListItemButton>
+                <ListItemButton
+                  sx={{
+                    pl: 4,
+                    ...(location.pathname === "/dashboard/users/admins" ? activeStyle : {}),
+                  }}
+                  component={Link}
+                  to="/dashboard/users/admins"
+                >
+                  <ListItemIcon>
+                    <ManageAccounts />
+                  </ListItemIcon>
 
-            <ListItemButton
-              sx={{
-                pl: 4,
-                ...(location.pathname === "/dashboard/users/customers" ? activeStyle : {}),
-              }}
-              component={Link}
-              to="/dashboard/users/customers"
-            >
-              <ListItemIcon>
-                <Person />
-              </ListItemIcon>
+                  <ListItemText primary="Admins" />
+                </ListItemButton>
 
-              <ListItemText primary="Customers" />
-            </ListItemButton>
+                <ListItemButton
+                  sx={{
+                    pl: 4,
+                    ...(location.pathname === "/dashboard/users/shipping-managers" ? activeStyle : {}),
+                  }}
+                  component={Link}
+                  to="/dashboard/users/shipping-managers"
+                >
+                  <ListItemIcon>
+                    <LocalShipping />
+                  </ListItemIcon>
 
-          </List>
-        </Collapse>
+                  <ListItemText primary="Shipping Managers" />
+                </ListItemButton>
+
+                <ListItemButton
+                  sx={{
+                    pl: 4,
+                    ...(location.pathname === "/dashboard/users/customers" ? activeStyle : {}),
+                  }}
+                  component={Link}
+                  to="/dashboard/users/customers"
+                >
+                  <ListItemIcon>
+                    <Person />
+                  </ListItemIcon>
+
+                  <ListItemText primary="Customers" />
+                </ListItemButton>
+
+              </List>
+            </Collapse>
+          </>
+        )}
 
         {/* Catalog */}
 
-        <ListItemButton
-          onClick={() => setOpenCatalog(!openCatalog)}
-        >
-          <ListItemIcon>
-            <Inventory2 />
-          </ListItemIcon>
-
-          <ListItemText primary="Catalog" />
-
-          {openCatalog ? (
-            <ExpandLess />
-          ) : (
-            <ExpandMore />
-          )}
-        </ListItemButton>
-
-        <Collapse
-          in={openCatalog}
-          timeout="auto"
-          unmountOnExit
-        >
-          <List component="div" disablePadding>
-
+        {(role === "super-admin" || role === "admin") && (
+          <>
             <ListItemButton
-              sx={{
-                pl: 4,
-                ...(location.pathname === "/dashboard/categories" ? activeStyle : {}),
-              }}
-              component={Link}
-              to="/dashboard/categories"
-            >
-              <ListItemIcon>
-                <Category />
-              </ListItemIcon>
-
-              <ListItemText primary="Categories" />
-            </ListItemButton>
-
-            <ListItemButton
-              sx={{
-                pl: 4,
-                ...(location.pathname === "/dashboard/products" ? activeStyle : {}),
-              }}
-              component={Link}
-              to="/dashboard/products"
+              onClick={() => setOpenCatalog(!openCatalog)}
             >
               <ListItemIcon>
                 <Inventory2 />
               </ListItemIcon>
 
-              <ListItemText primary="Products" />
+              <ListItemText primary="Catalog" />
+
+              {openCatalog ? (
+                <ExpandLess />
+              ) : (
+                <ExpandMore />
+              )}
             </ListItemButton>
 
-          </List>
-        </Collapse>
+            <Collapse
+              in={openCatalog}
+              timeout="auto"
+              unmountOnExit
+            >
+              <List component="div" disablePadding>
+
+                <ListItemButton
+                  sx={{
+                    pl: 4,
+                    ...(location.pathname === "/dashboard/categories" ? activeStyle : {}),
+                  }}
+                  component={Link}
+                  to="/dashboard/categories"
+                >
+                  <ListItemIcon>
+                    <Category />
+                  </ListItemIcon>
+
+                  <ListItemText primary="Categories" />
+                </ListItemButton>
+
+                <ListItemButton
+                  sx={{
+                    pl: 4,
+                    ...(location.pathname === "/dashboard/products" ? activeStyle : {}),
+                  }}
+                  component={Link}
+                  to="/dashboard/products"
+                >
+                  <ListItemIcon>
+                    <Inventory2 />
+                  </ListItemIcon>
+
+                  <ListItemText primary="Products" />
+                </ListItemButton>
+
+              </List>
+            </Collapse>
+          </>
+        )}
 
         {/* Orders */}
 
@@ -273,57 +284,63 @@ const Sidebar = () => {
 
         {/* Coupons */}
 
-        <ListItemButton
-          component={Link}
-          to="/dashboard/coupons"
-          sx={
-            location.pathname === "/dashboard/coupons"
-              ? activeStyle
-              : {}
-          }
-        >
-          <ListItemIcon>
-            <LocalOffer />
-          </ListItemIcon>
+        {(role === "super-admin" || role === "admin") && (
+          <ListItemButton
+            component={Link}
+            to="/dashboard/coupons"
+            sx={
+              location.pathname === "/dashboard/coupons"
+                ? activeStyle
+                : {}
+            }
+          >
+            <ListItemIcon>
+              <LocalOffer />
+            </ListItemIcon>
 
-          <ListItemText primary="Coupons" />
-        </ListItemButton>
+            <ListItemText primary="Coupons" />
+          </ListItemButton>
+        )}
 
         {/* Reports */}
 
-        <ListItemButton
-          component={Link}
-          to="/dashboard/reports"
-          sx={
-            location.pathname === "/dashboard/reports"
-              ? activeStyle
-              : {}
-          }
-        >
-          <ListItemIcon>
-            <BarChart />
-          </ListItemIcon>
+        {(role === "super-admin" || role === "admin") && (
+          <ListItemButton
+            component={Link}
+            to="/dashboard/reports"
+            sx={
+              location.pathname === "/dashboard/reports"
+                ? activeStyle
+                : {}
+            }
+          >
+            <ListItemIcon>
+              <BarChart />
+            </ListItemIcon>
 
-          <ListItemText primary="Reports" />
-        </ListItemButton>
+            <ListItemText primary="Reports" />
+          </ListItemButton>
+        )}
 
         {/* Settings */}
 
-        <ListItemButton
-          component={Link}
-          to="/dashboard/settings"
-          sx={
-            location.pathname === "/dashboard/settings"
-              ? activeStyle
-              : {}
-          }
-        >
-          <ListItemIcon>
-            <Settings />
-          </ListItemIcon>
+        {role === "super-admin" && (
+          <ListItemButton
+            component={Link}
+            to="/dashboard/settings"
+            sx={
+              location.pathname === "/dashboard/settings"
+                ? activeStyle
+                : {}
+            }
+          >
+            <ListItemIcon>
+              <Settings />
+            </ListItemIcon>
 
-          <ListItemText primary="Settings" />
-        </ListItemButton>
+            <ListItemText primary="Settings" />
+          </ListItemButton>
+        )}
 
       </List>
     </Box>
