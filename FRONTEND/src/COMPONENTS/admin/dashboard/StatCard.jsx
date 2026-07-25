@@ -20,27 +20,28 @@ const StatCard = ({
       }}
     >
       <CardContent>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          gutterBottom
         >
-          <Box>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              gutterBottom
-            >
-              {title}
-            </Typography>
+          {title}
+        </Typography>
 
-            <Typography
-              variant="h4"
-              fontWeight="bold"
-            >
-              {value}
-            </Typography>
-          </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mt: 0.5,
+          }}
+        >
+          <Typography
+            variant="h4"
+            fontWeight="bold"
+          >
+            {value}
+          </Typography>
 
           <Box
             sx={{
@@ -52,6 +53,7 @@ const StatCard = ({
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
+              flexShrink: 0,
             }}
           >
             {icon}

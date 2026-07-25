@@ -11,16 +11,18 @@ import TopProducts from "../../COMPONENTS/admin/dashboard/TopProducts";
 
 const SuperAdminDashboard = ({ statistics, monthlySales, recentOrders, topSellingProducts }) => {
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{  }}>
       <Typography variant="h4" fontWeight={700} mb={1}>
         Super Admin Dashboard
       </Typography>
 
-      <Typography color="text.secondary" mb={4}>
+      <Typography sx={{ mt: 1,  }} color="text.secondary">
         Welcome to the Planters Agro Valley Administration Panel
       </Typography>
 
-      <DashboardCards role="super-admin" statistics={statistics} />
+      <Box sx={{ mt: 1, pt:1 }}>
+        <DashboardCards role="super-admin" statistics={statistics} />
+      </Box>
 
       <Box mt={4}>
         <SalesChart monthlySales={monthlySales} />
@@ -44,16 +46,18 @@ const SuperAdminDashboard = ({ statistics, monthlySales, recentOrders, topSellin
 
 const AdminDashboard = ({ statistics, monthlySales, recentOrders, topSellingProducts }) => {
   return (
-    <Box sx={{ p: 3 }}>
+    <Box >
       <Typography variant="h4" fontWeight={700} mb={1}>
         Admin Dashboard
       </Typography>
 
-      <Typography color="text.secondary" mb={4}>
+      <Typography sx={{ mt: 1,  }} color="text.secondary">
         Welcome to the Planters Agro Valley Administration Panel
       </Typography>
 
-      <DashboardCards role="admin" statistics={statistics} />
+      <Box sx={{ mt: 1, pt: 1 }}>
+        <DashboardCards role="admin" statistics={statistics} />
+      </Box>
 
       <Box mt={4}>
         <SalesChart monthlySales={monthlySales} />
@@ -77,16 +81,18 @@ const AdminDashboard = ({ statistics, monthlySales, recentOrders, topSellingProd
 
 const ShippingDashboard = ({ statistics, recentOrders }) => {
   return (
-    <Box sx={{ p: 3 }}>
+    <Box >
       <Typography variant="h4" fontWeight={700} mb={1}>
         Shipping Manager Dashboard
       </Typography>
 
-      <Typography color="text.secondary" mb={4}>
+      <Typography sx={{ mt: 1,  }} color="text.secondary">
         Welcome to the Planters Agro Valley Shipment Management Panel
       </Typography>
 
-      <DashboardCards role="shipping-manager" statistics={statistics} />
+      <Box sx={{ mt: 1, pt: 1 }}>
+        <DashboardCards role="shipping-manager" statistics={statistics} />
+      </Box>
 
       <Box mt={4}>
         <RecentOrders orders={recentOrders} />
