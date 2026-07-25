@@ -106,8 +106,11 @@ export const getProducts = async (req, res) => {
 
     let filter = {
       isDeleted: false,
-      isActive: true,
     };
+
+    if (req.query.activeOnly === "true") {
+      filter.isActive = true;
+    }
 
     // Search
     if (keyword) {

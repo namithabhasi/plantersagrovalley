@@ -13,6 +13,7 @@ import reviewRoutes from "./routes/reviewRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import adminDashboardRoutes from "./routes/adminDashboardRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 
 const app = express();
@@ -50,6 +51,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/payment", paymentRoutes);
 
 app.use("/api/admin/dashboard", adminDashboardRoutes);
+app.use("/api/admin", adminRoutes);
 
 // Health Check
 app.get("/", (req, res) => {

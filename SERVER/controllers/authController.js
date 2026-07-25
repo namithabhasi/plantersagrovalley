@@ -36,7 +36,7 @@ export const register = async (req, res) => {
       email: email.toLowerCase(),
       password,
       phone,
-      role: role || "customer",
+     role: "customer",
     });
 
     // Generate JWT
@@ -80,34 +80,28 @@ export const login = async (req, res) => {
 
     // Find user (include password)
     const user = await User.findOne({
-      email: email.toLowerCase(),
-    });
+  email: email.toLowerCase(),
+}).select("+password");
 
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid email or password.",
-      });
-    }
+console.log("User:", user);
 
-    // Check account status
-    if (!user.isActive) {
-      return res.status(403).json({
-        success: false,
-        message: "Your account has been deactivated.",
-      });
-    }
+if (!user) {
+  return res.status(401).json({
+    success: false,
+    message: "User not found",
+  });
+}
 
-    // Compare password
-    const isMatch = await user.comparePassword(password);
+const isMatch = await user.comparePassword(password);
 
-    if (!isMatch) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid email or password.",
-      });
-    }
+console.log("Password Match:", isMatch);
 
+if (!isMatch) {
+  return res.status(401).json({
+    success: false,
+    message: "Password incorrect",
+  });
+}
     // Generate JWT
     const token = generateToken(user._id, user.role);
 

@@ -1,13 +1,8 @@
 import razorpay from "../config/razorpay.js";
-import {
-  getCart,
-  validateStock,
-  validateCoupon,
-  calculateOrderAmounts,
-} from "../services/orderService.js";
+
 import crypto from "crypto";
 import mongoose from "mongoose";
-import razorpay from "../config/razorpay.js";
+
 
 import {
   getCart,
