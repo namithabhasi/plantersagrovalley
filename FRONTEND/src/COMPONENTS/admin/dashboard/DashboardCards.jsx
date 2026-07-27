@@ -56,7 +56,7 @@ const DashboardCards = ({ role = "super-admin", statistics = {} }) => {
             title="Total Products"
             value={totalProducts}
             icon={<Inventory2Icon fontSize="large" />}
-            color="#2e7d32"
+            color="#2E7D32"
           />
         </Grid>
 
@@ -125,7 +125,7 @@ const DashboardCards = ({ role = "super-admin", statistics = {} }) => {
             title="Products"
             value={totalProducts}
             icon={<Inventory2Icon fontSize="large" />}
-            color="#2e7d32"
+            color="#2E7D32"
           />
         </Grid>
 
@@ -185,7 +185,7 @@ const DashboardCards = ({ role = "super-admin", statistics = {} }) => {
             title="Delivered Orders"
             value={deliveredOrders}
             icon={<CheckCircleIcon fontSize="large" />}
-            color="#2e7d32"
+            color="#2E7D32"
           />
         </Grid>
       </Grid>

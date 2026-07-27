@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   Avatar,
+  Box,
   Chip,
   Paper,
   Table,
@@ -173,11 +174,11 @@ const UserTable = ({ users, loading, onRefresh }) => {
       <TableContainer
         component={Paper}
         elevation={2}
-        sx={{ borderRadius: 3 }}
+        sx={{ borderRadius: 3, overflowX: "auto" }}
       >
         <Table>
-          <TableHead>
-            <TableRow sx={{ bgcolor: "#f5f5f5" }}>
+          <TableHead sx={{ "& .MuiTableCell-head": { bgcolor: "#f5f5f5" } }}>
+            <TableRow>
               <TableCell><b>User</b></TableCell>
               <TableCell><b>Email</b></TableCell>
               <TableCell><b>Phone</b></TableCell>
@@ -210,26 +211,32 @@ const UserTable = ({ users, loading, onRefresh }) => {
                     hover
                   >
                     <TableCell>
-                      <Avatar
-                        sx={{
-                          mr: 2,
-                          display: "inline-flex",
-                          verticalAlign: "middle",
-                          bgcolor: "primary.main",
-                        }}
-                      >
-                        {fullName ? fullName.charAt(0).toUpperCase() : "?"}
-                      </Avatar>
-
-                      <Typography
-                        component="span"
-                        sx={{
-                          ml: 2,
-                          fontWeight: 600,
-                        }}
-                      >
-                        {fullName}
-                      </Typography>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                      
+                        <Box sx={{ display: "flex", flexDirection: "column", textAlign: "left" }}>
+                          <Typography
+                            component="span"
+                            sx={{
+                              fontWeight: 600,
+                              lineHeight: 1.2,
+                              display: "block",
+                            }}
+                          >
+                            {user.firstName || ""}
+                          </Typography>
+                          <Typography
+                            component="span"
+                            sx={{
+                              fontWeight: 500,
+                              color: "text.secondary",
+                              lineHeight: 1.2,
+                              display: "block",
+                            }}
+                          >
+                            {user.lastName || ""}
+                          </Typography>
+                        </Box>
+                      </Box>
                     </TableCell>
 
                     <TableCell>{user.email}</TableCell>
@@ -274,12 +281,14 @@ const UserTable = ({ users, loading, onRefresh }) => {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={handleEditClick}>
-          <ListItemIcon>
-            <EditIcon fontSize="small" color="primary" />
-          </ListItemIcon>
-          <ListItemText primary="Edit User" />
-        </MenuItem>
+        {selectedUser?.role !== "customer" && (
+          <MenuItem onClick={handleEditClick}>
+            <ListItemIcon>
+              <EditIcon fontSize="small" color="primary" />
+            </ListItemIcon>
+            <ListItemText primary="Edit User" />
+          </MenuItem>
+        )}
 
         <MenuItem onClick={handleToggleStatus}>
           <ListItemIcon>

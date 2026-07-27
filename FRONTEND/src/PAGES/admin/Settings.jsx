@@ -16,6 +16,8 @@ import {
   Typography,
   IconButton,
   Paper,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import {
   Save as SaveIcon,
@@ -31,6 +33,9 @@ import { toast } from "react-toastify";
 import axios from "../../api/axiosInstance";
 
 const Settings = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
   const [tabValue, setTabValue] = useState(0);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -211,7 +216,7 @@ const Settings = () => {
       {/* Header */}
       <Stack direction="row" justifyContent="space-between" alignItems="center" mb={4}>
         <Box>
-          <Typography variant="h4" fontWeight={800} sx={{ color: "#1b5e20", mb: 0.5 }}>
+          <Typography variant="h4" fontWeight={800} sx={{ color: "success.main", mb: 0.5 }}>
             Store Configuration
           </Typography>
           <Typography variant="body2" color="text.secondary">
@@ -226,21 +231,23 @@ const Settings = () => {
           <Grid item xs={12} md={3}>
             <Card sx={{ borderRadius: 3, boxShadow: "0 4px 12px rgba(0,0,0,0.03)", border: "1px solid #f0f0f0" }}>
               <Tabs
-                orientation="vertical"
+                orientation={isMobile ? "horizontal" : "vertical"}
+                variant={isMobile ? "scrollable" : "standard"}
+                scrollButtons={isMobile ? "auto" : undefined}
                 value={tabValue}
                 onChange={handleTabChange}
                 sx={{
                   borderRight: 0,
-                  "& .MuiTabs-indicator": { bgcolor: "#2e7d32" },
+                  "& .MuiTabs-indicator": { bgcolor: "success.main" },
                   "& .MuiTab-root": {
-                    alignItems: "flex-start",
-                    textAlign: "left",
+                    alignItems: { xs: "center", md: "flex-start" },
+                    textAlign: { xs: "center", md: "left" },
                     py: 2,
                     px: 3,
                     fontWeight: 600,
                     textTransform: "none",
                     borderRadius: 1,
-                    "&.Mui-selected": { color: "#2e7d32" },
+                    "&.Mui-selected": { color: "success.main" },
                   },
                 }}
               >

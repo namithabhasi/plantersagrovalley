@@ -1,6 +1,8 @@
 import { Pagination, Stack } from "@mui/material";
 
 const UserPagination = ({ page, totalPages, setPage }) => {
+  if (totalPages <= 1) return null;
+
   return (
     <Stack spacing={2} alignItems="center" sx={{ mt: 3 }}>
       <Pagination

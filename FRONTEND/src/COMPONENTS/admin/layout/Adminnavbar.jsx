@@ -31,6 +31,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import CategoryIcon from "@mui/icons-material/Category";
 import PeopleIcon from "@mui/icons-material/People";
+import MenuIcon from "@mui/icons-material/Menu";
 
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -39,7 +40,7 @@ import { toast } from "react-toastify";
 import { clearUser } from "../../../redux/auth/authSlice";
 import { setSearchQuery, clearSearchQuery } from "../../../redux/search/searchSlice";
 
-const AdminNavbar = () => {
+const AdminNavbar = ({ handleDrawerToggle }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -226,13 +227,24 @@ const AdminNavbar = () => {
       position="fixed"
       elevation={1}
       sx={{
-        width: `calc(100% - ${drawerWidth}px)`,
-        ml: `${drawerWidth}px`,
+        width: { xs: "100%", md: `calc(100% - ${drawerWidth}px)` },
+        left: { xs: 0, md: `${drawerWidth}px` },
+        right: 0,
         bgcolor: "#fff",
         color: "#333",
       }}
     >
       <Toolbar>
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="start"
+          onClick={handleDrawerToggle}
+          sx={{ mr: 2, display: { xs: "inline-flex", md: "none" } }}
+        >
+          <MenuIcon />
+        </IconButton>
+
         <Box
           ref={searchContainerRef}
           sx={{
@@ -241,7 +253,8 @@ const AdminNavbar = () => {
             bgcolor: "#f4f6f8",
             px: 2,
             borderRadius: 2,
-            width: 350,
+            width: { xs: 140, sm: 250, md: 350 },
+            mr: { xs: 1, sm: 0 },
           }}
         >
           <SearchIcon color="action" />
@@ -277,7 +290,7 @@ const AdminNavbar = () => {
           disableEnforceFocus
           PaperProps={{
             sx: {
-              width: 450,
+              width: { xs: "90vw", sm: 450 },
               maxHeight: 500,
               borderRadius: 3,
               boxShadow: "0 8px 30px rgba(0, 0, 0, 0.12)",
@@ -469,7 +482,7 @@ const AdminNavbar = () => {
           }}
           PaperProps={{
             sx: {
-              width: 360,
+              width: { xs: "90vw", sm: 360 },
               maxHeight: 480,
               borderRadius: 3,
               boxShadow: "0 8px 30px rgba(0, 0, 0, 0.12)",
@@ -486,7 +499,7 @@ const AdminNavbar = () => {
                 size="small"
                 onClick={handleMarkAllAsRead}
                 startIcon={<DoneAllIcon fontSize="small" />}
-                sx={{ textTransform: "none", color: "#2e7d32" }}
+                sx={{ textTransform: "none", color: "success.main" }}
               >
                 Mark all read
               </Button>
@@ -567,14 +580,14 @@ const AdminNavbar = () => {
         >
           <Avatar
             sx={{
-              bgcolor: "#2e7d32",
+              bgcolor: "success.main",
               mr: 1,
             }}
           >
             {user?.firstName ? user.firstName.charAt(0).toUpperCase() : "S"}
           </Avatar>
 
-          <Box>
+          <Box sx={{ display: { xs: "none", sm: "block" } }}>
             <Typography
               fontWeight="bold"
               fontSize={14}
