@@ -40,6 +40,7 @@ import {
 } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import axios from "../../api/axiosInstance";
+import UserPagination from "../../COMPONENTS/admin/users/UserPagination";
 
 const Categories = () => {
   const dispatch = useDispatch();
@@ -48,6 +49,7 @@ const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
 
   // Dialog states
   const [formOpen, setFormOpen] = useState(false);
@@ -88,6 +90,7 @@ const Categories = () => {
 
   useEffect(() => {
     setSearchQuery(globalSearchQuery);
+    setPage(1);
   }, [globalSearchQuery]);
 
   // Handle auto-slugification from category name
@@ -245,6 +248,14 @@ const Categories = () => {
     return name.includes(query) || description.includes(query);
   });
 
+  // Pagination calculations
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(filteredCategories.length / itemsPerPage);
+  const paginatedCategories = filteredCategories.slice(
+    (page - 1) * itemsPerPage,
+    page * itemsPerPage
+  );
+
   // Exclude current category and its descendants (to prevent circular hierarchies)
   // For simplicity, we just filter out the current category from the parent options.
   const parentCategoryOptions = categories.filter(
@@ -252,50 +263,39 @@ const Categories = () => {
   );
 
   return (
-    <Box sx={{ p: 3 }}>
-      {/* Header Section */}
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={4}
-      >
-        <Box>
-          <Typography variant="h4" fontWeight={800} sx={{ color: "#1b5e20", mb: 0.5 }}>
-            Category Management
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Manage your store's product categories and catalog structure
-          </Typography>
-        </Box>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={handleAddClick}
-          sx={{
-            bgcolor: "#2e7d32",
-            "&:hover": { bgcolor: "#1b5e20" },
-            textTransform: "none",
-            borderRadius: 2,
-            px: 3,
-            py: 1.2,
-            boxShadow: "0 4px 10px rgba(46, 125, 50, 0.15)",
-          }}
-        >
-          Add Category
-        </Button>
-      </Stack>
+    <Box >
+      {/* Header */}
+      <Box mb={5}>
+        <Typography variant="h4" fontWeight={800} sx={{ color: "success.main", mb: 0.5 }}>
+          Category Management
+        </Typography>
+        <Typography sx={{ mt: 1, mb:2  }} variant="body2" color="text.secondary">
+          Manage your store's product categories and catalog structure
+        </Typography>
+      </Box>
 
-      {/* Search & Filters */}
-      <Card sx={{ mb: 4, borderRadius: 3, boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
-        <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
+      {/* Search & Add Button */}
+      <Stack
+        direction={{ xs: "column", md: "row" }}
+        spacing={2}
+        justifyContent="space-between"
+        alignItems={{ xs: "stretch", sm: "flex-end", md: "center" }}
+        mb={4}
+        
+      >
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={2}
+          alignItems={{ xs: "stretch", sm: "center" }}
+          sx={{ width: { xs: "100%", md: "auto" } }}
+        >
           <TextField
-            fullWidth
             placeholder="Search categories by name or description..."
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
               dispatch(setSearchQueryRedux(e.target.value));
+              setPage(1);
             }}
             slotProps={{
               input: {
@@ -305,13 +305,33 @@ const Categories = () => {
             variant="outlined"
             size="small"
             sx={{
+              width: { xs: "100%", md: 350 },
               "& .MuiOutlinedInput-root": {
+                height: 40,
                 borderRadius: 2.5,
               },
             }}
           />
-        </CardContent>
-      </Card>
+        </Stack>
+
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={handleAddClick}
+          sx={{
+            height: 40,
+            bgcolor: "success.main",
+            "&:hover": { bgcolor: "primary.main" },
+            textTransform: "none",
+            borderRadius: 2.5,
+            px: 3,
+            whiteSpace: "nowrap",
+            boxShadow: "0 4px 10px rgba(46, 125, 50, 0.15)",
+          }}
+        >
+          Add Category
+        </Button>
+      </Stack>
 
       {/* Main Table */}
       {loading ? (
@@ -337,138 +357,151 @@ const Categories = () => {
           </Typography>
         </Paper>
       ) : (
-        <TableContainer
-          component={Paper}
-          sx={{
-            borderRadius: 3,
-            boxShadow: "0 4px 16px rgba(0,0,0,0.03)",
-            border: "1px solid #f0f0f0",
-            overflow: "hidden",
-          }}
-        >
-          <Table>
-            <TableHead sx={{ bgcolor: "#f8f9fa" }}>
-              <TableRow>
-                <TableCell sx={{ fontWeight: 600, py: 2 }}>Image</TableCell>
-                <TableCell sx={{ fontWeight: 600, py: 2 }}>Name</TableCell>
-                <TableCell sx={{ fontWeight: 600, py: 2 }}>Slug</TableCell>
-                <TableCell sx={{ fontWeight: 600, py: 2 }}>Description</TableCell>
-                <TableCell sx={{ fontWeight: 600, py: 2 }}>Parent Category</TableCell>
-                <TableCell sx={{ fontWeight: 600, py: 2 }}>Status</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 600, py: 2 }}>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredCategories.map((category) => (
-                <TableRow
-                  key={category._id}
-                  hover
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell>
-                    {category.image ? (
-                      <Box
-                        component="img"
-                        src={category.image}
-                        alt={category.name}
-                        sx={{
-                          width: 50,
-                          height: 50,
-                          borderRadius: 2,
-                          objectFit: "cover",
-                          border: "1px solid #e0e0e0",
-                        }}
-                      />
-                    ) : (
-                      <Box
-                        sx={{
-                          width: 50,
-                          height: 50,
-                          borderRadius: 2,
-                          bgcolor: "#f0f2f5",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          color: "text.disabled",
-                          fontSize: "0.75rem",
-                          border: "1px dashed #cccccc",
-                        }}
-                      >
-                        No Img
-                      </Box>
-                    )}
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>{category.name}</TableCell>
-                  <TableCell>
-                    <Chip
-                      label={category.slug}
-                      size="small"
-                      sx={{
-                        fontFamily: "monospace",
-                        bgcolor: "#f1f3f5",
-                        color: "#495057",
-                        borderRadius: 1,
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell sx={{ maxWidth: 200, color: "text.secondary" }}>
-                    <Typography variant="body2" noWrap title={category.description}>
-                      {category.description || "—"}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    {category.parentCategory?.name ? (
-                      <Chip
-                        label={category.parentCategory.name}
-                        size="small"
-                        color="success"
-                        variant="outlined"
-                        sx={{ borderRadius: 1 }}
-                      />
-                    ) : (
-                      <Typography variant="body2" color="text.disabled">
-                        —
-                      </Typography>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <Chip
-                      label={category.isActive ? "Active" : "Inactive"}
-                      color={category.isActive ? "success" : "default"}
-                      size="small"
-                      sx={{
-                        fontWeight: 500,
-                        px: 1,
-                        bgcolor: category.isActive ? "#e8f5e9" : "#f1f3f5",
-                        color: category.isActive ? "#2e7d32" : "#5f6368",
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell align="right">
-                    <Stack direction="row" spacing={1} justifyContent="flex-end">
-                      <IconButton
-                        color="primary"
-                        size="small"
-                        onClick={() => handleEditClick(category)}
-                        sx={{ bgcolor: "#e3f2fd", "&:hover": { bgcolor: "#bbdefb" } }}
-                      >
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        color="error"
-                        size="small"
-                        onClick={() => handleDeleteClick(category)}
-                        sx={{ bgcolor: "#ffebee", "&:hover": { bgcolor: "#ffcdd2" } }}
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Stack>
-                  </TableCell>
+        <>
+          <TableContainer
+            component={Paper}
+            elevation={2}
+            sx={{
+              borderRadius: 3,
+              mt: 2,
+              overflowX: "auto",
+            }}
+          >
+            <Table>
+              <TableHead sx={{ "& .MuiTableCell-head": { bgcolor: "#f5f5f5" } }}>
+                <TableRow>
+                  <TableCell><b>Image</b></TableCell>
+                  <TableCell><b>Name</b></TableCell>
+                  <TableCell><b>Slug</b></TableCell>
+                  <TableCell><b>Description</b></TableCell>
+                  <TableCell><b>Parent Category</b></TableCell>
+                  <TableCell><b>Status</b></TableCell>
+                  <TableCell align="right"><b>Actions</b></TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {paginatedCategories.map((category) => (
+                  <TableRow
+                    key={category._id}
+                    hover
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell>
+                      {category.image ? (
+                        <Box
+                          component="img"
+                          src={category.image}
+                          alt={category.name}
+                          sx={{
+                            width: 50,
+                            height: 50,
+                            borderRadius: 2,
+                            objectFit: "cover",
+                            border: "1px solid #e0e0e0",
+                          }}
+                        />
+                      ) : (
+                        <Box
+                          sx={{
+                            width: 50,
+                            height: 50,
+                            borderRadius: 2,
+                            bgcolor: "#f0f2f5",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "text.disabled",
+                            fontSize: "0.75rem",
+                            border: "1px dashed #cccccc",
+                          }}
+                        >
+                          No Img
+                        </Box>
+                      )}
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>{category.name}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={category.slug}
+                        size="small"
+                        sx={{
+                          fontFamily: "monospace",
+                          bgcolor: "#f1f3f5",
+                          color: "#495057",
+                          borderRadius: 1,
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell sx={{ maxWidth: 200, color: "text.secondary" }}>
+                      <Typography variant="body2" noWrap title={category.description}>
+                        {category.description || "—"}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      {category.parentCategory?.name ? (
+                        <Chip
+                          label={category.parentCategory.name}
+                          size="small"
+                          color="success"
+                          variant="outlined"
+                          sx={{ borderRadius: 1 }}
+                        />
+                      ) : (
+                        <Typography variant="body2" color="text.disabled">
+                          —
+                        </Typography>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={category.isActive ? "Active" : "Inactive"}
+                        color={category.isActive ? "success" : "default"}
+                        size="small"
+                        sx={{
+                          fontWeight: 500,
+                          px: 1,
+                          bgcolor: category.isActive ? "success.main" : "grey.200",
+                          color: category.isActive ? "#ffffff" : "text.secondary",
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell align="right">
+                      <Stack direction="row" spacing={1} justifyContent="flex-end">
+                        <IconButton
+                          color="primary"
+                          size="small"
+                          onClick={() => handleEditClick(category)}
+                          sx={{ bgcolor: "#e3f2fd", "&:hover": { bgcolor: "#bbdefb" } }}
+                        >
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton
+                          color="error"
+                          size="small"
+                          onClick={() => handleDeleteClick(category)}
+                          sx={{ bgcolor: "#ffebee", "&:hover": { bgcolor: "#ffcdd2" } }}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <Box mt={3}>
+              <UserPagination
+                page={page}
+                totalPages={totalPages}
+                setPage={setPage}
+              />
+            </Box>
+          )}
+        </>
       )}
 
       {/* Add / Edit Category Dialog */}

@@ -9,20 +9,21 @@ const UserSearch = ({ search, setSearch }) => {
         display: "flex",
         alignItems: "center",
         width: { xs: "100%", md: 350 },
+        height: 40,
+        boxSizing: "border-box",
         px: 2,
-        py: 0.5,
         border: "1px solid #ddd",
         borderRadius: 2,
       }}
     >
       <InputBase
-        sx={{ flex: 1 }}
+        sx={{ flex: 1, height: "100%" }}
         placeholder="Search by name, email or phone..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
 
-      <IconButton>
+      <IconButton sx={{ p: 0.5 }}>
         <SearchIcon color="action" />
       </IconButton>
     </Paper>

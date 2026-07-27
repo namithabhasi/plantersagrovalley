@@ -53,13 +53,13 @@ const OrderStatusColors = {
   Processing: { bg: "#e1f5fe", color: "#01579b" },
   Packed: { bg: "#e0f2f1", color: "#00695c" },
   Shipped: { bg: "#f3e5f5", color: "#4a148c" },
-  Delivered: { bg: "#e8f5e9", color: "#1b5e20" },
+  Delivered: { bg: "success.light", color: "success.main" },
   Cancelled: { bg: "#ffebee", color: "#b71c1c" },
 };
 
 const PaymentStatusColors = {
   Pending: { bg: "#fff3e0", color: "#e65100" },
-  Paid: { bg: "#e8f5e9", color: "#1b5e20" },
+  Paid: { bg: "success.light", color: "success.main" },
   Failed: { bg: "#ffebee", color: "#b71c1c" },
   Refunded: { bg: "#e0f7fa", color: "#006064" },
 };
@@ -233,7 +233,7 @@ const Orders = () => {
       {/* Header */}
       <Stack direction="row" justifyContent="space-between" alignItems="center" mb={4}>
         <Box>
-          <Typography variant="h4" fontWeight={800} sx={{ color: "#1b5e20", mb: 0.5 }}>
+          <Typography variant="h4" fontWeight={800} sx={{ color: "success.main", mb: 0.5 }}>
             Orders Registry
           </Typography>
           <Typography variant="body2" color="text.secondary">
@@ -350,7 +350,7 @@ const Orders = () => {
               borderRadius: 3,
               boxShadow: "0 4px 16px rgba(0,0,0,0.03)",
               border: "1px solid #f0f0f0",
-              overflow: "hidden",
+              overflowX: "auto",
             }}
           >
             <Table>
@@ -375,7 +375,7 @@ const Orders = () => {
                         fontWeight={700}
                         sx={{
                           fontFamily: "monospace",
-                          color: "#1b5e20",
+                          color: "primary.main",
                           cursor: "pointer",
                           "&:hover": { textDecoration: "underline" },
                         }}

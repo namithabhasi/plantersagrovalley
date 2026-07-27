@@ -3,12 +3,15 @@ import {
   Box,
   Collapse,
   Divider,
+  Drawer,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
   Toolbar,
   Typography,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 
 import {
@@ -33,7 +36,9 @@ import { useSelector } from "react-redux";
 
 const drawerWidth = 260;
 
-const Sidebar = () => {
+const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const location = useLocation();
   const { user } = useSelector((state) => state.auth);
   const role = user?.role;
@@ -41,28 +46,29 @@ const Sidebar = () => {
   const [openUsers, setOpenUsers] = useState(false);
   const [openCatalog, setOpenCatalog] = useState(false);
 
+  const handleItemClick = () => {
+    if (isMobile && handleDrawerToggle) {
+      handleDrawerToggle();
+    }
+  };
+
   const activeStyle = {
-    bgcolor: "#E8F5E9",
-    color: "#2E7D32",
+    bgcolor: "success.main",
+    color: "#ffffff",
     "& .MuiListItemIcon-root": {
-      color: "#2E7D32",
+      color: "#ffffff",
+    },
+    "& .MuiListItemText-primary": {
+      color: "#ffffff",
+      fontWeight: "bold",
+    },
+    "&:hover": {
+      bgcolor: "success.dark",
     },
   };
 
-  return (
-    <Box
-      sx={{
-        width: drawerWidth,
-        flexShrink: 0,
-        position: "fixed",
-        left: 0,
-        top: 0,
-        height: "100vh",
-        bgcolor: "#fff",
-        borderRight: "1px solid #e0e0e0",
-        overflowY: "auto",
-      }}
-    >
+  const drawerContent = (
+    <Box sx={{ height: "100%", overflowY: "auto" }}>
       <Toolbar>
         <Typography
           variant="h6"
@@ -87,6 +93,7 @@ const Sidebar = () => {
               ? activeStyle
               : {}
           }
+          onClick={handleItemClick}
         >
           <ListItemIcon>
             <Dashboard />
@@ -129,6 +136,7 @@ const Sidebar = () => {
                   }}
                   component={Link}
                   to="/dashboard/users"
+                  onClick={handleItemClick}
                 >
                   <ListItemIcon>
                     <People />
@@ -144,6 +152,7 @@ const Sidebar = () => {
                   }}
                   component={Link}
                   to="/dashboard/users/super-admins"
+                  onClick={handleItemClick}
                 >
                   <ListItemIcon>
                     <AdminPanelSettings />
@@ -159,6 +168,7 @@ const Sidebar = () => {
                   }}
                   component={Link}
                   to="/dashboard/users/admins"
+                  onClick={handleItemClick}
                 >
                   <ListItemIcon>
                     <ManageAccounts />
@@ -174,6 +184,7 @@ const Sidebar = () => {
                   }}
                   component={Link}
                   to="/dashboard/users/shipping-managers"
+                  onClick={handleItemClick}
                 >
                   <ListItemIcon>
                     <LocalShipping />
@@ -189,6 +200,7 @@ const Sidebar = () => {
                   }}
                   component={Link}
                   to="/dashboard/users/customers"
+                  onClick={handleItemClick}
                 >
                   <ListItemIcon>
                     <Person />
@@ -236,6 +248,7 @@ const Sidebar = () => {
                   }}
                   component={Link}
                   to="/dashboard/categories"
+                  onClick={handleItemClick}
                 >
                   <ListItemIcon>
                     <Category />
@@ -251,6 +264,7 @@ const Sidebar = () => {
                   }}
                   component={Link}
                   to="/dashboard/products"
+                  onClick={handleItemClick}
                 >
                   <ListItemIcon>
                     <Inventory2 />
@@ -274,6 +288,7 @@ const Sidebar = () => {
               ? activeStyle
               : {}
           }
+          onClick={handleItemClick}
         >
           <ListItemIcon>
             <ShoppingCart />
@@ -293,6 +308,7 @@ const Sidebar = () => {
                 ? activeStyle
                 : {}
             }
+            onClick={handleItemClick}
           >
             <ListItemIcon>
               <LocalOffer />
@@ -313,6 +329,7 @@ const Sidebar = () => {
                 ? activeStyle
                 : {}
             }
+            onClick={handleItemClick}
           >
             <ListItemIcon>
               <BarChart />
@@ -333,6 +350,7 @@ const Sidebar = () => {
                 ? activeStyle
                 : {}
             }
+            onClick={handleItemClick}
           >
             <ListItemIcon>
               <Settings />
@@ -344,6 +362,46 @@ const Sidebar = () => {
 
       </List>
     </Box>
+  );
+
+  return (
+    <>
+      {/* Temporary Drawer for mobile/tablet (xs to md) */}
+      <Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{
+          keepMounted: true, // Better open performance on mobile.
+        }}
+        sx={{
+          display: { xs: "block", md: "none" },
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: drawerWidth,
+            borderRight: "1px solid #e0e0e0",
+          },
+        }}
+      >
+        {drawerContent}
+      </Drawer>
+
+      {/* Permanent Drawer for desktop (md and up) */}
+      <Drawer
+        variant="permanent"
+        sx={{
+          display: { xs: "none", md: "block" },
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: drawerWidth,
+            borderRight: "1px solid #e0e0e0",
+          },
+        }}
+        open
+      >
+        {drawerContent}
+      </Drawer>
+    </>
   );
 };
 

@@ -67,6 +67,12 @@ const AllUsers = ({ preselectedRole }) => {
   }, [globalSearchQuery]);
 
   useEffect(() => {
+    setRole(preselectedRole || "all");
+    setPage(1);
+    setStatus("all");
+  }, [preselectedRole]);
+
+  useEffect(() => {
     getUsers();
   }, [page, search, role, status]);
 
@@ -87,64 +93,79 @@ const AllUsers = ({ preselectedRole }) => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box >
       {/* Header */}
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={3}
-      >
+      <Box >
         <Typography variant="h4" fontWeight={700}>
           {getTitle()}
         </Typography>
+      </Box>
 
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          component={Link}
-          to="/dashboard/users/add"
-        >
-          Add User
-        </Button>
-      </Stack>
-
-      {/* Search & Filters */}
+      {/* Search, Filters & Add Button */}
       <Stack
         direction={{ xs: "column", md: "row" }}
         spacing={2}
         justifyContent="space-between"
-        mb={3}
+        alignItems={{ xs: "stretch", sm: "flex-end", md: "center" }}
+        mb={4}
       >
-        <UserSearch
-          search={search}
-          setSearch={handleSearchChange}
-        />
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={2}
+          alignItems={{ xs: "stretch", sm: "center" }}
+          sx={{ width: { xs: "100%", md: "auto" } }}
+        >
+          <UserSearch
+            search={search}
+            setSearch={handleSearchChange}
+          />
 
-        <UserFilters
-          role={role}
-          setRole={handleRoleChange}
-          status={status}
-          setStatus={handleStatusChange}
-          hideRoleFilter={!!preselectedRole}
-        />
+          <UserFilters
+            role={role}
+            setRole={handleRoleChange}
+            status={status}
+            setStatus={handleStatusChange}
+            hideRoleFilter={!!preselectedRole}
+          />
+        </Stack>
+
+        {preselectedRole !== "customer" && (
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            component={Link}
+            to="/dashboard/users/add"
+            sx={{
+              height: 40,
+              px: 3,
+              whiteSpace: "nowrap",
+            }}
+          >
+            Add User
+          </Button>
+        )}
       </Stack>
 
       {/* Users Table */}
+      <Box sx={{ mt: 1, pt: 1 }}>
       <UserTable
         users={users}
         loading={loading}
         onRefresh={getUsers}
+        
       />
+      </Box>
 
       {/* Pagination */}
-      <Box mt={3}>
-        <UserPagination
-          page={page}
-          totalPages={totalPages}
-          setPage={setPage}
-        />
-      </Box>
+      {totalPages > 1 && (
+        <Box mt={3}>
+          <UserPagination
+            page={page}
+            totalPages={totalPages}
+            setPage={setPage}
+          />
+        </Box>
+      )}
     </Box>
   );
 };

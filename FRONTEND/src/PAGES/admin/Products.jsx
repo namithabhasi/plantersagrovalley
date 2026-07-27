@@ -4,8 +4,6 @@ import { setSearchQuery as setSearchQueryRedux } from "../../redux/search/search
 import {
   Box,
   Button,
-  Card,
-  CardContent,
   Chip,
   Dialog,
   DialogActions,
@@ -30,9 +28,9 @@ import {
   Switch,
   FormControlLabel,
   Grid,
-  Pagination,
   Tooltip,
 } from "@mui/material";
+import UserPagination from "../../COMPONENTS/admin/users/UserPagination";
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -208,13 +206,16 @@ const Products = () => {
 
   const handleAddClick = () => {
     setIsEditMode(false);
+    const defaultCat = categories.find(
+      (cat) => cat.name && cat.name.toLowerCase() === "indoor plants"
+    );
     setFormData({
       name: "",
       slug: "",
       sku: "",
       description: "",
       shortDescription: "",
-      category: "",
+      category: defaultCat ? defaultCat._id : "",
       price: "",
       salePrice: "",
       stock: "",
@@ -340,93 +341,106 @@ const Products = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box>
       {/* Header Section */}
+      {/* Header */}
+      <Box mb={5}>
+        <Typography variant="h4" fontWeight={800} sx={{ color: "success.main", mb: 0.5 }}>
+          Product Catalog
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 2 }}>
+          Manage, update, and search items in your inventory catalog
+        </Typography>
+      </Box>
+
+      {/* Search, Filters & Add Button */}
       <Stack
-        direction="row"
+        direction={{ xs: "column", md: "row" }}
+        spacing={2}
         justifyContent="space-between"
-        alignItems="center"
+        alignItems={{ xs: "stretch", sm: "flex-end", md: "center" }}
         mb={4}
       >
-        <Box>
-          <Typography variant="h4" fontWeight={800} sx={{ color: "#1b5e20", mb: 0.5 }}>
-            Product Catalog
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Manage, update, and search items in your inventory catalog
-          </Typography>
-        </Box>
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={2}
+          alignItems={{ xs: "stretch", sm: "center" }}
+          sx={{ width: { xs: "100%", md: "auto" } }}
+        >
+          <TextField
+            placeholder="Search products by name, brand, SKU or tags..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              dispatch(setSearchQueryRedux(e.target.value));
+              setPage(1);
+            }}
+            slotProps={{
+              input: {
+                startAdornment: <SearchIcon sx={{ color: "text.secondary", mr: 1 }} />,
+              },
+            }}
+            variant="outlined"
+            size="small"
+            sx={{
+              width: { xs: "100%", md: 350 },
+              "& .MuiOutlinedInput-root": {
+                height: 40,
+                borderRadius: 2.5,
+              },
+            }}
+          />
+
+          <FormControl size="small" sx={{ minWidth: 200 }}>
+            <InputLabel id="category-filter-label">Filter by Category</InputLabel>
+            <Select
+              labelId="category-filter-label"
+              value={selectedCategoryFilter}
+              label="Filter by Category"
+              onChange={(e) => {
+                setSelectedCategoryFilter(e.target.value);
+                setPage(1);
+              }}
+              sx={{
+                height: 40,
+                borderRadius: 2.5,
+                "& .MuiSelect-select": {
+                  height: 40,
+                  display: "flex",
+                  alignItems: "center",
+                  boxSizing: "border-box",
+                  py: 0,
+                },
+              }}
+            >
+              <MenuItem value="all">All Categories</MenuItem>
+              {categories.map((cat) => (
+                <MenuItem key={cat._id} value={cat._id}>
+                  {cat.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Stack>
+
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={handleAddClick}
           sx={{
-            bgcolor: "#2e7d32",
-            "&:hover": { bgcolor: "#1b5e20" },
+            height: 40,
+            bgcolor: "success.main",
+            "&:hover": { bgcolor: "primary.main" },
             textTransform: "none",
-            borderRadius: 2,
+            borderRadius: 2.5,
             px: 3,
-            py: 1.2,
+            whiteSpace: "nowrap",
             boxShadow: "0 4px 10px rgba(46, 125, 50, 0.15)",
           }}
         >
           Add Product
         </Button>
       </Stack>
-
-      {/* Filters Card */}
-      <Card sx={{ mb: 4, borderRadius: 3, boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
-        <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} md={8}>
-              <TextField
-                fullWidth
-                placeholder="Search products by name, brand, SKU or tags..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  dispatch(setSearchQueryRedux(e.target.value));
-                  setPage(1);
-                }}
-                slotProps={{
-                  input: {
-                    startAdornment: <SearchIcon sx={{ color: "text.secondary", mr: 1 }} />,
-                  },
-                }}
-                variant="outlined"
-                size="small"
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: 2.5,
-                  },
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <FormControl fullWidth size="small">
-                <InputLabel id="category-filter-label">Filter by Category</InputLabel>
-                <Select
-                  labelId="category-filter-label"
-                  value={selectedCategoryFilter}
-                  label="Filter by Category"
-                  onChange={(e) => {
-                    setSelectedCategoryFilter(e.target.value);
-                    setPage(1);
-                  }}
-                  sx={{ borderRadius: 2.5 }}
-                >
-                  <MenuItem value="all">All Categories</MenuItem>
-                  {categories.map((cat) => (
-                    <MenuItem key={cat._id} value={cat._id}>
-                      {cat.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
 
       {/* Main Table */}
       {loading ? (
@@ -457,25 +471,25 @@ const Products = () => {
         <>
           <TableContainer
             component={Paper}
+            elevation={2}
             sx={{
               borderRadius: 3,
-              boxShadow: "0 4px 16px rgba(0,0,0,0.03)",
-              border: "1px solid #f0f0f0",
-              overflow: "hidden",
+              mt: 2,
+              overflowX: "auto",
             }}
           >
             <Table>
-              <TableHead sx={{ bgcolor: "#f8f9fa" }}>
+              <TableHead sx={{ "& .MuiTableCell-head": { bgcolor: "#f5f5f5" } }}>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Image</TableCell>
-                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Product details</TableCell>
-                  <TableCell sx={{ fontWeight: 600, py: 2 }}>SKU</TableCell>
-                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Category</TableCell>
-                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Price</TableCell>
-                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Stock</TableCell>
-                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Featured</TableCell>
-                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Status</TableCell>
-                  <TableCell align="right" sx={{ fontWeight: 600, py: 2 }}>Actions</TableCell>
+                  <TableCell><b>Image</b></TableCell>
+                  <TableCell><b>Product details</b></TableCell>
+                  <TableCell><b>SKU</b></TableCell>
+                  <TableCell><b>Category</b></TableCell>
+                  <TableCell><b>Price</b></TableCell>
+                  <TableCell><b>Stock</b></TableCell>
+                  <TableCell><b>Featured</b></TableCell>
+                  <TableCell><b>Status</b></TableCell>
+                  <TableCell align="right"><b>Actions</b></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -559,15 +573,15 @@ const Products = () => {
                       {product.salePrice > 0 ? (
                         <Stack spacing={0.2}>
                           <Typography variant="body2" sx={{ textDecoration: "line-through", color: "text.disabled" }}>
-                            ${product.price}
+                            ₹{product.price}
                           </Typography>
                           <Typography variant="body2" fontWeight={600} color="error.main">
-                            ${product.salePrice}
+                            ₹{product.salePrice}
                           </Typography>
                         </Stack>
                       ) : (
                         <Typography variant="body2" fontWeight={600}>
-                          ${product.price}
+                          ₹{product.price}
                         </Typography>
                       )}
                     </TableCell>
@@ -603,8 +617,8 @@ const Products = () => {
                         sx={{
                           fontWeight: 500,
                           px: 1,
-                          bgcolor: product.isActive !== false ? "#e8f5e9" : "#f1f3f5",
-                          color: product.isActive !== false ? "#2e7d32" : "#5f6368",
+                          bgcolor: product.isActive !== false ? "success.main" : "grey.200",
+                          color: product.isActive !== false ? "#ffffff" : "text.secondary",
                         }}
                       />
                     </TableCell>
@@ -635,14 +649,15 @@ const Products = () => {
           </TableContainer>
 
           {/* Pagination */}
-          <Stack spacing={2} alignItems="center" sx={{ mt: 4 }}>
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={(e, value) => setPage(value)}
-              color="success"
-            />
-          </Stack>
+          {totalPages > 1 && (
+            <Box mt={3}>
+              <UserPagination
+                page={page}
+                totalPages={totalPages}
+                setPage={setPage}
+              />
+            </Box>
+          )}
         </>
       )}
 
@@ -663,283 +678,282 @@ const Products = () => {
         </DialogTitle>
         <Box component="form" onSubmit={handleSubmit}>
           <DialogContent sx={{ px: 3, py: 1 }}>
-            <Grid container spacing={2.5}>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="Product Name"
-                  value={formData.name}
-                  onChange={handleNameChange}
-                  required
-                  disabled={submitting}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="Slug"
-                  value={formData.slug}
-                  onChange={handleInputChange}
-                  name="slug"
-                  required
-                  disabled={submitting}
-                  helperText="URL identifier (e.g. delicious-apple)"
-                />
-              </Grid>
-
-              <Grid item xs={12} md={4}>
-                <TextField
-                  fullWidth
-                  label="SKU Code"
-                  value={formData.sku}
-                  onChange={handleInputChange}
-                  name="sku"
-                  required
-                  disabled={submitting}
-                  helperText="Unique Inventory ID"
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <FormControl fullWidth required disabled={submitting}>
-                  <InputLabel id="product-category-label">Category</InputLabel>
-                  <Select
-                    labelId="product-category-label"
-                    value={formData.category}
-                    label="Category"
-                    onChange={handleInputChange}
-                    name="category"
-                  >
-                    {categories.map((cat) => (
-                      <MenuItem key={cat._id} value={cat._id}>
-                        {cat.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <TextField
-                  fullWidth
-                  label="Brand Name"
-                  value={formData.brand}
-                  onChange={handleInputChange}
-                  name="brand"
-                  disabled={submitting}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={4}>
-                <TextField
-                  fullWidth
-                  type="number"
-                  label="Regular Price ($)"
-                  value={formData.price}
-                  onChange={handleInputChange}
-                  name="price"
-                  required
-                  disabled={submitting}
-                  slotProps={{ htmlInput: { min: 0, step: "0.01" } }}
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <TextField
-                  fullWidth
-                  type="number"
-                  label="Discount/Sale Price ($)"
-                  value={formData.salePrice}
-                  onChange={handleInputChange}
-                  name="salePrice"
-                  disabled={submitting}
-                  helperText="Optional"
-                  slotProps={{ htmlInput: { min: 0, step: "0.01" } }}
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <TextField
-                  fullWidth
-                  type="number"
-                  label="Stock Inventory"
-                  value={formData.stock}
-                  onChange={handleInputChange}
-                  name="stock"
-                  required
-                  disabled={submitting}
-                  slotProps={{ htmlInput: { min: 0 } }}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Tags (Comma separated)"
-                  value={formData.tags}
-                  onChange={handleInputChange}
-                  name="tags"
-                  disabled={submitting}
-                  helperText="e.g. fertilizer, green, organic"
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Short Description"
-                  value={formData.shortDescription}
-                  onChange={handleInputChange}
-                  name="shortDescription"
-                  disabled={submitting}
-                  multiline
-                  rows={2}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Detailed Description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  name="description"
-                  required
-                  disabled={submitting}
-                  multiline
-                  rows={4}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={formData.isActive}
-                      onChange={handleSwitchChange}
-                      name="isActive"
-                      color="success"
-                    />
-                  }
-                  label="Product Status (Active / Inactive)"
-                  disabled={submitting}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={formData.isFeatured}
-                      onChange={handleSwitchChange}
-                      name="isFeatured"
-                      color="warning"
-                    />
-                  }
-                  label="Feature Product on Home Page"
-                  disabled={submitting}
-                />
-              </Grid>
-
-              {/* Image Previews / Upload section */}
-              <Grid item xs={12}>
-                <Typography variant="subtitle2" color="text.secondary" mb={1} sx={{ fontWeight: 600 }}>
-                  Product Images (Maximum 5)
-                </Typography>
-                
-                {/* Existing Images (Edit mode only) */}
-                {isEditMode && existingImages.length > 0 && imagePreviews.length === 0 && (
-                  <Box sx={{ mb: 2 }}>
-                    <Typography variant="caption" color="text.secondary" display="block" mb={1}>
-                      Existing Images (will be replaced if new images are uploaded):
-                    </Typography>
-                    <Stack direction="row" spacing={1.5} flexWrap="wrap">
-                      {existingImages.map((img, idx) => (
-                        <Box
-                          key={img.public_id || idx}
-                          component="img"
-                          src={img.url}
-                          alt="product"
-                          sx={{
-                            width: 65,
-                            height: 65,
-                            borderRadius: 2,
-                            objectFit: "cover",
-                            border: "1px solid #e0e0e0",
-                          }}
-                        />
-                      ))}
-                    </Stack>
-                  </Box>
-                )}
-
-                {/* Uploaded / New Image Previews */}
-                <Stack direction="row" spacing={1.5} flexWrap="wrap" alignItems="center">
-                  {imagePreviews.map((preview, index) => (
-                    <Box key={index} sx={{ position: "relative", width: 85, height: 85 }}>
-                      <Box
-                        component="img"
-                        src={preview}
-                        alt="Preview"
-                        sx={{
-                          width: "100%",
-                          height: "100%",
-                          borderRadius: 2,
-                          objectFit: "cover",
-                          border: "1px solid #e0e0e0",
-                        }}
-                      />
-                      <IconButton
-                        size="small"
-                        onClick={() => handleRemovePreview(index)}
-                        sx={{
-                          position: "absolute",
-                          top: -8,
-                          right: -8,
-                          bgcolor: "#ef5350",
-                          color: "white",
-                          p: 0.2,
-                          "&:hover": { bgcolor: "#d32f2f" },
-                        }}
-                        disabled={submitting}
-                      >
-                        <ClearIcon sx={{ fontSize: 14 }} />
-                      </IconButton>
-                    </Box>
-                  ))}
-
-                  {imagePreviews.length < 5 && (
-                    <Button
-                      component="label"
-                      variant="outlined"
-                      startIcon={<CloudUploadIcon />}
-                      disabled={submitting}
-                      sx={{
-                        height: 85,
-                        width: 140,
-                        borderStyle: "dashed",
-                        borderColor: "rgba(0, 0, 0, 0.23)",
-                        color: "text.secondary",
-                        textTransform: "none",
-                        borderRadius: 2,
-                        flexDirection: "column",
-                        gap: 0.5,
-                        "& .MuiButton-icon": { m: 0 },
-                      }}
-                    >
-                      Upload File
-                      <input
-                        type="file"
-                        hidden
-                        multiple
-                        accept="image/*"
-                        onChange={handleFileChange}
-                      />
-                    </Button>
-                  )}
+            <Grid container spacing={4}>
+              {/* Left Column: Product Details */}
+              <Grid item xs={12} md={7}>
+                <Stack spacing={2.5}>
+                  <TextField
+                    fullWidth
+                    label="Product Name"
+                    value={formData.name}
+                    onChange={handleNameChange}
+                    required
+                    disabled={submitting}
+                  />
                   
-                  <Box sx={{ ml: 2 }}>
-                    <Typography variant="caption" color="text.secondary" display="block">
-                      Supports JPG, JPEG, PNG, WEBP.
+                  <TextField
+                    fullWidth
+                    label="Slug"
+                    value={formData.slug}
+                    onChange={handleInputChange}
+                    name="slug"
+                    required
+                    disabled={submitting}
+                    helperText="URL identifier (e.g. delicious-apple)"
+                  />
+
+                  <TextField
+                    fullWidth
+                    label="Short Description"
+                    value={formData.shortDescription}
+                    onChange={handleInputChange}
+                    name="shortDescription"
+                    disabled={submitting}
+                    multiline
+                    rows={3}
+                  />
+
+                  <TextField
+                    fullWidth
+                    label="Detailed Description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    name="description"
+                    required
+                    disabled={submitting}
+                    multiline
+                    rows={6}
+                  />
+                </Stack>
+              </Grid>
+
+              {/* Right Column: Inventory, Pricing & Media */}
+              <Grid item xs={12} md={5}>
+                <Stack spacing={2.5}>
+                  {/* Category & Brand */}
+                  <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                    <FormControl fullWidth required disabled={submitting}>
+                      <InputLabel id="product-category-label">Category</InputLabel>
+                      <Select
+                        labelId="product-category-label"
+                        value={formData.category}
+                        label="Category"
+                        onChange={handleInputChange}
+                        name="category"
+                      >
+                        {categories.map((cat) => (
+                          <MenuItem key={cat._id} value={cat._id}>
+                            {cat.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <TextField
+                      fullWidth
+                      label="Brand Name"
+                      value={formData.brand}
+                      onChange={handleInputChange}
+                      name="brand"
+                      disabled={submitting}
+                    />
+                  </Stack>
+
+                  {/* SKU & Stock */}
+                  <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                    <TextField
+                      fullWidth
+                      label="SKU Code"
+                      value={formData.sku}
+                      onChange={handleInputChange}
+                      name="sku"
+                      required
+                      disabled={submitting}
+                      helperText="Unique Inventory ID"
+                    />
+                    <TextField
+                      fullWidth
+                      type="number"
+                      label="Stock Inventory"
+                      value={formData.stock}
+                      onChange={handleInputChange}
+                      name="stock"
+                      required
+                      disabled={submitting}
+                      slotProps={{ htmlInput: { min: 0 } }}
+                    />
+                  </Stack>
+
+                  {/* Pricing */}
+                  <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                    <TextField
+                      fullWidth
+                      type="number"
+                      label="Regular Price (₹)"
+                      value={formData.price}
+                      onChange={handleInputChange}
+                      name="price"
+                      required
+                      disabled={submitting}
+                      slotProps={{ htmlInput: { min: 0, step: "0.01" } }}
+                    />
+                    <TextField
+                      fullWidth
+                      type="number"
+                      label="Discount Price (₹)"
+                      value={formData.salePrice}
+                      onChange={handleInputChange}
+                      name="salePrice"
+                      disabled={submitting}
+                      helperText="Optional"
+                      slotProps={{ htmlInput: { min: 0, step: "0.01" } }}
+                    />
+                  </Stack>
+
+                  {/* Tags */}
+                  <TextField
+                    fullWidth
+                    label="Tags (Comma separated)"
+                    value={formData.tags}
+                    onChange={handleInputChange}
+                    name="tags"
+                    disabled={submitting}
+                    helperText="e.g. fertilizer, green, organic"
+                  />
+
+                  {/* Switches */}
+                  <Stack direction="row" spacing={3} flexWrap="wrap">
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={formData.isActive}
+                          onChange={handleSwitchChange}
+                          name="isActive"
+                          color="success"
+                        />
+                      }
+                      label="Active"
+                      disabled={submitting}
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={formData.isFeatured}
+                          onChange={handleSwitchChange}
+                          name="isFeatured"
+                          color="warning"
+                        />
+                      }
+                      label="Featured Product"
+                      disabled={submitting}
+                    />
+                  </Stack>
+
+                  {/* Product Images */}
+                  <Box>
+                    <Typography variant="subtitle2" color="text.secondary" mb={1.5} sx={{ fontWeight: 600 }}>
+                      Product Images (Maximum 5)
                     </Typography>
-                    <Typography variant="caption" color="text.secondary" display="block">
-                      Max size: 5MB per file.
-                    </Typography>
+
+                    {/* Existing Images (Edit mode only) */}
+                    {isEditMode && existingImages.length > 0 && imagePreviews.length === 0 && (
+                      <Box sx={{ mb: 2 }}>
+                        <Typography variant="caption" color="text.secondary" display="block" mb={1}>
+                          Existing Images (will be replaced if new images are uploaded):
+                        </Typography>
+                        <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
+                          {existingImages.map((img, idx) => (
+                            <Box
+                              key={img.public_id || idx}
+                              component="img"
+                              src={img.url}
+                              alt="product"
+                              sx={{
+                                width: 55,
+                                height: 55,
+                                borderRadius: 1.5,
+                                objectFit: "cover",
+                                border: "1px solid #e0e0e0",
+                              }}
+                            />
+                          ))}
+                        </Stack>
+                      </Box>
+                    )}
+
+                    {/* Uploaded / New Image Previews */}
+                    <Stack direction="row" spacing={1} flexWrap="wrap" gap={1} alignItems="center">
+                      {imagePreviews.map((preview, index) => (
+                        <Box key={index} sx={{ position: "relative", width: 65, height: 65 }}>
+                          <Box
+                            component="img"
+                            src={preview}
+                            alt="Preview"
+                            sx={{
+                              width: "100%",
+                              height: "100%",
+                              borderRadius: 1.5,
+                              objectFit: "cover",
+                              border: "1px solid #e0e0e0",
+                            }}
+                          />
+                          <IconButton
+                            size="small"
+                            onClick={() => handleRemovePreview(index)}
+                            sx={{
+                              position: "absolute",
+                              top: -6,
+                              right: -6,
+                              bgcolor: "#ef5350",
+                              color: "white",
+                              p: 0.1,
+                              "&:hover": { bgcolor: "#d32f2f" },
+                              "& svg": { fontSize: 12 }
+                            }}
+                            disabled={submitting}
+                          >
+                            <ClearIcon />
+                          </IconButton>
+                        </Box>
+                      ))}
+
+                      {imagePreviews.length < 5 && (
+                        <Button
+                          component="label"
+                          variant="outlined"
+                          startIcon={<CloudUploadIcon />}
+                          disabled={submitting}
+                          sx={{
+                            height: 65,
+                            width: 110,
+                            borderStyle: "dashed",
+                            borderColor: "rgba(0, 0, 0, 0.23)",
+                            color: "text.secondary",
+                            textTransform: "none",
+                            borderRadius: 1.5,
+                            fontSize: "0.75rem",
+                            flexDirection: "column",
+                            gap: 0.2,
+                            p: 0.5,
+                            "& .MuiButton-icon": { m: 0 },
+                          }}
+                        >
+                          Upload File
+                          <input
+                            type="file"
+                            hidden
+                            multiple
+                            accept="image/*"
+                            onChange={handleFileChange}
+                          />
+                        </Button>
+                      )}
+                    </Stack>
+
+                    <Box sx={{ mt: 1 }}>
+                      <Typography variant="caption" color="text.secondary" display="block" sx={{ fontSize: "0.7rem", lineHeight: 1.2 }}>
+                        Supports JPG, JPEG, PNG, WEBP. Max size: 5MB per file.
+                      </Typography>
+                    </Box>
                   </Box>
                 </Stack>
               </Grid>

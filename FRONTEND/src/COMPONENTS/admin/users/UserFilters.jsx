@@ -22,12 +22,24 @@ const UserFilters = ({
       {/* Role Filter */}
       {!hideRoleFilter && (
         <FormControl size="small" sx={{ minWidth: 200 }}>
-          <InputLabel>Role</InputLabel>
+          <InputLabel id="role-filter-label">Role</InputLabel>
 
           <Select
+            labelId="role-filter-label"
             value={role}
             label="Role"
             onChange={(e) => setRole(e.target.value)}
+            sx={{
+              height: 40,
+              boxSizing: "border-box",
+              "& .MuiSelect-select": {
+                height: 40,
+                display: "flex",
+                alignItems: "center",
+                boxSizing: "border-box",
+                py: 0,
+              },
+            }}
           >
             <MenuItem value="all">All Roles</MenuItem>
             <MenuItem value="super-admin">Super Admin</MenuItem>
@@ -42,12 +54,24 @@ const UserFilters = ({
 
       {/* Status Filter */}
       <FormControl size="small" sx={{ minWidth: 180 }}>
-        <InputLabel>Status</InputLabel>
+        <InputLabel id="status-filter-label">Status</InputLabel>
 
         <Select
+          labelId="status-filter-label"
           value={status}
           label="Status"
           onChange={(e) => setStatus(e.target.value)}
+          sx={{
+            height: 40,
+            boxSizing: "border-box",
+            "& .MuiSelect-select": {
+              height: 40,
+              display: "flex",
+              alignItems: "center",
+              boxSizing: "border-box",
+              py: 0,
+            },
+          }}
         >
           <MenuItem value="all">All Status</MenuItem>
           <MenuItem value="active">Active</MenuItem>

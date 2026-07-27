@@ -4,8 +4,6 @@ import { setSearchQuery as setSearchQueryRedux } from "../../redux/search/search
 import {
   Box,
   Button,
-  Card,
-  CardContent,
   Chip,
   Dialog,
   DialogActions,
@@ -30,7 +28,6 @@ import {
   Switch,
   FormControlLabel,
   Grid,
-  Pagination,
 } from "@mui/material";
 import {
   Add as AddIcon,
@@ -40,6 +37,7 @@ import {
 } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import axios from "../../api/axiosInstance";
+import UserPagination from "../../COMPONENTS/admin/users/UserPagination";
 
 const Coupons = () => {
   const dispatch = useDispatch();
@@ -253,85 +251,102 @@ const Coupons = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      {/* Header Section */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center" mb={4}>
-        <Box>
-          <Typography variant="h4" fontWeight={800} sx={{ color: "#1b5e20", mb: 0.5 }}>
-            Promotional Coupons
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Create, monitor, and manage discount campaign codes for your customer base
-          </Typography>
-        </Box>
+    <Box>
+      {/* Header */}
+      <Box mb={5}>
+        <Typography variant="h4" fontWeight={800} sx={{ color: "success.main", mb: 0.5 }}>
+          Promotional Coupons
+        </Typography>
+        <Typography sx={{ mt: 1, mb: 2 }} variant="body2" color="text.secondary">
+          Create, monitor, and manage discount campaign codes for your customer base
+        </Typography>
+      </Box>
+
+      {/* Search, Filters & Add Button */}
+      <Stack
+        direction={{ xs: "column", md: "row" }}
+        spacing={2}
+        justifyContent="space-between"
+        alignItems={{ xs: "stretch", sm: "flex-end", md: "center" }}
+        mb={4}
+      >
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={2}
+          alignItems={{ xs: "stretch", sm: "center" }}
+          sx={{ width: { xs: "100%", md: "auto" } }}
+        >
+          <TextField
+            placeholder="Search coupons by Code or Name..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              dispatch(setSearchQueryRedux(e.target.value));
+              setPage(1);
+            }}
+            slotProps={{
+              input: {
+                startAdornment: <SearchIcon sx={{ color: "text.secondary", mr: 1 }} />,
+              },
+            }}
+            variant="outlined"
+            size="small"
+            sx={{
+              width: { xs: "100%", md: 350 },
+              "& .MuiOutlinedInput-root": {
+                height: 40,
+                borderRadius: 2.5,
+              },
+            }}
+          />
+
+          <FormControl size="small" sx={{ minWidth: 200 }}>
+            <InputLabel id="discount-filter-label">Filter by Type</InputLabel>
+            <Select
+              labelId="discount-filter-label"
+              value={discountTypeFilter}
+              label="Filter by Type"
+              onChange={(e) => {
+                setDiscountTypeFilter(e.target.value);
+                setPage(1);
+              }}
+              sx={{
+                height: 40,
+                borderRadius: 2.5,
+                "& .MuiSelect-select": {
+                  height: 40,
+                  display: "flex",
+                  alignItems: "center",
+                  boxSizing: "border-box",
+                  py: 0,
+                },
+              }}
+            >
+              <MenuItem value="all">All Discount Types</MenuItem>
+              <MenuItem value="percentage">Percentage (%)</MenuItem>
+              <MenuItem value="fixed">Fixed Amount ($)</MenuItem>
+            </Select>
+          </FormControl>
+        </Stack>
+
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={handleAddClick}
           sx={{
-            bgcolor: "#2e7d32",
-            "&:hover": { bgcolor: "#1b5e20" },
+            height: 40,
+            bgcolor: "success.main",
+            "&:hover": { bgcolor: "primary.main" },
             textTransform: "none",
-            borderRadius: 2,
+            borderRadius: 2.5,
             px: 3,
-            py: 1.2,
+            whiteSpace: "nowrap",
             boxShadow: "0 4px 10px rgba(46, 125, 50, 0.15)",
           }}
         >
           Add Coupon
         </Button>
       </Stack>
-
-      {/* Filters Card */}
-      <Card sx={{ mb: 4, borderRadius: 3, boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
-        <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} md={8}>
-              <TextField
-                fullWidth
-                placeholder="Search coupons by Code or Name..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  dispatch(setSearchQueryRedux(e.target.value));
-                  setPage(1);
-                }}
-                slotProps={{
-                  input: {
-                    startAdornment: <SearchIcon sx={{ color: "text.secondary", mr: 1 }} />,
-                  },
-                }}
-                variant="outlined"
-                size="small"
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: 2.5,
-                  },
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <FormControl fullWidth size="small">
-                <InputLabel id="discount-filter-label">Filter by Type</InputLabel>
-                <Select
-                  labelId="discount-filter-label"
-                  value={discountTypeFilter}
-                  label="Filter by Type"
-                  onChange={(e) => {
-                    setDiscountTypeFilter(e.target.value);
-                    setPage(1);
-                  }}
-                  sx={{ borderRadius: 2.5 }}
-                >
-                  <MenuItem value="all">All Discount Types</MenuItem>
-                  <MenuItem value="percentage">Percentage (%)</MenuItem>
-                  <MenuItem value="fixed">Fixed Amount ($)</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
 
       {/* Main Table */}
       {loading ? (
@@ -362,24 +377,24 @@ const Coupons = () => {
         <>
           <TableContainer
             component={Paper}
+            elevation={2}
             sx={{
               borderRadius: 3,
-              boxShadow: "0 4px 16px rgba(0,0,0,0.03)",
-              border: "1px solid #f0f0f0",
-              overflow: "hidden",
+              mt: 2,
+              overflowX: "auto",
             }}
           >
             <Table>
-              <TableHead sx={{ bgcolor: "#f8f9fa" }}>
+              <TableHead sx={{ "& .MuiTableCell-head": { bgcolor: "#f5f5f5" } }}>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Coupon Code</TableCell>
-                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Coupon Name</TableCell>
-                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Discount Details</TableCell>
-                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Minimum Order</TableCell>
-                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Limit / Used</TableCell>
-                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Date Range</TableCell>
-                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Status</TableCell>
-                  <TableCell align="right" sx={{ fontWeight: 600, py: 2 }}>Actions</TableCell>
+                  <TableCell><b>Coupon Code</b></TableCell>
+                  <TableCell><b>Coupon Name</b></TableCell>
+                  <TableCell><b>Discount Details</b></TableCell>
+                  <TableCell><b>Minimum Order</b></TableCell>
+                  <TableCell><b>Limit / Used</b></TableCell>
+                  <TableCell><b>Date Range</b></TableCell>
+                  <TableCell><b>Status</b></TableCell>
+                  <TableCell align="right"><b>Actions</b></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -391,8 +406,8 @@ const Coupons = () => {
                         sx={{
                           fontFamily: "monospace",
                           fontWeight: 700,
-                          bgcolor: "#e8f5e9",
-                          color: "#1b5e20",
+                          bgcolor: "success.light",
+                          color: "#fff",
                           borderRadius: 1,
                         }}
                       />
@@ -402,17 +417,17 @@ const Coupons = () => {
                       <Typography variant="body2" fontWeight={600}>
                         {coupon.discountType === "percentage" 
                           ? `${coupon.discountValue}% Off` 
-                          : `$${coupon.discountValue} Off`}
+                          : `₹${coupon.discountValue} Off`}
                       </Typography>
                       {coupon.discountType === "percentage" && coupon.maximumDiscountAmount > 0 && (
                         <Typography variant="caption" color="text.secondary" display="block">
-                          Max Cap: ${coupon.maximumDiscountAmount}
+                          Max Cap: ₹{coupon.maximumDiscountAmount}
                         </Typography>
                       )}
                     </TableCell>
                     <TableCell>
                       <Typography variant="body2">
-                        {coupon.minimumOrderAmount > 0 ? `$${coupon.minimumOrderAmount}` : "No minimum"}
+                        {coupon.minimumOrderAmount > 0 ? `₹${coupon.minimumOrderAmount}` : "No minimum"}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -426,12 +441,14 @@ const Coupons = () => {
                       )}
                     </TableCell>
                     <TableCell>
-                      <Typography variant="caption" display="block">
-                        <strong>From:</strong> {new Date(coupon.validFrom).toLocaleDateString()}
-                      </Typography>
-                      <Typography variant="caption" display="block">
-                        <strong>Until:</strong> {new Date(coupon.validUntil).toLocaleDateString()}
-                      </Typography>
+                      <Box sx={{ display: "flex", flexDirection: "column" }}>
+                        <Typography variant="caption">
+                          <strong>From:</strong> {new Date(coupon.validFrom).toLocaleDateString()}
+                        </Typography>
+                        <Typography variant="caption">
+                          <strong>Until:</strong> {new Date(coupon.validUntil).toLocaleDateString()}
+                        </Typography>
+                      </Box>
                     </TableCell>
                     <TableCell>
                       <Chip
@@ -441,8 +458,8 @@ const Coupons = () => {
                         sx={{
                           fontWeight: 500,
                           px: 1,
-                          bgcolor: coupon.isActive ? "#e8f5e9" : "#f1f3f5",
-                          color: coupon.isActive ? "#2e7d32" : "#5f6368",
+                          bgcolor: coupon.isActive ? "success.main" : "grey.200",
+                          color: coupon.isActive ? "#ffffff" : "text.secondary",
                         }}
                       />
                     </TableCell>
@@ -473,14 +490,15 @@ const Coupons = () => {
           </TableContainer>
 
           {/* Pagination */}
-          <Stack spacing={2} alignItems="center" sx={{ mt: 4 }}>
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={(e, value) => setPage(value)}
-              color="success"
-            />
-          </Stack>
+          {totalPages > 1 && (
+            <Box mt={3}>
+              <UserPagination
+                page={page}
+                totalPages={totalPages}
+                setPage={setPage}
+              />
+            </Box>
+          )}
         </>
       )}
 
@@ -684,7 +702,15 @@ const Coupons = () => {
       </Dialog>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteOpen} onClose={() => !submitting && setDeleteOpen(false)}>
+      <Dialog
+        open={deleteOpen}
+        onClose={() => !submitting && setDeleteOpen(false)}
+        slotProps={{
+          paper: {
+            sx: { borderRadius: 3, p: 1 },
+          },
+        }}
+      >
         <DialogTitle sx={{ fontWeight: 700 }}>Delete Promo Coupon</DialogTitle>
         <DialogContent>
           <Typography variant="body1">

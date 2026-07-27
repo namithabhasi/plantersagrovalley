@@ -7,7 +7,6 @@ import {
   Grid,
   Stack,
   Typography,
-  Paper,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -27,13 +26,13 @@ import {
 } from "recharts";
 import {
   TrendingUp as TrendingUpIcon,
-  AttachMoney as RevenueIcon,
-  ShoppingCart as OrderIcon,
-  People as CustomerIcon,
-  Warning as LowStockIcon,
-  CheckCircle as DeliveryIcon,
+  CurrencyRupee as CurrencyRupeeIcon,
+  ShoppingCart as ShoppingCartIcon,
+  CheckCircle as CheckCircleIcon,
+  Warning as WarningIcon,
 } from "@mui/icons-material";
 import { fetchDashboard } from "../../redux/dashboard/dashboardSlice";
+import StatCard from "../../COMPONENTS/admin/dashboard/StatCard";
 
 const MonthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -97,7 +96,7 @@ const Reports = () => {
       {/* Header */}
       <Stack direction="row" justifyContent="space-between" alignItems="center" mb={4}>
         <Box>
-          <Typography variant="h4" fontWeight={800} sx={{ color: "#1b5e20", mb: 0.5 }}>
+          <Typography variant="h4" fontWeight={800} sx={{ color: "success.main", mb: 0.5 }}>
             Analytics & Reports
           </Typography>
           <Typography variant="body2" color="text.secondary">
@@ -110,97 +109,52 @@ const Reports = () => {
       <Grid container spacing={3} mb={4}>
         {/* Total Revenue */}
         <Grid item xs={12} sm={6} md={4} lg={2.4}>
-          <Card sx={{ borderRadius: 3, boxShadow: "0 4px 12px rgba(0,0,0,0.03)", border: "1px solid #f0f0f0" }}>
-            <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Box>
-                  <Typography variant="caption" color="text.secondary" fontWeight={600}>TOTAL SALES</Typography>
-                  <Typography variant="h5" fontWeight={800} sx={{ mt: 0.5, color: "#2e7d32" }}>
-                    ${statistics?.totalRevenue?.toFixed(2) || "0.00"}
-                  </Typography>
-                </Box>
-                <Paper sx={{ p: 1, bgcolor: "#e8f5e9", color: "#2e7d32", borderRadius: 2, display: "flex" }} elevation={0}>
-                  <RevenueIcon />
-                </Paper>
-              </Stack>
-            </CardContent>
-          </Card>
+          <StatCard
+            title="TOTAL SALES"
+            value={`₹${Number(statistics?.totalRevenue || 0).toLocaleString()}`}
+            icon={<CurrencyRupeeIcon fontSize="large" />}
+            color="#0288d1"
+          />
         </Grid>
 
         {/* Today's Sales */}
         <Grid item xs={12} sm={6} md={4} lg={2.4}>
-          <Card sx={{ borderRadius: 3, boxShadow: "0 4px 12px rgba(0,0,0,0.03)", border: "1px solid #f0f0f0" }}>
-            <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Box>
-                  <Typography variant="caption" color="text.secondary" fontWeight={600}>TODAY'S REVENUE</Typography>
-                  <Typography variant="h5" fontWeight={800} sx={{ mt: 0.5, color: "#1b5e20" }}>
-                    ${statistics?.todayRevenue?.toFixed(2) || "0.00"}
-                  </Typography>
-                </Box>
-                <Paper sx={{ p: 1, bgcolor: "#f1f8e9", color: "#1b5e20", borderRadius: 2, display: "flex" }} elevation={0}>
-                  <TrendingUpIcon />
-                </Paper>
-              </Stack>
-            </CardContent>
-          </Card>
+          <StatCard
+            title="TODAY'S REVENUE"
+            value={`₹${Number(statistics?.todayRevenue || 0).toLocaleString()}`}
+            icon={<TrendingUpIcon fontSize="large" />}
+            color="#1976d2"
+          />
         </Grid>
 
         {/* Total Orders */}
         <Grid item xs={12} sm={6} md={4} lg={2.4}>
-          <Card sx={{ borderRadius: 3, boxShadow: "0 4px 12px rgba(0,0,0,0.03)", border: "1px solid #f0f0f0" }}>
-            <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Box>
-                  <Typography variant="caption" color="text.secondary" fontWeight={600}>TOTAL ORDERS</Typography>
-                  <Typography variant="h5" fontWeight={800} sx={{ mt: 0.5 }}>
-                    {statistics?.totalOrders || 0}
-                  </Typography>
-                </Box>
-                <Paper sx={{ p: 1, bgcolor: "#e3f2fd", color: "#1565c0", borderRadius: 2, display: "flex" }} elevation={0}>
-                  <OrderIcon />
-                </Paper>
-              </Stack>
-            </CardContent>
-          </Card>
+          <StatCard
+            title="TOTAL ORDERS"
+            value={statistics?.totalOrders || 0}
+            icon={<ShoppingCartIcon fontSize="large" />}
+            color="#9c27b0"
+          />
         </Grid>
 
         {/* Deliveries */}
         <Grid item xs={12} sm={6} md={4} lg={2.4}>
-          <Card sx={{ borderRadius: 3, boxShadow: "0 4px 12px rgba(0,0,0,0.03)", border: "1px solid #f0f0f0" }}>
-            <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Box>
-                  <Typography variant="caption" color="text.secondary" fontWeight={600}>DELIVERED</Typography>
-                  <Typography variant="h5" fontWeight={800} sx={{ mt: 0.5, color: "#2e7d32" }}>
-                    {statistics?.deliveredOrders || 0}
-                  </Typography>
-                </Box>
-                <Paper sx={{ p: 1, bgcolor: "#e8f5e9", color: "#2e7d32", borderRadius: 2, display: "flex" }} elevation={0}>
-                  <DeliveryIcon />
-                </Paper>
-              </Stack>
-            </CardContent>
-          </Card>
+          <StatCard
+            title="DELIVERED"
+            value={statistics?.deliveredOrders || 0}
+            icon={<CheckCircleIcon fontSize="large" />}
+            color="#2E7D32"
+          />
         </Grid>
 
         {/* Low Stock Alerts */}
         <Grid item xs={12} sm={6} md={4} lg={2.4}>
-          <Card sx={{ borderRadius: 3, boxShadow: "0 4px 12px rgba(0,0,0,0.03)", border: "1px solid #f0f0f0" }}>
-            <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Box>
-                  <Typography variant="caption" color="text.secondary" fontWeight={600}>LOW INVENTORY</Typography>
-                  <Typography variant="h5" fontWeight={800} sx={{ mt: 0.5, color: "#d32f2f" }}>
-                    {statistics?.lowStockProducts || 0} items
-                  </Typography>
-                </Box>
-                <Paper sx={{ p: 1, bgcolor: "#ffebee", color: "#c62828", borderRadius: 2, display: "flex" }} elevation={0}>
-                  <LowStockIcon />
-                </Paper>
-              </Stack>
-            </CardContent>
-          </Card>
+          <StatCard
+            title="LOW INVENTORY"
+            value={`${statistics?.lowStockProducts || 0} items`}
+            icon={<WarningIcon fontSize="large" />}
+            color="#d32f2f"
+          />
         </Grid>
       </Grid>
 
@@ -223,16 +177,16 @@ const Reports = () => {
                     <AreaChart data={salesChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                       <defs>
                         <linearGradient id="salesGrad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#2e7d32" stopOpacity={0.2}/>
-                          <stop offset="95%" stopColor="#2e7d32" stopOpacity={0}/>
+                          <stop offset="5%" stopColor="#2E7D32" stopOpacity={0.2}/>
+                          <stop offset="95%" stopColor="#2E7D32" stopOpacity={0}/>
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                       <XAxis dataKey="name" stroke="#888" fontSize={11} tickLine={false} />
                       <YAxis stroke="#888" fontSize={11} tickLine={false} axisLine={false} />
-                      <ChartTooltip formatter={(value) => [`$${value}`, "Sales"]} />
+                      <ChartTooltip formatter={(value) => [`₹${value}`, "Sales"]} />
                       <Legend verticalAlign="top" height={36} />
-                      <Area type="monotone" dataKey="Sales" stroke="#2e7d32" strokeWidth={2} fillOpacity={1} fill="url(#salesGrad)" />
+                      <Area type="monotone" dataKey="Sales" stroke="#2E7D32" strokeWidth={2} fillOpacity={1} fill="url(#salesGrad)" />
                     </AreaChart>
                   </ResponsiveContainer>
                 )}
@@ -307,10 +261,10 @@ const Reports = () => {
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                       <XAxis dataKey="name" stroke="#888" fontSize={11} tickLine={false} />
                       <YAxis stroke="#888" fontSize={11} tickLine={false} axisLine={false} />
-                      <ChartTooltip formatter={(value, name) => [name === "Revenue" ? `$${value}` : value, name]} />
+                      <ChartTooltip formatter={(value, name) => [name === "Revenue" ? `₹${value}` : value, name]} />
                       <Legend verticalAlign="top" height={36} />
                       <Bar dataKey="Units Sold" fill="#81c784" radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="Revenue" fill="#2e7d32" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="Revenue" fill="#2E7D32" radius={[4, 4, 0, 0]} />
                     </RechartsBarChart>
                   </ResponsiveContainer>
                 )}
