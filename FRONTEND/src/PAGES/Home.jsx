@@ -141,6 +141,7 @@ const fruitPlants = [
 ]
 
 function Home() {
+ 
   return (
     <div>
       <HeroCarousel />
@@ -463,7 +464,7 @@ function Home() {
         </div>
       </section>
     </div>
-  )
+  );
 }
 
 export default Home
