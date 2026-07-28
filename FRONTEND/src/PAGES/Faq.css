@@ -1,0 +1,316 @@
+/* ==========================================================================
+   FAQ Page Styles
+   ========================================================================== */
+.faq-page-wrapper {
+  background-color: #ffffff;
+  overflow-x: hidden;
+}
+
+/* 1. HERO SECTION WITH FIXED PARALLAX BACKGROUND */
+.faq-hero-section {
+  position: relative;
+  width: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover; /* No fixed attachment to keep details sharp */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 300px; /* Sharp and balanced desktop height */
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .faq-hero-section {
+    height: 200px; /* Responsive height on tablet */
+  }
+}
+
+@media (max-width: 480px) {
+  .faq-hero-section {
+    height: 150px; /* Responsive height on mobile */
+  }
+}
+
+.faq-hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 0 var(--space-4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.faq-hero-title-badge {
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: var(--space-3) var(--space-8);
+  border-radius: 50px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.faq-hero-title {
+  font-family: var(--font-family-heading);
+  font-size: clamp(32px, 5vw, 44px);
+  font-weight: 400; /* Matches global headings style (no boldness) from index.css */
+  color: var(--color-primary-dark); /* Exact dark green primary color from index.css */
+  letter-spacing: 1px;
+  margin: 0;
+  line-height: 1;
+}
+
+
+/* 2. MAIN LAYOUT AND CONTAINERS */
+.faq-content-section {
+  padding: var(--space-16) 0;
+  background-color: #ffffff;
+}
+
+.faq-layout-container {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--space-10);
+  align-items: flex-start;
+}
+
+/* Sidebar Styles */
+.faq-sidebar {
+  background-color: var(--color-primary-bg); /* Soft mint green section separator background */
+  border: 1px solid var(--color-primary-subtle);
+  border-radius: 6px;
+  padding: var(--space-6);
+}
+
+.faq-sidebar-title {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-lg);
+  font-weight: 400; /* Regular weight from index.css (no boldness) */
+  color: var(--color-primary-dark);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-2);
+  border-bottom: 1.5px solid var(--color-primary-light);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.faq-category-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.faq-cat-btn {
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: 400; /* Regular weight from index.css (no boldness) */
+  color: var(--color-text-main);
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all var(--transition-fast);
+}
+
+.faq-cat-btn:hover {
+  background-color: var(--color-border);
+  color: var(--color-primary-dark);
+}
+
+.faq-cat-btn.active {
+  background-color: var(--color-primary-dark);
+  color: #ffffff;
+}
+
+/* Main FAQ Accordion Column */
+.faq-accordion-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.faq-list-title {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-2xl);
+  font-weight: 400; /* Regular weight from index.css (no boldness) */
+  color: var(--color-primary-dark);
+  margin-top: var(--space-4); /* Add top margin for breathing room from hero section */
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.faq-accordion-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Accordion Item Styles */
+.faq-accordion-item {
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background-color: #ffffff;
+  overflow: hidden;
+  transition: box-shadow var(--transition-fast);
+}
+
+.faq-accordion-item:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.faq-accordion-item.open {
+  border-color: var(--color-primary-light);
+}
+
+.faq-accordion-header {
+  width: 100%;
+  background-color: var(--color-bg-secondary); /* Section BG used for header */
+  border: none;
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color var(--transition-fast);
+}
+
+.faq-accordion-item.open .faq-accordion-header {
+  background-color: var(--color-primary-subtle); /* Separator color theme on active state */
+}
+
+.faq-question-text {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-md);
+  font-weight: 400; /* Reduced to regular font weight */
+  color: var(--color-primary-dark);
+  line-height: 1.4;
+  padding-right: var(--space-4);
+}
+
+.faq-chevron-icon {
+  width: 10px;
+  height: 10px;
+  border-right: 2.5px solid var(--color-primary-dark);
+  border-bottom: 2.5px solid var(--color-primary-dark);
+  transform: rotate(45deg);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.faq-accordion-item.open .faq-chevron-icon {
+  transform: rotate(-135deg);
+}
+
+/* Smooth Accordion Content Transition */
+.faq-accordion-content-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.faq-accordion-item.open .faq-accordion-content-wrapper {
+  max-height: 500px; /* Large enough default height for content */
+}
+
+.faq-accordion-content {
+  padding: var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+
+.faq-answer-text {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-main);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.faq-no-results {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: var(--space-10) 0;
+}
+
+/* 3. SUPPORT CARD CALLOUT */
+.faq-support-card {
+  margin-top: var(--space-10);
+  background-color: var(--color-primary-bg); /* Soft mint tint background */
+  border: 1px solid var(--color-primary-subtle);
+  border-radius: 4px;
+  padding: var(--space-8);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.faq-support-title {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-xl);
+  font-weight: 400; /* Reduced to regular font weight */
+  color: var(--color-primary-dark);
+  margin-bottom: var(--space-3);
+}
+
+.faq-support-text {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-text-main);
+  line-height: 1.5;
+  max-width: 600px;
+  margin: 0 auto var(--space-5);
+}
+
+.faq-email-btn {
+  width: auto !important;
+  display: inline-flex !important;
+  padding: var(--space-3) var(--space-8) !important;
+  font-size: var(--font-size-md) !important;
+}
+
+/* ==========================================================================
+   4. Responsiveness
+   ========================================================================== */
+@media (max-width: 992px) {
+  .faq-layout-container {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .faq-sidebar {
+    padding: var(--space-4);
+  }
+
+  .faq-category-list {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: var(--space-3);
+    padding-bottom: var(--space-2);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .faq-cat-btn {
+    white-space: nowrap;
+    padding: var(--space-2) var(--space-4);
+  }
+
+  /* Removed faq-hero-section min-height override to allow aspect-ratio and height rules to govern styling */
+}
+@media (max-width: 768px) {
+  .faq-content-section {
+    padding: var(--space-10) 0;
+  }
+
+  .faq-support-card {
+    padding: var(--space-6);
+  }
+}

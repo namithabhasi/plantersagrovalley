@@ -1,7 +1,7 @@
 import { Route, Routes, useLocation } from 'react-router-dom';
 import './App.css'
 // importing toastify 
-import {  toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 import './index.css';
 import Navbar from './COMPONENTS/Navbar';
@@ -26,14 +26,15 @@ import Settings from "./PAGES/admin/Settings";
 import Payment from "./PAGES/Payment";
 import Cart from "./PAGES/Cart";
 import Aboutus from "./PAGES/Aboutus";
+import Faq from "./PAGES/Faq";
 
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const location = useLocation();
-  const hideNavbarFooter = location.pathname.startsWith('/dashboard') || 
-                           location.pathname === '/admin' || 
-                           location.pathname === '/payment';
+  const hideNavbarFooter = location.pathname.startsWith('/dashboard') ||
+    location.pathname === '/admin' ||
+    location.pathname === '/payment';
 
   return (
     <CartProvider>
@@ -41,7 +42,7 @@ function App() {
       <Checkout />
 
 
-     
+
 
       {/* toast container for creating toast */}
       <ToastContainer
@@ -60,25 +61,26 @@ function App() {
         <Route path="/payment" element={<Payment />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/about" element={<Aboutus />} />
+        <Route path="/faqs" element={<Faq />} />
         <Route path="/" element={<Home />} />
-        <Route path="/admin"  element={<SuperAdminLogin />} />
-       <Route path="/dashboard" element={<AdminLayout />}>
-    <Route index element={<Dashboard />} />
-      <Route path="users" element={<AllUsers />} />
-      <Route key="super-admins" path="users/super-admins" element={<AllUsers preselectedRole="super-admin" />} />
-      <Route key="admins" path="users/admins" element={<AllUsers preselectedRole="admin" />} />
-      <Route key="shipping-managers" path="users/shipping-managers" element={<AllUsers preselectedRole="shipping-manager" />} />
-      <Route key="customers" path="users/customers" element={<AllUsers preselectedRole="customer" />} />
-      <Route path="users/add" element={<AddUser />} />
-      <Route path="categories" element={<Categories />} />
-      <Route path="products" element={<Products />} />
-      <Route path="orders" element={<Orders />} />
-      <Route path="coupons" element={<Coupons />} />
-      <Route path="reports" element={<Reports />} />
-      <Route path="settings" element={<Settings />} />
-     </Route>
+        <Route path="/admin" element={<SuperAdminLogin />} />
+        <Route path="/dashboard" element={<AdminLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="users" element={<AllUsers />} />
+          <Route key="super-admins" path="users/super-admins" element={<AllUsers preselectedRole="super-admin" />} />
+          <Route key="admins" path="users/admins" element={<AllUsers preselectedRole="admin" />} />
+          <Route key="shipping-managers" path="users/shipping-managers" element={<AllUsers preselectedRole="shipping-manager" />} />
+          <Route key="customers" path="users/customers" element={<AllUsers preselectedRole="customer" />} />
+          <Route path="users/add" element={<AddUser />} />
+          <Route path="categories" element={<Categories />} />
+          <Route path="products" element={<Products />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="coupons" element={<Coupons />} />
+          <Route path="reports" element={<Reports />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
       </Routes>
- {!hideNavbarFooter && <Footer />}
+      {!hideNavbarFooter && <Footer />}
       <ToastContainer />
     </CartProvider>
   );
