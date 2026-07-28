@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { FiTruck, FiArrowLeft } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import logo from '../assets/logo.png';
+import './Payment.css';
 
 // Fallback mock items to match design when cart is empty
 import monsteraImg from '../assets/Crassula Ovata Green Succulent.jpg';

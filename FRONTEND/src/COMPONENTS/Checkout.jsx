@@ -247,7 +247,7 @@ function Checkout() {
               <button
                 onClick={() => {
                   closeCart();
-                  navigate('/');
+                  navigate('/cart');
                 }}
                 className="btn btn-outline-primary"
                 style={{ flexGrow: 1, borderRadius: '3px' }}
