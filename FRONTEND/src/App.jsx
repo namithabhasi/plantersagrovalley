@@ -1,13 +1,15 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css'
 // importing toastify 
-import { ToastContainer, toast } from 'react-toastify';
+import {  toast } from 'react-toastify';
 
 import './index.css';
 import Navbar from './COMPONENTS/Navbar';
-import Home from './PAGES/Home';
+import Checkout from './COMPONENTS/Checkout';
+import { CartProvider } from './context/CartContext';
+
 import Footer from './COMPONENTS/Footer';
-import { Routes, Route } from "react-router-dom";
+
 import { ToastContainer } from "react-toastify";
 import Home from "./PAGES/Home";
 import Dashboard from "./PAGES/admin/Dashboard";
@@ -26,14 +28,12 @@ import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
-    <>
+    <CartProvider>
       <Navbar />
-      
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
+      <Checkout />
 
-      <Footer />
+
+     
 
       {/* toast container for creating toast */}
       <ToastContainer
@@ -49,6 +49,7 @@ function App() {
         theme="light"
       />
       <Routes>
+       
        < Route path="/" element={<Home />} />
         <Route path="/admin"  element={<SuperAdminLogin />} />
        <Route path="/dashboard" element={<AdminLayout />}>
@@ -67,11 +68,10 @@ function App() {
       <Route path="settings" element={<Settings />} />
      </Route>
       </Routes>
-
+ <Footer />
       <ToastContainer />
-    </>
+    </CartProvider>
   );
 }
 
 export default App;
-
