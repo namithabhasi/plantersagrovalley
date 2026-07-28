@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import HeroCarousel from '../COMPONENTS/HeroCarousel'
 import CategorySection from '../COMPONENTS/CategorySection'
 import { FaStar, FaSeedling, FaTruck, FaUndo } from 'react-icons/fa'
+import { useCart } from '../context/CartContext'
 
 // Import assets for best sellers
 import haworthiaImg from '../assets/Haworthia.jpg'
@@ -141,6 +142,7 @@ const fruitPlants = [
 ]
 
 function Home() {
+  const { addToCart } = useCart();
  
   return (
     <div>
@@ -199,7 +201,11 @@ function Home() {
                   </div>
                 </div>
 
-                <button className="btn btn-primary" style={{ borderRadius: '3px' }}>
+                <button
+                  onClick={() => addToCart({ id: `best-${product.id}`, name: product.name, price: product.price, image: product.image })}
+                  className="btn btn-primary"
+                  style={{ borderRadius: '3px' }}
+                >
                   ADD TO CART
                 </button>
               </div>
@@ -276,7 +282,11 @@ function Home() {
                   </div>
                 </div>
 
-                <button className="btn btn-primary" style={{ borderRadius: '3px' }}>
+                <button
+                  onClick={() => addToCart({ id: `indoor-${product.id}`, name: product.name, price: product.price, image: product.image })}
+                  className="btn btn-primary"
+                  style={{ borderRadius: '3px' }}
+                >
                   ADD TO CART
                 </button>
               </div>
@@ -353,7 +363,11 @@ function Home() {
                   </div>
                 </div>
 
-                <button className="btn btn-primary" style={{ borderRadius: '3px' }}>
+                <button
+                  onClick={() => addToCart({ id: `fruit-${product.id}`, name: product.name, price: product.price, image: product.image })}
+                  className="btn btn-primary"
+                  style={{ borderRadius: '3px' }}
+                >
                   ADD TO CART
                 </button>
               </div>

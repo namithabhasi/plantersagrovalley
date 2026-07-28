@@ -3,9 +3,11 @@ import { Link, NavLink } from 'react-router-dom';
 import logo from '../assets/logo.png'; // The text logo is saved in logo.png
 import bush from '../assets/image.png'; // Background bush growing from the bottom-left corner
 import { FiSearch, FiUser, FiShoppingCart, FiMenu, FiX, FiChevronRight } from 'react-icons/fi';
+import { useCart } from '../context/CartContext';
 
 function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { openCart, cartTotalCount } = useCart();
 
   return (
     <header className="planters-header select-none">
@@ -57,9 +59,13 @@ function Navbar() {
           </button>
 
           {/* Cart Icon with badge */}
-          <button className="navbar-action-btn planters-cart-btn" aria-label="Cart">
+          <button
+            onClick={openCart}
+            className="navbar-action-btn planters-cart-btn"
+            aria-label="Cart"
+          >
             <FiShoppingCart size={22} />
-            <span className="navbar-cart-badge">0</span>
+            <span className="navbar-cart-badge">{cartTotalCount}</span>
           </button>
 
           {/* Hamburger Menu Toggle (Mobile/Tablet viewports) */}
