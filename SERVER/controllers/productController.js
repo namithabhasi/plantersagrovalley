@@ -200,7 +200,7 @@ if (inStock === "true") {
     const totalProducts = await Product.countDocuments(filter);
 
     const products = await Product.find(filter)
-      .populate("category", "name")
+      .populate("category", "name slug")
       .sort(sortOption)
       .skip(skip)
       .limit(limit);
@@ -233,7 +233,7 @@ export const getProductById = async (req, res) => {
   try {
 
     const product = await Product.findById(req.params.id)
-      .populate("category", "name");
+      .populate("category", "name slug");
 
     if (!product || product.isDeleted) {
       return res.status(404).json({
@@ -382,7 +382,7 @@ export const getFeaturedProducts = async (req, res) => {
       isActive: true,
       isDeleted: false,
     })
-      .populate("category", "name")
+      .populate("category", "name slug")
       .sort({ createdAt: -1 });
 
     res.status(200).json({

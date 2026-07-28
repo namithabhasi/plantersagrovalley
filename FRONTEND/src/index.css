@@ -436,7 +436,7 @@ img {
 .product-card-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: fill;
   transition: transform 0.4s ease;
 }
 
@@ -497,6 +497,7 @@ img {
   font-size: var(--font-size-sm);
   color: var(--color-text-light);
   text-decoration: line-through;
+  text-decoration-color: #cbd5e1; /* Light grey strike-through line to keep numbers readable */
 }
 
 /* Button Components */
@@ -1067,28 +1068,39 @@ div.container {
 }
 
 .plantsguru-category-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 192.442px);
+  display: flex;
+  overflow-x: auto;
+  flex-wrap: nowrap;
   gap: 20px;
-  justify-content: center;
+  padding: 10px 4px 15px 4px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary, #4caf50) transparent;
 }
 
-@media (max-width: 1300px) {
-  .plantsguru-category-grid {
-    grid-template-columns: repeat(3, 192.442px);
-  }
+.plantsguru-category-grid::-webkit-scrollbar {
+  height: 6px;
+}
+
+.plantsguru-category-grid::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+}
+
+.plantsguru-category-grid::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary, #4caf50);
+  border-radius: 3px;
 }
 
 @media (max-width: 768px) {
   .plantsguru-category-grid {
-    grid-template-columns: repeat(2, 192.442px);
     gap: 16px;
   }
 }
 
 @media (max-width: 480px) {
   .plantsguru-category-grid {
-    grid-template-columns: repeat(2, 145px);
     gap: 12px;
   }
 }
@@ -1103,6 +1115,31 @@ div.container {
   cursor: pointer;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
   display: block;
+  flex-shrink: 0;
+}
+
+/* Category Loading Skeleton */
+.plantsguru-category-card.skeleton {
+  background: #f6f7f8;
+  background-image: linear-gradient(
+    90deg,
+    #f6f7f8 0px,
+    #edeef1 40px,
+    #f6f7f8 80px
+  );
+  background-size: 200% 100%;
+  animation: shimmer-cat 1.5s infinite linear;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+@keyframes shimmer-cat {
+  0% {
+    background-position: -150% 0;
+  }
+  100% {
+    background-position: 150% 0;
+  }
 }
 
 @media (min-width: 481px) {
