@@ -618,9 +618,9 @@ div.container {
    ========================================================================== */
 .navbar-link {
   font-family: var(--font-family-heading);
-  font-size: var(--font-size-md);
-  /* 16px */
-  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  /* 14px */
+  font-weight: 500;
   color: var(--color-primary-dark);
   transition: var(--transition-fast);
   text-decoration: none;
@@ -712,13 +712,15 @@ div.container {
   width: 100%;
   z-index: 100;
   box-sizing: border-box;
-  overflow: visible; /* Changed to visible to let mega-dropdown overlay cleanly */
+  overflow: visible;
+  /* Changed to visible to let mega-dropdown overlay cleanly */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 /* --- Mega Dropdown menu styling --- */
 .navbar-item-with-dropdown {
-  position: static; /* Allows the absolute dropdown panel to span the full header width */
+  position: static;
+  /* Allows the absolute dropdown panel to span the full header width */
 }
 
 .planters-mega-dropdown {
@@ -726,7 +728,8 @@ div.container {
   top: 100%;
   left: 0;
   width: 100%;
-  background-color: #f7faf6; /* Soft green backdrop matching layout image */
+  background-color: #f7faf6;
+  /* Soft green backdrop matching layout image */
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   opacity: 0;
@@ -841,14 +844,25 @@ div.container {
   flex-shrink: 0;
 }
 
+.planters-header-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.planters-nav-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
 .planters-nav {
   display: none;
-  align-items: center;
-  justify-content: flex-end;
-  /* Align links towards the right */
-  flex-grow: 1;
-  margin-right: 48px;
-  /* Fixed space between menus and icons */
+  justify-content: center;
+  padding: 12px 0;
+  background-color: #ffffff;
+  width: 100%;
 }
 
 .planters-nav-links {
@@ -1860,5 +1874,3 @@ div.container {
     gap: var(--space-2);
   }
 }
-
-

@@ -27,6 +27,7 @@ import Payment from "./PAGES/Payment";
 import Cart from "./PAGES/Cart";
 import Aboutus from "./PAGES/Aboutus";
 import Faq from "./PAGES/Faq";
+import Plants from "./PAGES/Plants";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -62,6 +63,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/about" element={<Aboutus />} />
         <Route path="/faqs" element={<Faq />} />
+        <Route path="/plants" element={<Plants />} />
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<SuperAdminLogin />} />
         <Route path="/dashboard" element={<AdminLayout />}>

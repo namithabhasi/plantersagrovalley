@@ -1,0 +1,417 @@
+/* ==========================================================================
+   Plants Catalog Page Styles
+   ========================================================================== */
+.plants-page-wrapper {
+  background-color: #ffffff;
+}
+
+/* 1. Breadcrumbs & Header Section (pic2) */
+.plants-header-section {
+  background-color: #ffffff;
+}
+
+.plants-breadcrumbs {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-xs);
+  color: #94a3b8;
+  margin-top: 24px;
+}
+
+.plants-breadcrumbs span {
+  font-family: var(--font-family-base);
+}
+
+.plants-page-title {
+  letter-spacing: 0.5px;
+  font-family: var(--font-family-heading);
+}
+
+.plants-page-description {
+  font-family: var(--font-family-base);
+  margin-bottom: 24px;
+}
+
+.plants-page-description span {
+  font-family: var(--font-family-base);
+}
+
+/* 2. Main Workspace Layout Grid */
+.plants-layout-container {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: var(--space-8);
+  align-items: flex-start;
+  margin-top: 40px;
+  margin-bottom: 60px;
+}
+
+/* Left Sidebar Filters styling */
+.plants-sidebar {
+  background-color: #ffffff;
+  /* Clean background to support dividers */
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Accordion Collapsible Filter Blocks */
+.filter-accordion {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-accordion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 6px 0;
+  transition: color var(--transition-fast);
+}
+
+.filter-accordion-header:hover {
+  color: var(--color-primary);
+}
+
+.filter-accordion-title {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  /* Regular weight headings */
+  color: var(--color-primary-dark);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.filter-accordion-content {
+  margin-top: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-left: var(--space-1);
+}
+
+/* Reset Links */
+.filter-reset-link {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-xs);
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  margin-bottom: var(--space-1);
+  display: inline-block;
+  opacity: 0.75;
+  transition: opacity var(--transition-fast);
+}
+
+.filter-reset-link:hover {
+  opacity: 1;
+}
+
+/* Divider Line */
+.filter-divider {
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  margin: 0;
+}
+
+/* Checkbox Labels */
+.filter-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-main);
+  cursor: pointer;
+  user-select: none;
+}
+
+.filter-checkbox-input {
+  accent-color: var(--color-primary);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+}
+
+/* Range Slider (Double Thumb) */
+.price-slider-outer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  width: 100%;
+}
+
+.double-slider-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.currency-symbol {
+  font-family: var(--font-family-base);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-text-main);
+  user-select: none;
+}
+
+.double-slider-wrapper {
+  position: relative;
+  width: 100%;
+  height: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.slider-track {
+  position: absolute;
+  height: 2px;
+  background-color: var(--color-border);
+  width: 100%;
+  z-index: 1;
+  border-radius: 1px;
+}
+
+.slider-range-bar {
+  position: absolute;
+  height: 2px;
+  background-color: #000000; /* Black range track line (pic2) */
+  z-index: 2;
+  border-radius: 1px;
+}
+
+.slider-thumb {
+  position: absolute;
+  width: 100%;
+  height: 16px;
+  background: transparent;
+  pointer-events: none;
+  -webkit-appearance: none;
+  appearance: none;
+  z-index: 3;
+  outline: none;
+  margin: 0;
+}
+
+/* Style the range input thumbs */
+.slider-thumb::-webkit-slider-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #000000; /* Solid black thumbs (pic2) */
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  transition: transform var(--transition-fast);
+}
+
+.slider-thumb::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.slider-thumb::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #000000;
+  cursor: pointer;
+  pointer-events: auto;
+  border: none;
+  transition: transform var(--transition-fast);
+}
+
+.slider-thumb::-moz-range-thumb:hover {
+  transform: scale(1.15);
+}
+
+.filter-price-text {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
+}
+
+/* Categories List Styling inside Accordion */
+.plants-category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: var(--space-1);
+}
+
+.plants-category-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.plants-category-list::-webkit-scrollbar-thumb {
+  background-color: var(--color-border);
+  border-radius: 2px;
+}
+
+.plants-cat-btn {
+  background: transparent;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  /* Regular text weight */
+  color: var(--color-text-main);
+  cursor: pointer;
+  border-radius: 3px;
+  text-align: left;
+  transition: all var(--transition-fast);
+}
+
+.plants-cat-btn:hover {
+  background-color: #f1f5f9;
+  color: var(--color-primary-dark);
+}
+
+.plants-cat-btn.active {
+  background-color: var(--color-primary-dark);
+  color: #ffffff;
+}
+
+.plants-cat-btn .cat-count {
+  font-size: var(--font-size-xs);
+  opacity: 0.85;
+}
+
+/* Toolbar styling */
+.plants-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.plants-sort-container {
+  display: flex;
+  align-items: center;
+}
+
+.plants-sort-select {
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  background-color: #ffffff;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-main);
+  outline: none;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.plants-sort-select:focus {
+  border-color: var(--color-primary);
+}
+
+/* Product Grid Tweaks */
+.plants-grid {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+/* 3. Responsiveness Overrides */
+@media (max-width: 992px) {
+  .plants-layout-container {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+    margin-top: 24px;
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  .plants-sidebar {
+    padding: var(--space-4);
+    gap: var(--space-3);
+  }
+
+  .plants-category-list {
+    flex-direction: row;
+    overflow-x: auto;
+    max-height: none;
+    gap: var(--space-2);
+    padding-bottom: var(--space-2);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .plants-cat-btn {
+    white-space: nowrap;
+    padding: 6px 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .plants-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .plants-sort-container {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Force exactly 2 columns of product cards to fit mobile screens beautifully */
+  .plants-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  /* Prevent card content overflow by scaling down wrapper layout */
+  .product-card-wrapper {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .product-card {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .product-card-image {
+    height: 150px !important; /* Balanced scale height for mobile card columns */
+  }
+
+  .product-card-content {
+    padding: 10px !important; /* Replaced space variable with direct unit to ensure lightningcss minifies properly */
+  }
+
+  .product-title {
+    font-size: var(--font-size-sm) !important;
+    line-height: 1.3 !important;
+    margin-bottom: var(--space-1) !important;
+  }
+
+  .price-current,
+  .price-original {
+    font-size: var(--font-size-sm) !important;
+  }
+}

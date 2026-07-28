@@ -15,12 +15,12 @@ function Navbar() {
       <img src={bush} alt="" className="planters-nav-bush" />
 
       <div className="container">
-        
+
         {/* Left Side: Logo */}
         <Link to="/" className="planters-logo-container">
-          <img 
-            src={logo} 
-            alt="Planters Logo" 
+          <img
+            src={logo}
+            alt="Planters Logo"
             className="planters-logo"
           />
         </Link>
@@ -32,19 +32,19 @@ function Navbar() {
               <NavLink to="/plants" className="navbar-link">
                 Plants
               </NavLink>
-              
+
               {/* Mega Dropdown Menu */}
               <div className="planters-mega-dropdown">
                 <div className="container mega-dropdown-grid">
-                  
+
                   {/* Column 1: Plants by Type */}
                   <div className="mega-dropdown-col">
                     <h4 className="mega-dropdown-title">Plants By Type</h4>
                     <ul className="mega-dropdown-list">
-                      <li><Link to="/plants/air-plants">Air Plants</Link></li>
-                      <li><Link to="/plants/aquatic-plants">Aquatic Plants</Link></li>
-                      <li><Link to="/plants/avenue-trees">Avenue Trees</Link></li>
-                      <li><Link to="/plants/bamboos">Bamboos</Link></li>
+                      <li><Link to="/plants?category=air-plants">Air Plants</Link></li>
+                      <li><Link to="/plants?category=aquatic-plants">Aquatic Plants</Link></li>
+                      <li><Link to="/plants?category=avenue-trees">Avenue Trees</Link></li>
+                      <li><Link to="/plants?category=bamboos">Bamboos</Link></li>
                     </ul>
                   </div>
 
@@ -52,10 +52,10 @@ function Navbar() {
                   <div className="mega-dropdown-col">
                     <h4 className="mega-dropdown-title">Plants By Feature</h4>
                     <ul className="mega-dropdown-list">
-                      <li><Link to="/plants/air-purifiers">Air Purifier Plants</Link></li>
-                      <li><Link to="/plants/fragrant">Fragrant Plants</Link></li>
-                      <li><Link to="/plants/insect-repellents">Insect Repellents Plants</Link></li>
-                      <li><Link to="/plants/lucky-bamboos">Lucky Bamboos</Link></li>
+                      <li><Link to="/plants?category=indoor-plants">Air Purifier Plants</Link></li>
+                      <li><Link to="/plants?category=fragrant-plants">Fragrant Plants</Link></li>
+                      <li><Link to="/plants?category=outdoor-plants">Insect Repellents Plants</Link></li>
+                      <li><Link to="/plants?category=bamboos">Lucky Bamboos</Link></li>
                     </ul>
                   </div>
 
@@ -63,10 +63,10 @@ function Navbar() {
                   <div className="mega-dropdown-col">
                     <h4 className="mega-dropdown-title">Plants By Location</h4>
                     <ul className="mega-dropdown-list">
-                      <li><Link to="/plants/indoor">Indoor Plants</Link></li>
-                      <li><Link to="/plants/outdoor">Outdoor Plants</Link></li>
-                      <li><Link to="/plants/balcony">Plants For Balcony</Link></li>
-                      <li><Link to="/plants/bedroom">Plants for Bedroom</Link></li>
+                      <li><Link to="/plants?category=indoor-plants">Indoor Plants</Link></li>
+                      <li><Link to="/plants?category=outdoor-plants">Outdoor Plants</Link></li>
+                      <li><Link to="/plants?category=balcony">Plants For Balcony</Link></li>
+                      <li><Link to="/plants?category=indoor-plants">Plants for Bedroom</Link></li>
                     </ul>
                   </div>
 
@@ -74,10 +74,10 @@ function Navbar() {
                   <div className="mega-dropdown-col">
                     <h4 className="mega-dropdown-title">Seasonal Plants</h4>
                     <ul className="mega-dropdown-list">
-                      <li><Link to="/plants/annual-flowers">Annual Flower Plants</Link></li>
-                      <li><Link to="/plants/monsoon-flowers">Monsoon Flower Plants</Link></li>
-                      <li><Link to="/plants/winter-flowers">Winter Flower Plants</Link></li>
-                      <li><Link to="/plants/summer-flowers">Summer Flower Plants</Link></li>
+                      <li><Link to="/plants?category=summer-flowers">Annual Flower Plants</Link></li>
+                      <li><Link to="/plants?category=monsoon-flowers">Monsoon Flower Plants</Link></li>
+                      <li><Link to="/plants?category=outdoor-plants">Winter Flower Plants</Link></li>
+                      <li><Link to="/plants?category=summer-flowers">Summer Flower Plants</Link></li>
                     </ul>
                   </div>
 
@@ -85,10 +85,10 @@ function Navbar() {
                   <div className="mega-dropdown-col">
                     <h4 className="mega-dropdown-title">Top 10 Plants</h4>
                     <ul className="mega-dropdown-list">
-                      <li><Link to="/plants/top-10-air-purifier">Top 10 Air Purifier Plants</Link></li>
-                      <li><Link to="/plants/top-10-flowering">Top 10 Flowering Plants</Link></li>
-                      <li><Link to="/plants/top-10-fragrant">Top 10 Fragrant Plants</Link></li>
-                      <li><Link to="/plants/top-10-hardy">Top 10 Hardy Plants</Link></li>
+                      <li><Link to="/plants?category=indoor-plants">Top 10 Air Purifier Plants</Link></li>
+                      <li><Link to="/plants?category=summer-flowers">Top 10 Flowering Plants</Link></li>
+                      <li><Link to="/plants?category=fragrant-plants">Top 10 Fragrant Plants</Link></li>
+                      <li><Link to="/plants?category=outdoor-plants">Top 10 Hardy Plants</Link></li>
                     </ul>
                   </div>
 
@@ -133,9 +133,9 @@ function Navbar() {
           </button>
 
           {/* Hamburger Menu Toggle (Mobile/Tablet viewports) */}
-          <button 
+          <button
             onClick={() => setMobileMenuOpen(true)}
-            className="navbar-action-btn planters-hamburger" 
+            className="navbar-action-btn planters-hamburger"
             aria-label="Open Menu"
           >
             <FiMenu size={24} />
@@ -144,25 +144,25 @@ function Navbar() {
       </div>
 
       {/* Mobile Drawer Navigation overlay */}
-      <div 
+      <div
         className="planters-drawer-overlay"
         style={{ display: mobileMenuOpen ? 'block' : 'none' }}
       >
         {/* Dark backdrop overlay */}
-        <div 
-          className="planters-drawer-backdrop" 
+        <div
+          className="planters-drawer-backdrop"
           onClick={() => setMobileMenuOpen(false)}
         ></div>
 
         {/* Drawer panel */}
-        <div 
+        <div
           className="planters-drawer-panel"
           style={{ transform: mobileMenuOpen ? 'translateX(0)' : 'translateX(100%)' }}
         >
           {/* Header */}
           <div className="planters-drawer-header">
             <img src={logo} alt="Planters Logo" style={{ height: '36px', width: 'auto', objectFit: 'contain' }} />
-            <button 
+            <button
               onClick={() => setMobileMenuOpen(false)}
               className="navbar-action-btn"
               aria-label="Close Menu"
@@ -174,40 +174,40 @@ function Navbar() {
 
           {/* Links list */}
           <nav className="planters-drawer-nav">
-            <NavLink 
-              to="/plants" 
+            <NavLink
+              to="/plants"
               onClick={() => setMobileMenuOpen(false)}
               className="navbar-link planters-drawer-link"
             >
               <span>Plants</span>
               <FiChevronRight size={18} />
             </NavLink>
-            <NavLink 
-              to="/seeds" 
+            <NavLink
+              to="/seeds"
               onClick={() => setMobileMenuOpen(false)}
               className="navbar-link planters-drawer-link"
             >
               <span>Seeds</span>
               <FiChevronRight size={18} />
             </NavLink>
-            <NavLink 
-              to="/planters" 
+            <NavLink
+              to="/planters"
               onClick={() => setMobileMenuOpen(false)}
               className="navbar-link planters-drawer-link"
             >
               <span>Planters</span>
               <FiChevronRight size={18} />
             </NavLink>
-            <NavLink 
-              to="/fertilizer" 
+            <NavLink
+              to="/fertilizer"
               onClick={() => setMobileMenuOpen(false)}
               className="navbar-link planters-drawer-link"
             >
               <span>Fertilizer</span>
               <FiChevronRight size={18} />
             </NavLink>
-            <NavLink 
-              to="/garden-decor" 
+            <NavLink
+              to="/garden-decor"
               onClick={() => setMobileMenuOpen(false)}
               className="navbar-link planters-drawer-link"
             >
