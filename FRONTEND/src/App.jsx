@@ -24,6 +24,8 @@ import Coupons from "./PAGES/admin/Coupons";
 import Reports from "./PAGES/admin/Reports";
 import Settings from "./PAGES/admin/Settings";
 import Payment from "./PAGES/Payment";
+import Cart from "./PAGES/Cart";
+import Aboutus from "./PAGES/Aboutus";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -56,7 +58,9 @@ function App() {
       />
       <Routes>
         <Route path="/payment" element={<Payment />} />
-       < Route path="/" element={<Home />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/about" element={<Aboutus />} />
+        <Route path="/" element={<Home />} />
         <Route path="/admin"  element={<SuperAdminLogin />} />
        <Route path="/dashboard" element={<AdminLayout />}>
     <Route index element={<Dashboard />} />
