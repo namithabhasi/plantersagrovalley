@@ -1,31 +1,23 @@
-
 import { Route, Routes } from 'react-router-dom';
 import './App.css'
 // importing toastify 
 import { ToastContainer, toast } from 'react-toastify';
 
 import './index.css';
-
+import Navbar from './COMPONENTS/Navbar';
+import Home from './PAGES/Home';
+import Footer from './COMPONENTS/Footer';
 
 function App() {
-
-  // const notify = () => toast.success("Toastify is working perfectly!");
   return (
     <>
+      <Navbar />
+      
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+      <Footer />
 
       {/* toast container for creating toast */}
       <ToastContainer
@@ -39,10 +31,9 @@ function App() {
         draggable
         pauseOnHover
         theme="light"
-
       />
     </>
   )
 }
 
-export default App
+export default App;

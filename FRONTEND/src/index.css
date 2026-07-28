@@ -1,252 +1,1320 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   PLANTERS AGRO VALLEY - DESIGN SYSTEM (EXACT PLANTS GURU SPECIFICATIONS)
+   ========================================================================== */
+
+/* ==========================================================================
+   2. Design Tokens & CSS Variables
+   ========================================================================== */
 :root {
-  /* Brand Colors */
-  --primary-color: #06331F;       /* Dark Green (Announcement bar & buttons) */
-  --secondary-color: #EBF3EC;     /* Light Green (from the 3rd pic's section box) */
-  --third-color: #2E7D32;         /* Green requested for navbar & highlights */
-  --accent-color: #dd3e21;        /* Red/Orange (from the price/discount tags earlier) */
-  
-  /* Background & Text */
-  --bg-color: #FFFFFF;            /* Standard white background */
-  --text-main: #212326;           /* Main dark text (from the Header) */
-  --text-muted: #2D2D2D;          /* Slightly softer text (from the List Items) */
+  /* --- Color Palette (Extracted from Plants Guru DevTools) --- */
+  --color-primary-dark: #06492D;
+  /* Exact Plants Guru Dark Green */
+  --color-primary: #1b7a42;
+  /* Primary Leaf Green */
+  --color-primary-light: #2da15d;
+  /* Bright Accent Green */
+  --color-primary-subtle: #e8f5e9;
+  /* Soft Mint Tint */
+  --color-primary-bg: #f3f8f3;
+  /* Soft Off-White/Green Background */
 
-  /* Typography */
-  --font-main: 'Assistant', sans-serif; /* Font extracted from all screenshots */
+  /* Secondary & Accent Colors */
+  --color-accent: #e67e22;
+  /* Warm Orange / Sale Badge */
+  --color-accent-hover: #d35400;
+  --color-gold: #f39c12;
+  /* Star Ratings / Review Stars */
+  --color-danger: #e74c3c;
+  /* Wishlist / Discount Tag */
+  --color-success: #27ae60;
+
+  /* Neutral Tones */
+  --color-text-main: #2c3e50;
+  /* Primary Dark Slate Body Text */
+  --color-text-muted: #6c757d;
+  /* Muted Gray Secondary Text */
+  --color-text-light: #95a5a6;
+  /* Light Gray */
+  --color-bg-main: #ffffff;
+  /* Pure White Background */
+  --color-bg-secondary: #f8f9fa;
+  /* Card & Section Light Gray */
+  --color-border: #e2e8f0;
+  /* Light Border */
+
+  /* --- Typography (Exact Assistant & Poppins setup) --- */
+  --font-family-base: 'Assistant', sans-serif;
+  --font-family-heading: 'Poppins', sans-serif;
+
+  /* Letter Spacing & Line Heights */
+  --letter-spacing-nav: 3.6px;
+  /* Exact Plants Guru Header Spacing */
+  --letter-spacing-body: 0.78px;
+  /* Exact Plants Guru Body Spacing */
+  --line-height-tight: 1.2;
+  --line-height-nav: 32.4px;
+  --line-height-normal: 1.5;
+
+  /* Font Sizes */
+  --font-size-xs: 0.75rem;
+  /* 12px */
+  --font-size-sm: 0.875rem;
+  /* 14px - Announcement Bar & Meta */
+  --font-size-md: 1rem;
+  /* 16px - Base Text */
+  --font-size-lg: 1.125rem;
+  /* 18px - Nav Labels / Card Titles */
+  --font-size-xl: 1.25rem;
+  /* 20px */
+  --font-size-2xl: 1.5rem;
+  /* 24px - Section Titles */
+  --font-size-3xl: 2rem;
+  /* 32px */
+  --font-size-4xl: 2.5rem;
+  /* 40px - Hero Titles */
+
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* --- Spacing Scale --- */
+  --space-1: 0.25rem;
+  /* 4px */
+  --space-2: 0.5rem;
+  /* 8px */
+  --space-3: 0.75rem;
+  /* 12px */
+  --space-4: 1rem;
+  /* 16px */
+  --space-5: 1.25rem;
+  /* 20px */
+  --space-6: 1.5rem;
+  /* 24px */
+  --space-8: 2rem;
+  /* 32px */
+  --space-10: 2.5rem;
+  /* 40px */
+  --space-12: 3rem;
+  /* 48px */
+
+  /* --- Component Dimensions --- */
+  --card-min-width: 240px;
+  --card-max-width: 290px;
+  --card-image-height: 240px;
+  --category-circle-size: 110px;
+
+  /* --- Unified Border Radii (Strictly 3px) --- */
+  --radius-xs: 3px;
+  --radius-sm: 3px;
+  --radius-md: 3px;
+  --radius-lg: 3px;
+  --radius-xl: 3px;
+  --radius-full: 9999px;
+  /* Reserved only for circular category icons */
+
+  /* --- Box Shadows --- */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 12px 28px rgba(6, 73, 45, 0.18);
+
+  /* --- Transitions --- */
+  --transition-fast: all 0.2s ease;
+  --transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* =========================================
-   Feature/Benefits Box (3rd Picture)
-========================================= */
-.benefits-section {
-  background-color: var(--secondary-color);
-  border-radius: 8px; /* Slight rounding on the corners */
-  padding: 20px;
-  max-width: 465px; /* Matches the width from the inspector */
-}
-
-.benefits-title {
-  color: var(--primary-color);
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-
-.benefits-list {
-  list-style-type: none; /* Removes default bullets so you can use custom checkmarks */
-}
-
-.benefits-list li {
-  color: var(--text-muted);
-  font-size: 16px;
-  line-height: 22.4px; /* Exact height from inspector */
-  letter-spacing: 0.6px;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-/* =========================================
-   Product Card Container
-========================================= */
-.product-card {
-  width: 276px;
-  display: flex;
-  flex-direction: column;
-  font-family: 'Assistant', sans-serif;
-  background-color: #ffffff;
+/* ==========================================================================
+   3. CSS Reset & Global Base
+   ========================================================================== */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-/* =========================================
-   Media & Image
-========================================= */
-.product-media {
-  position: relative;
-  width: 100%;
-  height: 341px; /* Exact height from inspector */
-  overflow: hidden; /* Matches overflow: clip */
-  background-color: #f4f4f4; /* Default grey background for images */
-  margin-bottom: 12px;
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
 }
 
-.product-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-main);
+  background-color: var(--color-bg-main);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Headings (Poppins Normal) */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-family-heading);
+  color: var(--color-primary-dark);
+  font-weight: 400;
+  /* No boldness */
+  line-height: var(--line-height-tight);
+}
+
+h1 {
+  font-size: var(--font-size-4xl);
+}
+
+h2 {
+  font-size: var(--font-size-3xl);
+}
+
+h3 {
+  font-size: var(--font-size-2xl);
+}
+
+h4 {
+  font-size: var(--font-size-xl);
+}
+
+h5 {
+  font-size: var(--font-size-lg);
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-dark);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
   display: block;
 }
 
-.discount-badge {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background-color: #dd3e21; /* Match the red/orange from the image */
-  color: #ffffff;
-  padding: 4px 8px;
-  font-size: 12px;
-  font-weight: 600;
-  z-index: 2;
+/* ==========================================================================
+   4. Component Styles
+   ========================================================================== */
+
+/* --- Container --- */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
 }
 
-/* =========================================
-   Product Information
-========================================= */
-.product-info {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  /* Min-height ensures buttons line up even if titles are short */
-  min-height: 152px; 
+@media (min-width: 640px) {
+  .container {
+    max-width: 640px;
+  }
 }
 
-.product-title {
-  font-size: 16px;
-  line-height: 28.8px;
-  letter-spacing: 0.6px;
-  color: #06492D; /* Brand dark green */
-  text-decoration: none;
-  
-  /* Prevents text from overflowing to a third line */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
 }
 
-.product-title:hover {
-  text-decoration: underline;
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px;
+  }
 }
 
-/* =========================================
-   Pricing
-========================================= */
-.product-price-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 16px;
-  margin-bottom: 8px;
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1280px;
+    padding-left: var(--space-8);
+    padding-right: var(--space-8);
+  }
 }
 
-.price-old {
-  text-decoration: line-through;
-  color: #888888;
-}
 
-.price-new {
-  color: #dd3e21;
-  font-weight: 700;
-}
-
-.button--small {
-  /* Font & Text */
-  font-family: 'Poppins', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 2.4px;
-  line-height: 14.4px;
-  text-align: center;
+/* --- Navigation / Menu Label (Exact Inspector Match) --- */
+.nav-label {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-lg);
+  /* 18px */
+  font-weight: var(--font-weight-bold);
+  /* 700 */
+  color: var(--color-primary-dark);
+  /* #06492D */
+  letter-spacing: var(--letter-spacing-nav);
+  /* 3.6px */
+  line-height: var(--line-height-nav);
+  /* 32.4px */
   text-transform: uppercase;
+}
+
+/* --- Announcement Bar (Exact Inspector Match) --- */
+.announcement-bar {
+  background-color: var(--color-primary-dark);
+  /* #06492D */
+  color: #ffffff;
+  font-family: var(--font-family-base);
+  /* Assistant */
+  font-size: var(--font-size-sm);
+  /* 14px */
+  letter-spacing: var(--letter-spacing-body);
+  /* 0.78px */
+  text-align: center;
+  padding: var(--space-2) var(--space-4);
   white-space: nowrap;
-  word-spacing: 0px;
+}
 
-  /* Color & Background */
-  background-color: #06331F;
-  color: #FFFFFF;
-
-  /* Box */
-  height: 40px;
-  width: 276px;
-  border: 1px solid #06331F;
-  padding: 8px 20px 6px 20px;
-  min-height: 40px;
-  min-width: auto;
-  max-width: 100%;
-  box-sizing: border-box;
-
-  /* Positioning */
-  display: flex;
-  position: relative;
-  z-index: 1;
-  /* Top, bottom, left, right were 0px in relative positioning, which is the default, so they are omitted to keep your code clean */
-
-  /* Miscellaneous */
-  overflow: hidden;
-  cursor: pointer;
-
-  /* Effects */
-  transition: color 0.5s, transform 0.25s, opacity 0.25s;
+/* --- Section Headers --- */
+.section-header {
+  text-align: center;
+  margin-bottom: var(--space-8);
 }
 
 .section-title {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-family-heading);
   font-size: 40px;
+  /* Exact Plants Guru size */
+  font-weight: 400;
+  /* No boldness */
   letter-spacing: 0.6px;
   line-height: 52px;
+  color: var(--color-primary-dark);
+  display: block;
   text-align: center;
-  color: var(--primary-color); /* This uses the #06331F you set earlier */
 }
 
-.sub-nav-item {
-  font-family: 'Poppins', sans-serif;
-  font-size: 15px;
-  line-height: 21px;
-  color: #282828; /* The dark grey from the inspector */
-  text-decoration: none;
+/* --- Circular Category Grid --- */
+.category-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-6);
+  padding: var(--space-4) 0;
+}
+
+.category-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: var(--category-circle-size);
+  text-align: center;
   cursor: pointer;
 }
 
-.sub-nav-item:hover {
-  /* Optional: adds a subtle interaction when users hover over dropdown items */
-  text-decoration: underline; 
+.category-image-wrapper {
+  width: var(--category-circle-size);
+  height: var(--category-circle-size);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 3px solid var(--color-primary-subtle);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-normal);
+  background-color: var(--color-bg-secondary);
 }
 
-/* =========================================
-   Category Banners & Overlays
-========================================= */
-.category-overlay-title {
-  font-family: 'Poppins', sans-serif;
-  font-size: 20px;
-  letter-spacing: 0.6px;
-  line-height: 26px;
+.category-item:hover .category-image-wrapper {
+  border-color: var(--color-primary-dark);
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: var(--shadow-md);
+}
+
+.category-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.category-name {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-main);
+}
+
+/* --- Product Cards Grid & Card Styling --- */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--card-min-width), 1fr));
+  gap: var(--space-6);
+  padding: var(--space-4) 0;
+}
+
+.product-card {
+  background: var(--color-bg-main);
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  overflow: hidden;
+  transition: var(--transition-normal);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  /* 12px gap between card and separate button */
+  height: 100%;
+}
+
+.product-card-wrapper:hover .product-card-image img {
+  transform: scale(1.07);
+}
+
+.product-card:hover {
+  /* No whole card hover effects */
+}
+
+/* Badges */
+.card-badge {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  background-color: var(--color-accent);
+  color: #fff;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  padding: var(--space-1) var(--space-2);
+  border-radius: 3px;
+  z-index: 2;
+  text-transform: uppercase;
+}
+
+.card-badge.sale {
+  background-color: var(--color-danger);
+}
+
+/* Wishlist Button */
+.wishlist-btn {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 32px;
+  height: 32px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  color: var(--color-text-muted);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-fast);
+}
+
+.wishlist-btn:hover {
+  color: var(--color-danger);
+  transform: scale(1.1);
+  background: #fff;
+}
+
+/* Product Card Image */
+.product-card-image {
+  position: relative;
+  width: 100%;
+  height: var(--card-image-height);
+  background-color: var(--color-bg-secondary);
+  overflow: hidden;
+}
+
+.product-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.product-card:hover .product-card-image img {
+  transform: scale(1.07);
+}
+
+/* Card Content Details */
+.product-card-content {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.product-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-main);
+  margin-bottom: var(--space-2);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-rating {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-size-xs);
+  color: var(--color-gold);
+  margin-bottom: var(--space-2);
+}
+
+/* Pricing Row */
+.product-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-top: auto;
+  margin-bottom: var(--space-3);
+}
+
+.price-current {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-dark);
+}
+
+.price-current.sale {
+  color: var(--color-danger);
+}
+
+.price-original {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-light);
+  text-decoration: line-through;
+}
+
+/* Button Components */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  border-radius: 3px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  width: 100%;
+  text-decoration: none !important;
+}
+
+.btn-primary {
+  background-color: var(--color-primary-dark) !important;
+  color: #ffffff !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary) !important;
+  color: #ffffff !important;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Inputs & Form Controls */
+input,
+select,
+textarea {
+  border-radius: 3px;
+  border: 1px solid var(--color-border);
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+}
+
+/* ==========================================================================
+   5. Footer Specs
+   ========================================================================== */
+.footer {
+  background-color: var(--color-primary-dark);
+  color: #e2e8f0;
+  padding: var(--space-10) 0 var(--space-6) 0;
+  margin-top: var(--space-12);
+}
+
+.footer a {
+  color: #cbd5e1;
+}
+
+.footer a:hover {
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   6. Responsive Media Queries
+   ========================================================================== */
+@media (max-width: 768px) {
+  :root {
+    --card-min-width: 160px;
+    --card-image-height: 170px;
+    --category-circle-size: 85px;
+    --font-size-4xl: 1.85rem;
+    --font-size-3xl: 1.5rem;
+  }
+
+  .product-grid {
+    gap: var(--space-3);
+  }
+
+  .product-card-content {
+    padding: var(--space-3);
+  }
+}
+
+/* Standard Container Rule */
+.container,
+div.container {
+  width: 100% !important;
+  max-width: 1240px !important;
+  /* Maximum content width */
+  margin: 0 auto !important;
+  /* Centers the content */
+  padding-left: 1.8rem !important;
+  /* 32px Left Padding (Desktop) */
+  padding-right: 1.8rem !important;
+  /* 32px Right Padding (Desktop) */
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+
+  .container,
+  div.container {
+    padding-left: 1.5rem !important;
+    /* 24px Left Padding (Tablet) */
+    padding-right: 1.5rem !important;
+    /* 24px Right Padding (Tablet) */
+  }
+}
+
+@media (max-width: 768px) {
+
+  .container,
+  div.container {
+    padding-left: 1rem !important;
+    /* 16px Left Padding (Mobile) */
+    padding-right: 1rem !important;
+    /* 16px Right Padding (Mobile) */
+  }
+}
+
+/* ==========================================================================
+   7. Custom Navbar Component Styles
+   ========================================================================== */
+.navbar-link {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-md);
+  /* 16px */
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-dark);
+  transition: var(--transition-fast);
+  text-decoration: none;
   white-space: nowrap;
-  color: #FFFFFF;
+  text-transform: uppercase;
+  /* Force capital letters */
+  letter-spacing: 1.5px;
+  /* Clean spacing for uppercase layout */
 }
 
-/* =========================================
-   Product Card Typography
-========================================= */
-.product-card-title {
-  font-family: 'Assistant', sans-serif;
-  font-size: 16px;
-  letter-spacing: 0.6px;
-  line-height: 28.8px;
-  color: #212326;
+.navbar-link:hover,
+.navbar-link.active {
+  color: var(--color-primary);
+}
+
+.planters-nav-links .navbar-link {
+  position: relative;
+  padding-bottom: 4px;
+}
+
+.planters-nav-links .navbar-link::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  /* Super thin underline */
+  bottom: 0;
+  left: 0;
+  background-color: currentColor;
+  /* Matches the text color dynamically */
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+
+.planters-nav-links .navbar-link:hover::after,
+.planters-nav-links .navbar-link.active::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+
+.navbar-action-btn {
+  color: var(--color-text-main);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-2);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.navbar-action-btn:hover {
+  color: var(--color-primary);
+  background-color: var(--color-bg-secondary);
+}
+
+.planters-cart-btn {
+  position: relative;
+  /* Anchors the absolute badge overlay to the cart button */
+}
+
+.navbar-cart-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: var(--color-primary-dark);
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: var(--font-weight-bold);
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- Layouts & Spacing for Navbar --- */
+.planters-header {
+  position: relative;
+  background-color: #ffffff;
+  border-bottom: 1px solid #f3f4f6;
+  width: 100%;
+  z-index: 40;
+  box-sizing: border-box;
+  overflow: hidden;
+  /* Clips the background bush image cleanly */
+}
+
+.planters-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.planters-nav-bush {
+  position: absolute;
+  left: 0;
+  /* Aligned to the extreme left border of the navbar */
+  top: 0;
+  width: 48px;
+  /* Optimized width on mobile to prevent overlapping with logo */
+  height: auto;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 1;
+  /* Fully opaque, no fading */
+  transform: rotate(90deg) translateY(-100%) scale(1.15);
+  /* Rotated 90deg and scaled up slightly to clip empty padding gaps */
+  transform-origin: top left;
+}
+
+@media (min-width: 1024px) {
+  .planters-nav-bush {
+    width: 110px;
+    /* Matches the vertical space on desktop with padding overflow */
+  }
+}
+
+.planters-logo-container {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  z-index: 10;
+  margin-left: 12px;
+  /* Small offset on mobile to clear absolute corner bush */
+  transition: margin-left 0.25s ease;
+}
+
+.planters-logo {
+  height: 28px;
+  /* Slimmed height for mobile screens to maximize side spacing */
+  width: auto;
+  display: block;
+  object-fit: contain;
+  transition: height 0.2s ease;
+  flex-shrink: 0;
+}
+
+.planters-nav {
+  display: none;
+  align-items: center;
+  justify-content: flex-end;
+  /* Align links towards the right */
+  flex-grow: 1;
+  margin-right: 48px;
+  /* Fixed space between menus and icons */
+}
+
+.planters-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  /* Balanced spacing between individual menu items */
+}
+
+.planters-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* Tighter gap on mobile to prevent squishing the central area */
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.planters-profile-btn {
+  display: none;
+}
+
+.planters-hamburger {
+  display: flex;
+}
+
+@media (min-width: 768px) {
+  .planters-header .container {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .planters-nav-bush {
+    width: 76px;
+    /* Restore original mobile/tablet width on tablet screens */
+  }
+
+  .planters-logo-container {
+    margin-left: 0;
+    /* Reset mobile margin offset */
+  }
+
+  .planters-logo {
+    height: 44px;
+    /* Optimized height for cropped logo on tablet */
+  }
+
+  .planters-profile-btn {
+    display: flex;
+  }
+
+  .planters-actions {
+    gap: 20px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .planters-header .container {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .planters-logo {
+    height: 52px;
+    /* Optimized height for cropped logo on desktop to keep it visually prominent without changing navbar height */
+  }
+
+  .planters-nav {
+    display: flex;
+  }
+
+  .planters-hamburger {
+    display: none;
+  }
+}
+
+/* --- Mobile Drawer Layout --- */
+.planters-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: none;
+}
+
+.planters-drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.planters-drawer-panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 320px;
+  max-width: 85vw;
+  background-color: #ffffff;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  box-sizing: border-box;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-out;
+}
+
+.planters-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+}
+
+.planters-drawer-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.planters-drawer-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #f9fafb;
+}
+
+/* ==========================================================================
+   8. Hero Carousel (Plants Guru Style & Exact Height Specs)
+   ========================================================================== */
+.hero-carousel {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--color-bg-secondary);
+  aspect-ratio: 16 / 9;
+  /* 1.77:1 ratio on small screens to give more vertical space */
+}
+
+@media (min-width: 480px) {
+  .hero-carousel {
+    aspect-ratio: 16 / 8;
+    /* 2:1 ratio */
+  }
+}
+
+@media (min-width: 768px) {
+  .hero-carousel {
+    aspect-ratio: 16 / 7;
+    /* 2.28:1 ratio */
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-carousel {
+    aspect-ratio: 21 / 9;
+    /* 2.33:1 ratio */
+  }
+}
+
+@media (min-width: 1400px) {
+  .hero-carousel {
+    aspect-ratio: auto;
+    height: 560px;
+    /* Cap height on very large screens */
+  }
+}
+
+.carousel-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+  z-index: 1;
+}
+
+.carousel-slide.active {
+  opacity: 1;
+  visibility: visible;
+  z-index: 2;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.carousel-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 48px;
+  /* High position similar to plants guru bottom spacing */
+  background: rgba(0, 0, 0, 0.03);
+  /* Extremely soft dark layer for better visual legibility */
+  z-index: 3;
+}
+
+.carousel-overlay .btn {
+  width: auto;
+  /* Prevent stretching to 100% on the hero overlay */
+  padding: 12px 36px;
+  font-family: var(--font-family-heading);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  box-shadow: var(--shadow-md);
   text-decoration: none;
 }
 
-.product-card-title:hover {
-  text-decoration: underline;
+.carousel-overlay .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
 }
 
-/* =========================================
-   Small Captions & Microcopy
-========================================= */
-.shipping-caption {
-  font-family: 'Assistant', sans-serif;
-  font-size: 12px;
-  letter-spacing: 0.7px;
-  line-height: 20.4px;
-  color: #212326;
+/* Indicators */
+.carousel-dots {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
 }
 
-/* =========================================
-   Feature Lists
-========================================= */
-.feature-list-item {
-  font-family: 'Assistant', sans-serif;
+.carousel-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  padding: 0;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  outline: none;
+}
+
+.carousel-dot.active {
+  background-color: var(--color-primary-dark);
+  width: 24px;
+  /* Extended pill-shape indication */
+}
+
+@media (max-width: 768px) {
+  .carousel-overlay .btn {
+    padding: 8px 18px;
+    font-size: var(--font-size-xs);
+    letter-spacing: 1px;
+  }
+
+  .carousel-overlay {
+    padding-bottom: 24px;
+  }
+
+  .carousel-dots {
+    bottom: 8px;
+    gap: 6px;
+  }
+
+  .carousel-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .carousel-dot.active {
+    width: 18px;
+  }
+}
+
+/* ==========================================================================
+   9. Square Category Section (Plants Guru Style)
+   ========================================================================== */
+.plantsguru-category-section {
+  padding: var(--space-10) 0;
+  background-color: var(--color-bg-main);
+}
+
+.plantsguru-category-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 192.442px);
+  gap: 20px;
+  justify-content: center;
+}
+
+@media (max-width: 1300px) {
+  .plantsguru-category-grid {
+    grid-template-columns: repeat(3, 192.442px);
+  }
+}
+
+@media (max-width: 768px) {
+  .plantsguru-category-grid {
+    grid-template-columns: repeat(2, 192.442px);
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .plantsguru-category-grid {
+    grid-template-columns: repeat(2, 145px);
+    gap: 12px;
+  }
+}
+
+.plantsguru-category-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+  display: block;
+}
+
+@media (min-width: 481px) {
+  .plantsguru-category-card {
+    width: 192.442px;
+    height: 192.442px;
+  }
+}
+
+@media (max-width: 480px) {
+  .plantsguru-category-card {
+    width: 145px;
+    height: 145px;
+  }
+}
+
+.plantsguru-category-card:hover {
+  transform: translateY(-4px);
+}
+
+.plantsguru-category-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.plantsguru-category-card:hover .plantsguru-category-image {
+  transform: scale(1.06);
+}
+
+.plantsguru-category-text {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 20px 30px 20px 30px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.25) 50%, rgba(0, 0, 0, 0) 100%);
+  box-sizing: border-box;
+  transition: background-color 0.3s ease;
+}
+
+/* Plants Guru Hover Effect: text-container highlight or gradient change */
+.plantsguru-category-label {
+  font-family: var(--font-family-base);
+  /* Assistant */
   font-size: 16px;
+  color: #FFFFFF;
   letter-spacing: 0.6px;
-  line-height: 22.4px;
+  line-height: 17.6px;
+  text-align: center;
+  font-weight: 400;
+  /* No boldness */
+  margin: 0;
+  text-transform: capitalize;
+}
+
+@media (max-width: 480px) {
+  .plantsguru-category-text {
+    padding: 10px 15px 15px 15px;
+  }
+
+  .plantsguru-category-label {
+    font-size: 14px;
+    line-height: 15.4px;
+  }
+}
+
+.best-selling-section {
+  padding: var(--space-10) 0;
+  background-color: var(--color-bg-main);
+}
+
+.best-selling-section.alt-bg {
+  background-color: var(--color-primary-bg);
+}
+
+/* --- Soil Nourish Section --- */
+.soil-nourish-section {
+  position: relative;
+  background-image: url('./assets/background.png');
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
+  padding: 100px 0;
+  display: flex;
+  align-items: center;
+  min-height: 480px;
+  overflow: hidden;
+  border-top: 1px solid var(--color-border);
+}
+
+.soil-content-wrapper {
+  max-width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 2;
+  position: relative;
+}
+
+.soil-tag {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: var(--space-2);
+}
+
+.soil-title {
+  font-family: var(--font-family-heading);
+  font-size: 44px;
+  font-weight: 600;
+  line-height: 52px;
+  color: var(--color-primary-dark);
+  margin-bottom: var(--space-1);
+}
+
+.soil-subtitle {
+  font-family: var(--font-family-heading);
+  font-size: 28px;
+  font-weight: 300;
+  line-height: 36px;
+  color: var(--color-primary-light);
+  margin-bottom: var(--space-4);
+}
+
+.soil-description {
+  font-family: var(--font-family-base);
+  font-size: 16px;
+  line-height: var(--line-height-normal);
+  color: var(--color-text-main);
+  margin-bottom: var(--space-6);
+  max-width: 480px;
+}
+
+.soil-content-wrapper .btn {
+  width: auto;
+}
+
+/* Responsive styles for Soil Nourish Section */
+@media (max-width: 992px) {
+  .soil-content-wrapper {
+    max-width: 65%;
+  }
+
+  .soil-title {
+    font-size: 36px;
+    line-height: 44px;
+  }
+
+  .soil-subtitle {
+    font-size: 24px;
+    line-height: 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  .soil-nourish-section {
+    padding: var(--space-8) 0;
+    min-height: 400px;
+    background-position: center;
+  }
+
+  .soil-content-wrapper {
+    max-width: 100%;
+    align-items: center;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: var(--space-6);
+    border-radius: 6px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .soil-title {
+    font-size: 28px;
+    line-height: 36px;
+  }
+
+  .soil-subtitle {
+    font-size: 20px;
+    line-height: 28px;
+    margin-bottom: var(--space-3);
+  }
+
+  .soil-description {
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-4);
+  }
+
+  .soil-content-wrapper .btn {
+    width: 100%;
+  }
+}
+
+/* --- Custom Highlights for Sections --- */
+.corporate-tag {
+  color: #16a34a !important;
+  /* Bright, vibrant kelly/forest green */
+}
+
+.feature-title {
+  color: #1b7a42 !important;
+  /* Premium Leaf Green */
 }
