@@ -712,9 +712,81 @@ div.container {
   width: 100%;
   z-index: 100;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: visible; /* Changed to visible to let mega-dropdown overlay cleanly */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  /* Clips the background bush image cleanly */
+}
+
+/* --- Mega Dropdown menu styling --- */
+.navbar-item-with-dropdown {
+  position: static; /* Allows the absolute dropdown panel to span the full header width */
+}
+
+.planters-mega-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #f7faf6; /* Soft green backdrop matching layout image */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.25s ease-in-out;
+  z-index: 999;
+  padding: 2.5rem 0;
+}
+
+.navbar-item-with-dropdown:hover .planters-mega-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.mega-dropdown-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2rem;
+}
+
+.mega-dropdown-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.mega-dropdown-title {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-primary-dark);
+  letter-spacing: 1px;
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  padding-bottom: 0.5rem;
+}
+
+.mega-dropdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.mega-dropdown-list li a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-main);
+  text-decoration: none;
+  transition: color var(--transition-fast), padding-left var(--transition-fast);
+  display: inline-block;
+}
+
+.mega-dropdown-list li a:hover {
+  color: var(--color-primary);
+  padding-left: 2px;
 }
 
 .planters-header .container {

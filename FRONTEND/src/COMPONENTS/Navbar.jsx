@@ -28,9 +28,73 @@ function Navbar() {
         {/* Center: Desktop Navigation Links (Clean layout with proper spacing and no line separators) */}
         <nav className="planters-nav">
           <div className="planters-nav-links">
-            <NavLink to="/plants" className="navbar-link">
-              Plants
-            </NavLink>
+            <div className="navbar-item-with-dropdown">
+              <NavLink to="/plants" className="navbar-link">
+                Plants
+              </NavLink>
+              
+              {/* Mega Dropdown Menu */}
+              <div className="planters-mega-dropdown">
+                <div className="container mega-dropdown-grid">
+                  
+                  {/* Column 1: Plants by Type */}
+                  <div className="mega-dropdown-col">
+                    <h4 className="mega-dropdown-title">Plants By Type</h4>
+                    <ul className="mega-dropdown-list">
+                      <li><Link to="/plants/air-plants">Air Plants</Link></li>
+                      <li><Link to="/plants/aquatic-plants">Aquatic Plants</Link></li>
+                      <li><Link to="/plants/avenue-trees">Avenue Trees</Link></li>
+                      <li><Link to="/plants/bamboos">Bamboos</Link></li>
+                    </ul>
+                  </div>
+
+                  {/* Column 2: Plants by Feature */}
+                  <div className="mega-dropdown-col">
+                    <h4 className="mega-dropdown-title">Plants By Feature</h4>
+                    <ul className="mega-dropdown-list">
+                      <li><Link to="/plants/air-purifiers">Air Purifier Plants</Link></li>
+                      <li><Link to="/plants/fragrant">Fragrant Plants</Link></li>
+                      <li><Link to="/plants/insect-repellents">Insect Repellents Plants</Link></li>
+                      <li><Link to="/plants/lucky-bamboos">Lucky Bamboos</Link></li>
+                    </ul>
+                  </div>
+
+                  {/* Column 3: Plants by Location */}
+                  <div className="mega-dropdown-col">
+                    <h4 className="mega-dropdown-title">Plants By Location</h4>
+                    <ul className="mega-dropdown-list">
+                      <li><Link to="/plants/indoor">Indoor Plants</Link></li>
+                      <li><Link to="/plants/outdoor">Outdoor Plants</Link></li>
+                      <li><Link to="/plants/balcony">Plants For Balcony</Link></li>
+                      <li><Link to="/plants/bedroom">Plants for Bedroom</Link></li>
+                    </ul>
+                  </div>
+
+                  {/* Column 4: Seasonal Plants */}
+                  <div className="mega-dropdown-col">
+                    <h4 className="mega-dropdown-title">Seasonal Plants</h4>
+                    <ul className="mega-dropdown-list">
+                      <li><Link to="/plants/annual-flowers">Annual Flower Plants</Link></li>
+                      <li><Link to="/plants/monsoon-flowers">Monsoon Flower Plants</Link></li>
+                      <li><Link to="/plants/winter-flowers">Winter Flower Plants</Link></li>
+                      <li><Link to="/plants/summer-flowers">Summer Flower Plants</Link></li>
+                    </ul>
+                  </div>
+
+                  {/* Column 5: Top 10 Plants */}
+                  <div className="mega-dropdown-col">
+                    <h4 className="mega-dropdown-title">Top 10 Plants</h4>
+                    <ul className="mega-dropdown-list">
+                      <li><Link to="/plants/top-10-air-purifier">Top 10 Air Purifier Plants</Link></li>
+                      <li><Link to="/plants/top-10-flowering">Top 10 Flowering Plants</Link></li>
+                      <li><Link to="/plants/top-10-fragrant">Top 10 Fragrant Plants</Link></li>
+                      <li><Link to="/plants/top-10-hardy">Top 10 Hardy Plants</Link></li>
+                    </ul>
+                  </div>
+
+                </div>
+              </div>
+            </div>
             <NavLink to="/seeds" className="navbar-link">
               Seeds
             </NavLink>
