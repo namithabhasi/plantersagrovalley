@@ -19,7 +19,11 @@
     "axios": "^1.18.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+<<<<<<< HEAD
+    "react-icons": "^5.7.0",
+=======
     "react-redux": "^9.3.0",
+>>>>>>> 9ebc4216d1fc78b77b712866a1bcb8e24bbe8d5f
     "react-router-dom": "^7.18.1",
     "react-toastify": "^11.1.0",
     "recharts": "^3.10.0",
