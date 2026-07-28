@@ -1,5 +1,6 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
+import { useNavigate } from 'react-router-dom';
 import { FiX, FiMinus, FiPlus, FiTrash2, FiShoppingBag, FiArrowRight } from 'react-icons/fi';
 
 // Import recommendation assets
@@ -51,6 +52,8 @@ function Checkout() {
     updateQuantity,
     cartSubtotal,
   } = useCart();
+
+  const navigate = useNavigate();
 
   // Calculate amount remaining for free shipping
   const amountToFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - cartSubtotal);
@@ -231,10 +234,24 @@ function Checkout() {
             </p>
 
             <div className="cart-action-buttons">
-              <button className="btn btn-primary" style={{ flexGrow: 1, borderRadius: '3px' }}>
+              <button
+                onClick={() => {
+                  closeCart();
+                  navigate('/payment');
+                }}
+                className="btn btn-primary"
+                style={{ flexGrow: 1, borderRadius: '3px' }}
+              >
                 CHECK OUT
               </button>
-              <button className="btn btn-outline-primary" style={{ flexGrow: 1, borderRadius: '3px' }}>
+              <button
+                onClick={() => {
+                  closeCart();
+                  navigate('/');
+                }}
+                className="btn btn-outline-primary"
+                style={{ flexGrow: 1, borderRadius: '3px' }}
+              >
                 VIEW CART
               </button>
             </div>

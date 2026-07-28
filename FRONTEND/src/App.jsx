@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import './App.css'
 // importing toastify 
 import {  toast } from 'react-toastify';
@@ -23,13 +23,19 @@ import Orders from "./PAGES/admin/Orders";
 import Coupons from "./PAGES/admin/Coupons";
 import Reports from "./PAGES/admin/Reports";
 import Settings from "./PAGES/admin/Settings";
+import Payment from "./PAGES/Payment";
 
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
+  const location = useLocation();
+  const hideNavbarFooter = location.pathname.startsWith('/dashboard') || 
+                           location.pathname === '/admin' || 
+                           location.pathname === '/payment';
+
   return (
     <CartProvider>
-      <Navbar />
+      {!hideNavbarFooter && <Navbar />}
       <Checkout />
 
 
@@ -49,7 +55,7 @@ function App() {
         theme="light"
       />
       <Routes>
-       
+        <Route path="/payment" element={<Payment />} />
        < Route path="/" element={<Home />} />
         <Route path="/admin"  element={<SuperAdminLogin />} />
        <Route path="/dashboard" element={<AdminLayout />}>
@@ -68,7 +74,7 @@ function App() {
       <Route path="settings" element={<Settings />} />
      </Route>
       </Routes>
- <Footer />
+ {!hideNavbarFooter && <Footer />}
       <ToastContainer />
     </CartProvider>
   );
