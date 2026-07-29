@@ -230,9 +230,9 @@ function Navbar() {
           </button>
 
           {/* Profile Icon */}
-          <button className="navbar-action-btn planters-profile-btn" aria-label="Account">
+          <Link to="/signin" className="navbar-action-btn planters-profile-btn flex items-center justify-center" aria-label="Account">
             <FiUser size={22} />
-          </button>
+          </Link>
 
           {/* Cart Icon with badge */}
           <button
