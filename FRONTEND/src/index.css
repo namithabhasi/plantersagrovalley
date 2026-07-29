@@ -541,6 +541,68 @@ textarea {
 /* ==========================================================================
    5. Footer Specs
    ========================================================================== */
+footer {
+  padding-top: 45px !important;
+  padding-bottom: 45px !important;
+}
+
+@media (min-width: 768px) {
+  footer {
+    padding-top: 65px !important;
+    padding-bottom: 65px !important;
+  }
+}
+
+footer h3 {
+  color: #ffffff !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 2px !important;
+}
+
+@media (min-width: 640px) {
+  footer h3 {
+    font-size: 14px !important;
+  }
+}
+
+footer a {
+  color: #ffffff !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  transition: color 0.2s ease !important;
+}
+
+@media (min-width: 640px) {
+  footer a {
+    font-size: 13px !important;
+  }
+}
+
+footer a:hover {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.footer-newsletter-input-wrapper {
+  margin-top: 16px !important;
+}
+
+.footer-newsletter-text {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 12px !important;
+  margin-top: 24px !important;
+}
+
+@media (min-width: 640px) {
+  .footer-newsletter-text {
+    font-size: 13px !important;
+  }
+}
+
+.footer-newsletter-socials {
+  margin-top: 32px !important;
+}
 
 
 

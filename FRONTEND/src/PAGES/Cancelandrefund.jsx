@@ -7,181 +7,118 @@ function Cancelandrefund() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white py-12 font-[var(--font-family-base)] select-none">
-      <div className="container mx-auto px-6 md:px-12 max-w-4xl">
-        
-        {/* Header Section - Centered */}
-        <div className="text-center mb-12">
-          <span className="text-xs uppercase tracking-[3px] text-[var(--color-primary)] font-semibold mb-2 block">
-            Planters Agro Valley
-          </span>
-          <h1 className="text-4xl font-[var(--font-family-heading)] font-semibold text-gray-900 tracking-tight">
-            Cancellation & Refund Policy
-          </h1>
-          {/* Centered green divider line */}
-          <span className="inline-block w-16 h-1 bg-[var(--color-primary)] mt-4 rounded-full"></span>
-        </div>
-
-        {/* Content Wrapper - Plain text layout, no background boxes, borders, or shadows */}
-        <div className="space-y-8 select-text">
+    <div className="min-h-screen bg-white text-gray-800 font-[var(--font-family-base)] py-12 md:py-16">
+      <div className="container mx-auto flex justify-center">
+        <div className="w-full max-w-[680px] flex flex-col gap-8">
           
-          <p className="text-lg text-gray-700 leading-relaxed font-light">
-            At Planters Agro Valley, we care about your satisfaction and always aim to deliver fresh, healthy, and high-quality products. However, we understand that there might be situations where you need a refund, replacement, or want to return a product. Below is our simple and clear policy:
-          </p>
-
-          <hr className="border-gray-100" />
-
-          {/* Section 1: Eligible for Refund With Return */}
-          <div className="space-y-4">
-            <h2 className="text-xl font-[var(--font-family-heading)] font-semibold text-gray-900 tracking-wide">
-              1. Eligible for Refund With Return
-            </h2>
-            <p className="text-gray-600 leading-relaxed font-light">
-              If the product is delivered and you:
+          {/* Header Section - Centered */}
+          <div className="border-b border-gray-100 pb-5 text-center">
+            <h1 className="text-[28px] font-[var(--font-family-heading)] font-normal text-gray-900 tracking-wide">
+              Cancellation &amp; Refund Policy
+            </h1>
+            <p className="text-[11px] text-gray-400 font-light mt-1.5 tracking-wider">
+              Last Updated: July 2026
             </p>
-            <ul className="space-y-3 text-gray-600 leading-relaxed font-light pl-4">
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>Do not like the product,</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>No longer want it, or</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>Ordered it by mistake.</span>
-              </li>
-            </ul>
-            <p className="text-gray-600 leading-relaxed font-light pt-2">
-              You are still allowed to return it under the following conditions:
-            </p>
-            <ul className="space-y-4 text-gray-600 leading-relaxed font-light">
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>The return request must be made within 7 days of delivery.</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>The product must be unused and in the same condition as delivered.</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>You must arrange and bear the return shipping charges yourself.</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>You must share photos or a short video of the product and the packaging at the time of booking the return shipment, as proof of its unused and good condition.</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>
-                  Send the product to: <strong className="font-normal text-gray-800">Planters Agro Valley - GAT No 589, Tamhane Vasti, Solapur - Pune Hwy, Theur Phata, Infront of Jijau Garden, Pune, Maharashtra, 412201</strong>
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>After we receive the product in acceptable and unused condition, we will initiate the refund.</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>The refund may take up to 5 working days to reflect in your account.</span>
-              </li>
-            </ul>
           </div>
 
-          <hr className="border-gray-100" />
-
-          {/* Section 2: Eligible for Refund or Replacement Without Return */}
-          <div className="space-y-4">
-            <h2 className="text-xl font-[var(--font-family-heading)] font-semibold text-gray-900 tracking-wide">
-              2. Eligible for Refund or Replacement Without Return
-            </h2>
-            <p className="text-gray-600 leading-relaxed font-light">
-              You qualify for a refund or a replacement without returning the product if:
-            </p>
-            <ul className="space-y-4 text-gray-600 leading-relaxed font-light">
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>The product arrives damaged or defective.</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>The product is not in usable condition due to transit damage.</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>The wrong product is delivered. (Note: Slight variations in color, natural plant shape, or plants delivered without flowers are normal and are not considered wrong products.)</span>
-              </li>
-            </ul>
-            <p className="text-gray-600 leading-relaxed font-light">
-              Since our plants are perishable items, we do not ask for returns in such cases.
+          {/* Content Wrapper */}
+          <div className="flex flex-col gap-6 text-[13px] leading-relaxed text-gray-500 font-light select-text">
+            
+            <p className="text-[14px] text-gray-600 leading-relaxed font-light">
+              At Planters Agro Valley, we care about your satisfaction and always aim to deliver fresh, healthy, and high-quality products. However, we understand that there might be situations where you need a refund, replacement, or want to return a product. Below is our simple and clear policy:
             </p>
 
-            <h4 className="text-sm font-semibold text-gray-800 tracking-wide uppercase pt-4">
-              Procedure for Replacement or Refund:
-            </h4>
-            <ul className="space-y-4 text-gray-600 leading-relaxed font-light">
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>
-                  Send us photos of the damaged plants through your registered email ID to <a href="mailto:care@plantersagrovalley.com" className="text-[var(--color-primary)] hover:underline font-normal">care@plantersagrovalley.com</a>.
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>
+            <hr className="border-gray-100" />
+
+            {/* Section 1: Eligible for Refund With Return */}
+            <section className="flex flex-col gap-2">
+              <h4 className="!text-base !font-normal text-[#06492D] font-[var(--font-family-heading)] leading-snug">
+                1. Eligible for Refund With Return
+              </h4>
+              <p>
+                If the product is delivered and you:
+              </p>
+              <ul className="space-y-2 pl-4 list-disc marker:text-[#06492D]">
+                <li>Do not like the product,</li>
+                <li>No longer want it, or</li>
+                <li>Ordered it by mistake.</li>
+              </ul>
+              <p className="pt-2">
+                You are still allowed to return it under the following conditions:
+              </p>
+              <ul className="space-y-2.5 pl-4 list-disc marker:text-[#06492D]">
+                <li>The return request must be made within 7 days of delivery.</li>
+                <li>The product must be unused and in the same condition as delivered.</li>
+                <li>You must arrange and bear the return shipping charges yourself.</li>
+                <li>You must share photos or a short video of the product and the packaging at the time of booking the return shipment, as proof of its unused and good condition.</li>
+                <li>
+                  Send the product to: <span className="font-normal text-gray-700">Planters Agro Valley - GAT No 589, Tamhane Vasti, Solapur - Pune Hwy, Theur Phata, Infront of Jijau Garden, Pune, Maharashtra, 412201</span>
+                </li>
+                <li>After we receive the product in acceptable and unused condition, we will initiate the refund.</li>
+                <li>The refund may take up to 5 working days to reflect in your account.</li>
+              </ul>
+            </section>
+
+            <hr className="border-gray-100" />
+
+            {/* Section 2: Eligible for Refund or Replacement Without Return */}
+            <section className="flex flex-col gap-2">
+              <h4 className="!text-base !font-normal text-[#06492D] font-[var(--font-family-heading)] leading-snug">
+                2. Eligible for Refund or Replacement Without Return
+              </h4>
+              <p>
+                You qualify for a refund or a replacement without returning the product if:
+              </p>
+              <ul className="space-y-2 pl-4 list-disc marker:text-[#06492D]">
+                <li>The product arrives damaged or defective.</li>
+                <li>The product is not in usable condition due to transit damage.</li>
+                <li>The wrong product is delivered. (Note: Slight variations in color, natural plant shape, or plants delivered without flowers are normal and are not considered wrong products.)</li>
+              </ul>
+              <p>
+                Since our plants are perishable items, we do not ask for returns in such cases.
+              </p>
+
+              <h5 className="!text-[13px] !font-medium text-gray-800 tracking-wide uppercase pt-2">
+                Procedure for Replacement or Refund:
+              </h5>
+              <ul className="space-y-2.5 pl-4 list-disc marker:text-[#06492D]">
+                <li>
+                  Send us photos of the damaged plants through your registered email ID to <a href="mailto:care@plantersagrovalley.com" className="text-[#06492D] hover:underline font-mono">care@plantersagrovalley.com</a>.
+                </li>
+                <li>
                   Stickers with the plant name, damaged parts of the plant, and packaging labels of Planters Agro Valley must be clearly visible in a single photo. Please note that we deal in perishable items, so torn leaves, dead flowers, and withered leaves do not qualify for replacement. It is mandatory to share the images within 24 hours of delivery.
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>
+                </li>
+                <li>
                   In case you are unable to capture all details in a single photo, you must send us a short video capturing all the details (not more than 20 seconds).
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>
+                </li>
+                <li>
                   After reviewing the relevant videos and photos, the Planters Agro Valley support team will decide whether the case qualifies for a refund or replacement. Our priority is to provide a replacement first. If the replacement is delivered damaged or dried again, we will initiate a full refund.
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>
+                </li>
+                <li>
                   Refunds take up to 5 working days to reflect back in the customer's payment account. In case the payment was completed via UPI, the refund will be credited to the default account linked to your UPI ID.
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>The replacement process takes 10 working days, and replaced articles are delivered in 7-8 working days.</span>
-              </li>
-            </ul>
+                </li>
+                <li>The replacement process takes 10 working days, and replaced articles are delivered in 7-8 working days.</li>
+              </ul>
+            </section>
+
+            <hr className="border-gray-100" />
+
+            {/* Section 3: Order Cancellation */}
+            <section className="flex flex-col gap-2">
+              <h4 className="!text-base !font-normal text-[#06492D] font-[var(--font-family-heading)] leading-snug">
+                3. Order Cancellation
+              </h4>
+              <ul className="space-y-2 pl-4 list-disc marker:text-[#06492D]">
+                <li>
+                  Customers can cancel their order before dispatch by writing an email to <a href="mailto:care@plantersagrovalley.com" className="text-[#06492D] hover:underline font-mono">care@plantersagrovalley.com</a>.
+                </li>
+                <li>
+                  You can call customer support at <span className="text-[#06492D] font-mono">+91 8468888666</span> from 10:00 AM to 6:00 PM (excluding Sundays and Holidays).
+                </li>
+              </ul>
+            </section>
+
           </div>
-
-          <hr className="border-gray-100" />
-
-          {/* Section 3: Order Cancellation */}
-          <div className="space-y-4">
-            <h2 className="text-xl font-[var(--font-family-heading)] font-semibold text-gray-900 tracking-wide">
-              3. Order Cancellation
-            </h2>
-            <ul className="space-y-4 text-gray-600 leading-relaxed font-light">
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>
-                  Customers can cancel their order before dispatch by writing an email to <a href="mailto:care@plantersagrovalley.com" className="text-[var(--color-primary)] hover:underline font-normal">care@plantersagrovalley.com</a>.
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[var(--color-primary)] mr-3 font-semibold">•</span>
-                <span>
-                  You can call customer support at @8468888666 from 10:00 AM to 6:00 PM (excluding Sundays and Holidays).
-                </span>
-              </li>
-            </ul>
-          </div>
-
         </div>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import './App.css'
 // importing toastify 
@@ -38,6 +39,11 @@ import Privacypolicy from "./PAGES/Privacypolicy";
 import Terms from "./PAGES/Terms";
 import Cancelandrefund from "./PAGES/Cancelandrefund";
 import Trackorder from "./PAGES/Trackorder";
+import Shippingpolicy from "./PAGES/Shippingpolicy";
+import Getintouch from "./PAGES/Getintouch";
+import Corporategift from "./PAGES/Corporategift";
+import Plantrental from "./PAGES/Plantrental";
+import Gardenmaintanence from "./PAGES/Gardenmaintanence";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -47,6 +53,10 @@ function App() {
     location.pathname === '/admin' ||
     location.pathname === '/payment' ||
     location.pathname === '/signin';
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   return (
     <CartProvider>
@@ -76,6 +86,7 @@ function App() {
         <Route path="/terms-conditions" element={<Terms />} />
         <Route path="/cancel-refund" element={<Cancelandrefund />} />
         <Route path="/track-order" element={<Trackorder />} />
+        <Route path="/shipping-policy" element={<Shippingpolicy />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/about" element={<Aboutus />} />
@@ -85,6 +96,10 @@ function App() {
         <Route path="/planters" element={<Planterspage />} />
         <Route path="/fertilizers" element={<Fertilizers />} />
         <Route path="/garden-decor" element={<Gardendecors />} />
+        <Route path="/contact" element={<Getintouch />} />
+        <Route path="/corporate-gifting" element={<Corporategift />} />
+        <Route path="/plant-rental" element={<Plantrental />} />
+        <Route path="/garden-maintenance" element={<Gardenmaintanence />} />
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<SuperAdminLogin />} />
         <Route path="/dashboard" element={<AdminLayout />}>
