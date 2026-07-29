@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Collapse,
@@ -33,6 +33,7 @@ import {
 
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+import axiosInstance from "../../../api/axiosInstance";
 
 const drawerWidth = 260;
 
@@ -45,6 +46,28 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
 
   const [openUsers, setOpenUsers] = useState(false);
   const [openCatalog, setOpenCatalog] = useState(false);
+  const [logo, setLogo] = useState("");
+  const [storeName, setStoreName] = useState("Planters Admin");
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const { data } = await axiosInstance.get("/settings");
+        if (data.success && data.settings) {
+          if (data.settings.storeLogo?.url) {
+            setLogo(data.settings.storeLogo.url);
+          }
+          if (data.settings.storeName) {
+            setStoreName(data.settings.storeName);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load settings logo/name in Sidebar", error);
+      }
+    };
+
+    fetchLogo();
+  }, []);
 
   const handleItemClick = () => {
     if (isMobile && handleDrawerToggle) {
@@ -69,14 +92,29 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
 
   const drawerContent = (
     <Box sx={{ height: "100%", overflowY: "auto" }}>
-      <Toolbar>
-        <Typography
-          variant="h6"
-          fontWeight="bold"
-          color="success.main"
-        >
-          🌿 Planters Admin
-        </Typography>
+      <Toolbar sx={{ display: "flex", alignItems: "center", justifyContent: "center", py: 1.5 }}>
+        {logo ? (
+          <Box
+            component="img"
+            src={logo}
+            alt={storeName}
+            sx={{
+              height: 45,
+              width: "auto",
+              maxHeight: 50,
+              maxWidth: 220,
+              objectFit: "contain",
+            }}
+          />
+        ) : (
+          <Typography
+            variant="h6"
+            fontWeight="bold"
+            color="success.main"
+          >
+            🌿 {storeName}
+          </Typography>
+        )}
       </Toolbar>
 
       <Divider />
