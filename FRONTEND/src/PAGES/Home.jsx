@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import HeroCarousel from '../COMPONENTS/HeroCarousel'
 import CategorySection from '../COMPONENTS/CategorySection'
 import { FaStar, FaSeedling, FaTruck, FaUndo } from 'react-icons/fa'
 import { useCart } from '../context/CartContext'
+import axios from '../api/axiosInstance'
 
 // Import assets for best sellers
 import haworthiaImg from '../assets/Haworthia.jpg'
@@ -63,86 +64,80 @@ const bestSellers = [
   }
 ]
 
-const indoorPlants = [
-  {
-    id: 1,
-    name: 'Anthurium Red Plant - Tailflower Plant | Laceleaf',
-    image: anthuriumImg,
-    price: 599,
-    originalPrice: 1199,
-    discount: '-51%',
-    rating: 5
-  },
-  {
-    id: 2,
-    name: 'Bird of Paradise Plant - Crane Flower Plant',
-    image: birdOfParadiseImg,
-    price: 349,
-    originalPrice: 599,
-    discount: '-42%',
-    rating: 4
-  },
-  {
-    id: 3,
-    name: 'Rubber Plant - Ficus Elastica',
-    image: rubberPlantImg,
-    price: 499,
-    originalPrice: 599,
-    discount: '-17%',
-    rating: 5
-  },
-  {
-    id: 4,
-    name: 'Sansevieria Golden Long - Snake Plant',
-    image: snakePlantImg,
-    price: 449,
-    originalPrice: 799,
-    discount: '-44%',
-    rating: 4
-  }
-]
 
-const fruitPlants = [
-  {
-    id: 1,
-    name: 'All Time Mango Plant - Grafted',
-    image: allTimeMangoImg,
-    price: 399,
-    originalPrice: 599,
-    discount: '-33%',
-    rating: 5
-  },
-  {
-    id: 2,
-    name: 'Kesar Mango Plant - Grafted',
-    image: kesarMangoImg,
-    price: 299,
-    originalPrice: 499,
-    discount: '-40%',
-    rating: 4
-  },
-  {
-    id: 3,
-    name: 'Avocado Plant - Organic',
-    image: avocadoImg,
-    price: 499,
-    originalPrice: 899,
-    discount: '-44%',
-    rating: 5
-  },
-  {
-    id: 4,
-    name: 'Jackfruit Plant - Grafted',
-    image: jackfruitImg,
-    price: 299,
-    originalPrice: 399,
-    discount: '-25%',
-    rating: 4
-  }
-]
+
 
 function Home() {
   const { addToCart } = useCart();
+  const [dbIndoorPlants, setDbIndoorPlants] = useState([]);
+  const [dbFruitPlants, setDbFruitPlants] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const { data } = await axios.get('/products?activeOnly=true&limit=100');
+        if (data.success && data.products) {
+          const allProducts = data.products;
+
+          const getDiscountPercent = (p) => {
+            if (p.salePrice && p.salePrice < p.price) {
+              return ((p.price - p.salePrice) / p.price) * 100;
+            }
+            return 0;
+          };
+
+          // Indoor Plants
+          const isIndoorCategory = (category) => {
+            if (!category) return false;
+            const name = (category.name || '').toLowerCase();
+            const slug = (category.slug || '').toLowerCase();
+            return slug === 'indoor-plants' || name === 'indoor plants';
+          };
+
+          const indoorProducts = allProducts.filter(
+            p => isIndoorCategory(p.category) && p.salePrice && p.salePrice < p.price
+          );
+
+          const sortedIndoor = [...indoorProducts].sort((a, b) => {
+            if (b.averageRating !== a.averageRating) {
+              return b.averageRating - a.averageRating;
+            }
+            return getDiscountPercent(b) - getDiscountPercent(a);
+          });
+
+          setDbIndoorPlants(sortedIndoor.slice(0, 4));
+
+          // Fruit Plants
+          const isFruitCategory = (category) => {
+            if (!category) return false;
+            const name = (category.name || '').toLowerCase();
+            const slug = (category.slug || '').toLowerCase();
+            return slug === 'fruit-plants' || name === 'fruit plants';
+          };
+
+          const fruitProducts = allProducts.filter(
+            p => isFruitCategory(p.category) && p.salePrice && p.salePrice < p.price
+          );
+
+          const sortedFruit = [...fruitProducts].sort((a, b) => {
+            if (b.averageRating !== a.averageRating) {
+              return b.averageRating - a.averageRating;
+            }
+            return getDiscountPercent(b) - getDiscountPercent(a);
+          });
+
+          setDbFruitPlants(sortedFruit.slice(0, 4));
+        }
+      } catch (error) {
+        console.error("Failed to fetch products for sections:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
  
   return (
     <div>
@@ -173,7 +168,7 @@ function Home() {
                     </h4>
 
                     <div className="product-price-row" style={{ marginTop: 'auto', marginBottom: 'var(--space-2)' }}>
-                      {product.originalPrice ? (
+                      {product.originalPrice && product.originalPrice > product.price ? (
                         <>
                           <span className="price-original">Rs. {product.originalPrice}.00</span>
                           <span className="price-current sale">Rs. {product.price}.00</span>
@@ -237,60 +232,77 @@ function Home() {
           </div>
 
           <div className="product-grid">
-            {indoorPlants.map((product) => (
-              <div key={product.id} className="product-card-wrapper">
-                <div className="product-card" style={{ flexGrow: 1 }}>
-                  {product.discount && (
-                    <span className="card-badge sale">{product.discount}</span>
-                  )}
-
-                  <div className="product-card-image">
-                    <img src={product.image} alt={product.name} />
-                  </div>
-
-                  <div className="product-card-content">
-                    <h4 className="product-title" title={product.name}>
-                      {product.name}
-                    </h4>
-
-                    <div className="product-price-row" style={{ marginTop: 'auto', marginBottom: 'var(--space-2)' }}>
-                      {product.originalPrice ? (
-                        <>
-                          <span className="price-original">Rs. {product.originalPrice}.00</span>
-                          <span className="price-current sale">Rs. {product.price}.00</span>
-                        </>
-                      ) : (
-                        <span className="price-current">Rs. {product.price}.00</span>
-                      )}
-                    </div>
-
-                    {/* Rating Stars - render gold and grey stars to match mockup */}
-                    <div className="product-rating" style={{ marginBottom: 0, minHeight: '18px' }}>
-                      {product.rating ? (
-                        [...Array(5)].map((_, i) => (
-                          <FaStar
-                            key={i}
-                            color={i < product.rating ? 'var(--color-gold)' : '#e2e8f0'}
-                            size={14}
-                          />
-                        ))
-                      ) : (
-                        // Empty placeholder to maintain uniform alignment
-                        <div style={{ height: '14px' }}></div>
-                      )}
+            {loading ? (
+              [...Array(4)].map((_, index) => (
+                <div key={index} className="product-card-wrapper skeleton" style={{ minHeight: '350px' }}>
+                  <div className="product-card" style={{ flexGrow: 1, backgroundColor: '#f6f7f8' }}>
+                    <div className="product-card-image skeleton" style={{ height: '200px', backgroundColor: '#edeef1' }}></div>
+                    <div className="product-card-content" style={{ padding: '15px' }}>
+                      <div className="skeleton" style={{ height: '18px', width: '80%', backgroundColor: '#edeef1', marginBottom: '10px' }}></div>
+                      <div className="skeleton" style={{ height: '14px', width: '50%', backgroundColor: '#edeef1' }}></div>
                     </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              dbIndoorPlants.map((product) => {
+                const hasDiscount = product.salePrice && product.salePrice < product.price;
+                const originalPrice = hasDiscount ? product.price : null;
+                const displayPrice = hasDiscount ? product.salePrice : product.price;
+                const discountText = hasDiscount ? `-${Math.round(((product.price - product.salePrice) / product.price) * 100)}%` : null;
+                const rating = product.averageRating || 5;
+                const productImage = product.images && product.images[0] ? product.images[0].url : snakePlantImg;
 
-                <button
-                  onClick={() => addToCart({ id: `indoor-${product.id}`, name: product.name, price: product.price, image: product.image })}
-                  className="btn btn-primary"
-                  style={{ borderRadius: '3px' }}
-                >
-                  ADD TO CART
-                </button>
-              </div>
-            ))}
+                return (
+                  <div key={product._id} className="product-card-wrapper">
+                    <div className="product-card" style={{ flexGrow: 1 }}>
+                      {discountText && (
+                        <span className="card-badge sale">{discountText}</span>
+                      )}
+
+                      <div className="product-card-image">
+                        <img src={productImage} alt={product.name} />
+                      </div>
+
+                      <div className="product-card-content">
+                        <h4 className="product-title" title={product.name}>
+                          {product.name}
+                        </h4>
+
+                        <div className="product-price-row" style={{ marginTop: 'auto', marginBottom: 'var(--space-2)' }}>
+                          {originalPrice ? (
+                            <>
+                              <span className="price-original">Rs. {originalPrice}.00</span>
+                              <span className="price-current sale">Rs. {displayPrice}.00</span>
+                            </>
+                          ) : (
+                            <span className="price-current">Rs. {displayPrice}.00</span>
+                          )}
+                        </div>
+
+                        <div className="product-rating" style={{ marginBottom: 0, minHeight: '18px' }}>
+                          {[...Array(5)].map((_, i) => (
+                            <FaStar
+                              key={i}
+                              color={i < rating ? 'var(--color-gold)' : '#e2e8f0'}
+                              size={14}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => addToCart({ id: product._id, name: product.name, price: displayPrice, image: productImage })}
+                      className="btn btn-primary"
+                      style={{ borderRadius: '3px' }}
+                    >
+                      ADD TO CART
+                    </button>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
       </section>
@@ -318,60 +330,77 @@ function Home() {
           </div>
 
           <div className="product-grid">
-            {fruitPlants.map((product) => (
-              <div key={product.id} className="product-card-wrapper">
-                <div className="product-card" style={{ flexGrow: 1 }}>
-                  {product.discount && (
-                    <span className="card-badge sale">{product.discount}</span>
-                  )}
-
-                  <div className="product-card-image">
-                    <img src={product.image} alt={product.name} />
-                  </div>
-
-                  <div className="product-card-content">
-                    <h4 className="product-title" title={product.name}>
-                      {product.name}
-                    </h4>
-
-                    <div className="product-price-row" style={{ marginTop: 'auto', marginBottom: 'var(--space-2)' }}>
-                      {product.originalPrice ? (
-                        <>
-                          <span className="price-original">Rs. {product.originalPrice}.00</span>
-                          <span className="price-current sale">Rs. {product.price}.00</span>
-                        </>
-                      ) : (
-                        <span className="price-current">Rs. {product.price}.00</span>
-                      )}
-                    </div>
-
-                    {/* Rating Stars - render gold and grey stars to match mockup */}
-                    <div className="product-rating" style={{ marginBottom: 0, minHeight: '18px' }}>
-                      {product.rating ? (
-                        [...Array(5)].map((_, i) => (
-                          <FaStar
-                            key={i}
-                            color={i < product.rating ? 'var(--color-gold)' : '#e2e8f0'}
-                            size={14}
-                          />
-                        ))
-                      ) : (
-                        // Empty placeholder to maintain uniform alignment
-                        <div style={{ height: '14px' }}></div>
-                      )}
+            {loading ? (
+              [...Array(4)].map((_, index) => (
+                <div key={index} className="product-card-wrapper skeleton" style={{ minHeight: '350px' }}>
+                  <div className="product-card" style={{ flexGrow: 1, backgroundColor: '#f6f7f8' }}>
+                    <div className="product-card-image skeleton" style={{ height: '200px', backgroundColor: '#edeef1' }}></div>
+                    <div className="product-card-content" style={{ padding: '15px' }}>
+                      <div className="skeleton" style={{ height: '18px', width: '80%', backgroundColor: '#edeef1', marginBottom: '10px' }}></div>
+                      <div className="skeleton" style={{ height: '14px', width: '50%', backgroundColor: '#edeef1' }}></div>
                     </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              dbFruitPlants.map((product) => {
+                const hasDiscount = product.salePrice && product.salePrice < product.price;
+                const originalPrice = hasDiscount ? product.price : null;
+                const displayPrice = hasDiscount ? product.salePrice : product.price;
+                const discountText = hasDiscount ? `-${Math.round(((product.price - product.salePrice) / product.price) * 100)}%` : null;
+                const rating = product.averageRating || 5;
+                const productImage = product.images && product.images[0] ? product.images[0].url : kesarMangoImg;
 
-                <button
-                  onClick={() => addToCart({ id: `fruit-${product.id}`, name: product.name, price: product.price, image: product.image })}
-                  className="btn btn-primary"
-                  style={{ borderRadius: '3px' }}
-                >
-                  ADD TO CART
-                </button>
-              </div>
-            ))}
+                return (
+                  <div key={product._id} className="product-card-wrapper">
+                    <div className="product-card" style={{ flexGrow: 1 }}>
+                      {discountText && (
+                        <span className="card-badge sale">{discountText}</span>
+                      )}
+
+                      <div className="product-card-image">
+                        <img src={productImage} alt={product.name} />
+                      </div>
+
+                      <div className="product-card-content">
+                        <h4 className="product-title" title={product.name}>
+                          {product.name}
+                        </h4>
+
+                        <div className="product-price-row" style={{ marginTop: 'auto', marginBottom: 'var(--space-2)' }}>
+                          {originalPrice ? (
+                            <>
+                              <span className="price-original">Rs. {originalPrice}.00</span>
+                              <span className="price-current sale">Rs. {displayPrice}.00</span>
+                            </>
+                          ) : (
+                            <span className="price-current">Rs. {displayPrice}.00</span>
+                          )}
+                        </div>
+
+                        <div className="product-rating" style={{ marginBottom: 0, minHeight: '18px' }}>
+                          {[...Array(5)].map((_, i) => (
+                            <FaStar
+                              key={i}
+                              color={i < rating ? 'var(--color-gold)' : '#e2e8f0'}
+                              size={14}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => addToCart({ id: product._id, name: product.name, price: displayPrice, image: productImage })}
+                      className="btn btn-primary"
+                      style={{ borderRadius: '3px' }}
+                    >
+                      ADD TO CART
+                    </button>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
       </section>
