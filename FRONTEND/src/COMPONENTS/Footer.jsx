@@ -1,16 +1,33 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import {
-  FaFacebookF,
-  FaInstagram,
-  FaLinkedinIn,
-  FaPinterestP,
-  FaYoutube,
-} from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
-import { IoArrowForward } from "react-icons/io5";
+import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import { FaFacebookF, FaPinterestP, FaInstagram, FaLinkedinIn, FaYoutube } from 'react-icons/fa'
+import { FaXTwitter, FaArrowRight } from 'react-icons/fa6'
+import axios from '../api/axiosInstance'
 
-const Footer = () => {
+function Footer() {
+  const [socialLinks, setSocialLinks] = useState({
+    facebook: '',
+    instagram: '',
+    twitter: '',
+    youtube: '',
+    linkedin: '',
+    pinterest: '',
+  });
+
+  useEffect(() => {
+    const fetchSocialLinks = async () => {
+      try {
+        const { data } = await axios.get('/settings');
+        if (data.success && data.settings?.socialLinks) {
+          setSocialLinks(data.settings.socialLinks);
+        }
+      } catch (error) {
+        console.error('Failed to load social links in footer', error);
+      }
+    };
+    fetchSocialLinks();
+  }, []);
+
   return (
     <footer className="w-full bg-[#063B22] text-white">
 
@@ -89,16 +106,26 @@ const Footer = () => {
               Apply for our free membership to receive exclusive
               deals, news and events.
             </p>
-
-            <div className="flex gap-6 mt-8 text-2xl">
-
-              <FaFacebookF className="cursor-pointer hover:text-white" />
-              <FaXTwitter className="cursor-pointer hover:text-white" />
-              <FaPinterestP className="cursor-pointer hover:text-white" />
-              <FaInstagram className="cursor-pointer hover:text-white" />
-              <FaLinkedinIn className="cursor-pointer hover:text-white" />
-              <FaYoutube className="cursor-pointer hover:text-white" />
-
+            {/* Social Icons */}
+            <div className="flex items-center space-x-6 text-lg text-[#cbd5e1]">
+              <a href={socialLinks.facebook || "https://facebook.com"} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="Facebook">
+                <FaFacebookF size={16} />
+              </a>
+              <a href={socialLinks.twitter || "https://x.com"} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="X (Twitter)">
+                <FaXTwitter size={16} />
+              </a>
+              <a href={socialLinks.pinterest || "https://pinterest.com"} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="Pinterest">
+                <FaPinterestP size={16} />
+              </a>
+              <a href={socialLinks.instagram || "https://instagram.com"} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="Instagram">
+                <FaInstagram size={16} />
+              </a>
+              <a href={socialLinks.linkedin || "https://linkedin.com"} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="LinkedIn">
+                <FaLinkedinIn size={16} />
+              </a>
+              <a href={socialLinks.youtube || "https://youtube.com"} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="YouTube">
+                <FaYoutube size={16} />
+              </a>
             </div>
 
           </div>

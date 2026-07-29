@@ -1,6 +1,7 @@
 import Product from "../models/Product.js";
 import Category from "../models/Category.js";
 import cloudinary from "../config/cloudinary.js";
+import Order from "../models/Order.js";
 /**
  * @desc Create Product
  * @route POST /api/products
@@ -440,6 +441,65 @@ export const getRelatedProducts = async (req, res) => {
     res.status(200).json({
       success: true,
       products: relatedProducts,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const getBestSellingProducts = async (req, res) => {
+  try {
+    const bestSelling = await Order.aggregate([
+      { $match: { orderStatus: { $ne: "Cancelled" } } },
+      { $unwind: "$items" },
+      {
+        $group: {
+          _id: "$items.product",
+          quantitySold: { $sum: "$items.quantity" },
+        },
+      },
+      { $sort: { quantitySold: -1 } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productDetails",
+        },
+      },
+      { $unwind: "$productDetails" },
+      {
+        $match: {
+          "productDetails.isDeleted": false,
+          "productDetails.isActive": true,
+        },
+      },
+      { $limit: 4 }
+    ]);
+
+    let products = bestSelling.map(item => item.productDetails);
+
+    if (products.length < 4) {
+      const existingIds = products.map(p => p._id);
+      const remainingCount = 4 - products.length;
+      
+      const fillProducts = await Product.find({
+        _id: { $nin: existingIds },
+        isDeleted: false,
+        isActive: true,
+      })
+      .sort({ averageRating: -1, createdAt: -1 })
+      .limit(remainingCount);
+
+      products = [...products, ...fillProducts];
+    }
+
+    res.status(200).json({
+      success: true,
+      products,
     });
   } catch (error) {
     res.status(500).json({
