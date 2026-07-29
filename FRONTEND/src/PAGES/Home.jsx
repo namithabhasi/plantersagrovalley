@@ -143,7 +143,7 @@ const fruitPlants = [
 
 function Home() {
   const { addToCart } = useCart();
- 
+
   return (
     <div>
       <HeroCarousel />
@@ -419,7 +419,7 @@ function Home() {
                 Customize gift plants with your logo on pots, cards, and packaging.
                 Book now for meaningful green gifting!
               </p>
-              <div className="w-full md:w-auto mt-8">
+              <div className="w-full md:w-auto" style={{ marginTop: '20px' }}>
                 <Link to="/contact" className="btn btn-primary w-full md:w-auto px-8">
                   SEND ENQUIRY
                 </Link>
@@ -429,16 +429,19 @@ function Home() {
         </div>
       </section>
 
-      <section className="mt-20 py-20 md:py-28 bg-[var(--color-primary-bg)]">
-        <div className="container text-center">
-          <h2 className="font-[var(--font-family-heading)] text-3xl md:text-4xl font-normal text-[var(--color-primary-dark)] mt-4 mb-16">
+      <section className="mt-20 bg-[var(--color-primary-bg)] flex items-center justify-center" style={{ minHeight: '480px', paddingTop: '60px', paddingBottom: '60px' }}>
+        <div className="container flex flex-col items-center justify-center text-center">
+          <h2 
+            className="font-[var(--font-family-heading)] text-3xl md:text-4xl font-normal text-[var(--color-primary-dark)]"
+            style={{ marginTop: '0px', marginBottom: '40px', paddingTop: '10px', paddingBottom: '10px' }}
+          >
             Why Planters Agro Valley?
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 w-full max-w-5xl justify-items-center justify-center mx-auto">
             {/* Feature 1 */}
-            <div className="flex flex-col items-center text-center px-4">
-              <div className="w-16 h-16 rounded-full bg-[#f3f8f3] flex items-center justify-center text-[var(--color-primary-dark)] text-2xl mb-4">
+            <div className="flex flex-col items-center text-center px-4 w-full">
+              <div className="w-16 h-16 rounded-full bg-white border border-[#e8f2ec] flex items-center justify-center text-[var(--color-primary-dark)] text-2xl mb-5 shadow-sm">
                 <FaSeedling />
               </div>
               <h4 className="font-[var(--font-family-heading)] text-lg font-semibold feature-title mb-2">
@@ -451,7 +454,7 @@ function Home() {
 
             {/* Feature 2 */}
             <div className="flex flex-col items-center text-center px-4">
-              <div className="w-16 h-16 rounded-full bg-[#f3f8f3] flex items-center justify-center text-[var(--color-primary-dark)] text-2xl mb-4">
+              <div className="w-16 h-16 rounded-full bg-white border border-[#e8f2ec] flex items-center justify-center text-[var(--color-primary-dark)] text-2xl mb-5 shadow-sm">
                 <FaTruck />
               </div>
               <h4 className="font-[var(--font-family-heading)] text-lg font-semibold feature-title mb-2">
@@ -464,7 +467,7 @@ function Home() {
 
             {/* Feature 3 */}
             <div className="flex flex-col items-center text-center px-4">
-              <div className="w-16 h-16 rounded-full bg-[#f3f8f3] flex items-center justify-center text-[var(--color-primary-dark)] text-2xl mb-4">
+              <div className="w-16 h-16 rounded-full bg-white border border-[#e8f2ec] flex items-center justify-center text-[var(--color-primary-dark)] text-2xl mb-5 shadow-sm">
                 <FaUndo />
               </div>
               <h4 className="font-[var(--font-family-heading)] text-lg font-semibold feature-title mb-2">
