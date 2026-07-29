@@ -31,6 +31,7 @@ import Plants from "./PAGES/Plants";
 import Seeds from "./PAGES/Seeds";
 import Planterspage from "./PAGES/Planterspage";
 import Fertilizers from "./PAGES/Fertilizers";
+import Gardendecors from "./PAGES/Gardendecors";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -70,6 +71,7 @@ function App() {
         <Route path="/seeds" element={<Seeds />} />
         <Route path="/planters" element={<Planterspage />} />
         <Route path="/fertilizers" element={<Fertilizers />} />
+        <Route path="/garden-decor" element={<Gardendecors />} />
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<SuperAdminLogin />} />
         <Route path="/dashboard" element={<AdminLayout />}>

@@ -2029,3 +2029,17 @@ div.container {
   color: #ffffff;
   font-weight: 500;
 }
+
+/* Dropdown force-close helper for instant auto-closing on click */
+.planters-mega-dropdown.force-close,
+.planters-simple-dropdown.force-close {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  display: none !important;
+  transform: translateY(10px) translateX(-50%) !important;
+  transition: none !important;
+}
+
+.planters-mega-dropdown.force-close {
+  transform: translateY(10px) !important;
+}
