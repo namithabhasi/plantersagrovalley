@@ -16,25 +16,18 @@ import {
   Typography,
   IconButton,
   Paper,
-  useTheme,
-  useMediaQuery,
 } from "@mui/material";
 import {
   Save as SaveIcon,
   CloudUpload as CloudUploadIcon,
   Clear as ClearIcon,
   Settings as SettingsIcon,
-  LocalShipping as ShippingIcon,
-  Payment as PaymentIcon,
-  Public as SeoIcon,
   Share as SocialsIcon,
 } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import axios from "../../api/axiosInstance";
 
 const Settings = () => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [tabValue, setTabValue] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -52,32 +45,13 @@ const Settings = () => {
       country: "",
       postalCode: "",
     },
-    currencySymbol: "",
-    taxPercentage: 0,
-    shippingCharge: 0,
-    freeShippingMinimumOrder: 0,
-    maintenanceMode: false,
     socialLinks: {
       facebook: "",
       instagram: "",
       twitter: "",
       youtube: "",
       linkedin: "",
-    },
-    paymentGateway: {
-      razorpayKeyId: "",
-      razorpayEnabled: true,
-      codEnabled: true,
-    },
-    seo: {
-      metaTitle: "",
-      metaDescription: "",
-      metaKeywords: "",
-    },
-    productsPerPage: 12,
-    orderSettings: {
-      allowCancellation: true,
-      cancellationHours: 24,
+      pinterest: "",
     },
   });
 
@@ -95,16 +69,7 @@ const Settings = () => {
           storeEmail: s.storeEmail || "",
           storePhone: s.storePhone || "",
           address: s.address || { line1: "", city: "", state: "", country: "", postalCode: "" },
-          currencySymbol: s.currencySymbol || "$",
-          taxPercentage: s.taxPercentage || 0,
-          shippingCharge: s.shippingCharge || 0,
-          freeShippingMinimumOrder: s.freeShippingMinimumOrder || 0,
-          maintenanceMode: !!s.maintenanceMode,
-          socialLinks: s.socialLinks || { facebook: "", instagram: "", twitter: "", youtube: "", linkedin: "" },
-          paymentGateway: s.paymentGateway || { razorpayKeyId: "", razorpayEnabled: true, codEnabled: true },
-          seo: s.seo || { metaTitle: "", metaDescription: "", metaKeywords: "" },
-          productsPerPage: s.productsPerPage || 12,
-          orderSettings: s.orderSettings || { allowCancellation: true, cancellationHours: 24 },
+          socialLinks: s.socialLinks || { facebook: "", instagram: "", twitter: "", youtube: "", linkedin: "", pinterest: "" },
         });
         setLogoPreview(s.storeLogo?.url || "");
       }
@@ -167,19 +132,10 @@ const Settings = () => {
       data.append("storeName", formData.storeName);
       data.append("storeEmail", formData.storeEmail);
       data.append("storePhone", formData.storePhone);
-      data.append("currencySymbol", formData.currencySymbol);
-      data.append("taxPercentage", formData.taxPercentage);
-      data.append("shippingCharge", formData.shippingCharge);
-      data.append("freeShippingMinimumOrder", formData.freeShippingMinimumOrder);
-      data.append("maintenanceMode", formData.maintenanceMode);
-      data.append("productsPerPage", formData.productsPerPage);
 
       // Append stringified nested fields
       data.append("address", JSON.stringify(formData.address));
       data.append("socialLinks", JSON.stringify(formData.socialLinks));
-      data.append("paymentGateway", JSON.stringify(formData.paymentGateway));
-      data.append("seo", JSON.stringify(formData.seo));
-      data.append("orderSettings", JSON.stringify(formData.orderSettings));
 
       if (logoFile) {
         data.append("logo", logoFile);
@@ -212,36 +168,34 @@ const Settings = () => {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box>
       {/* Header */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center" mb={4}>
-        <Box>
-          <Typography variant="h4" fontWeight={800} sx={{ color: "success.main", mb: 0.5 }}>
-            Store Configuration
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Configure system configurations, payment processors, tax schedules, shipping policies, and search parameters
-          </Typography>
-        </Box>
-      </Stack>
+      <Box mb={5}>
+        <Typography variant="h4" fontWeight={800} sx={{ color: "success.main", mb: 0.5 }}>
+          Store Configuration
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 2 }}>
+          Configure system configurations, payment processors, tax schedules, shipping policies, and search parameters
+        </Typography>
+      </Box>
 
       <Box component="form" onSubmit={handleSubmit}>
         <Grid container spacing={3}>
           {/* Left panel: Tabs selector */}
-          <Grid item xs={12} md={3}>
+          <Grid item xs={12}>
             <Card sx={{ borderRadius: 3, boxShadow: "0 4px 12px rgba(0,0,0,0.03)", border: "1px solid #f0f0f0" }}>
               <Tabs
-                orientation={isMobile ? "horizontal" : "vertical"}
-                variant={isMobile ? "scrollable" : "standard"}
-                scrollButtons={isMobile ? "auto" : undefined}
+                orientation="horizontal"
+                variant="scrollable"
+                scrollButtons="auto"
                 value={tabValue}
                 onChange={handleTabChange}
                 sx={{
                   borderRight: 0,
                   "& .MuiTabs-indicator": { bgcolor: "success.main" },
                   "& .MuiTab-root": {
-                    alignItems: { xs: "center", md: "flex-start" },
-                    textAlign: { xs: "center", md: "left" },
+                    alignItems: "center",
+                    textAlign: "center",
                     py: 2,
                     px: 3,
                     fontWeight: 600,
@@ -252,16 +206,13 @@ const Settings = () => {
                 }}
               >
                 <Tab icon={<SettingsIcon sx={{ mr: 1, fontSize: 20 }} />} iconPosition="start" label="General Info" />
-                <Tab icon={<ShippingIcon sx={{ mr: 1, fontSize: 20 }} />} iconPosition="start" label="Shipping & Tax" />
-                <Tab icon={<PaymentIcon sx={{ mr: 1, fontSize: 20 }} />} iconPosition="start" label="Payment Gateways" />
-                <Tab icon={<SeoIcon sx={{ mr: 1, fontSize: 20 }} />} iconPosition="start" label="SEO & Search" />
                 <Tab icon={<SocialsIcon sx={{ mr: 1, fontSize: 20 }} />} iconPosition="start" label="Social Connections" />
               </Tabs>
             </Card>
           </Grid>
 
           {/* Right panel: Content forms */}
-          <Grid item xs={12} md={9}>
+          <Grid item xs={12}>
             <Card sx={{ borderRadius: 3, boxShadow: "0 4px 16px rgba(0,0,0,0.02)", border: "1px solid #f0f0f0" }}>
               <CardContent sx={{ p: 4 }}>
                 {/* Tab 0: General Info */}
@@ -300,41 +251,9 @@ const Settings = () => {
                           required
                         />
                       </Grid>
-                      <Grid item xs={12} md={6}>
-                        <TextField
-                          fullWidth
-                          label="Currency Symbol"
-                          value={formData.currencySymbol}
-                          onChange={handleInputChange}
-                          name="currencySymbol"
-                          required
-                          placeholder="e.g. $, ₹, €"
-                        />
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        <TextField
-                          fullWidth
-                          type="number"
-                          label="Products Displayed Per Page"
-                          value={formData.productsPerPage}
-                          onChange={handleInputChange}
-                          name="productsPerPage"
-                          required
-                          slotProps={{ htmlInput: { min: 1, max: 100 } }}
-                        />
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={formData.maintenanceMode}
-                              onChange={(e) => handleInputChange({ target: { name: "maintenanceMode", value: e.target.checked } })}
-                              color="error"
-                            />
-                          }
-                          label="Activate Storefront Maintenance Mode"
-                        />
-                      </Grid>
+                     
+                    
+                      
                     </Grid>
 
                     <Divider />
@@ -452,166 +371,8 @@ const Settings = () => {
                   </Stack>
                 )}
 
-                {/* Tab 1: Shipping & Tax */}
+                {/* Tab 1: Social Connections */}
                 {tabValue === 1 && (
-                  <Stack spacing={3.5}>
-                    <Typography variant="h6" fontWeight={700}>Shipping Charges & Tax Rates</Typography>
-                    <Grid container spacing={3}>
-                      <Grid item xs={12} md={6}>
-                        <TextField
-                          fullWidth
-                          type="number"
-                          label={`Standard Tax Rate (%)`}
-                          value={formData.taxPercentage}
-                          onChange={handleInputChange}
-                          name="taxPercentage"
-                          required
-                          slotProps={{ htmlInput: { min: 0, step: "0.1" } }}
-                        />
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        <TextField
-                          fullWidth
-                          type="number"
-                          label={`Base Shipping Charge (${formData.currencySymbol})`}
-                          value={formData.shippingCharge}
-                          onChange={handleInputChange}
-                          name="shippingCharge"
-                          required
-                          slotProps={{ htmlInput: { min: 0, step: "0.01" } }}
-                        />
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        <TextField
-                          fullWidth
-                          type="number"
-                          label={`Threshold for Free Shipping (${formData.currencySymbol})`}
-                          value={formData.freeShippingMinimumOrder}
-                          onChange={handleInputChange}
-                          name="freeShippingMinimumOrder"
-                          required
-                          helperText="0 to disable free shipping policies"
-                          slotProps={{ htmlInput: { min: 0, step: "0.01" } }}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Divider />
-                    <Typography variant="subtitle2" fontWeight={700} color="text.secondary">CUSTOMER ORDER CANCELLATIONS</Typography>
-                    <Grid container spacing={3}>
-                      <Grid item xs={12} md={6}>
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={formData.orderSettings.allowCancellation}
-                              onChange={(e) => handleNestedChange("orderSettings", "allowCancellation", e.target.checked)}
-                              color="success"
-                            />
-                          }
-                          label="Allow Customer Self-Cancellations"
-                        />
-                      </Grid>
-                      {formData.orderSettings.allowCancellation && (
-                        <Grid item xs={12} md={6}>
-                          <TextField
-                            fullWidth
-                            type="number"
-                            label="Cancellation Hours Window"
-                            value={formData.orderSettings.cancellationHours}
-                            onChange={(e) => handleNestedChange("orderSettings", "cancellationHours", Number(e.target.value))}
-                            required
-                            helperText="Time frame (hours) allowed to cancel orders after checkout"
-                            slotProps={{ htmlInput: { min: 1 } }}
-                          />
-                        </Grid>
-                      )}
-                    </Grid>
-                  </Stack>
-                )}
-
-                {/* Tab 2: Payment Gateways */}
-                {tabValue === 2 && (
-                  <Stack spacing={3.5}>
-                    <Typography variant="h6" fontWeight={700}>Payment Processor Integrations</Typography>
-                    <Grid container spacing={3}>
-                      <Grid item xs={12}>
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={formData.paymentGateway.codEnabled}
-                              onChange={(e) => handleNestedChange("paymentGateway", "codEnabled", e.target.checked)}
-                              color="success"
-                            />
-                          }
-                          label="Enable Cash on Delivery (COD)"
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={formData.paymentGateway.razorpayEnabled}
-                              onChange={(e) => handleNestedChange("paymentGateway", "razorpayEnabled", e.target.checked)}
-                              color="success"
-                            />
-                          }
-                          label="Enable Razorpay Integration"
-                        />
-                      </Grid>
-                      {formData.paymentGateway.razorpayEnabled && (
-                        <Grid item xs={12}>
-                          <TextField
-                            fullWidth
-                            label="Razorpay Key ID"
-                            value={formData.paymentGateway.razorpayKeyId}
-                            onChange={(e) => handleNestedChange("paymentGateway", "razorpayKeyId", e.target.value)}
-                            required
-                          />
-                        </Grid>
-                      )}
-                    </Grid>
-                  </Stack>
-                )}
-
-                {/* Tab 3: SEO & Search */}
-                {tabValue === 3 && (
-                  <Stack spacing={3.5}>
-                    <Typography variant="h6" fontWeight={700}>Search Engine Optimization (SEO)</Typography>
-                    <Grid container spacing={3}>
-                      <Grid item xs={12}>
-                        <TextField
-                          fullWidth
-                          label="Default Meta Title"
-                          value={formData.seo.metaTitle}
-                          onChange={(e) => handleNestedChange("seo", "metaTitle", e.target.value)}
-                          placeholder="e.g. Planters Agro Valley | Farm Fresh Supplies"
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <TextField
-                          fullWidth
-                          label="Default Meta Description"
-                          value={formData.seo.metaDescription}
-                          onChange={(e) => handleNestedChange("seo", "metaDescription", e.target.value)}
-                          multiline
-                          rows={3}
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <TextField
-                          fullWidth
-                          label="Meta Keywords (Comma separated)"
-                          value={formData.seo.metaKeywords}
-                          onChange={(e) => handleNestedChange("seo", "metaKeywords", e.target.value)}
-                          placeholder="e.g. plants, organic, soil, fertilizers"
-                        />
-                      </Grid>
-                    </Grid>
-                  </Stack>
-                )}
-
-                {/* Tab 4: Social Connections */}
-                {tabValue === 4 && (
                   <Stack spacing={3.5}>
                     <Typography variant="h6" fontWeight={700}>Social Media Profiles</Typography>
                     <Grid container spacing={3}>
@@ -651,13 +412,22 @@ const Settings = () => {
                           placeholder="https://youtube.com/c/yourchannel"
                         />
                       </Grid>
-                      <Grid item xs={12}>
+                      <Grid item xs={12} md={6}>
                         <TextField
                           fullWidth
                           label="LinkedIn Company Page URL"
                           value={formData.socialLinks.linkedin}
                           onChange={(e) => handleNestedChange("socialLinks", "linkedin", e.target.value)}
                           placeholder="https://linkedin.com/company/yourpage"
+                        />
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          fullWidth
+                          label="Pinterest Profile URL"
+                          value={formData.socialLinks.pinterest || ""}
+                          onChange={(e) => handleNestedChange("socialLinks", "pinterest", e.target.value)}
+                          placeholder="https://pinterest.com/yourprofile"
                         />
                       </Grid>
                     </Grid>

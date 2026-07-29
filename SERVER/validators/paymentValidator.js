@@ -9,6 +9,34 @@ export const createRazorpayOrderValidator = [
     .trim()
     .isLength({ min: 3, max: 30 })
     .withMessage("Invalid coupon code."),
+
+  body("cartItems")
+    .optional()
+    .isArray()
+    .withMessage("Cart items must be an array."),
+
+  body("email")
+    .optional()
+    .isEmail()
+    .withMessage("Enter a valid email address."),
+
+  body("firstName")
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage("First name is required."),
+
+  body("lastName")
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage("Last name is required."),
+
+  body("phone")
+    .optional()
+    .trim()
+    .matches(/^[0-9]{10,15}$/)
+    .withMessage("Enter a valid phone number."),
 ];
 
 /**
@@ -85,4 +113,32 @@ export const verifyPaymentValidator = [
     .trim()
     .isLength({ max: 500 })
     .withMessage("Notes cannot exceed 500 characters."),
+
+  body("email")
+    .optional()
+    .isEmail()
+    .withMessage("Enter a valid email address."),
+
+  body("firstName")
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage("First name is required."),
+
+  body("lastName")
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage("Last name is required."),
+
+  body("phone")
+    .optional()
+    .trim()
+    .matches(/^[0-9]{10,15}$/)
+    .withMessage("Enter a valid phone number."),
+
+  body("cartItems")
+    .optional()
+    .isArray()
+    .withMessage("Cart items must be an array."),
 ];

@@ -23,32 +23,13 @@ export const getSettings = async (req, res) => {
           country: "India",
           postalCode: "682001",
         },
-        currencySymbol: "$",
-        taxPercentage: 5,
-        shippingCharge: 15,
-        freeShippingMinimumOrder: 150,
-        maintenanceMode: false,
         socialLinks: {
           facebook: "https://facebook.com/plantersagrovalley",
           instagram: "https://instagram.com/plantersagrovalley",
           twitter: "",
           youtube: "",
           linkedin: "",
-        },
-        paymentGateway: {
-          razorpayKeyId: "",
-          razorpayEnabled: true,
-          codEnabled: true,
-        },
-        seo: {
-          metaTitle: "Planters Agro Valley - Organic Gardening & Farm Supplies",
-          metaDescription: "Premium organic fertilizers, plants, seeds, and gardening tools delivered to your doorstep.",
-          metaKeywords: "gardening, organic farming, fertilizers, seeds, plants",
-        },
-        productsPerPage: 12,
-        orderSettings: {
-          allowCancellation: true,
-          cancellationHours: 24,
+          pinterest: "",
         },
       });
     }
@@ -108,13 +89,7 @@ export const updateSettings = async (req, res) => {
 
     parseJSONField("address");
     parseJSONField("socialLinks");
-    parseJSONField("paymentGateway");
-    parseJSONField("seo");
-    parseJSONField("orderSettings");
 
-    // Convert string booleans if sent via FormData
-    if (updateFields.maintenanceMode === "true") updateFields.maintenanceMode = true;
-    if (updateFields.maintenanceMode === "false") updateFields.maintenanceMode = false;
 
     if (!settings) {
       settings = new Settings(updateFields);
