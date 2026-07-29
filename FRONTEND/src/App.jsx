@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import './App.css'
 // importing toastify 
@@ -51,6 +52,10 @@ function App() {
     location.pathname === '/admin' ||
     location.pathname === '/payment' ||
     location.pathname === '/signin';
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   return (
     <CartProvider>
