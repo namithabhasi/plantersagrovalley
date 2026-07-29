@@ -40,6 +40,7 @@ import Trackorder from "./PAGES/Trackorder";
 import Shippingpolicy from "./PAGES/Shippingpolicy";
 import Getintouch from "./PAGES/Getintouch";
 import Corporategift from "./PAGES/Corporategift";
+import Plantrental from "./PAGES/Plantrental";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -89,6 +90,7 @@ function App() {
         <Route path="/garden-decor" element={<Gardendecors />} />
         <Route path="/contact" element={<Getintouch />} />
         <Route path="/corporate-gifting" element={<Corporategift />} />
+        <Route path="/plant-rental" element={<Plantrental />} />
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<SuperAdminLogin />} />
         <Route path="/dashboard" element={<AdminLayout />}>
