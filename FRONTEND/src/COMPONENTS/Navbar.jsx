@@ -1,14 +1,63 @@
-import React, { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import logo from '../assets/logo.png'; // The text logo is saved in logo.png
 import bush from '../assets/image.png'; // Background bush growing from the bottom-left corner
 import { FiSearch, FiUser, FiShoppingCart, FiMenu, FiX, FiChevronRight, FiChevronDown } from 'react-icons/fi';
 import { useCart } from '../context/CartContext';
+import axios from '../api/axiosInstance';
+import { openAuthModal, clearUser } from '../redux/auth/authSlice';
 
 function Navbar() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [forceClose, setForceClose] = useState(false);
   const { openCart, cartTotalCount } = useCart();
+  const [dbLogo, setDbLogo] = useState("");
+
+  const handleProfileClick = (e) => {
+    e.stopPropagation();
+    if (!user) {
+      dispatch(openAuthModal("login"));
+    } else {
+      setProfileDropdownOpen(!profileDropdownOpen);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await axios.post("/auth/logout");
+      dispatch(clearUser());
+      setProfileDropdownOpen(false);
+      navigate("/");
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!profileDropdownOpen) return;
+    const handleOutsideClick = () => setProfileDropdownOpen(false);
+    window.addEventListener("click", handleOutsideClick);
+    return () => window.removeEventListener("click", handleOutsideClick);
+  }, [profileDropdownOpen]);
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const { data } = await axios.get('/settings');
+        if (data.success && data.settings?.storeLogo?.url) {
+          setDbLogo(data.settings.storeLogo.url);
+        }
+      } catch (error) {
+        console.error('Failed to load store logo in navbar', error);
+      }
+    };
+    fetchLogo();
+  }, []);
 
   const handleLinkClick = () => {
     setForceClose(true);
@@ -25,7 +74,7 @@ function Navbar() {
         {/* Left Side: Logo */}
         <Link to="/" className="planters-logo-container">
           <img
-            src={logo}
+            src={dbLogo || logo}
             alt="Planters Logo"
             className="planters-logo"
           />
@@ -273,7 +322,7 @@ function Navbar() {
         >
           {/* Header */}
           <div className="planters-drawer-header">
-            <img src={logo} alt="Planters Logo" style={{ height: '36px', width: 'auto', objectFit: 'contain' }} />
+            <img src={dbLogo || logo} alt="Planters Logo" style={{ height: '36px', width: 'auto', objectFit: 'contain' }} />
             <button
               onClick={() => setMobileMenuOpen(false)}
               className="navbar-action-btn"
