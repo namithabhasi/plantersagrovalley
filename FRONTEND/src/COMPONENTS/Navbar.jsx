@@ -126,9 +126,39 @@ function Navbar() {
                 </Link>
               </div>
             </div>
-            <NavLink to="/planters" className="navbar-link">
-              Planters
-            </NavLink>
+            <div className="navbar-item-with-simple-dropdown">
+              <NavLink to="/planters" className="navbar-link">
+                Planters
+              </NavLink>
+              
+              {/* Planters Simple Dropdown Menu */}
+              <div className="planters-simple-dropdown">
+                <Link to="/planters?category=plastic-pots" className="simple-dropdown-item">
+                  <span>Plastic Pots</span>
+                </Link>
+                <Link to="/planters?category=metal-pots" className="simple-dropdown-item">
+                  <span>Metal Pots</span>
+                </Link>
+                <Link to="/planters?category=ceramic-pots" className="simple-dropdown-item">
+                  <span>Ceramic Pots</span>
+                </Link>
+                <Link to="/planters?category=hanging-basket" className="simple-dropdown-item">
+                  <span>Hanging Basket</span>
+                </Link>
+                <Link to="/planters?category=grill-pots" className="simple-dropdown-item">
+                  <span>Grill/Railing Pots</span>
+                </Link>
+                <Link to="/planters?category=tower-planters" className="simple-dropdown-item">
+                  <span>Tower Planters</span>
+                </Link>
+                <Link to="/planters?category=germination-tray" className="simple-dropdown-item">
+                  <span>Germination Tray</span>
+                </Link>
+                <Link to="/planters?category=grow-bags" className="simple-dropdown-item">
+                  <span>Grow Bags</span>
+                </Link>
+              </div>
+            </div>
             <NavLink to="/fertilizer" className="navbar-link">
               Fertilizer
             </NavLink>

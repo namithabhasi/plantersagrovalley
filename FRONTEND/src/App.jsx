@@ -29,6 +29,7 @@ import Aboutus from "./PAGES/Aboutus";
 import Faq from "./PAGES/Faq";
 import Plants from "./PAGES/Plants";
 import Seeds from "./PAGES/Seeds";
+import Planterspage from "./PAGES/Planterspage";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -66,6 +67,7 @@ function App() {
         <Route path="/faqs" element={<Faq />} />
         <Route path="/plants" element={<Plants />} />
         <Route path="/seeds" element={<Seeds />} />
+        <Route path="/planters" element={<Planterspage />} />
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<SuperAdminLogin />} />
         <Route path="/dashboard" element={<AdminLayout />}>
