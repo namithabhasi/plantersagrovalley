@@ -105,18 +105,15 @@ function Navbar() {
               <div className="planters-simple-dropdown">
                 <Link to="/seeds?category=flower-seeds" className="simple-dropdown-item">
                   <span>Flower Seeds</span>
-                  <FiChevronDown size={14} />
                 </Link>
                 <Link to="/seeds?category=vegetable-seeds" className="simple-dropdown-item">
                   <span>Vegetable Seeds</span>
-                  <FiChevronDown size={14} />
                 </Link>
                 <Link to="/seeds?category=herb-seeds" className="simple-dropdown-item">
                   <span>Herb Seeds</span>
                 </Link>
                 <Link to="/seeds?category=flower-bulbs" className="simple-dropdown-item">
                   <span>Flower Bulbs</span>
-                  <FiChevronDown size={14} />
                 </Link>
                 <Link to="/seeds?category=foresty-seeds" className="simple-dropdown-item">
                   <span>Foresty Seeds</span>
@@ -159,9 +156,33 @@ function Navbar() {
                 </Link>
               </div>
             </div>
-            <NavLink to="/fertilizer" className="navbar-link">
-              Fertilizer
-            </NavLink>
+            <div className="navbar-item-with-simple-dropdown">
+              <NavLink to="/fertilizers" className="navbar-link">
+                Fertilizers
+              </NavLink>
+              
+              {/* Fertilizers Simple Dropdown Menu */}
+              <div className="planters-simple-dropdown">
+                <Link to="/fertilizers?category=coco-bricks" className="simple-dropdown-item">
+                  <span>Coco Bricks</span>
+                </Link>
+                <Link to="/fertilizers?category=compost" className="simple-dropdown-item">
+                  <span>Compost</span>
+                </Link>
+                <Link to="/fertilizers?category=cow-manure" className="simple-dropdown-item">
+                  <span>Cow Manure</span>
+                </Link>
+                <Link to="/fertilizers?category=moist-ball" className="simple-dropdown-item">
+                  <span>Moist Ball</span>
+                </Link>
+                <Link to="/fertilizers?category=moss-stick" className="simple-dropdown-item">
+                  <span>Moss Stick</span>
+                </Link>
+                <Link to="/fertilizers?category=plant-food" className="simple-dropdown-item">
+                  <span>Plant Food</span>
+                </Link>
+              </div>
+            </div>
             <NavLink to="/garden-decor" className="navbar-link">
               Garden Decor
             </NavLink>
