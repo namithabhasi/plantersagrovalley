@@ -13,7 +13,14 @@ console.log(process.env.RAZORPAY_KEY_SECRET);
 const PORT = process.env.PORT || 5000;
 
 // Connect MongoDB
-connectDB();
+connectDB().then(async () => {
+  try {
+    const { seedMockProducts } = await import("./utils/seeder.js");
+    await seedMockProducts();
+  } catch (err) {
+    console.error("Failed to seed mock products:", err);
+  }
+});
 
 // Start Server
 app.listen(PORT, () => {

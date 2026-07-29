@@ -11,26 +11,18 @@ import {
 } from "../validators/paymentValidator.js";
 
 import validationMiddleware from "../middleware/validationMiddleware.js";
-import {
-  authenticate,
-  authorizeRoles,
-} from "../middleware/authMiddleware.js";
+import { optionalAuthenticate } from "../middleware/optionalAuthMiddleware.js";
 
 const router = express.Router();
 
 /**
- * All payment routes require authentication
- */
-router.use(authenticate);
-
-/**
  * @route POST /api/payment/create-order
  * @desc Create Razorpay Order
- * @access Customer
+ * @access Public
  */
 router.post(
   "/create-order",
-  authorizeRoles("customer"),
+  optionalAuthenticate,
   createRazorpayOrderValidator,
   validationMiddleware,
   createRazorpayOrder
@@ -39,11 +31,11 @@ router.post(
 /**
  * @route POST /api/payment/verify
  * @desc Verify Razorpay Payment
- * @access Customer
+ * @access Public
  */
 router.post(
   "/verify",
-  authorizeRoles("customer"),
+  optionalAuthenticate,
   verifyPaymentValidator,
   validationMiddleware,
   verifyPayment
