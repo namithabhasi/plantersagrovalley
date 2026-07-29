@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import logo from '../assets/logo.png'; // The text logo is saved in logo.png
 import bush from '../assets/image.png'; // Background bush growing from the bottom-left corner
-import { FiSearch, FiUser, FiShoppingCart, FiMenu, FiX, FiChevronRight } from 'react-icons/fi';
+import { FiSearch, FiUser, FiShoppingCart, FiMenu, FiX, FiChevronRight, FiChevronDown } from 'react-icons/fi';
 import { useCart } from '../context/CartContext';
 
 function Navbar() {
@@ -95,9 +95,37 @@ function Navbar() {
                 </div>
               </div>
             </div>
-            <NavLink to="/seeds" className="navbar-link">
-              Seeds
-            </NavLink>
+
+            <div className="navbar-item-with-simple-dropdown">
+              <NavLink to="/seeds" className="navbar-link">
+                Seeds
+              </NavLink>
+              
+              {/* Seeds Simple Dropdown Menu */}
+              <div className="planters-simple-dropdown">
+                <Link to="/seeds?category=flower-seeds" className="simple-dropdown-item">
+                  <span>Flower Seeds</span>
+                  <FiChevronDown size={14} />
+                </Link>
+                <Link to="/seeds?category=vegetable-seeds" className="simple-dropdown-item">
+                  <span>Vegetable Seeds</span>
+                  <FiChevronDown size={14} />
+                </Link>
+                <Link to="/seeds?category=herb-seeds" className="simple-dropdown-item">
+                  <span>Herb Seeds</span>
+                </Link>
+                <Link to="/seeds?category=flower-bulbs" className="simple-dropdown-item">
+                  <span>Flower Bulbs</span>
+                  <FiChevronDown size={14} />
+                </Link>
+                <Link to="/seeds?category=foresty-seeds" className="simple-dropdown-item">
+                  <span>Foresty Seeds</span>
+                </Link>
+                <Link to="/seeds?category=lawn-seeds" className="simple-dropdown-item">
+                  <span>Lawn Seeds</span>
+                </Link>
+              </div>
+            </div>
             <NavLink to="/planters" className="navbar-link">
               Planters
             </NavLink>
