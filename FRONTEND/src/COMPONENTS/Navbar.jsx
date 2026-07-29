@@ -278,81 +278,10 @@ function Navbar() {
             <FiSearch size={22} />
           </button>
 
-          {/* Profile Icon with dropdown */}
-          <div className="planters-profile-container" style={{ position: 'relative' }}>
-            <button
-              onClick={handleProfileClick}
-              className="navbar-action-btn planters-profile-btn"
-              aria-label="Account"
-            >
-              <FiUser size={22} />
-            </button>
-            
-            {user && profileDropdownOpen && (
-              <div className="profile-dropdown-menu" style={{
-                position: 'absolute',
-                top: '100%',
-                right: 0,
-                backgroundColor: '#ffffff',
-                border: '1px solid var(--color-border)',
-                borderRadius: '4px',
-                boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
-                padding: '12px',
-                minWidth: '180px',
-                zIndex: 1000,
-                marginTop: '8px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '8px'
-              }}>
-                <div style={{
-                  fontSize: '13px',
-                  fontWeight: 'bold',
-                  color: 'var(--color-primary-dark)',
-                  borderBottom: '1px solid var(--color-border)',
-                  paddingBottom: '6px',
-                  marginBottom: '4px'
-                }}>
-                  Hello, {user.firstName}!
-                </div>
-                {['super-admin', 'admin', 'shipping-manager'].includes(user.role) && (
-                  <button
-                    onClick={() => {
-                      setProfileDropdownOpen(false);
-                      navigate('/dashboard');
-                    }}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      textAlign: 'left',
-                      padding: '4px 0',
-                      cursor: 'pointer',
-                      fontSize: '13px',
-                      color: 'var(--color-text-main)'
-                    }}
-                  >
-                    Admin Dashboard
-                  </button>
-                )}
-                <button
-                  onClick={handleLogout}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    textAlign: 'left',
-                    padding: '8px 0 0 0',
-                    borderTop: '1px dashed var(--color-border)',
-                    cursor: 'pointer',
-                    fontSize: '13px',
-                    color: 'var(--color-danger)',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
+          {/* Profile Icon */}
+          <Link to="/signin" className="navbar-action-btn planters-profile-btn flex items-center justify-center" aria-label="Account">
+            <FiUser size={22} />
+          </Link>
 
           {/* Cart Icon with badge */}
           <button

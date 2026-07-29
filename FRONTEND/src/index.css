@@ -541,20 +541,11 @@ textarea {
 /* ==========================================================================
    5. Footer Specs
    ========================================================================== */
-.footer {
-  background-color: var(--color-primary-dark);
-  color: #e2e8f0;
-  padding: var(--space-10) 0 var(--space-6) 0;
-  margin-top: var(--space-12);
-}
 
-.footer a {
-  color: #cbd5e1;
-}
 
-.footer a:hover {
-  color: #ffffff;
-}
+
+
+
 
 /* ==========================================================================
    6. Responsive Media Queries
@@ -758,7 +749,8 @@ div.container {
   left: 50%;
   transform: translateX(-50%) translateY(10px);
   min-width: 250px;
-  background-color: #f7faf6; /* Soft green backdrop matching Plants */
+  background-color: #f7faf6;
+  /* Soft green backdrop matching Plants */
   border: 1px solid rgba(0, 0, 0, 0.06);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   opacity: 0;
@@ -2037,6 +2029,7 @@ div.container {
     opacity: 0;
     transform: translateY(5px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

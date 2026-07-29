@@ -33,6 +33,11 @@ import Seeds from "./PAGES/Seeds";
 import Planterspage from "./PAGES/Planterspage";
 import Fertilizers from "./PAGES/Fertilizers";
 import Gardendecors from "./PAGES/Gardendecors";
+import Signinpage from "./PAGES/Signinpage";
+import Privacypolicy from "./PAGES/Privacypolicy";
+import Terms from "./PAGES/Terms";
+import Cancelandrefund from "./PAGES/Cancelandrefund";
+import Trackorder from "./PAGES/Trackorder";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -40,7 +45,8 @@ function App() {
   const location = useLocation();
   const hideNavbarFooter = location.pathname.startsWith('/dashboard') ||
     location.pathname === '/admin' ||
-    location.pathname === '/payment';
+    location.pathname === '/payment' ||
+    location.pathname === '/signin';
 
   return (
     <CartProvider>
@@ -65,6 +71,11 @@ function App() {
         theme="light"
       />
       <Routes>
+        <Route path="/signin" element={<Signinpage />} />
+        <Route path="/privacy-policy" element={<Privacypolicy />} />
+        <Route path="/terms-conditions" element={<Terms />} />
+        <Route path="/cancel-refund" element={<Cancelandrefund />} />
+        <Route path="/track-order" element={<Trackorder />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/about" element={<Aboutus />} />
