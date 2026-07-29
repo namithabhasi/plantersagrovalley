@@ -38,6 +38,7 @@ import Terms from "./PAGES/Terms";
 import Cancelandrefund from "./PAGES/Cancelandrefund";
 import Trackorder from "./PAGES/Trackorder";
 import Shippingpolicy from "./PAGES/Shippingpolicy";
+import Getintouch from "./PAGES/Getintouch";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -85,6 +86,7 @@ function App() {
         <Route path="/planters" element={<Planterspage />} />
         <Route path="/fertilizers" element={<Fertilizers />} />
         <Route path="/garden-decor" element={<Gardendecors />} />
+        <Route path="/contact" element={<Getintouch />} />
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<SuperAdminLogin />} />
         <Route path="/dashboard" element={<AdminLayout />}>
