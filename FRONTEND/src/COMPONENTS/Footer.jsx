@@ -1,9 +1,33 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { FaFacebookF, FaPinterestP, FaInstagram, FaLinkedinIn, FaYoutube } from 'react-icons/fa'
 import { FaXTwitter, FaArrowRight } from 'react-icons/fa6'
+import axios from '../api/axiosInstance'
 
 function Footer() {
+  const [socialLinks, setSocialLinks] = useState({
+    facebook: '',
+    instagram: '',
+    twitter: '',
+    youtube: '',
+    linkedin: '',
+    pinterest: '',
+  });
+
+  useEffect(() => {
+    const fetchSocialLinks = async () => {
+      try {
+        const { data } = await axios.get('/settings');
+        if (data.success && data.settings?.socialLinks) {
+          setSocialLinks(data.settings.socialLinks);
+        }
+      } catch (error) {
+        console.error('Failed to load social links in footer', error);
+      }
+    };
+    fetchSocialLinks();
+  }, []);
+
   return (
     <footer className="footer bg-[var(--color-primary-dark)] text-white py-16 border-t border-[var(--color-border)]">
       <div className="container">
@@ -71,22 +95,22 @@ function Footer() {
             </p>
             {/* Social Icons */}
             <div className="flex items-center space-x-6 text-lg text-[#cbd5e1]">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="Facebook">
+              <a href={socialLinks.facebook || "https://facebook.com"} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="Facebook">
                 <FaFacebookF size={16} />
               </a>
-              <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="X (Twitter)">
+              <a href={socialLinks.twitter || "https://x.com"} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="X (Twitter)">
                 <FaXTwitter size={16} />
               </a>
-              <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="Pinterest">
+              <a href={socialLinks.pinterest || "https://pinterest.com"} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="Pinterest">
                 <FaPinterestP size={16} />
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="Instagram">
+              <a href={socialLinks.instagram || "https://instagram.com"} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="Instagram">
                 <FaInstagram size={16} />
               </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="LinkedIn">
+              <a href={socialLinks.linkedin || "https://linkedin.com"} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="LinkedIn">
                 <FaLinkedinIn size={16} />
               </a>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="YouTube">
+              <a href={socialLinks.youtube || "https://youtube.com"} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="YouTube">
                 <FaYoutube size={16} />
               </a>
             </div>

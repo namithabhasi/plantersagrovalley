@@ -2080,3 +2080,76 @@ div.container {
 .planters-mega-dropdown.force-close {
   transform: translateY(10px) !important;
 }
+
+/* ==========================================================================
+   React Toastify Premium Style Overrides (Matching Store Design System)
+   ========================================================================== */
+.Toastify__toast-container {
+  padding: 12px;
+}
+
+.Toastify__toast {
+  border-radius: 12px !important;
+  font-family: var(--font-family-heading) !important;
+  font-size: var(--font-size-sm) !important;
+  font-weight: 500 !important;
+  box-shadow: 0 12px 30px rgba(6, 73, 45, 0.08) !important;
+  padding: 14px 20px !important;
+}
+
+.Toastify__toast--success {
+  background-color: var(--color-primary-bg) !important;
+  color: var(--color-primary-dark) !important;
+  border: 1px solid rgba(27, 122, 66, 0.15) !important;
+}
+
+.Toastify__toast--success .Toastify__toast-icon svg {
+  fill: var(--color-primary) !important;
+}
+
+.Toastify__toast--error {
+  background-color: #fdf2f2 !important;
+  color: #c81e1e !important;
+  border: 1px solid rgba(240, 82, 82, 0.15) !important;
+}
+
+.Toastify__toast--error .Toastify__toast-icon svg {
+  fill: #e74c3c !important;
+}
+
+.Toastify__toast--warning {
+  background-color: #fefaf0 !important;
+  color: #c05621 !important;
+  border: 1px solid rgba(243, 156, 18, 0.15) !important;
+}
+
+.Toastify__toast--warning .Toastify__toast-icon svg {
+  fill: var(--color-gold) !important;
+}
+
+.Toastify__toast--info {
+  background-color: #f0f7ff !important;
+  color: #1c3d5a !important;
+  border: 1px solid rgba(66, 153, 225, 0.15) !important;
+}
+
+.Toastify__toast--info .Toastify__toast-icon svg {
+  fill: #3182ce !important;
+}
+
+/* Custom progress bar styles to match theme colors */
+.Toastify__progress-bar--success {
+  background: linear-gradient(to right, var(--color-primary), var(--color-primary-light)) !important;
+}
+
+.Toastify__progress-bar--error {
+  background: #e74c3c !important;
+}
+
+.Toastify__progress-bar--warning {
+  background: var(--color-gold) !important;
+}
+
+.Toastify__progress-bar--info {
+  background: #3182ce !important;
+}

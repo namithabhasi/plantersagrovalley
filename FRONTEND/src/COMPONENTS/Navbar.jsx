@@ -1,14 +1,63 @@
-import React, { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import logo from '../assets/logo.png'; // The text logo is saved in logo.png
 import bush from '../assets/image.png'; // Background bush growing from the bottom-left corner
 import { FiSearch, FiUser, FiShoppingCart, FiMenu, FiX, FiChevronRight, FiChevronDown } from 'react-icons/fi';
 import { useCart } from '../context/CartContext';
+import axios from '../api/axiosInstance';
+import { openAuthModal, clearUser } from '../redux/auth/authSlice';
 
 function Navbar() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [forceClose, setForceClose] = useState(false);
   const { openCart, cartTotalCount } = useCart();
+  const [dbLogo, setDbLogo] = useState("");
+
+  const handleProfileClick = (e) => {
+    e.stopPropagation();
+    if (!user) {
+      dispatch(openAuthModal("login"));
+    } else {
+      setProfileDropdownOpen(!profileDropdownOpen);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await axios.post("/auth/logout");
+      dispatch(clearUser());
+      setProfileDropdownOpen(false);
+      navigate("/");
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!profileDropdownOpen) return;
+    const handleOutsideClick = () => setProfileDropdownOpen(false);
+    window.addEventListener("click", handleOutsideClick);
+    return () => window.removeEventListener("click", handleOutsideClick);
+  }, [profileDropdownOpen]);
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const { data } = await axios.get('/settings');
+        if (data.success && data.settings?.storeLogo?.url) {
+          setDbLogo(data.settings.storeLogo.url);
+        }
+      } catch (error) {
+        console.error('Failed to load store logo in navbar', error);
+      }
+    };
+    fetchLogo();
+  }, []);
 
   const handleLinkClick = () => {
     setForceClose(true);
@@ -25,7 +74,7 @@ function Navbar() {
         {/* Left Side: Logo */}
         <Link to="/" className="planters-logo-container">
           <img
-            src={logo}
+            src={dbLogo || logo}
             alt="Planters Logo"
             className="planters-logo"
           />
@@ -229,10 +278,81 @@ function Navbar() {
             <FiSearch size={22} />
           </button>
 
-          {/* Profile Icon */}
-          <button className="navbar-action-btn planters-profile-btn" aria-label="Account">
-            <FiUser size={22} />
-          </button>
+          {/* Profile Icon with dropdown */}
+          <div className="planters-profile-container" style={{ position: 'relative' }}>
+            <button
+              onClick={handleProfileClick}
+              className="navbar-action-btn planters-profile-btn"
+              aria-label="Account"
+            >
+              <FiUser size={22} />
+            </button>
+            
+            {user && profileDropdownOpen && (
+              <div className="profile-dropdown-menu" style={{
+                position: 'absolute',
+                top: '100%',
+                right: 0,
+                backgroundColor: '#ffffff',
+                border: '1px solid var(--color-border)',
+                borderRadius: '4px',
+                boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
+                padding: '12px',
+                minWidth: '180px',
+                zIndex: 1000,
+                marginTop: '8px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px'
+              }}>
+                <div style={{
+                  fontSize: '13px',
+                  fontWeight: 'bold',
+                  color: 'var(--color-primary-dark)',
+                  borderBottom: '1px solid var(--color-border)',
+                  paddingBottom: '6px',
+                  marginBottom: '4px'
+                }}>
+                  Hello, {user.firstName}!
+                </div>
+                {['super-admin', 'admin', 'shipping-manager'].includes(user.role) && (
+                  <button
+                    onClick={() => {
+                      setProfileDropdownOpen(false);
+                      navigate('/dashboard');
+                    }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      textAlign: 'left',
+                      padding: '4px 0',
+                      cursor: 'pointer',
+                      fontSize: '13px',
+                      color: 'var(--color-text-main)'
+                    }}
+                  >
+                    Admin Dashboard
+                  </button>
+                )}
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    textAlign: 'left',
+                    padding: '8px 0 0 0',
+                    borderTop: '1px dashed var(--color-border)',
+                    cursor: 'pointer',
+                    fontSize: '13px',
+                    color: 'var(--color-danger)',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
 
           {/* Cart Icon with badge */}
           <button
@@ -273,7 +393,7 @@ function Navbar() {
         >
           {/* Header */}
           <div className="planters-drawer-header">
-            <img src={logo} alt="Planters Logo" style={{ height: '36px', width: 'auto', objectFit: 'contain' }} />
+            <img src={dbLogo || logo} alt="Planters Logo" style={{ height: '36px', width: 'auto', objectFit: 'contain' }} />
             <button
               onClick={() => setMobileMenuOpen(false)}
               className="navbar-action-btn"
