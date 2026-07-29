@@ -735,7 +735,7 @@ div.container {
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px);
-  transition: all 0.25s ease-in-out;
+  transition: opacity 0.25s ease-in-out, visibility 0.25s ease-in-out, transform 0.25s ease-in-out;
   z-index: 999;
   padding: 2.5rem 0;
 }
@@ -744,6 +744,69 @@ div.container {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
+}
+
+/* --- Simple Dropdown menu styling for Seeds --- */
+.navbar-item-with-simple-dropdown {
+  position: relative;
+}
+
+.planters-simple-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  min-width: 250px;
+  background-color: #f7faf6; /* Soft green backdrop matching Plants */
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 2px solid var(--color-primary);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease-in-out, visibility 0.25s ease-in-out, transform 0.25s ease-in-out;
+  z-index: 999;
+  padding: 0.5rem 0;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.navbar-item-with-simple-dropdown:hover .planters-simple-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.simple-dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  color: var(--color-primary-dark);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s ease, color 0.2s ease, padding-left 0.2s ease;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+}
+
+.simple-dropdown-item:hover {
+  background-color: rgba(28, 44, 33, 0.04);
+  color: var(--color-primary);
+  padding-left: 1.5rem;
+}
+
+.simple-dropdown-item svg {
+  margin-left: 8px;
+  opacity: 0.6;
+  transition: transform 0.2s ease;
+}
+
+.simple-dropdown-item:hover svg {
+  transform: translateX(2px);
 }
 
 .mega-dropdown-grid {
@@ -828,6 +891,7 @@ div.container {
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  flex-grow: 0;
   z-index: 10;
   margin-left: 12px;
   /* Small offset on mobile to clear absolute corner bush */
@@ -862,7 +926,7 @@ div.container {
   justify-content: center;
   padding: 12px 0;
   background-color: #ffffff;
-  width: 100%;
+  width: auto;
 }
 
 .planters-nav-links {
@@ -878,6 +942,7 @@ div.container {
   gap: 8px;
   /* Tighter gap on mobile to prevent squishing the central area */
   flex-shrink: 0;
+  flex-grow: 0;
   z-index: 10;
 }
 
