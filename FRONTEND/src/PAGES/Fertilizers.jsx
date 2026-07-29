@@ -1,122 +1,170 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import { FaStar } from 'react-icons/fa';
+import { Link, useLocation } from 'react-router-dom';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
-import './Seeds.css';
+import { FaStar } from 'react-icons/fa';
+import { useCart } from '../context/CartContext';
+import './Fertilizers.css';
 
-// Flower Seeds
-import fs1 from '../assets/FLOWERSEEDS/Rainbow Rose Seeds • Rare Holland Variety • Multicolor Blooms - Etsy.jpg';
-import fs2 from '../assets/FLOWERSEEDS/Rare Black Rose Seeds _ Perennial Shrub Blooms _ Ornamental Garden Plant.jpg';
-import fs3 from '../assets/FLOWERSEEDS/This item is unavailable - Etsy.jpg';
-import fs4 from '../assets/FLOWERSEEDS/download (22).jpg';
-import fs5 from '../assets/FLOWERSEEDS/download (23).jpg';
+// Import Assets
+import cocoBrickImg from '../assets/FERTILIZERS/image.png';
+import compostImg from '../assets/FERTILIZERS/image copy.png';
+import cowManureImg from '../assets/FERTILIZERS/image copy 2.png';
+import moistBallImg from '../assets/FERTILIZERS/image copy 3.png';
+import mossStickImg from '../assets/FERTILIZERS/image copy 4.png';
+import plantFoodImg from '../assets/FERTILIZERS/image copy 5.png';
+import generalFertilizerImg from '../assets/FERTILIZERS/When Should You Fertilize Your Hydrangeas_ Here’s the Answer (1).jpg';
 
-// Vegetable Seeds
-import vs1 from '../assets/VEGETABLESEEDS/download (24).jpg';
-import vs2 from '../assets/VEGETABLESEEDS/image copy 2.png';
-import vs3 from '../assets/VEGETABLESEEDS/image copy 3.png';
-import vs4 from '../assets/VEGETABLESEEDS/image copy 4.png';
-import vs5 from '../assets/VEGETABLESEEDS/image copy 5.png';
-import vs6 from '../assets/VEGETABLESEEDS/image copy.png';
-import vs7 from '../assets/VEGETABLESEEDS/image.png';
-
-// Herb Seeds
-import hs1 from '../assets/HERBSEEDS/image copy 2.png';
-import hs2 from '../assets/HERBSEEDS/image copy 3.png';
-import hs3 from '../assets/HERBSEEDS/image copy 4.png';
-import hs4 from '../assets/HERBSEEDS/image copy.png';
-import hs5 from '../assets/HERBSEEDS/image.png';
-
-// Flower Bulbs
-import fb1 from '../assets/FLOWERBULBS/image copy 2.png';
-import fb2 from '../assets/FLOWERBULBS/image copy 3.png';
-import fb3 from '../assets/FLOWERBULBS/image copy 4.png';
-import fb4 from '../assets/FLOWERBULBS/image copy 5.png';
-import fb5 from '../assets/FLOWERBULBS/image copy 6.png';
-import fb6 from '../assets/FLOWERBULBS/image copy 7.png';
-import fb7 from '../assets/FLOWERBULBS/image copy 8.png';
-import fb8 from '../assets/FLOWERBULBS/image copy 9.png';
-import fb9 from '../assets/FLOWERBULBS/image copy.png';
-import fb10 from '../assets/FLOWERBULBS/image.png';
-
-// Forestry Seeds (Imported from FORESTARYSEEDS)
-import forest1 from '../assets/FORESTARYSEEDS/image copy 2.png';
-import forest2 from '../assets/FORESTARYSEEDS/image copy 3.png';
-import forest3 from '../assets/FORESTARYSEEDS/image copy 4.png';
-import forest4 from '../assets/FORESTARYSEEDS/image copy.png';
-import forest5 from '../assets/FORESTARYSEEDS/image.png';
-
-// Lawn Seeds
-import ls1 from '../assets/LAWNSEEDS/image copy.png';
-import ls2 from '../assets/LAWNSEEDS/image.png';
-
-const seedProducts = [
-    // Flower Seeds
-    { id: 'seed-fs-1', category: 'flower-seeds', name: 'Rainbow Rose Seeds (Holland Variety)', price: 149, rating: 5, image: fs1, date: '2026-01-01', inStock: true, space: 'outdoors' },
-    { id: 'seed-fs-2', category: 'flower-seeds', name: 'Rare Black Rose Shrub Seeds', price: 199, originalPrice: 249, discount: '-20%', rating: 5, image: fs2, date: '2026-01-02', inStock: true, space: 'outdoors' },
-    { id: 'seed-fs-3', category: 'flower-seeds', name: 'Exotic Purple Orchid Seeds', price: 249, rating: 4, image: fs3, date: '2026-01-03', inStock: false, space: 'indoors' },
-    { id: 'seed-fs-4', category: 'flower-seeds', name: 'Mixed Aster Flower Seeds', price: 99, rating: 4, image: fs4, date: '2026-01-04', inStock: true, space: 'outdoors' },
-    { id: 'seed-fs-5', category: 'flower-seeds', name: 'Dwarf Marigold Flower Seeds', price: 79, rating: 4, image: fs5, date: '2026-01-05', inStock: true, space: 'outdoors' },
-
-    // Vegetable Seeds
-    { id: 'seed-vs-1', category: 'vegetable-seeds', name: 'Organic Tomato Seeds', price: 59, rating: 5, image: vs1, date: '2026-01-06', inStock: true, space: 'outdoors' },
-    { id: 'seed-vs-2', category: 'vegetable-seeds', name: 'Red Chili Pepper Seeds', price: 49, rating: 4, image: vs2, date: '2026-01-07', inStock: true, space: 'outdoors' },
-    { id: 'seed-vs-3', category: 'vegetable-seeds', name: 'Bell Pepper Sweet Seeds', price: 69, rating: 4, image: vs3, date: '2026-01-08', inStock: true, space: 'outdoors' },
-    { id: 'seed-vs-4', category: 'vegetable-seeds', name: 'F1 Hybrid Carrot Seeds', price: 59, rating: 4, image: vs4, date: '2026-01-09', inStock: true, space: 'outdoors' },
-    { id: 'seed-vs-5', category: 'vegetable-seeds', name: 'Long Green Cucumber Seeds', price: 49, rating: 4, image: vs5, date: '2026-01-10', inStock: false, space: 'outdoors' },
-    { id: 'seed-vs-6', category: 'vegetable-seeds', name: 'Spinach / Palak Seeds', price: 39, originalPrice: 49, discount: '-20%', rating: 5, image: vs6, date: '2026-01-11', inStock: true, space: 'outdoors' },
-    { id: 'seed-vs-7', category: 'vegetable-seeds', name: 'French Beans Seeds', price: 49, rating: 4, image: vs7, date: '2026-01-12', inStock: true, space: 'outdoors' },
-
-    // Herb Seeds
-    { id: 'seed-hs-1', category: 'herb-seeds', name: 'Sweet Basil Herb Seeds', price: 79, rating: 5, image: hs1, date: '2026-01-13', inStock: true, space: 'indoors' },
-    { id: 'seed-hs-2', category: 'herb-seeds', name: 'Italian Parsley Herb Seeds', price: 69, rating: 4, image: hs2, date: '2026-01-14', inStock: true, space: 'indoors' },
-    { id: 'seed-hs-3', category: 'herb-seeds', name: 'Coriander / Cilantro Seeds', price: 39, rating: 5, image: hs3, date: '2026-01-15', inStock: true, space: 'outdoors' },
-    { id: 'seed-hs-4', category: 'herb-seeds', name: 'Peppermint Herb Seeds', price: 79, originalPrice: 99, discount: '-20%', rating: 4, image: hs4, date: '2026-01-16', inStock: true, space: 'indoors' },
-    { id: 'seed-hs-5', category: 'herb-seeds', name: 'Thyme Herb Seeds', price: 89, rating: 4, image: hs5, date: '2026-01-17', inStock: false, space: 'indoors' },
-
-    // Flower Bulbs
-    { id: 'seed-fb-1', category: 'flower-bulbs', name: 'Red Tulip Bulbs (Premium)', price: 299, rating: 5, image: fb1, date: '2026-01-18', inStock: true, space: 'outdoors' },
-    { id: 'seed-fb-2', category: 'flower-bulbs', name: 'Yellow Daffodil Bulbs', price: 199, rating: 4, image: fb2, date: '2026-01-19', inStock: true, space: 'outdoors' },
-    { id: 'seed-fb-3', category: 'flower-bulbs', name: 'Purple Crocus Bulbs', price: 249, rating: 5, image: fb3, date: '2026-01-20', inStock: true, space: 'outdoors' },
-    { id: 'seed-fb-4', category: 'flower-bulbs', name: 'White Lily Bulbs', price: 220, rating: 4, image: fb4, date: '2026-01-21', inStock: true, space: 'indoors' },
-    { id: 'seed-fb-5', category: 'flower-bulbs', name: 'Blue Hyacinth Bulbs', price: 279, originalPrice: 349, discount: '-20%', rating: 5, image: fb5, date: '2026-01-22', inStock: true, space: 'indoors' },
-    { id: 'seed-fb-6', category: 'flower-bulbs', name: 'Pink Ranunculus Bulbs', price: 250, rating: 4, image: fb6, date: '2026-01-23', inStock: true, space: 'outdoors' },
-    { id: 'seed-fb-7', category: 'flower-bulbs', name: 'Double Freesia Bulbs', price: 189, rating: 4, image: fb7, date: '2026-01-24', inStock: true, space: 'outdoors' },
-    { id: 'seed-fb-8', category: 'flower-bulbs', name: 'Gladiolus Mixed Bulbs', price: 159, rating: 4, image: fb8, date: '2026-01-25', inStock: false, space: 'outdoors' },
-    { id: 'seed-fb-9', category: 'flower-bulbs', name: 'Anemone Flower Bulbs', price: 179, rating: 4, image: fb9, date: '2026-01-26', inStock: true, space: 'outdoors' },
-    { id: 'seed-fb-10', category: 'flower-bulbs', name: 'Amaryllis Red Bulbs', price: 349, rating: 5, image: fb10, date: '2026-01-27', inStock: true, space: 'indoors' },
-
-    // Forestry Seeds
-    { id: 'seed-forest-1', category: 'foresty-seeds', name: 'Sandalwood Tree Seeds', price: 499, rating: 5, image: forest1, date: '2026-01-28', inStock: true, space: 'outdoors' },
-    { id: 'seed-forest-2', category: 'foresty-seeds', name: 'Teak Wood Seeds', price: 399, rating: 4, image: forest2, date: '2026-01-29', inStock: true, space: 'outdoors' },
-    { id: 'seed-forest-3', category: 'foresty-seeds', name: 'Bamboo Forest Seeds', price: 299, originalPrice: 399, discount: '-25%', rating: 5, image: forest3, date: '2026-01-30', inStock: true, space: 'outdoors' },
-    { id: 'seed-forest-4', category: 'foresty-seeds', name: 'Mahogany Tree Seeds', price: 349, rating: 4, image: forest4, date: '2026-01-31', inStock: true, space: 'outdoors' },
-    { id: 'seed-forest-5', category: 'foresty-seeds', name: 'Neem Tree Seeds', price: 149, rating: 5, image: forest5, date: '2026-02-01', inStock: false, space: 'outdoors' },
-
-    // Lawn Seeds
-    { id: 'seed-ls-1', category: 'lawn-seeds', name: 'Bermuda Grass Seeds', price: 199, rating: 4, image: ls1, date: '2026-02-02', inStock: true, space: 'outdoors' },
-    { id: 'seed-ls-2', category: 'lawn-seeds', name: 'Kentucky Bluegrass Seeds', price: 249, originalPrice: 299, discount: '-16%', rating: 5, image: ls2, date: '2026-02-03', inStock: true, space: 'outdoors' }
+const fertilizerCategories = [
+    { id: 'all', name: 'All Fertilizers' },
+    { id: 'coco-bricks', name: 'Coco Bricks' },
+    { id: 'compost', name: 'Compost' },
+    { id: 'cow-manure', name: 'Cow Manure' },
+    { id: 'moist-ball', name: 'Moist Ball' },
+    { id: 'moss-stick', name: 'Moss Stick' },
+    { id: 'plant-food', name: 'Plant Food' }
 ];
 
-const seedCategories = [
-    { id: 'all', name: 'All Seeds' },
-    { id: 'flower-seeds', name: 'Flower Seeds' },
-    { id: 'vegetable-seeds', name: 'Vegetable Seeds' },
-    { id: 'herb-seeds', name: 'Herb Seeds' },
-    { id: 'flower-bulbs', name: 'Flower Bulbs' },
-    { id: 'foresty-seeds', name: 'Foresty Seeds' },
-    { id: 'lawn-seeds', name: 'Lawn Seeds' }
+const fertilizerProducts = [
+    {
+        id: 'f1',
+        name: 'Premium Coco Peat Brick (5kg)',
+        category: 'coco-bricks',
+        price: 299,
+        oldPrice: 399,
+        image: cocoBrickImg,
+        inStock: true,
+        space: 'indoors',
+        rating: 4.8,
+        reviews: 128,
+        description: 'High-quality compressed coco peat brick for healthy root systems and moisture retention.'
+    },
+    {
+        id: 'f2',
+        name: 'Organic Vermicompost (10kg)',
+        category: 'compost',
+        price: 499,
+        oldPrice: 650,
+        image: compostImg,
+        inStock: true,
+        space: 'outdoors',
+        rating: 4.9,
+        reviews: 320,
+        description: 'Rich organic compost packed with essential nutrients for healthy soil and plant growth.'
+    },
+    {
+        id: 'f3',
+        name: 'Dehydrated Cow Manure Powder (5kg)',
+        category: 'cow-manure',
+        price: 249,
+        oldPrice: 350,
+        image: cowManureImg,
+        inStock: true,
+        space: 'outdoors',
+        rating: 4.7,
+        reviews: 94,
+        description: 'Finely powdered, fully decomposed cow manure to enrich garden soil naturally.'
+    },
+    {
+        id: 'f4',
+        name: 'Water Retention Moist Ball (Set of 12)',
+        category: 'moist-ball',
+        price: 399,
+        oldPrice: 499,
+        image: moistBallImg,
+        inStock: true,
+        space: 'indoors',
+        rating: 4.5,
+        reviews: 42,
+        description: 'Slow-release moisture balls designed for indoor planters to reduce watering frequency.'
+    },
+    {
+        id: 'f5',
+        name: 'Organic Moss Stick for Climbers (3ft)',
+        category: 'moss-stick',
+        price: 199,
+        oldPrice: 299,
+        image: mossStickImg,
+        inStock: true,
+        space: 'indoors',
+        rating: 4.6,
+        reviews: 115,
+        description: 'Sturdy moss poles to support money plants, monstera, and other climbing vines.'
+    },
+    {
+        id: 'f6',
+        name: 'Liquid Plant Food - Concentrated (250ml)',
+        category: 'plant-food',
+        price: 349,
+        oldPrice: 450,
+        image: plantFoodImg,
+        inStock: true,
+        space: 'indoors',
+        rating: 4.8,
+        reviews: 210,
+        description: 'Easy-to-use liquid nutrient solution for robust green foliage and healthy blooms.'
+    },
+    {
+        id: 'f7',
+        name: 'Hydrangea Bloom Booster Fertilizer (1kg)',
+        category: 'plant-food',
+        price: 450,
+        oldPrice: 599,
+        image: generalFertilizerImg,
+        inStock: true,
+        space: 'outdoors',
+        rating: 4.9,
+        reviews: 87,
+        description: 'Specialized nutrient formula designed to enhance hydrangeas and flowering shrubs blooms.'
+    },
+    {
+        id: 'f8',
+        name: 'Premium Coco Peat Coir Disc (Set of 20)',
+        category: 'coco-bricks',
+        price: 180,
+        oldPrice: 250,
+        image: cocoBrickImg,
+        inStock: false,
+        space: 'indoors',
+        rating: 4.4,
+        reviews: 35,
+        description: 'Compact coir discs ideal for seedling trays and indoor micro-green propagation.'
+    },
+    {
+        id: 'f9',
+        name: 'Organic Leaf Mold Compost (5kg)',
+        category: 'compost',
+        price: 320,
+        oldPrice: 420,
+        image: compostImg,
+        inStock: true,
+        space: 'outdoors',
+        rating: 4.7,
+        reviews: 63,
+        description: 'Naturally aged leaf mold compost rich in beneficial microbial activity.'
+    },
+    {
+        id: 'f10',
+        name: 'Moss Stick Extension Pole (2ft)',
+        category: 'moss-stick',
+        price: 149,
+        oldPrice: 199,
+        image: mossStickImg,
+        inStock: true,
+        space: 'outdoors',
+        rating: 4.5,
+        reviews: 58,
+        description: 'Modular moss pole extension to expand support height as climbers grow.'
+    }
 ];
 
-function Seeds() {
+function Fertilizers() {
     const [activeCategory, setActiveCategory] = useState('all');
     const [sortBy, setSortBy] = useState('best-selling');
     const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
     const { addToCart } = useCart();
     const location = useLocation();
 
-    // Sidebar Filter toggles (collapsible state) - collapse on mobile for space clarity
+    // Sidebar Filter toggles - collapse on mobile
     const isMobileViewport = typeof window !== 'undefined' && window.innerWidth < 992;
     const [catsOpen, setCatsOpen] = useState(!isMobileViewport);
     const [availOpen, setAvailOpen] = useState(!isMobileViewport);
@@ -127,7 +175,7 @@ function Seeds() {
     const [inStockOnly, setInStockOnly] = useState(false);
     const [outOfStockOnly, setOutOfStockOnly] = useState(false);
     const [minPrice, setMinPrice] = useState(0);
-    const [maxPrice, setMaxPrice] = useState(1000); // Seeds are generally lower cost than large plants, max is 1000
+    const [maxPrice, setMaxPrice] = useState(1000);
     const [indoorsChecked, setIndoorsChecked] = useState(false);
     const [outdoorsChecked, setOutdoorsChecked] = useState(false);
 
@@ -142,7 +190,7 @@ function Seeds() {
     }, [location]);
 
     // Filters logic
-    const filteredProducts = seedProducts.filter(product => {
+    const filteredProducts = fertilizerProducts.filter(product => {
         // 1. Category filter
         if (activeCategory !== 'all' && product.category !== activeCategory) {
             return false;
@@ -187,55 +235,71 @@ function Seeds() {
             return b.name.localeCompare(a.name);
         }
         if (sortBy === 'newest') {
-            return new Date(b.date) - new Date(a.date);
+            return b.reviews - a.reviews; // Mock date fallback using reviews count
         }
         return b.rating - a.rating;
     });
 
-    // Dynamic counts for stock and space filters based on active Category
-    const categoryProducts = activeCategory === 'all'
-        ? seedProducts
-        : seedProducts.filter(p => p.category === activeCategory);
+    // Dynamic counts
+    const inStockCount = fertilizerProducts.filter(
+        p => (activeCategory === 'all' || p.category === activeCategory) && p.inStock
+    ).length;
 
-    const inStockCount = categoryProducts.filter(p => p.inStock).length;
-    const outOfStockCount = categoryProducts.filter(p => !p.inStock).length;
-    const indoorsCount = categoryProducts.filter(p => p.space === 'indoors').length;
-    const outdoorsCount = categoryProducts.filter(p => p.space === 'outdoors').length;
+    const outOfStockCount = fertilizerProducts.filter(
+        p => (activeCategory === 'all' || p.category === activeCategory) && !p.inStock
+    ).length;
+
+    const indoorsCount = fertilizerProducts.filter(
+        p => (activeCategory === 'all' || p.category === activeCategory) && p.space === 'indoors'
+    ).length;
+
+    const outdoorsCount = fertilizerProducts.filter(
+        p => (activeCategory === 'all' || p.category === activeCategory) && p.space === 'outdoors'
+    ).length;
+
+    const handlePriceChange = (e, bound) => {
+        const value = parseInt(e.target.value, 10);
+        if (bound === 'min') {
+            setMinPrice(Math.min(value, maxPrice));
+        } else {
+            setMaxPrice(Math.max(value, minPrice));
+        }
+    };
 
     return (
-        <div className="seeds-page-wrapper text-[#1c2c21]">
-
-            {/* Left Aligned Breadcrumbs and Title Section */}
-            <section className="seeds-header-section pt-16 pb-12">
+        <div className="fertilizers-page-wrapper text-[#1c2c21]">
+            
+            {/* Breadcrumbs & Description Section */}
+            <section className="fertilizers-header-section pt-16 pb-12">
                 <div className="container">
-                    <div className="seeds-breadcrumbs text-xs text-gray-400 mb-3">
+                    <div className="fertilizers-breadcrumbs text-xs text-gray-400 mb-3">
                         <Link to="/" className="hover:underline text-gray-400">Home</Link>
                         <span className="mx-2">›</span>
-                        <span className="text-gray-600">Seeds</span>
+                        <span className="text-gray-600">Fertilizers</span>
                     </div>
 
-                    <h1 className="seeds-page-title text-xl font-normal mb-3 text-[#1c2c21]">
+                    <h1 className="fertilizers-page-title text-xl font-normal mb-3 text-[#1c2c21]">
                         {activeCategory === 'all' 
-                            ? 'All Seeds' 
-                            : seedCategories.find(c => c.id === activeCategory)?.name || 'Seeds'}
+                            ? 'All Fertilizers' 
+                            : fertilizerCategories.find(c => c.id === activeCategory)?.name || 'Fertilizers'}
                     </h1>
 
-                    <p className="seeds-page-description font-[var(--font-family-base)] text-sm text-[#4b5563] max-w-[800px] leading-relaxed">
-                        Explore our premium range of organic seeds. Buy high-quality flower seeds, organic vegetable seeds, herb seeds, exotic flower bulbs, forestry tree seeds, and lush green lawn grass seeds online with guaranteed germination.
+                    <p className="fertilizers-page-description font-[var(--font-family-base)] text-sm text-[#4b5563] max-w-[800px] leading-relaxed">
+                        Nourish your plants with our premium organic fertilizers and soil enhancers. Choose from moisture-retaining coco bricks, nutrient-rich vermicompost, slow-release moist balls, sturdy moss sticks, and concentrated plant foods online.
                     </p>
                 </div>
             </section>
 
             {/* Main Catalog Workspace */}
-            <section className="seeds-catalog-section py-12">
-                <div className="container seeds-layout-container">
+            <section className="fertilizers-catalog-section py-12">
+                <div className="container fertilizers-layout-container">
 
                     {/* Left Column: Sidebar Filters */}
-                    <div className="seeds-sidebar">
+                    <div className="fertilizers-sidebar">
 
                         {/* 1. Category Accordion */}
                         <div className="filter-accordion">
-                            <div
+                            <div 
                                 className="filter-accordion-header"
                                 onClick={() => setCatsOpen(!catsOpen)}
                             >
@@ -245,24 +309,24 @@ function Seeds() {
 
                             {catsOpen && (
                                 <div className="filter-accordion-content">
-                                    <button
+                                    <button 
                                         onClick={() => setActiveCategory('all')}
                                         className="filter-reset-link"
                                     >
                                         Reset
                                     </button>
-                                    <div className="seeds-category-list">
-                                        {seedCategories.map((cat) => {
+                                    <div className="fertilizers-category-list">
+                                        {fertilizerCategories.map((cat) => {
                                             const count = cat.id === 'all'
-                                                ? seedProducts.length
-                                                : seedProducts.filter(p => p.category === cat.id).length;
+                                                ? fertilizerProducts.length
+                                                : fertilizerProducts.filter(p => p.category === cat.id).length;
                                             return (
                                                 <button
                                                     key={cat.id}
                                                     onClick={() => setActiveCategory(cat.id)}
-                                                    className={`seeds-cat-btn ${activeCategory === cat.id ? 'active' : ''}`}
+                                                    className={`fertilizers-cat-btn ${activeCategory === cat.id ? 'active' : ''}`}
                                                 >
-                                                    <span className="cat-name">{cat.name}</span>
+                                                    <span>{cat.name}</span>
                                                     <span className="cat-count">({count})</span>
                                                 </button>
                                             );
@@ -276,7 +340,7 @@ function Seeds() {
 
                         {/* 2. Availability Accordion */}
                         <div className="filter-accordion">
-                            <div
+                            <div 
                                 className="filter-accordion-header"
                                 onClick={() => setAvailOpen(!availOpen)}
                             >
@@ -286,34 +350,23 @@ function Seeds() {
 
                             {availOpen && (
                                 <div className="filter-accordion-content">
-                                    <button
-                                        onClick={() => {
-                                            setInStockOnly(false);
-                                            setOutOfStockOnly(false);
-                                        }}
-                                        className="filter-reset-link"
-                                    >
-                                        Reset
-                                    </button>
-
                                     <label className="filter-checkbox-label">
-                                        <input
+                                        <input 
                                             type="checkbox"
                                             checked={inStockOnly}
                                             onChange={(e) => setInStockOnly(e.target.checked)}
                                             className="filter-checkbox-input"
                                         />
-                                        <span>In stock ({inStockCount})</span>
+                                        <span>In Stock ({inStockCount})</span>
                                     </label>
-
                                     <label className="filter-checkbox-label">
-                                        <input
+                                        <input 
                                             type="checkbox"
                                             checked={outOfStockOnly}
                                             onChange={(e) => setOutOfStockOnly(e.target.checked)}
                                             className="filter-checkbox-input"
                                         />
-                                        <span>Out of stock ({outOfStockCount})</span>
+                                        <span>Out of Stock ({outOfStockCount})</span>
                                     </label>
                                 </div>
                             )}
@@ -323,7 +376,7 @@ function Seeds() {
 
                         {/* 3. Price Accordion */}
                         <div className="filter-accordion">
-                            <div
+                            <div 
                                 className="filter-accordion-header"
                                 onClick={() => setPriceOpen(!priceOpen)}
                             >
@@ -333,57 +386,39 @@ function Seeds() {
 
                             {priceOpen && (
                                 <div className="filter-accordion-content">
-                                    <button
-                                        onClick={() => {
-                                            setMinPrice(0);
-                                            setMaxPrice(1000);
-                                        }}
-                                        className="filter-reset-link"
-                                    >
-                                        Reset
-                                    </button>
-
                                     <div className="price-slider-outer">
                                         <div className="double-slider-container">
                                             <span className="currency-symbol">₹</span>
                                             <div className="double-slider-wrapper">
-                                                <input
-                                                    type="range"
-                                                    min="0"
-                                                    max="1000"
-                                                    step="10"
-                                                    value={minPrice}
-                                                    onChange={(e) => {
-                                                        const val = Math.min(Number(e.target.value), maxPrice - 50);
-                                                        setMinPrice(val);
-                                                    }}
-                                                    className="slider-thumb slider-thumb-left"
-                                                />
-                                                <input
-                                                    type="range"
-                                                    min="0"
-                                                    max="1000"
-                                                    step="10"
-                                                    value={maxPrice}
-                                                    onChange={(e) => {
-                                                        const val = Math.max(Number(e.target.value), minPrice + 50);
-                                                        setMaxPrice(val);
-                                                    }}
-                                                    className="slider-thumb slider-thumb-right"
-                                                />
                                                 <div className="slider-track" />
                                                 <div 
-                                                    className="slider-range-bar" 
+                                                    className="slider-range-bar"
                                                     style={{
                                                         left: `${(minPrice / 1000) * 100}%`,
                                                         right: `${100 - (maxPrice / 1000) * 100}%`
                                                     }}
                                                 />
+                                                <input 
+                                                    type="range"
+                                                    min="0"
+                                                    max="1000"
+                                                    value={minPrice}
+                                                    onChange={(e) => handlePriceChange(e, 'min')}
+                                                    className="slider-thumb"
+                                                />
+                                                <input 
+                                                    type="range"
+                                                    min="0"
+                                                    max="1000"
+                                                    value={maxPrice}
+                                                    onChange={(e) => handlePriceChange(e, 'max')}
+                                                    className="slider-thumb"
+                                                />
                                             </div>
                                         </div>
-                                        <div className="filter-price-text">
-                                            Price: Rs. {minPrice} – Rs. {maxPrice}
-                                        </div>
+                                        <span className="filter-price-text">
+                                            Price: ₹{minPrice} — ₹{maxPrice}
+                                        </span>
                                     </div>
                                 </div>
                             )}
@@ -391,30 +426,20 @@ function Seeds() {
 
                         <hr className="filter-divider" />
 
-                        {/* 4. Suitable Space Accordion */}
+                        {/* 4. Suitability Accordion */}
                         <div className="filter-accordion">
-                            <div
+                            <div 
                                 className="filter-accordion-header"
                                 onClick={() => setSpaceOpen(!spaceOpen)}
                             >
-                                <h3 className="filter-accordion-title">Suitable space</h3>
+                                <h3 className="filter-accordion-title">Suitability</h3>
                                 {spaceOpen ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
                             </div>
 
                             {spaceOpen && (
                                 <div className="filter-accordion-content">
-                                    <button
-                                        onClick={() => {
-                                            setIndoorsChecked(false);
-                                            setOutdoorsChecked(false);
-                                        }}
-                                        className="filter-reset-link"
-                                    >
-                                        Reset
-                                    </button>
-
                                     <label className="filter-checkbox-label">
-                                        <input
+                                        <input 
                                             type="checkbox"
                                             checked={indoorsChecked}
                                             onChange={(e) => setIndoorsChecked(e.target.checked)}
@@ -422,9 +447,8 @@ function Seeds() {
                                         />
                                         <span>Indoors ({indoorsCount})</span>
                                     </label>
-
                                     <label className="filter-checkbox-label">
-                                        <input
+                                        <input 
                                             type="checkbox"
                                             checked={outdoorsChecked}
                                             onChange={(e) => setOutdoorsChecked(e.target.checked)}
@@ -439,15 +463,15 @@ function Seeds() {
                     </div>
 
                     {/* Right Column: Grid and Toolbar */}
-                    <div className="seeds-main-content">
+                    <div className="fertilizers-main-content">
 
                         {/* Toolbar Area */}
-                        <div className="seeds-toolbar mb-8">
-                            <span className="seeds-count-text text-sm text-gray-500 font-[var(--font-family-base)]">
+                        <div className="fertilizers-toolbar mb-8">
+                            <span className="fertilizers-count-text text-sm text-gray-500 font-[var(--font-family-base)]">
                                 Showing {sortedProducts.length} {sortedProducts.length === 1 ? 'pack' : 'packs'}
                             </span>
 
-                            <div className="seeds-sort-container">
+                            <div className="fertilizers-sort-container">
                                 <div className="custom-sort-dropdown">
                                     <button 
                                         className="sort-dropdown-btn"
@@ -484,15 +508,17 @@ function Seeds() {
                         </div>
 
                         {/* Product Card Grid */}
-                        <div className="product-grid seeds-grid">
+                        <div className="product-grid fertilizers-grid">
                             {sortedProducts.map((product) => (
                                 <div key={product.id} className="product-card-wrapper">
                                     <div className="product-card" style={{ flexGrow: 1 }}>
                                         {!product.inStock && (
                                             <span className="card-badge sale bg-red-600 text-white">SOLD OUT</span>
                                         )}
-                                        {product.inStock && product.discount && (
-                                            <span className="card-badge sale">{product.discount}</span>
+                                        {product.inStock && product.oldPrice && (
+                                            <span className="card-badge sale">
+                                                -{Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}%
+                                            </span>
                                         )}
 
                                         <div className="product-card-image">
@@ -505,9 +531,9 @@ function Seeds() {
                                             </h4>
 
                                             <div className="product-price-row" style={{ marginTop: 'auto', marginBottom: 'var(--space-2)' }}>
-                                                {product.originalPrice ? (
+                                                {product.oldPrice ? (
                                                     <>
-                                                        <span className="price-original">Rs. {product.originalPrice}.00</span>
+                                                        <span className="price-original">Rs. {product.oldPrice}.00</span>
                                                         <span className="price-current sale">Rs. {product.price}.00</span>
                                                     </>
                                                 ) : (
@@ -541,7 +567,7 @@ function Seeds() {
 
                         {sortedProducts.length === 0 && (
                             <div className="text-center py-16 text-gray-500 font-[var(--font-family-base)]">
-                                No seeds matches the selected filter options. Please try resetting some filters.
+                                No fertilizers matches the selected filter options. Please try resetting some filters.
                             </div>
                         )}
 
@@ -553,4 +579,4 @@ function Seeds() {
     );
 }
 
-export default Seeds;
+export default Fertilizers;

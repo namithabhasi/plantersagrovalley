@@ -140,6 +140,7 @@ const plantCategories = [
 function Plants() {
     const [activeCategory, setActiveCategory] = useState('all');
     const [sortBy, setSortBy] = useState('best-selling');
+    const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
     const { addToCart } = useCart();
     const location = useLocation();
 
@@ -240,6 +241,12 @@ function Plants() {
                         <span className="mx-2">›</span>
                         <span className="text-gray-600">Plants</span>
                     </div>
+
+                    <h1 className="plants-page-title text-xl font-normal mb-3 text-[#1c2c21]">
+                        {activeCategory === 'all' 
+                            ? 'All Plants' 
+                            : plantCategories.find(c => c.id === activeCategory)?.name || 'Plants'}
+                    </h1>
 
                     <p className="plants-page-description font-[var(--font-family-base)] text-sm text-[#4b5563] max-w-[800px] leading-relaxed">
                         Buy plants online from Plantsguru — India's most trusted <span className="underline font-semibold cursor-pointer">plant nursery</span> for healthy <span className="underline font-semibold cursor-pointer">indoor</span>, outdoor, and <span className="underline font-semibold cursor-pointer">flowering plants</span>. We deliver <span className="underline font-semibold cursor-pointer">live plants</span> across India.
@@ -469,20 +476,38 @@ function Plants() {
                             </span>
 
                             <div className="plants-sort-container">
-                                <label htmlFor="sort-select" className="sort-label text-sm text-gray-700 font-[var(--font-family-base)] mr-2">Sort by:</label>
-                                <select
-                                    id="sort-select"
-                                    value={sortBy}
-                                    onChange={(e) => setSortBy(e.target.value)}
-                                    className="plants-sort-select"
-                                >
-                                    <option value="best-selling">Best Selling</option>
-                                    <option value="price-low-high">Price: Low to High</option>
-                                    <option value="price-high-low">Price: High to Low</option>
-                                    <option value="name-a-z">Alphabetically: A-Z</option>
-                                    <option value="name-z-a">Alphabetically: Z-A</option>
-                                    <option value="newest">Newest Arrivals</option>
-                                </select>
+                                <div className="custom-sort-dropdown">
+                                    <button 
+                                        className="sort-dropdown-btn"
+                                        onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
+                                    >
+                                        <span>Sort by: {
+                                            sortBy === 'best-selling' ? 'Best Selling' :
+                                            sortBy === 'price-low-high' ? 'Price: Low to High' :
+                                            sortBy === 'price-high-low' ? 'Price: High to Low' :
+                                            sortBy === 'name-a-z' ? 'Alphabetically: A-Z' :
+                                            sortBy === 'name-z-a' ? 'Alphabetically: Z-A' :
+                                            sortBy === 'newest' ? 'Newest Arrivals' : 'Best Selling'
+                                        }</span>
+                                        <FiChevronDown size={14} />
+                                    </button>
+                                    {sortDropdownOpen && (
+                                        <>
+                                            <div 
+                                                style={{ position: 'fixed', inset: 0, zIndex: 998 }} 
+                                                onClick={() => setSortDropdownOpen(false)}
+                                            />
+                                            <div className="sort-dropdown-menu" style={{ zIndex: 999 }}>
+                                                <button onClick={() => { setSortBy('best-selling'); setSortDropdownOpen(false); }} className={`sort-dropdown-item ${sortBy === 'best-selling' ? 'active' : ''}`}>Best Selling</button>
+                                                <button onClick={() => { setSortBy('price-low-high'); setSortDropdownOpen(false); }} className={`sort-dropdown-item ${sortBy === 'price-low-high' ? 'active' : ''}`}>Price: Low to High</button>
+                                                <button onClick={() => { setSortBy('price-high-low'); setSortDropdownOpen(false); }} className={`sort-dropdown-item ${sortBy === 'price-high-low' ? 'active' : ''}`}>Price: High to Low</button>
+                                                <button onClick={() => { setSortBy('name-a-z'); setSortDropdownOpen(false); }} className={`sort-dropdown-item ${sortBy === 'name-a-z' ? 'active' : ''}`}>Alphabetically: A-Z</button>
+                                                <button onClick={() => { setSortBy('name-z-a'); setSortDropdownOpen(false); }} className={`sort-dropdown-item ${sortBy === 'name-z-a' ? 'active' : ''}`}>Alphabetically: Z-A</button>
+                                                <button onClick={() => { setSortBy('newest'); setSortDropdownOpen(false); }} className={`sort-dropdown-item ${sortBy === 'newest' ? 'active' : ''}`}>Newest Arrivals</button>
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
                             </div>
                         </div>
 

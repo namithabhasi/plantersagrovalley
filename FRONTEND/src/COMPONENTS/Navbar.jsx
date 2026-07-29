@@ -7,7 +7,13 @@ import { useCart } from '../context/CartContext';
 
 function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [forceClose, setForceClose] = useState(false);
   const { openCart, cartTotalCount } = useCart();
+
+  const handleLinkClick = () => {
+    setForceClose(true);
+    setTimeout(() => setForceClose(false), 300);
+  };
 
   return (
     <header className="planters-header select-none">
@@ -34,7 +40,7 @@ function Navbar() {
               </NavLink>
 
               {/* Mega Dropdown Menu */}
-              <div className="planters-mega-dropdown">
+              <div className={`planters-mega-dropdown ${forceClose ? 'force-close' : ''}`} onClick={handleLinkClick}>
                 <div className="container mega-dropdown-grid">
 
                   {/* Column 1: Plants by Type */}
@@ -102,21 +108,18 @@ function Navbar() {
               </NavLink>
               
               {/* Seeds Simple Dropdown Menu */}
-              <div className="planters-simple-dropdown">
+              <div className={`planters-simple-dropdown ${forceClose ? 'force-close' : ''}`} onClick={handleLinkClick}>
                 <Link to="/seeds?category=flower-seeds" className="simple-dropdown-item">
                   <span>Flower Seeds</span>
-                  <FiChevronDown size={14} />
                 </Link>
                 <Link to="/seeds?category=vegetable-seeds" className="simple-dropdown-item">
                   <span>Vegetable Seeds</span>
-                  <FiChevronDown size={14} />
                 </Link>
                 <Link to="/seeds?category=herb-seeds" className="simple-dropdown-item">
                   <span>Herb Seeds</span>
                 </Link>
                 <Link to="/seeds?category=flower-bulbs" className="simple-dropdown-item">
                   <span>Flower Bulbs</span>
-                  <FiChevronDown size={14} />
                 </Link>
                 <Link to="/seeds?category=foresty-seeds" className="simple-dropdown-item">
                   <span>Foresty Seeds</span>
@@ -132,7 +135,7 @@ function Navbar() {
               </NavLink>
               
               {/* Planters Simple Dropdown Menu */}
-              <div className="planters-simple-dropdown">
+              <div className={`planters-simple-dropdown ${forceClose ? 'force-close' : ''}`} onClick={handleLinkClick}>
                 <Link to="/planters?category=plastic-pots" className="simple-dropdown-item">
                   <span>Plastic Pots</span>
                 </Link>
@@ -159,12 +162,63 @@ function Navbar() {
                 </Link>
               </div>
             </div>
-            <NavLink to="/fertilizer" className="navbar-link">
-              Fertilizer
-            </NavLink>
-            <NavLink to="/garden-decor" className="navbar-link">
-              Garden Decor
-            </NavLink>
+            <div className="navbar-item-with-simple-dropdown">
+              <NavLink to="/fertilizers" className="navbar-link">
+                Fertilizers
+              </NavLink>
+              
+              {/* Fertilizers Simple Dropdown Menu */}
+              <div className={`planters-simple-dropdown ${forceClose ? 'force-close' : ''}`} onClick={handleLinkClick}>
+                <Link to="/fertilizers?category=coco-bricks" className="simple-dropdown-item">
+                  <span>Coco Bricks</span>
+                </Link>
+                <Link to="/fertilizers?category=compost" className="simple-dropdown-item">
+                  <span>Compost</span>
+                </Link>
+                <Link to="/fertilizers?category=cow-manure" className="simple-dropdown-item">
+                  <span>Cow Manure</span>
+                </Link>
+                <Link to="/fertilizers?category=moist-ball" className="simple-dropdown-item">
+                  <span>Moist Ball</span>
+                </Link>
+                <Link to="/fertilizers?category=moss-stick" className="simple-dropdown-item">
+                  <span>Moss Stick</span>
+                </Link>
+                <Link to="/fertilizers?category=plant-food" className="simple-dropdown-item">
+                  <span>Plant Food</span>
+                </Link>
+              </div>
+            </div>
+            <div className="navbar-item-with-simple-dropdown">
+              <NavLink to="/garden-decor" className="navbar-link">
+                Garden Decor
+              </NavLink>
+              
+              {/* Garden Decor Simple Dropdown Menu */}
+              <div className={`planters-simple-dropdown ${forceClose ? 'force-close' : ''}`} onClick={handleLinkClick}>
+                <Link to="/garden-decor?category=bird-houses" className="simple-dropdown-item">
+                  <span>Bird Houses</span>
+                </Link>
+                <Link to="/garden-decor?category=fairy-garden" className="simple-dropdown-item">
+                  <span>Fairy Garden</span>
+                </Link>
+                <Link to="/garden-decor?category=garden-fountains" className="simple-dropdown-item">
+                  <span>Garden Fountains</span>
+                </Link>
+                <Link to="/garden-decor?category=garden-tools" className="simple-dropdown-item">
+                  <span>Garden Tools</span>
+                </Link>
+                <Link to="/garden-decor?category=pebbles" className="simple-dropdown-item">
+                  <span>Pebbles</span>
+                </Link>
+                <Link to="/garden-decor?category=pot-stands" className="simple-dropdown-item">
+                  <span>Pot Stands</span>
+                </Link>
+                <Link to="/garden-decor?category=terrarium-garden" className="simple-dropdown-item">
+                  <span>Terrarium Garden</span>
+                </Link>
+              </div>
+            </div>
           </div>
         </nav>
 
@@ -257,11 +311,11 @@ function Navbar() {
               <FiChevronRight size={18} />
             </NavLink>
             <NavLink
-              to="/fertilizer"
+              to="/fertilizers"
               onClick={() => setMobileMenuOpen(false)}
               className="navbar-link planters-drawer-link"
             >
-              <span>Fertilizer</span>
+              <span>Fertilizers</span>
               <FiChevronRight size={18} />
             </NavLink>
             <NavLink

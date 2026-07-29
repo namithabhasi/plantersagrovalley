@@ -710,7 +710,7 @@ div.container {
   background-color: #ffffff;
   border-bottom: 1px solid #f3f4f6;
   width: 100%;
-  z-index: 100;
+  z-index: 1000;
   box-sizing: border-box;
   overflow: visible;
   /* Changed to visible to let mega-dropdown overlay cleanly */
@@ -759,7 +759,6 @@ div.container {
   min-width: 250px;
   background-color: #f7faf6; /* Soft green backdrop matching Plants */
   border: 1px solid rgba(0, 0, 0, 0.06);
-  border-bottom: 2px solid var(--color-primary);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   opacity: 0;
   visibility: hidden;
@@ -1938,4 +1937,109 @@ div.container {
     flex-direction: column;
     gap: var(--space-2);
   }
+}
+
+/* ==========================================================================
+   Custom Sort Dropdown UI
+   ========================================================================== */
+.custom-sort-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.sort-dropdown-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+  border: 1px solid var(--color-border);
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-main);
+  cursor: pointer;
+  min-width: 200px;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.sort-dropdown-btn:hover {
+  border-color: var(--color-primary);
+}
+
+.sort-dropdown-btn span {
+  font-family: var(--font-family-base);
+  font-weight: 500;
+}
+
+.sort-dropdown-btn svg {
+  margin-left: 10px;
+  color: var(--color-text-muted);
+}
+
+.sort-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 6px;
+  background-color: #ffffff;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  width: 100%;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px 0;
+  animation: sortDropdownFadeIn 0.2s ease-out;
+}
+
+@keyframes sortDropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sort-dropdown-item {
+  background: transparent;
+  border: none;
+  padding: 10px 16px;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-main);
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.sort-dropdown-item:hover {
+  background-color: rgba(28, 44, 33, 0.04);
+  color: var(--color-primary);
+}
+
+.sort-dropdown-item.active {
+  background-color: var(--color-primary-dark);
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* Dropdown force-close helper for instant auto-closing on click */
+.planters-mega-dropdown.force-close,
+.planters-simple-dropdown.force-close {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  display: none !important;
+  transform: translateY(10px) translateX(-50%) !important;
+  transition: none !important;
+}
+
+.planters-mega-dropdown.force-close {
+  transform: translateY(10px) !important;
 }
