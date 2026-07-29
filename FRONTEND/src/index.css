@@ -541,20 +541,11 @@ textarea {
 /* ==========================================================================
    5. Footer Specs
    ========================================================================== */
-.footer {
-  background-color: var(--color-primary-dark);
-  color: #e2e8f0;
-  padding: var(--space-10) 0 var(--space-6) 0;
-  margin-top: var(--space-12);
-}
 
-.footer a {
-  color: #cbd5e1;
-}
 
-.footer a:hover {
-  color: #ffffff;
-}
+
+
+
 
 /* ==========================================================================
    6. Responsive Media Queries
