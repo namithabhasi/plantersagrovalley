@@ -37,6 +37,7 @@ import Privacypolicy from "./PAGES/Privacypolicy";
 import Terms from "./PAGES/Terms";
 import Cancelandrefund from "./PAGES/Cancelandrefund";
 import Trackorder from "./PAGES/Trackorder";
+import Shippingpolicy from "./PAGES/Shippingpolicy";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -74,6 +75,7 @@ function App() {
         <Route path="/terms-conditions" element={<Terms />} />
         <Route path="/cancel-refund" element={<Cancelandrefund />} />
         <Route path="/track-order" element={<Trackorder />} />
+        <Route path="/shipping-policy" element={<Shippingpolicy />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/about" element={<Aboutus />} />
