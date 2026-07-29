@@ -1,8 +1,9 @@
 import razorpay from "../config/razorpay.js";
-
 import crypto from "crypto";
 import mongoose from "mongoose";
-
+import User from "../models/User.js";
+import Product from "../models/Product.js";
+import generateToken from "../utils/generateToken.js";
 
 import {
   getCart,
@@ -16,17 +17,59 @@ import {
   clearCart,
 } from "../services/orderService.js";
 
+// Standalone mock ID to MongoId helper
+const getMongoIdFromMockId = (mockId) => {
+  if (!mockId) return mockId;
+  // If it's already a valid 24-character hex ObjectId, return it as-is
+  if (typeof mockId === "string" && /^[0-9a-fA-F]{24}$/.test(mockId)) {
+    return mockId;
+  }
+  let hex = "";
+  for (let i = 0; i < mockId.length; i++) {
+    hex += mockId.charCodeAt(i).toString(16);
+  }
+  return hex.padEnd(24, "0").slice(0, 24);
+};
+
 /**
  * @desc Create Razorpay Order
  * @route POST /api/payment/create-order
- * @access Private (Customer)
+ * @access Public
  */
 export const createRazorpayOrder = async (req, res) => {
   try {
-    const { couponCode } = req.body;
+    const { couponCode, cartItems } = req.body;
 
-    // 1. Get Cart
-    const cart = await getCart(req.user._id);
+    let cart;
+    if (req.user) {
+      // 1. Get Cart from DB for registered customers
+      cart = await getCart(req.user._id);
+    } else {
+      // 1. Build virtual cart for guest checkout
+      if (!cartItems || cartItems.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Cart is empty. Please add items to checkout.",
+        });
+      }
+
+      const items = [];
+      for (const item of cartItems) {
+        const prodId = getMongoIdFromMockId(item.id || item.product);
+        const product = await Product.findById(prodId);
+        if (!product) {
+          return res.status(404).json({
+            success: false,
+            message: `Product "${item.name || prodId}" not found.`,
+          });
+        }
+        items.push({
+          product,
+          quantity: Number(item.quantity),
+        });
+      }
+      cart = { items };
+    }
 
     // 2. Validate Stock
     await validateStock(cart);
@@ -39,11 +82,12 @@ export const createRazorpayOrder = async (req, res) => {
       subtotal += price * item.quantity;
     }
 
-    // 4. Validate Coupon
+    // 4. Validate Coupon (only if user is registered, or using guest userId as null)
+    const userId = req.user ? req.user._id : new mongoose.Types.ObjectId();
     const { coupon, discount } = await validateCoupon(
       couponCode,
       subtotal,
-      req.user._id
+      userId
     );
 
     // 5. Calculate Tax & Shipping
@@ -65,16 +109,13 @@ export const createRazorpayOrder = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Razorpay order created successfully.",
-
       key: process.env.RAZORPAY_KEY_ID,
-
       razorpayOrder: {
         id: razorpayOrder.id,
         amount: razorpayOrder.amount,
         currency: razorpayOrder.currency,
         receipt: razorpayOrder.receipt,
       },
-
       orderSummary: {
         subtotal,
         discount,
@@ -82,7 +123,6 @@ export const createRazorpayOrder = async (req, res) => {
         shipping,
         totalAmount,
       },
-
       coupon: coupon
         ? {
             _id: coupon._id,
@@ -91,9 +131,11 @@ export const createRazorpayOrder = async (req, res) => {
         : null,
     });
   } catch (error) {
+    console.error("Payment initiation error:", error);
+    const errMsg = error.error?.description || error.message || "Failed to initiate payment.";
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: errMsg,
     });
   }
 };
@@ -101,7 +143,7 @@ export const createRazorpayOrder = async (req, res) => {
 /**
  * @desc Verify Razorpay Payment
  * @route POST /api/payment/verify
- * @access Private (Customer)
+ * @access Public
  */
 export const verifyPayment = async (req, res) => {
   const session = await mongoose.startSession();
@@ -116,6 +158,11 @@ export const verifyPayment = async (req, res) => {
       shippingAddress,
       couponCode,
       notes,
+      email,
+      phone,
+      firstName,
+      lastName,
+      cartItems,
     } = req.body;
 
     // Validate Required Fields
@@ -154,33 +201,90 @@ export const verifyPayment = async (req, res) => {
       });
     }
 
-    // Fetch Cart
-    const cart = await getCart(req.user._id);
+    // Resolve or Create User
+    let orderUser = req.user;
+    if (!orderUser) {
+      if (!email || !phone || !firstName || !lastName) {
+        await session.abortTransaction();
+        session.endSession();
+        return res.status(400).json({
+          success: false,
+          message: "Guest details are required for guest checkout.",
+        });
+      }
+
+      orderUser = await User.findOne({ email: email.toLowerCase() });
+      if (!orderUser) {
+        const randomPassword = crypto.randomBytes(8).toString("hex");
+        const [newGuest] = await User.create(
+          [
+            {
+              firstName,
+              lastName,
+              email: email.toLowerCase(),
+              phone,
+              password: randomPassword,
+              role: "customer",
+              isVerified: false,
+            },
+          ],
+          { session }
+        );
+        orderUser = newGuest;
+      }
+    }
+
+    // Fetch or Build Cart
+    let cart;
+    if (req.user) {
+      cart = await getCart(req.user._id);
+    } else {
+      if (!cartItems || cartItems.length === 0) {
+        await session.abortTransaction();
+        session.endSession();
+        return res.status(400).json({
+          success: false,
+          message: "Cart items are required for guest checkout verification.",
+        });
+      }
+
+      const items = [];
+      for (const item of cartItems) {
+        const prodId = getMongoIdFromMockId(item.id || item.product);
+        const product = await Product.findById(prodId);
+        if (!product) {
+          await session.abortTransaction();
+          session.endSession();
+          return res.status(404).json({
+            success: false,
+            message: `Product "${item.name || prodId}" not found.`,
+          });
+        }
+        items.push({
+          product,
+          quantity: Number(item.quantity),
+        });
+      }
+      cart = { items };
+    }
 
     // Validate Stock Again
     await validateStock(cart);
 
     // Calculate Subtotal
     let subtotal = 0;
-
     const orderItems = [];
 
     for (const item of cart.items) {
       const product = item.product;
-
-      const price =
-        product.salePrice || product.price;
-
-      const itemSubtotal =
-        price * item.quantity;
-
+      const price = product.salePrice || product.price;
+      const itemSubtotal = price * item.quantity;
       subtotal += itemSubtotal;
 
       orderItems.push({
         product: product._id,
         name: product.name,
-        image:
-          product.images?.[0]?.url || "",
+        image: product.images?.[0]?.url || "",
         quantity: item.quantity,
         price,
         subtotal: itemSubtotal,
@@ -194,7 +298,7 @@ export const verifyPayment = async (req, res) => {
     } = await validateCoupon(
       couponCode,
       subtotal,
-      req.user._id
+      orderUser._id
     );
 
     // Calculate Final Amount
@@ -207,48 +311,33 @@ export const verifyPayment = async (req, res) => {
       discount
     );
 
-        // Generate Order Number
+    // Generate Order Number
     const orderNumber = generateOrderNumber();
 
     // Create Order
     const order = await createOrder(
       {
         orderNumber,
-        user: req.user._id,
-
+        user: orderUser._id,
         items: orderItems,
-
         coupon: coupon ? coupon._id : null,
-
         discountAmount: discount,
-
         subtotal,
-
         shippingCharge: shipping,
-
         tax,
-
         totalAmount,
-
         paymentMethod: "Razorpay",
-
         paymentStatus: "Paid",
-
         orderStatus: "Pending",
-
         shippingAddress,
-
         notes,
-
         paidAt: new Date(),
-
         statusHistory: [
           {
             status: "Pending",
             updatedAt: new Date(),
           },
         ],
-
         paymentDetails: {
           transactionId: razorpay_payment_id,
           razorpayOrderId: razorpay_order_id,
@@ -266,27 +355,46 @@ export const verifyPayment = async (req, res) => {
     if (coupon) {
       await updateCouponUsage(
         coupon,
-        req.user._id,
+        orderUser._id,
         session
       );
     }
 
-    // Clear Cart
-    await clearCart(req.user._id, session);
+    // Clear Cart (only if registered user)
+    if (req.user) {
+      await clearCart(req.user._id, session);
+    }
 
     // Commit Transaction
     await session.commitTransaction();
-
     session.endSession();
 
-    return res.status(201).json({
+    // If guest user, set cookie to log them in automatically
+    if (!req.user) {
+      const token = generateToken(orderUser._id, orderUser.role);
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+    }
+
+    // Return success
+    const responsePayload = {
       success: true,
-      message: "Payment verified successfully.",
-
+      message: "Payment verified and order created successfully.",
       order,
-    });
+    };
 
-    } catch (error) {
+    if (!req.user) {
+      const orderUserObj = orderUser.toObject();
+      delete orderUserObj.password;
+      responsePayload.user = orderUserObj;
+    }
+
+    return res.status(201).json(responsePayload);
+  } catch (error) {
     await session.abortTransaction();
     session.endSession();
 

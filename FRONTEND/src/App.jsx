@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import './index.css';
 import Navbar from './COMPONENTS/Navbar';
 import Checkout from './COMPONENTS/Checkout';
+import AuthModal from './COMPONENTS/AuthModal';
 import { CartProvider } from './context/CartContext';
 
 import Footer from './COMPONENTS/Footer';
@@ -52,6 +53,7 @@ function App() {
     <CartProvider>
       {!hideNavbarFooter && <Navbar />}
       <Checkout />
+      <AuthModal />
 
 
 
@@ -104,7 +106,6 @@ function App() {
         </Route>
       </Routes>
       {!hideNavbarFooter && <Footer />}
-      <ToastContainer />
     </CartProvider>
   );
 }

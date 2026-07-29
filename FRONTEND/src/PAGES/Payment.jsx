@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { FiTruck, FiArrowLeft } from 'react-icons/fi';
 import { toast } from 'react-toastify';
+import { useSelector, useDispatch } from 'react-redux';
 import logo from '../assets/logo.png';
 import './Payment.css';
+import { createPaymentOrder, verifyPayment } from '../api/paymentApi';
+import { setUser, openAuthModal } from '../redux/auth/authSlice';
 
 // Fallback mock items to match design when cart is empty
 import monsteraImg from '../assets/Crassula Ovata Green Succulent.jpg';
@@ -38,9 +41,22 @@ const MOCK_ITEMS = [
   },
 ];
 
+// Dynamically load Razorpay SDK Checkout script
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 function Payment() {
-  const { cartItems, cartSubtotal, clearCart, openCart } = useCart();
+  const { cartItems, cartSubtotal, clearCart, openCart, syncLocalCartToBackend } = useCart();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
 
   // Form states
   const [email, setEmail] = useState('');
@@ -56,18 +72,22 @@ function Payment() {
   const [countryCode, setCountryCode] = useState('+91');
   const [phone, setPhone] = useState('');
 
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardName, setCardName] = useState('');
-  const [expiry, setExpiry] = useState('');
-  const [cvv, setCvv] = useState('');
-  const [saveCard, setSaveCard] = useState(true);
-
   // Policy checkbox
   const [acceptTerms, setAcceptTerms] = useState(false);
 
   // Validation errors state
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Pre-fill fields if user is logged in
+  useEffect(() => {
+    if (user) {
+      setEmail(user.email || '');
+      setFirstName(user.firstName || '');
+      setLastName(user.lastName || '');
+      setPhone(user.phone || '');
+    }
+  }, [user]);
 
   // Determine items to display (real cart items or fallback mock design items)
   const displayItems = cartItems.length > 0 ? cartItems : MOCK_ITEMS;
@@ -83,7 +103,12 @@ function Payment() {
     navigate('/');
   };
 
-  const handleSubmitPayment = (e) => {
+  const handleSignInPrompt = (e) => {
+    e.preventDefault();
+    dispatch(openAuthModal("login"));
+  };
+
+  const handleSubmitPayment = async (e) => {
     e.preventDefault();
     
     // Clear old errors
@@ -98,11 +123,6 @@ function Payment() {
     if (!stateVal) newErrors.stateVal = 'State is required';
     if (!pinCode) newErrors.pinCode = 'PIN code is required';
     if (!phone) newErrors.phone = 'Phone number is required';
-    
-    if (!cardNumber) newErrors.cardNumber = 'Card number is required';
-    if (!cardName) newErrors.cardName = 'Name on card is required';
-    if (!expiry) newErrors.expiry = 'Expiry date is required';
-    if (!cvv) newErrors.cvv = 'CVV is required';
 
     if (!acceptTerms) {
       newErrors.acceptTerms = 'You must accept the privacy policy and terms & conditions';
@@ -122,13 +142,128 @@ function Payment() {
 
     setIsSubmitting(true);
 
-    // Simulate payment api call
-    setTimeout(() => {
+    try {
+      // 1. Load Razorpay script dynamically
+      const isScriptLoaded = await loadRazorpayScript();
+      if (!isScriptLoaded) {
+        toast.error("Failed to load Razorpay SDK. Please check your internet connection.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // 2. Prepare payload for create-order
+      const cleanPhone = (countryCode + phone).replace(/\+/g, '').trim();
+      const payload = {
+        couponCode: undefined, // Coupon input is not present in checkout form yet
+      };
+
+      if (!user) {
+        // Guest checkout needs details and cart items sent in request
+        payload.email = email;
+        payload.phone = cleanPhone;
+        payload.firstName = firstName;
+        payload.lastName = lastName;
+        payload.cartItems = displayItems.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity
+        }));
+      } else {
+        // Sync logged-in cart to DB first
+        await syncLocalCartToBackend(cartItems);
+      }
+
+      // 3. Create order on backend
+      const { data } = await createPaymentOrder(payload);
+
+      if (!data.success) {
+        toast.error(data.message || "Failed to create order on server.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // 4. Configure Razorpay options
+      const options = {
+        key: data.key,
+        amount: data.razorpayOrder.amount,
+        currency: data.razorpayOrder.currency,
+        name: "Planters Agro Valley",
+        description: "Purchase Plants & Garden items",
+        image: logo,
+        order_id: data.razorpayOrder.id,
+        handler: async function (response) {
+          try {
+            // 5. Verify payment and finalize order
+            const verifyPayload = {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              shippingAddress: {
+                receiverName: `${firstName} ${lastName}`,
+                phone: cleanPhone,
+                addressLine1: address,
+                addressLine2: apartment,
+                city: city,
+                state: stateVal,
+                country: country,
+                postalCode: pinCode,
+              },
+              couponCode: undefined,
+              notes: "",
+            };
+
+            if (!user) {
+              verifyPayload.email = email;
+              verifyPayload.phone = cleanPhone;
+              verifyPayload.firstName = firstName;
+              verifyPayload.lastName = lastName;
+              verifyPayload.cartItems = displayItems.map(item => ({
+                id: item.id,
+                name: item.name,
+                price: item.price,
+                quantity: item.quantity
+              }));
+            }
+
+            const verifyRes = await verifyPayment(verifyPayload);
+
+            if (verifyRes.data.success) {
+              toast.success("Payment successful! Your order has been placed.");
+              
+              // Automatically sign in guest user if they checked out as guest
+              if (verifyRes.data.user) {
+                dispatch(setUser(verifyRes.data.user));
+              }
+
+              clearCart();
+              navigate("/");
+            } else {
+              toast.error("Payment verification failed.");
+            }
+          } catch (err) {
+            console.error("Verification error:", err);
+            toast.error(err.response?.data?.message || "Payment verification failed.");
+          }
+        },
+        prefill: {
+          name: `${firstName} ${lastName}`,
+          email: email,
+          contact: cleanPhone,
+        },
+        theme: {
+          color: "#06331F", // Theme dark green
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (error) {
+      console.error("Payment error:", error);
+      toast.error(error.response?.data?.message || "Failed to initiate payment. Please try again.");
+    } finally {
       setIsSubmitting(false);
-      toast.success('Payment successful! Your order has been placed.');
-      clearCart();
-      navigate('/');
-    }, 2000);
+    }
   };
 
   return (
@@ -154,15 +289,17 @@ function Payment() {
           <div className="checkout-forms-column">
             
             {/* Account Sign In Prompt */}
-            <div className="checkout-card account-prompt-card">
-              <div className="account-prompt-text">
-                <span className="account-prompt-title">Already have an account?</span>
-                <span className="account-prompt-subtitle">Sign in to checkout faster</span>
+            {!user && (
+              <div className="checkout-card account-prompt-card">
+                <div className="account-prompt-text">
+                  <span className="account-prompt-title">Already have an account?</span>
+                  <span className="account-prompt-subtitle">Sign in to checkout faster</span>
+                </div>
+                <a href="#signin" onClick={handleSignInPrompt} className="account-prompt-link">
+                  Sign in &rarr;
+                </a>
               </div>
-              <a href="#signin" className="account-prompt-link">
-                Sign in &rarr;
-              </a>
-            </div>
+            )}
 
             {/* Contact Details */}
             <div className="checkout-card">
@@ -371,8 +508,8 @@ function Payment() {
                       className="checkout-radio"
                     />
                     <label htmlFor="cc" className="payment-radio-label">
-                      <strong>Credit / Debit Card</strong>
-                      <span className="payment-radio-desc">Pay securely using your card</span>
+                      <strong>Razorpay Secure Checkout</strong>
+                      <span className="payment-radio-desc">Pay securely using UPI, Cards, Netbanking, or Wallets</span>
                     </label>
                   </div>
                   <div className="payment-brand-logos">
@@ -382,80 +519,10 @@ function Payment() {
                   </div>
                 </div>
 
-                <div className="payment-method-body">
-                  <div className="form-group">
-                    <input
-                      type="text"
-                      id="cardNumber"
-                      placeholder="Card number"
-                      value={cardNumber}
-                      onChange={(e) => {
-                        setCardNumber(e.target.value);
-                        if (errors.cardNumber) setErrors((prev) => ({ ...prev, cardNumber: '' }));
-                      }}
-                      className={`checkout-input ${errors.cardNumber ? 'input-error' : ''}`}
-                      maxLength="19"
-                    />
-                    {errors.cardNumber && <span className="checkout-error-text">{errors.cardNumber}</span>}
-                  </div>
-
-                  <div className="form-group">
-                    <input
-                      type="text"
-                      id="cardName"
-                      placeholder="Name on card"
-                      value={cardName}
-                      onChange={(e) => {
-                        setCardName(e.target.value);
-                        if (errors.cardName) setErrors((prev) => ({ ...prev, cardName: '' }));
-                      }}
-                      className={`checkout-input ${errors.cardName ? 'input-error' : ''}`}
-                    />
-                    {errors.cardName && <span className="checkout-error-text">{errors.cardName}</span>}
-                  </div>
-
-                  <div className="checkout-input-row double">
-                    <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
-                      <input
-                        type="text"
-                        id="expiry"
-                        placeholder="Expiry date (MM/YY)"
-                        value={expiry}
-                        onChange={(e) => {
-                          setExpiry(e.target.value);
-                          if (errors.expiry) setErrors((prev) => ({ ...prev, expiry: '' }));
-                        }}
-                        className={`checkout-input ${errors.expiry ? 'input-error' : ''}`}
-                        maxLength="5"
-                      />
-                      {errors.expiry && <span className="checkout-error-text">{errors.expiry}</span>}
-                    </div>
-                    <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
-                      <input
-                        type="password"
-                        id="cvv"
-                        placeholder="CVV"
-                        value={cvv}
-                        onChange={(e) => {
-                          setCvv(e.target.value);
-                          if (errors.cvv) setErrors((prev) => ({ ...prev, cvv: '' }));
-                        }}
-                        className={`checkout-input ${errors.cvv ? 'input-error' : ''}`}
-                        maxLength="3"
-                      />
-                      {errors.cvv && <span className="checkout-error-text">{errors.cvv}</span>}
-                    </div>
-                  </div>
-
-                  <label className="checkout-checkbox-label" style={{ marginTop: 'var(--space-4)' }}>
-                    <input
-                      type="checkbox"
-                      checked={saveCard}
-                      onChange={(e) => setSaveCard(e.target.checked)}
-                      className="checkout-checkbox"
-                    />
-                    Save card details for faster payments
-                  </label>
+                <div className="payment-method-body" style={{ padding: 'var(--space-5)', backgroundColor: '#fcfdfd' }}>
+                  <p style={{ fontSize: '13px', color: 'var(--color-text-muted)', lineHeight: '1.5', margin: 0 }}>
+                    After clicking "Proceed to Pay", you will open the secure Razorpay Checkout modal overlay to complete your transaction online.
+                  </p>
                 </div>
               </div>
             </div>
@@ -524,7 +591,6 @@ function Payment() {
               {/* Estimated Delivery Section */}
               <div className="summary-delivery-box">
                 <div className="delivery-icon-wrap">
-                  {/* ESTIMATED DELIVERY ICON - KEEP ONLY THIS ONE */}
                   <FiTruck size={24} className="delivery-truck-icon" />
                 </div>
                 <div className="delivery-text-wrap">
