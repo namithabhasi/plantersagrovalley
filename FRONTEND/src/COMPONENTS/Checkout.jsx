@@ -82,7 +82,7 @@ function Checkout() {
               <div className="recommend-item-info">
                 <h4 className="recommend-item-title">{product.name}</h4>
                 <div className="recommend-item-prices">
-                  {product.originalPrice ? (
+                  {product.originalPrice && product.originalPrice > product.price ? (
                     <>
                       <span className="recommend-item-price-original">
                         Rs. {product.originalPrice.toFixed(2)}
