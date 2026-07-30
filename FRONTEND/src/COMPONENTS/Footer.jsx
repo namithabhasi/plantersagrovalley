@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { FaFacebookF, FaPinterestP, FaInstagram, FaLinkedinIn, FaYoutube } from 'react-icons/fa'
 import { FaXTwitter, FaArrowRight } from 'react-icons/fa6'
 import axios from '../api/axiosInstance'
-
+import { IoArrowForward } from "react-icons/io5";
 function Footer() {
   const [socialLinks, setSocialLinks] = useState({
     facebook: '',
