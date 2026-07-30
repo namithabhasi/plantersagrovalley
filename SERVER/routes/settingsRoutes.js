@@ -7,11 +7,9 @@ import { uploadSettingsLogo } from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
-// Get settings route is accessible to all logged-in admins
+// Get settings route is accessible to anyone (public)
 router.get(
   "/",
-  authenticate,
-  authorizeRoles("super-admin", "admin", "shipping-manager"),
   getSettings
 );
 

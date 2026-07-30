@@ -570,7 +570,7 @@ const Products = () => {
                       )}
                     </TableCell>
                     <TableCell>
-                      {product.salePrice > 0 ? (
+                      {product.salePrice > 0 && product.salePrice < product.price ? (
                         <Stack spacing={0.2}>
                           <Typography variant="body2" sx={{ textDecoration: "line-through", color: "text.disabled" }}>
                             ₹{product.price}
