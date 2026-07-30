@@ -366,7 +366,7 @@ function Plantrental() {
       </section>
 
       {/* 5. Plant Rental FAQs Section */}
-      <section className="bg-[#fbfdfc] border-b border-gray-100" style={{ paddingTop: '40px', paddingBottom: '40px' }}>
+      <section className="bg-[var(--color-primary-bg)] border-b border-gray-100" style={{ paddingTop: '40px', paddingBottom: '40px' }}>
         <div className="container mx-auto max-w-[850px] px-6">
           <div className="text-left">
             <h2
@@ -410,7 +410,7 @@ function Plantrental() {
       </section>
 
       {/* 6. Contact Form Section */}
-      <section id="contact-form-section" className="bg-[#f5f7f6]" style={{ paddingTop: '40px', paddingBottom: '60px' }}>
+      <section id="contact-form-section" className="bg-[#fcfdfc]" style={{ paddingTop: '40px', paddingBottom: '60px' }}>
         <div className="container mx-auto max-w-[800px]">
           <div className="text-left">
             <h2
@@ -430,7 +430,7 @@ function Plantrental() {
                   value={formData.name}
                   onChange={handleInputChange}
                   placeholder="Name"
-                  className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 ${errors.name ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                  className={`w-full bg-[#f5f7f6] border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 focus:bg-white ${errors.name ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
                     }`}
                 />
                 {errors.name && <span className="text-[10px] text-red-600 mt-0.5">{errors.name}</span>}
@@ -443,7 +443,7 @@ function Plantrental() {
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder="Email"
-                  className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 ${errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                  className={`w-full bg-[#f5f7f6] border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 focus:bg-white ${errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
                     }`}
                 />
                 {errors.email && <span className="text-[10px] text-red-600 mt-0.5">{errors.email}</span>}
@@ -457,7 +457,7 @@ function Plantrental() {
                 value={formData.phone}
                 onChange={handleInputChange}
                 placeholder="Phone number"
-                className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 ${errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                className={`w-full bg-[#f5f7f6] border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 focus:bg-white ${errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
                   }`}
               />
               {errors.phone && <span className="text-[10px] text-red-600 mt-0.5">{errors.phone}</span>}
@@ -470,7 +470,7 @@ function Plantrental() {
                 value={formData.comment}
                 onChange={handleInputChange}
                 placeholder="Comment"
-                className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 resize-none ${errors.comment ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                className={`w-full bg-[#f5f7f6] border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 resize-none focus:bg-white ${errors.comment ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
                   }`}
               />
               {errors.comment && <span className="text-[10px] text-red-600 mt-0.5">{errors.comment}</span>}
