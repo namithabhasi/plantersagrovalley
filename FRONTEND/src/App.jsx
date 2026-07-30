@@ -43,6 +43,7 @@ import Getintouch from "./PAGES/Getintouch";
 import Corporategift from "./PAGES/Corporategift";
 import Plantrental from "./PAGES/Plantrental";
 import Gardenmaintanence from "./PAGES/Gardenmaintanence";
+import Verticalgarden from "./PAGES/Verticalgarden";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -98,6 +99,7 @@ function App() {
         <Route path="/corporate-gifting" element={<Corporategift />} />
         <Route path="/plant-rental" element={<Plantrental />} />
         <Route path="/garden-maintenance" element={<Gardenmaintanence />} />
+        <Route path="/vertical-garden" element={<Verticalgarden />} />
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<SuperAdminLogin />} />
         <Route path="/dashboard" element={<AdminLayout />}>

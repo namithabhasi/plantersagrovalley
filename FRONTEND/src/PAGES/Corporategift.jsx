@@ -95,7 +95,7 @@ function Corporategift() {
       `}</style>
 
       {/* 1. Hero / Title Section */}
-      <section className="bg-[#fcfdfc] border-b border-gray-100 flex items-center" style={{ paddingTop: '100px', paddingBottom: '100px' }}>
+      <section className="bg-[var(--color-primary-bg)] border-b border-gray-100 flex items-center" style={{ paddingTop: '100px', paddingBottom: '100px' }}>
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
 
@@ -211,50 +211,56 @@ function Corporategift() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto justify-items-center">
             {/* Customization 1 */}
-            <div className="flex flex-col items-center text-center max-w-[var(--card-max-width)] mx-auto">
-              <img
-                src={engraveImg}
-                alt="Engrave Logo & Sticker"
-                className="w-full max-w-[var(--card-max-width)] h-[var(--card-image-height)] object-cover border border-gray-200/60 shadow-sm mb-6"
-              />
-              <h4 className="font-[var(--font-family-heading)] text-sm font-semibold tracking-wider text-gray-800 uppercase mb-3">
-                Engrave Logo &amp; Sticker
-              </h4>
-              <p className="font-[var(--font-family-base)] text-xs text-[var(--color-text-muted)] leading-relaxed max-w-[280px]">
-                Select from wide range of plants &amp; pots. Add your corporate identity on the product.
-              </p>
+            <div className="product-card-wrapper max-w-[var(--card-max-width)] w-full">
+              <div className="product-card w-full">
+                <div className="product-card-image">
+                  <img src={engraveImg} alt="Engrave Logo & Sticker" />
+                </div>
+                <div className="product-card-content text-center">
+                  <h4 className="product-title uppercase tracking-wider text-sm font-semibold text-gray-800 mb-2">
+                    Engrave Logo &amp; Sticker
+                  </h4>
+                  <p className="font-[var(--font-family-base)] text-xs text-[var(--color-text-muted)] leading-relaxed">
+                    Select from wide range of plants &amp; pots. Add your corporate identity on the product.
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Customization 2 */}
-            <div className="flex flex-col items-center text-center max-w-[var(--card-max-width)] mx-auto">
-              <img
-                src={cardImg}
-                alt="Personalised Message Card"
-                className="w-full max-w-[var(--card-max-width)] h-[var(--card-image-height)] object-cover border border-gray-200/60 shadow-sm mb-6"
-              />
-              <h4 className="font-[var(--font-family-heading)] text-sm font-semibold tracking-wider text-gray-800 uppercase mb-3">
-                Personalised Message Card
-              </h4>
-              <p className="font-[var(--font-family-base)] text-xs text-[var(--color-text-muted)] leading-relaxed max-w-[280px]">
-                Feel happy your employee and partner on special occasions by personalized card.
-              </p>
+            <div className="product-card-wrapper max-w-[var(--card-max-width)] w-full">
+              <div className="product-card w-full">
+                <div className="product-card-image">
+                  <img src={cardImg} alt="Personalised Message Card" />
+                </div>
+                <div className="product-card-content text-center">
+                  <h4 className="product-title uppercase tracking-wider text-sm font-semibold text-gray-800 mb-2">
+                    Personalised Message Card
+                  </h4>
+                  <p className="font-[var(--font-family-base)] text-xs text-[var(--color-text-muted)] leading-relaxed">
+                    Feel happy your employee and partner on special occasions by personalized card.
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Customization 3 */}
-            <div className="flex flex-col items-center text-center max-w-[var(--card-max-width)] mx-auto">
-              <img
-                src={boxImg}
-                alt="Customize Packaging Box"
-                className="w-full max-w-[var(--card-max-width)] h-[var(--card-image-height)] object-cover border border-gray-200/60 shadow-sm mb-6"
-              />
-              <h4 className="font-[var(--font-family-heading)] text-sm font-semibold tracking-wider text-gray-800 uppercase mb-3">
-                Customize Packaging Box
-              </h4>
-              <p className="font-[var(--font-family-base)] text-xs text-[var(--color-text-muted)] leading-relaxed max-w-[280px]">
-                Fully customized gift box as per requirement, including printing &amp; designing.
-              </p>
+            <div className="product-card-wrapper max-w-[var(--card-max-width)] w-full">
+              <div className="product-card w-full">
+                <div className="product-card-image">
+                  <img src={boxImg} alt="Customize Packaging Box" />
+                </div>
+                <div className="product-card-content text-center">
+                  <h4 className="product-title uppercase tracking-wider text-sm font-semibold text-gray-800 mb-2">
+                    Customize Packaging Box
+                  </h4>
+                  <p className="font-[var(--font-family-base)] text-xs text-[var(--color-text-muted)] leading-relaxed">
+                    Fully customized gift box as per requirement, including printing &amp; designing.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -272,51 +278,63 @@ function Corporategift() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto w-full justify-items-center justify-center">
+          <div className="relative flex flex-col md:flex-row justify-between items-stretch gap-10 md:gap-6 max-w-5xl mx-auto w-full mt-4">
+            {/* Desktop Connecting Line (horizontal) */}
+            <div className="hidden md:block absolute top-8 left-[16.6%] right-[16.6%] h-[2px] border-t-2 border-dashed border-[var(--color-primary-light)]/40 z-0"></div>
+
+            {/* Mobile Connecting Line (vertical, left side) */}
+            <div className="md:hidden absolute top-8 bottom-8 left-[31px] w-[2px] border-l-2 border-dashed border-[var(--color-primary-light)]/40 z-0"></div>
+
             {/* Step 1 */}
-            <div className="flex flex-col items-center text-center px-4 w-full">
-              <div className="w-16 h-16 rounded-full bg-white border border-gray-200 flex items-center justify-center text-[var(--color-primary-dark)] text-lg mb-5 shadow-sm">
-                <FaCheck />
+            <div className="flex flex-row md:flex-col items-start md:items-center text-left md:text-center gap-5 md:gap-0 w-full relative z-10">
+              <div className="flex-shrink-0 w-16 h-16 rounded-full bg-white border-2 border-[var(--color-primary)] flex items-center justify-center text-[var(--color-primary-dark)] font-bold text-lg mb-0 md:mb-5 shadow-sm">
+                1
               </div>
-              <h4 className="font-[var(--font-family-heading)] text-xs font-semibold tracking-wider text-gray-800 uppercase mb-3">
-                Choose Your Product
-              </h4>
-              <p className="font-[var(--font-family-base)] text-xs text-[var(--color-text-muted)] leading-relaxed max-w-xs">
-                Choose Plant, Pot, as well as the soil mix that you like the most. We'll guide you through choosing the perfect plant gifts to fit your corporate needs.
-              </p>
+              <div className="flex flex-col">
+                <h4 className="font-[var(--font-family-heading)] text-sm md:text-xs font-semibold tracking-wider text-gray-800 uppercase mb-2 md:mb-3">
+                  Choose Your Product
+                </h4>
+                <p className="font-[var(--font-family-base)] text-xs text-[var(--color-text-muted)] leading-relaxed max-w-xs">
+                  Choose Plant, Pot, as well as the soil mix that you like the most. We'll guide you through choosing the perfect plant gifts to fit your corporate needs.
+                </p>
+              </div>
             </div>
 
             {/* Step 2 */}
-            <div className="flex flex-col items-center text-center px-4 w-full">
-              <div className="w-16 h-16 rounded-full bg-white border border-gray-200 flex items-center justify-center text-[var(--color-primary-dark)] text-lg mb-5 shadow-sm">
-                <FaCheck />
+            <div className="flex flex-row md:flex-col items-start md:items-center text-left md:text-center gap-5 md:gap-0 w-full relative z-10">
+              <div className="flex-shrink-0 w-16 h-16 rounded-full bg-white border-2 border-[var(--color-primary)] flex items-center justify-center text-[var(--color-primary-dark)] font-bold text-lg mb-0 md:mb-5 shadow-sm">
+                2
               </div>
-              <h4 className="font-[var(--font-family-heading)] text-xs font-semibold tracking-wider text-gray-800 uppercase mb-3">
-                Customize It
-              </h4>
-              <p className="font-[var(--font-family-base)] text-xs text-[var(--color-text-muted)] leading-relaxed max-w-xs">
-                Make your gifts even more meaningful by customizing the pot with your logo, a personalized card with message, or even packaging box. You can add plants accessories as well.
-              </p>
+              <div className="flex flex-col">
+                <h4 className="font-[var(--font-family-heading)] text-sm md:text-xs font-semibold tracking-wider text-gray-800 uppercase mb-2 md:mb-3">
+                  Customize It
+                </h4>
+                <p className="font-[var(--font-family-base)] text-xs text-[var(--color-text-muted)] leading-relaxed max-w-xs">
+                  Make your gifts even more meaningful by customizing the pot with your logo, a personalized card with message, or even packaging box. You can add plants accessories as well.
+                </p>
+              </div>
             </div>
 
             {/* Step 3 */}
-            <div className="flex flex-col items-center text-center px-4 w-full">
-              <div className="w-16 h-16 rounded-full bg-white border border-gray-200 flex items-center justify-center text-[var(--color-primary-dark)] text-lg mb-5 shadow-sm">
-                <FaCheck />
+            <div className="flex flex-row md:flex-col items-start md:items-center text-left md:text-center gap-5 md:gap-0 w-full relative z-10">
+              <div className="flex-shrink-0 w-16 h-16 rounded-full bg-white border-2 border-[var(--color-primary)] flex items-center justify-center text-[var(--color-primary-dark)] font-bold text-lg mb-0 md:mb-5 shadow-sm">
+                3
               </div>
-              <h4 className="font-[var(--font-family-heading)] text-xs font-semibold tracking-wider text-gray-800 uppercase mb-3">
-                Sit Back and Relax
-              </h4>
-              <p className="font-[var(--font-family-base)] text-xs text-[var(--color-text-muted)] leading-relaxed max-w-xs">
-                We will hand-deliver your order to your recipient list, right to their doorstep. We ensures that your corporate gifts have a great trip to their destination.
-              </p>
+              <div className="flex flex-col">
+                <h4 className="font-[var(--font-family-heading)] text-sm md:text-xs font-semibold tracking-wider text-gray-800 uppercase mb-2 md:mb-3">
+                  Sit Back and Relax
+                </h4>
+                <p className="font-[var(--font-family-base)] text-xs text-[var(--color-text-muted)] leading-relaxed max-w-xs">
+                  We will hand-deliver your order to your recipient list, right to their doorstep. We ensures that your corporate gifts have a great trip to their destination.
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* 5. Contact Form Section */}
-      <section id="contact-form-section" className="bg-[#f5f7f6]" style={{ paddingTop: '100px', paddingBottom: '120px' }}>
+      <section id="contact-form-section" className="bg-[var(--color-primary-bg)]" style={{ paddingTop: '100px', paddingBottom: '120px' }}>
         <div className="container mx-auto max-w-[800px]">
           <div className="text-left">
             <h2
@@ -336,7 +354,7 @@ function Corporategift() {
                   value={formData.name}
                   onChange={handleInputChange}
                   placeholder="Name"
-                  className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 ${errors.name ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                  className={`w-full bg-white border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 focus:border-[#06492D] ${errors.name ? 'border-red-500 focus:border-red-500' : 'border-gray-200'
                     }`}
                 />
                 {errors.name && <span className="text-[10px] text-red-600 mt-0.5">{errors.name}</span>}
@@ -349,7 +367,7 @@ function Corporategift() {
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder="Email"
-                  className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 ${errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                  className={`w-full bg-white border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 focus:border-[#06492D] ${errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-200'
                     }`}
                 />
                 {errors.email && <span className="text-[10px] text-red-600 mt-0.5">{errors.email}</span>}
@@ -363,7 +381,7 @@ function Corporategift() {
                 value={formData.phone}
                 onChange={handleInputChange}
                 placeholder="Phone number"
-                className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 ${errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                className={`w-full bg-white border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 focus:border-[#06492D] ${errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-200'
                   }`}
               />
               {errors.phone && <span className="text-[10px] text-red-600 mt-0.5">{errors.phone}</span>}
@@ -376,7 +394,7 @@ function Corporategift() {
                 value={formData.comment}
                 onChange={handleInputChange}
                 placeholder="Comment"
-                className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 resize-none ${errors.comment ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                className={`w-full bg-white border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 resize-none focus:border-[#06492D] ${errors.comment ? 'border-red-500 focus:border-red-500' : 'border-gray-200'
                   }`}
               />
               {errors.comment && <span className="text-[10px] text-red-600 mt-0.5">{errors.comment}</span>}
