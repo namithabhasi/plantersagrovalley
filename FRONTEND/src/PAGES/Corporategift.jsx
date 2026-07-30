@@ -77,7 +77,7 @@ function Corporategift() {
 
   return (
     <div className="w-full bg-white font-[var(--font-family-base)] select-none">
-
+      
       {/* Dynamic Scrolling Animation Styling */}
       <style>{`
         @keyframes marquee {
@@ -98,10 +98,10 @@ function Corporategift() {
       <section className="bg-[var(--color-primary-bg)] border-b border-gray-100 flex items-center" style={{ paddingTop: '100px', paddingBottom: '100px' }}>
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
-
+            
             {/* Left Content */}
             <div className="flex flex-col items-center md:items-start text-center md:text-left">
-              <h1
+              <h1 
                 className="font-[var(--font-family-heading)] text-3xl md:text-[40px] font-normal leading-tight text-[var(--color-primary-dark)]"
                 style={{ marginBottom: '24px' }}
               >
@@ -139,17 +139,17 @@ function Corporategift() {
       {/* 2. Our Clients Section with Infinite Auto-Scrolling Marquee */}
       <section className="bg-white border-b border-gray-100" style={{ paddingTop: '100px', paddingBottom: '100px' }}>
         <div className="container mx-auto flex flex-col items-center">
-          <h2
+          <h2 
             className="font-[var(--font-family-heading)] text-xl md:text-2xl font-semibold tracking-wide text-[#2c3e50] uppercase text-center"
             style={{ marginBottom: '48px' }}
           >
             OUR CLIENTS
           </h2>
-
+          
           {/* Auto Scrolling Marquee container */}
           <div className="w-full overflow-hidden relative py-6 bg-gray-50/50 border-y border-gray-100/60">
             <div className="animate-marquee flex items-center gap-16 md:gap-24">
-
+              
               {/* First Logo Track */}
               <div className="flex items-center gap-16 md:gap-24 pr-16 md:pr-24">
                 <span className="text-sm font-semibold tracking-[4px] uppercase text-gray-400 hover:text-[#4285F4] transition-colors duration-200 cursor-default flex items-center gap-3 select-none">
@@ -203,7 +203,7 @@ function Corporategift() {
       <section className="bg-[var(--color-primary-bg)] border-b border-gray-100" style={{ paddingTop: '100px', paddingBottom: '100px' }}>
         <div className="container mx-auto">
           <div className="text-center">
-            <h2
+            <h2 
               className="font-[var(--font-family-heading)] text-2xl md:text-3xl font-normal text-[var(--color-primary-dark)]"
               style={{ marginBottom: '48px' }}
             >
@@ -270,7 +270,7 @@ function Corporategift() {
       <section className="bg-white border-b border-gray-100" style={{ paddingTop: '100px', paddingBottom: '100px' }}>
         <div className="container mx-auto flex flex-col items-center justify-center">
           <div className="text-center">
-            <h2
+            <h2 
               className="font-[var(--font-family-heading)] text-2xl md:text-3xl font-normal text-[var(--color-primary-dark)]"
               style={{ marginBottom: '48px' }}
             >
@@ -337,7 +337,7 @@ function Corporategift() {
       <section id="contact-form-section" className="bg-[var(--color-primary-bg)]" style={{ paddingTop: '100px', paddingBottom: '120px' }}>
         <div className="container mx-auto max-w-[800px]">
           <div className="text-left">
-            <h2
+            <h2 
               className="font-[var(--font-family-heading)] text-2xl md:text-3xl font-normal text-[#2c3e50] tracking-wide uppercase"
               style={{ marginBottom: '40px' }}
             >
@@ -354,8 +354,9 @@ function Corporategift() {
                   value={formData.name}
                   onChange={handleInputChange}
                   placeholder="Name"
-                  className={`w-full bg-white border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 focus:border-[#06492D] ${errors.name ? 'border-red-500 focus:border-red-500' : 'border-gray-200'
-                    }`}
+                  className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 ${
+                    errors.name ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                  }`}
                 />
                 {errors.name && <span className="text-[10px] text-red-600 mt-0.5">{errors.name}</span>}
               </div>
@@ -367,8 +368,9 @@ function Corporategift() {
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder="Email"
-                  className={`w-full bg-white border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 focus:border-[#06492D] ${errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-200'
-                    }`}
+                  className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 ${
+                    errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                  }`}
                 />
                 {errors.email && <span className="text-[10px] text-red-600 mt-0.5">{errors.email}</span>}
               </div>
@@ -381,8 +383,9 @@ function Corporategift() {
                 value={formData.phone}
                 onChange={handleInputChange}
                 placeholder="Phone number"
-                className={`w-full bg-white border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 focus:border-[#06492D] ${errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-200'
-                  }`}
+                className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 ${
+                  errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                }`}
               />
               {errors.phone && <span className="text-[10px] text-red-600 mt-0.5">{errors.phone}</span>}
             </div>
@@ -394,8 +397,9 @@ function Corporategift() {
                 value={formData.comment}
                 onChange={handleInputChange}
                 placeholder="Comment"
-                className={`w-full bg-white border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 resize-none focus:border-[#06492D] ${errors.comment ? 'border-red-500 focus:border-red-500' : 'border-gray-200'
-                  }`}
+                className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 resize-none ${
+                  errors.comment ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                }`}
               />
               {errors.comment && <span className="text-[10px] text-red-600 mt-0.5">{errors.comment}</span>}
             </div>

@@ -47,33 +47,9 @@ const settingsSchema = new mongoose.Schema(
   country: String,
   postalCode: String,
 },
-    currencySymbol: {
-      type: String,
-      default: "₹",
-    },
+    
 
-    taxPercentage: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
 
-    shippingCharge: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-
-    freeShippingMinimumOrder: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-
-    maintenanceMode: {
-      type: Boolean,
-      default: false,
-    },
 
     socialLinks: {
       facebook: {
@@ -101,48 +77,18 @@ const settingsSchema = new mongoose.Schema(
         default: "",
       },
 
+      pinterest: {
+        type: String,
+        default: "",
+      },
+
       isDefault: {
   type: Boolean,
   default: true,
   unique: true,
 },
     },
-    paymentGateway: {
-  razorpayKeyId: {
-    type: String,
-    default: "",
-  },
 
-  razorpayEnabled: {
-    type: Boolean,
-    default: true,
-  },
-
-  codEnabled: {
-    type: Boolean,
-    default: true,
-  },
-},
-seo: {
-  metaTitle: String,
-  metaDescription: String,
-  metaKeywords: String,
-},
-productsPerPage: {
-  type: Number,
-  default: 12,
-},
-orderSettings: {
-  allowCancellation: {
-    type: Boolean,
-    default: true,
-  },
-
-  cancellationHours: {
-    type: Number,
-    default: 24,
-  },
-},
   },
   {
     timestamps: true,
