@@ -101,6 +101,9 @@ function App() {
         <Route path="/contact" element={<Getintouch />} />
         <Route path="/corporate-gifting" element={<Corporategift />} />
         <Route path="/plant-rental" element={<Plantrental />} />
+        <Route path="/garden-maintenance" element={<Gardenmaintanence />} />
+        <Route path="/vertical-garden" element={<Verticalgarden />} />
+        <Route path="/balcony-garden" element={<Balconygarden />} />
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<SuperAdminLogin />} />
         <Route path="/dashboard" element={<AdminLayout />}>
