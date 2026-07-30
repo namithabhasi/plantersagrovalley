@@ -40,9 +40,6 @@ import Terms from "./PAGES/Terms";
 import Cancelandrefund from "./PAGES/Cancelandrefund";
 import Trackorder from "./PAGES/Trackorder";
 import Shippingpolicy from "./PAGES/Shippingpolicy";
-import Getintouch from "./PAGES/Getintouch";
-import Corporategift from "./PAGES/Corporategift";
-import Plantrental from "./PAGES/Plantrental";
 
 import "react-toastify/dist/ReactToastify.css";
 
