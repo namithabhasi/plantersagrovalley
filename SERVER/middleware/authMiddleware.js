@@ -3,9 +3,14 @@ import User from "../models/User.js";
 
 export const authenticate = async (req, res, next) => {
    console.log("Cookies:", req.cookies);
-  console.log("Token:", req.cookies.token);
   try {
-    const token = req.cookies.token;
+    let token = req.cookies?.token;
+
+    // Check for token in Authorization header if not found in cookies
+    if (!token && req.headers.authorization?.startsWith("Bearer ")) {
+      token = req.headers.authorization.split(" ")[1];
+    }
+    console.log("Token:", token);
 
     if (!token) {
       return res.status(401).json({

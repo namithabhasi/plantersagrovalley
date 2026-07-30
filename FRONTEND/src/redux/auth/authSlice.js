@@ -15,16 +15,32 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      state.user = action.payload;
-      if (action.payload) {
-        localStorage.setItem("user", JSON.stringify(action.payload));
+      if (action.payload && action.payload.user !== undefined) {
+        state.user = action.payload.user;
+        if (action.payload.user) {
+          localStorage.setItem("user", JSON.stringify(action.payload.user));
+        } else {
+          localStorage.removeItem("user");
+        }
+        if (action.payload.token) {
+          localStorage.setItem("token", action.payload.token);
+        } else if (action.payload.token === null) {
+          localStorage.removeItem("token");
+        }
       } else {
-        localStorage.removeItem("user");
+        state.user = action.payload;
+        if (action.payload) {
+          localStorage.setItem("user", JSON.stringify(action.payload));
+        } else {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+        }
       }
     },
     clearUser: (state) => {
       state.user = null;
       localStorage.removeItem("user");
+      localStorage.removeItem("token");
     },
     openAuthModal: (state, action) => {
       state.isAuthModalOpen = true;

@@ -67,7 +67,7 @@ console.log("Redux user:", user);
       }
 
       // Save user to Redux
-      dispatch(setUser(data.user));
+      dispatch(setUser({ user: data.user, token: data.token }));
 
       toast.success("Login successful");
 

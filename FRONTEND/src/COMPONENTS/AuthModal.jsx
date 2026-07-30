@@ -67,7 +67,7 @@ function AuthModal() {
       }
 
       // Save user to Redux state & localStorage
-      dispatch(setUser(data.user));
+      dispatch(setUser({ user: data.user, token: data.token }));
 
       // Synchronize local cart to database
       await syncLocalCartToBackend(cartItems);
