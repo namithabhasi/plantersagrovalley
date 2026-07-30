@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import './App.css'
 // importing toastify 
@@ -39,7 +40,6 @@ import Terms from "./PAGES/Terms";
 import Cancelandrefund from "./PAGES/Cancelandrefund";
 import Trackorder from "./PAGES/Trackorder";
 import Shippingpolicy from "./PAGES/Shippingpolicy";
-import Getintouch from "./PAGES/Getintouch";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -49,6 +49,10 @@ function App() {
     location.pathname === '/admin' ||
     location.pathname === '/payment' ||
     location.pathname === '/signin';
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   return (
     <CartProvider>
@@ -89,6 +93,8 @@ function App() {
         <Route path="/fertilizers" element={<Fertilizers />} />
         <Route path="/garden-decor" element={<Gardendecors />} />
         <Route path="/contact" element={<Getintouch />} />
+        <Route path="/corporate-gifting" element={<Corporategift />} />
+        <Route path="/plant-rental" element={<Plantrental />} />
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<SuperAdminLogin />} />
         <Route path="/dashboard" element={<AdminLayout />}>
