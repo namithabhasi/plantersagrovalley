@@ -8,7 +8,8 @@ import {
   deleteProduct,
   getFeaturedProducts,
   getLatestProducts,
-  getRelatedProducts
+  getRelatedProducts,
+  getBestSellingProducts
 } from "../controllers/productController.js";
 
 import { authenticate } from "../middleware/authMiddleware.js";
@@ -29,6 +30,7 @@ router.get("/", getProducts);
 // Get featured products
 router.get("/featured", getFeaturedProducts);
 router.get("/latest", getLatestProducts);
+router.get("/bestselling", getBestSellingProducts);
 
 router.get("/:id/related", getRelatedProducts);
 
