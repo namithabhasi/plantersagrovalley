@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import './index.css';
 import Navbar from './COMPONENTS/Navbar';
 import Checkout from './COMPONENTS/Checkout';
+import AuthModal from './COMPONENTS/AuthModal';
 import { CartProvider } from './context/CartContext';
 
 import Footer from './COMPONENTS/Footer';
@@ -39,7 +40,7 @@ import Terms from "./PAGES/Terms";
 import Cancelandrefund from "./PAGES/Cancelandrefund";
 import Trackorder from "./PAGES/Trackorder";
 import Shippingpolicy from "./PAGES/Shippingpolicy";
-import Getintouch from "./PAGES/Getintouch"
+import Getintouch from "./PAGES/Getintouch";
 import Corporategift from "./PAGES/Corporategift";
 import Plantrental from "./PAGES/Plantrental";
 import Gardenmaintanence from "./PAGES/Gardenmaintanence";
@@ -63,6 +64,7 @@ function App() {
     <CartProvider>
       {!hideNavbarFooter && <Navbar />}
       <Checkout />
+      <AuthModal />
 
 
 
@@ -99,9 +101,6 @@ function App() {
         <Route path="/contact" element={<Getintouch />} />
         <Route path="/corporate-gifting" element={<Corporategift />} />
         <Route path="/plant-rental" element={<Plantrental />} />
-        <Route path="/garden-maintenance" element={<Gardenmaintanence />} />
-        <Route path="/vertical-garden" element={<Verticalgarden />} />
-        <Route path="/balcony-garden" element={<Balconygarden />} />
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<SuperAdminLogin />} />
         <Route path="/dashboard" element={<AdminLayout />}>
@@ -121,7 +120,6 @@ function App() {
         </Route>
       </Routes>
       {!hideNavbarFooter && <Footer />}
-      <ToastContainer />
     </CartProvider>
   );
 }

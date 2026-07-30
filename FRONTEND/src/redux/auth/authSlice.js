@@ -6,6 +6,8 @@ const initialState = {
     : null,
   loading: false,
   error: null,
+  isAuthModalOpen: false,
+  authModalTab: "login"
 };
 
 const authSlice = createSlice({
@@ -24,8 +26,15 @@ const authSlice = createSlice({
       state.user = null;
       localStorage.removeItem("user");
     },
+    openAuthModal: (state, action) => {
+      state.isAuthModalOpen = true;
+      state.authModalTab = action.payload || "login";
+    },
+    closeAuthModal: (state) => {
+      state.isAuthModalOpen = false;
+    }
   },
 });
 
-export const { setUser, clearUser } = authSlice.actions;
+export const { setUser, clearUser, openAuthModal, closeAuthModal } = authSlice.actions;
 export default authSlice.reducer;
