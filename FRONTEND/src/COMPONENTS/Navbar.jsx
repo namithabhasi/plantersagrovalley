@@ -30,11 +30,12 @@ function Navbar() {
   const handleLogout = async () => {
     try {
       await axios.post("/auth/logout");
+    } catch (error) {
+      console.error("Logout API failed:", error);
+    } finally {
       dispatch(clearUser());
       setProfileDropdownOpen(false);
       navigate("/");
-    } catch (error) {
-      console.error("Logout failed", error);
     }
   };
 

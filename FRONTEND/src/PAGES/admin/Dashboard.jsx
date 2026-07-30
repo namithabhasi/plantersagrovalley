@@ -1,6 +1,8 @@
 import { useEffect } from "react";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography, Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { clearUser } from "../../redux/auth/authSlice";
 
 import { fetchDashboard } from "../../redux/dashboard/dashboardSlice";
 
@@ -103,6 +105,7 @@ const ShippingDashboard = ({ statistics, recentOrders }) => {
 
 const Dashboard = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const role = user?.role;
 
@@ -118,6 +121,13 @@ const Dashboard = () => {
   useEffect(() => {
     dispatch(fetchDashboard());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (error === "Access denied. Please login." || error === "Invalid or expired token.") {
+      dispatch(clearUser());
+      navigate("/admin");
+    }
+  }, [error, dispatch, navigate]);
 
   if (loading) {
     return (
@@ -136,9 +146,21 @@ const Dashboard = () => {
 
   if (error) {
     return (
-      <Typography color="error" p={3}>
-        {error}
-      </Typography>
+      <Box sx={{ p: 3, textAlign: "center" }}>
+        <Typography color="error" mb={2}>
+          {error}
+        </Typography>
+        <Button 
+          variant="contained" 
+          color="success" 
+          onClick={() => {
+            dispatch(clearUser());
+            navigate("/admin");
+          }}
+        >
+          Go to Login
+        </Button>
+      </Box>
     );
   }
 

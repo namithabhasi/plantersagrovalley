@@ -139,12 +139,12 @@ const AdminNavbar = ({ handleDrawerToggle }) => {
   const handleLogout = async () => {
     try {
       await axiosInstance.post("/auth/logout");
+    } catch (error) {
+      console.error("Logout API failed:", error);
+    } finally {
       dispatch(clearUser());
       toast.success("Logged out successfully");
       navigate("/");
-    } catch (error) {
-      console.error(error);
-      toast.error("Logout failed");
     }
   };
 
