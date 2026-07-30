@@ -92,21 +92,42 @@ const Reports = () => {
   const totalPieValue = pieChartData.reduce((acc, curr) => acc + curr.value, 0);
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ display: "flex", justifyContent: "center", width: "100%" }}>
+      <Box sx={{ maxWidth: 1200, width: "100%" }}>
       {/* Header */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center" mb={4}>
-        <Box>
-          <Typography variant="h4" fontWeight={800} sx={{ color: "success.main", mb: 0.5 }}>
-            Analytics & Reports
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            View store statistics, revenue trends, inventory alerts, and product sales performance
-          </Typography>
-        </Box>
-      </Stack>
+      <Box
+  mb={5}
+  sx={{
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    textAlign: "left",
+  }}
+>
+  <Typography
+    variant="h4"
+    fontWeight={800}
+    sx={{
+      color: "success.main",
+      mb: 0.5,
+    }}
+  >
+    Analytics & Reports
+  </Typography>
 
+  <Typography
+    variant="body2"
+    color="text.secondary"
+    sx={{
+      mt: 1,
+      mb: 2,
+    }}
+  >
+    View store statistics, revenue trends, inventory alerts, and product sales performance
+  </Typography>
+</Box>
       {/* Metrics Cards Grid */}
-      <Grid container spacing={3} mb={4}>
+      <Grid container spacing={2} sx={{ mb: 4 }} justifyContent="center">
         {/* Total Revenue */}
         <Grid item xs={12} sm={6} md={4} lg={2.4}>
           <StatCard
@@ -159,15 +180,25 @@ const Reports = () => {
       </Grid>
 
       {/* Main Charts Row */}
-      <Grid container spacing={3} mb={4}>
+      <Box
+        sx={{
+          mb: 4,
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr",
+            lg: "8fr 4fr",
+          },
+          gap: 3,
+        }}
+      >
         {/* Sales & Orders Trend Area Chart */}
-        <Grid item xs={12} lg={8}>
-          <Card sx={{ borderRadius: 3, boxShadow: "0 4px 16px rgba(0,0,0,0.02)", border: "1px solid #f0f0f0" }}>
-            <CardContent sx={{ p: 3 }}>
-              <Typography variant="h6" fontWeight={700} sx={{ mb: 3 }}>
+        <Box sx={{ minWidth: 0, display: "flex" }}>
+          <Card elevation={2} sx={{ borderRadius: 3, width: "100%", display: "flex", flexDirection: "column" }}>
+            <CardContent sx={{ p: 3, flexGrow: 1, display: "flex", flexDirection: "column" }}>
+              <Typography variant="h6" fontWeight={700} sx={{ mb: 3, textAlign: "center" }}>
                 Sales & Order Volume Trends
               </Typography>
-              <Box sx={{ height: 350 }}>
+              <Box sx={{ height: 350, flexGrow: 1, minHeight: 300 }}>
                 {salesChartData.length === 0 ? (
                   <Stack justifyContent="center" alignItems="center" sx={{ height: "100%" }}>
                     <Typography color="text.secondary">No monthly sales history found.</Typography>
@@ -193,16 +224,16 @@ const Reports = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
+        </Box>
 
         {/* Order Status Distribution Pie Chart */}
-        <Grid item xs={12} lg={4}>
-          <Card sx={{ borderRadius: 3, boxShadow: "0 4px 16px rgba(0,0,0,0.02)", border: "1px solid #f0f0f0", height: "100%" }}>
-            <CardContent sx={{ p: 3 }}>
-              <Typography variant="h6" fontWeight={700} sx={{ mb: 3 }}>
+        <Box sx={{ minWidth: 0, display: "flex" }}>
+          <Card elevation={2} sx={{ borderRadius: 3, width: "100%", display: "flex", flexDirection: "column" }}>
+            <CardContent sx={{ p: 3, flexGrow: 1, display: "flex", flexDirection: "column" }}>
+              <Typography variant="h6" fontWeight={700} sx={{ mb: 3, textAlign: "center" }}>
                 Order Ratios By Status
               </Typography>
-              <Box sx={{ height: 260, display: "flex", justifyContent: "center", alignItems: "center" }}>
+              <Box sx={{ height: 260, display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1 }}>
                 {totalPieValue === 0 ? (
                   <Typography color="text.secondary">No orders to display.</Typography>
                 ) : (
@@ -226,7 +257,7 @@ const Reports = () => {
                   </ResponsiveContainer>
                 )}
               </Box>
-              <Stack direction="row" spacing={2} justifyContent="center" mt={2}>
+              <Stack direction="row" spacing={2} justifyContent="center" mt={2} sx={{ flexWrap: "wrap", gap: 1.5 }}>
                 {pieChartData.map((item, index) => (
                   <Stack key={index} direction="row" spacing={0.5} alignItems="center">
                     <Box sx={{ width: 10, height: 10, bgcolor: item.color, borderRadius: "50%" }} />
@@ -238,19 +269,41 @@ const Reports = () => {
               </Stack>
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
+{/* Second Charts Row */}
+<Box
+  sx={{
+    display: "flex",
+    justifyContent: "center",
+    mb: 4,
+    width: "100%",
+  }}
+>
+  <Card
+    elevation={2}
+    sx={{
+      borderRadius: 3,
+      width: {
+        xs: "100%",
+        md: "85%",
+        lg: "75%",
+      },
+      maxWidth: 900,
+    }}
+  >
+    <CardContent sx={{ p: 3 }}>
+      <Typography
+        variant="h6"
+        fontWeight={700}
+        align="center"
+        sx={{ mb: 3 }}
+      >
+        Top 5 Best Selling Products (Volume & Revenue)
+      </Typography>
 
-      {/* Second Charts Row */}
-      <Grid container spacing={3}>
-        {/* Top Products Bar Chart */}
-        <Grid item xs={12}>
-          <Card sx={{ borderRadius: 3, boxShadow: "0 4px 16px rgba(0,0,0,0.02)", border: "1px solid #f0f0f0" }}>
-            <CardContent sx={{ p: 3 }}>
-              <Typography variant="h6" fontWeight={700} sx={{ mb: 3 }}>
-                Top 5 Best Selling Products (Volume & Revenue)
-              </Typography>
-              <Box sx={{ height: 350 }}>
+      <Box sx={{ height: 350 }}>
+              
                 {topProductsData.length === 0 ? (
                   <Stack justifyContent="center" alignItems="center" sx={{ height: "100%" }}>
                     <Typography color="text.secondary">No sales transactions logged yet.</Typography>
@@ -268,11 +321,11 @@ const Reports = () => {
                     </RechartsBarChart>
                   </ResponsiveContainer>
                 )}
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+               </Box>
+    </CardContent>
+  </Card>
+</Box>
+      </Box>
     </Box>
   );
 };

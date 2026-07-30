@@ -4,8 +4,6 @@ import { setSearchQuery as setSearchQueryRedux } from "../../redux/search/search
 import {
   Box,
   Button,
-  Card,
-  CardContent,
   Chip,
   Dialog,
   DialogActions,
@@ -28,13 +26,13 @@ import {
   Paper,
   CircularProgress,
   Grid,
-  Pagination,
   Tooltip,
   Divider,
   Stepper,
   Step,
   StepLabel,
 } from "@mui/material";
+import UserPagination from "../../COMPONENTS/admin/users/UserPagination";
 import {
   Search as SearchIcon,
   Visibility as VisibilityIcon,
@@ -229,95 +227,120 @@ const Orders = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box>
       {/* Header */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center" mb={4}>
-        <Box>
-          <Typography variant="h4" fontWeight={800} sx={{ color: "success.main", mb: 0.5 }}>
-            Orders Registry
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Process sales transactions, track shipments, and manage customer invoices
-          </Typography>
-        </Box>
-      </Stack>
+      <Box mb={5}>
+        <Typography variant="h4" fontWeight={800} sx={{ color: "success.main", mb: 0.5 }}>
+          Orders Registry
+        </Typography>
+        <Typography sx={{ mt: 1, mb: 2 }} variant="body2" color="text.secondary">
+          Process sales transactions, track shipments, and manage customer invoices
+        </Typography>
+      </Box>
 
-      {/* Filters Card */}
-      <Card sx={{ mb: 4, borderRadius: 3, boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
-        <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                placeholder="Search orders by Order # or Customer Name..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  dispatch(setSearchQueryRedux(e.target.value));
-                  setPage(1);
-                }}
-                slotProps={{
-                  input: {
-                    startAdornment: <SearchIcon sx={{ color: "text.secondary", mr: 1 }} />,
-                  },
-                }}
-                variant="outlined"
-                size="small"
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: 2.5,
-                  },
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <FormControl fullWidth size="small">
-                <InputLabel id="order-status-filter-label">Order Status</InputLabel>
-                <Select
-                  labelId="order-status-filter-label"
-                  value={orderStatusFilter}
-                  label="Order Status"
-                  onChange={(e) => {
-                    setOrderStatusFilter(e.target.value);
-                    setPage(1);
-                  }}
-                  sx={{ borderRadius: 2.5 }}
-                >
-                  <MenuItem value="all">All Statuses</MenuItem>
-                  <MenuItem value="Pending">Pending</MenuItem>
-                  <MenuItem value="Confirmed">Confirmed</MenuItem>
-                  <MenuItem value="Processing">Processing</MenuItem>
-                  <MenuItem value="Packed">Packed</MenuItem>
-                  <MenuItem value="Shipped">Shipped</MenuItem>
-                  <MenuItem value="Delivered">Delivered</MenuItem>
-                  <MenuItem value="Cancelled">Cancelled</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <FormControl fullWidth size="small">
-                <InputLabel id="payment-status-filter-label">Payment Status</InputLabel>
-                <Select
-                  labelId="payment-status-filter-label"
-                  value={paymentStatusFilter}
-                  label="Payment Status"
-                  onChange={(e) => {
-                    setPaymentStatusFilter(e.target.value);
-                    setPage(1);
-                  }}
-                  sx={{ borderRadius: 2.5 }}
-                >
-                  <MenuItem value="all">All Payments</MenuItem>
-                  <MenuItem value="Pending">Pending</MenuItem>
-                  <MenuItem value="Paid">Paid</MenuItem>
-                  <MenuItem value="Failed">Failed</MenuItem>
-                  <MenuItem value="Refunded">Refunded</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
+      {/* Search & Filters */}
+      <Stack
+        direction={{ xs: "column", md: "row" }}
+        spacing={2}
+        justifyContent="space-between"
+        alignItems={{ xs: "stretch", sm: "flex-end", md: "center" }}
+        mb={4}
+      >
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={2}
+          alignItems={{ xs: "stretch", sm: "center" }}
+          sx={{ width: "100%" }}
+        >
+          <TextField
+            placeholder="Search orders by Order # or Customer Name..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              dispatch(setSearchQueryRedux(e.target.value));
+              setPage(1);
+            }}
+            slotProps={{
+              input: {
+                startAdornment: <SearchIcon sx={{ color: "text.secondary", mr: 1 }} />,
+              },
+            }}
+            variant="outlined"
+            size="small"
+            sx={{
+              flexGrow: 1,
+              maxWidth: { xs: "100%", md: 450 },
+              "& .MuiOutlinedInput-root": {
+                height: 40,
+                borderRadius: 2.5,
+              },
+            }}
+          />
+
+          <FormControl size="small" sx={{ minWidth: { xs: "100%", sm: 180 } }}>
+            <InputLabel id="order-status-filter-label">Order Status</InputLabel>
+            <Select
+              labelId="order-status-filter-label"
+              value={orderStatusFilter}
+              label="Order Status"
+              onChange={(e) => {
+                setOrderStatusFilter(e.target.value);
+                setPage(1);
+              }}
+              sx={{
+                height: 40,
+                borderRadius: 2.5,
+                "& .MuiSelect-select": {
+                  height: 40,
+                  display: "flex",
+                  alignItems: "center",
+                  boxSizing: "border-box",
+                  py: 0,
+                },
+              }}
+            >
+              <MenuItem value="all">All Statuses</MenuItem>
+              <MenuItem value="Pending">Pending</MenuItem>
+              <MenuItem value="Confirmed">Confirmed</MenuItem>
+              <MenuItem value="Processing">Processing</MenuItem>
+              <MenuItem value="Packed">Packed</MenuItem>
+              <MenuItem value="Shipped">Shipped</MenuItem>
+              <MenuItem value="Delivered">Delivered</MenuItem>
+              <MenuItem value="Cancelled">Cancelled</MenuItem>
+            </Select>
+          </FormControl>
+
+          <FormControl size="small" sx={{ minWidth: { xs: "100%", sm: 180 } }}>
+            <InputLabel id="payment-status-filter-label">Payment Status</InputLabel>
+            <Select
+              labelId="payment-status-filter-label"
+              value={paymentStatusFilter}
+              label="Payment Status"
+              onChange={(e) => {
+                setPaymentStatusFilter(e.target.value);
+                setPage(1);
+              }}
+              sx={{
+                height: 40,
+                borderRadius: 2.5,
+                "& .MuiSelect-select": {
+                  height: 40,
+                  display: "flex",
+                  alignItems: "center",
+                  boxSizing: "border-box",
+                  py: 0,
+                },
+              }}
+            >
+              <MenuItem value="all">All Payments</MenuItem>
+              <MenuItem value="Pending">Pending</MenuItem>
+              <MenuItem value="Paid">Paid</MenuItem>
+              <MenuItem value="Failed">Failed</MenuItem>
+              <MenuItem value="Refunded">Refunded</MenuItem>
+            </Select>
+          </FormControl>
+        </Stack>
+      </Stack>
 
       {/* Main Table */}
       {loading ? (
@@ -346,15 +369,15 @@ const Orders = () => {
         <>
           <TableContainer
             component={Paper}
+            elevation={2}
             sx={{
               borderRadius: 3,
-              boxShadow: "0 4px 16px rgba(0,0,0,0.03)",
-              border: "1px solid #f0f0f0",
+              mt: 2,
               overflowX: "auto",
             }}
           >
             <Table>
-              <TableHead sx={{ bgcolor: "#f8f9fa" }}>
+              <TableHead sx={{ "& .MuiTableCell-head": { bgcolor: "#f5f5f5" } }}>
                 <TableRow>
                   <TableCell sx={{ fontWeight: 600, py: 2 }}>Order Number</TableCell>
                   <TableCell sx={{ fontWeight: 600, py: 2 }}>Date</TableCell>
@@ -494,37 +517,96 @@ const Orders = () => {
           </TableContainer>
 
           {/* Pagination */}
-          <Stack spacing={2} alignItems="center" sx={{ mt: 4 }}>
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={(e, value) => setPage(value)}
-              color="success"
-            />
-          </Stack>
+          {totalPages > 1 && (
+            <Box mt={3}>
+              <UserPagination
+                page={page}
+                totalPages={totalPages}
+                setPage={setPage}
+              />
+            </Box>
+          )}
         </>
       )}
 
       {/* View Order Detail Dialog */}
-      <Dialog open={detailOpen} onClose={() => setDetailOpen(false)} maxWidth="md" fullWidth sx={{ borderRadius: 3 }}>
-        <DialogTitle sx={{ fontWeight: 700, display: "flex", justifyContent: "space-between", alignItems: "center", pb: 1 }}>
-          <Typography variant="h6" fontWeight={700}>
+      <Dialog
+        open={detailOpen}
+        onClose={() => setDetailOpen(false)}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.08)",
+          },
+        }}
+      >
+        <DialogTitle sx={{ fontWeight: 700, display: "flex", justifyContent: "space-between", alignItems: "center", pb: 1.5 }}>
+          <Typography variant="h6" fontWeight={700} color="primary.main">
             Order details: {selectedOrder?.orderNumber}
           </Typography>
           <IconButton onClick={() => setDetailOpen(false)} size="small">
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <DialogContent dividers sx={{ p: 3 }}>
+        <DialogContent dividers sx={{ p: 3, bgcolor: "#fafbfa" }}>
           {selectedOrder && (
-            <Grid container spacing={3}>
-              {/* Stepper showing order path */}
-              <Grid item xs={12}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 3.5 }}>
+              {/* Stepper showing order path - full width */}
+              <Box sx={{ width: "100%", p: 3, bgcolor: "#ffffff", borderRadius: 2, border: "1px solid #eef2ed", boxShadow: "0 2px 8px rgba(0,0,0,0.02)" }}>
                 <Stepper
                   activeStep={
                     ["Pending", "Confirmed", "Processing", "Packed", "Shipped", "Delivered"].indexOf(selectedOrder.orderStatus)
                   }
                   alternativeLabel
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    "& .MuiStep-root": {
+                      flex: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    },
+                    "& .MuiStepLabel-root": {
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      width: "100%",
+                    },
+                    "& .MuiStepLabel-labelContainer": {
+                      width: "100%",
+                      textAlign: "center",
+                      mt: 1.5,
+                    },
+                    "& .MuiStepLabel-label": {
+                      fontSize: "0.85rem",
+                      fontWeight: 500,
+                      whiteSpace: "normal",
+                      wordBreak: "break-word",
+                      color: "text.secondary",
+                      "&.Mui-active": {
+                        color: "primary.main",
+                        fontWeight: 700,
+                      },
+                      "&.Mui-completed": {
+                        color: "success.main",
+                        fontWeight: 700,
+                      }
+                    },
+                    "& .MuiStepIcon-root": {
+                      width: 28,
+                      height: 28,
+                      "&.Mui-active": {
+                        color: "primary.main",
+                      },
+                      "&.Mui-completed": {
+                        color: "success.main",
+                      }
+                    }
+                  }}
                 >
                   {["Pending", "Confirmed", "Processing", "Packed", "Shipped", "Delivered"].map((status) => (
                     <Step key={status} completed={
@@ -537,160 +619,172 @@ const Orders = () => {
                   ))}
                 </Stepper>
                 {selectedOrder.orderStatus === "Cancelled" && (
-                  <Box sx={{ mt: 2, p: 1.5, bgcolor: "#ffebee", borderRadius: 2, textAlign: "center" }}>
-                    <Typography color="error.main" fontWeight={600}>
+                  <Box sx={{ mt: 2.5, p: 1.5, bgcolor: "#ffebee", borderRadius: 2, textAlign: "center", border: "1px solid #ffcdd2" }}>
+                    <Typography color="error.main" fontWeight={600} variant="body2">
                       This order was cancelled on {new Date(selectedOrder.cancelledAt || selectedOrder.updatedAt).toLocaleString()}
                     </Typography>
                   </Box>
                 )}
-              </Grid>
+              </Box>
 
-              {/* Items Purchased */}
-              <Grid item xs={12} md={7}>
-                <Typography variant="subtitle1" fontWeight={700} gutterBottom>
-                  Purchased Items
-                </Typography>
-                <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2 }}>
-                  <Table size="small">
-                    <TableHead sx={{ bgcolor: "#f8f9fa" }}>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 600 }}>Item</TableCell>
-                        <TableCell align="center" sx={{ fontWeight: 600 }}>Qty</TableCell>
-                        <TableCell align="right" sx={{ fontWeight: 600 }}>Price</TableCell>
-                        <TableCell align="right" sx={{ fontWeight: 600 }}>Total</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {selectedOrder.items?.map((item, index) => (
-                        <TableRow key={index}>
-                          <TableCell sx={{ display: "flex", alignItems: "center", gap: 1.5, py: 1.5 }}>
-                            {item.image ? (
-                              <Box component="img" src={item.image} sx={{ width: 40, height: 40, borderRadius: 1.5, objectFit: "cover" }} />
-                            ) : (
-                              <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: "#eee" }} />
-                            )}
-                            <Typography variant="body2" fontWeight={600}>{item.name}</Typography>
-                          </TableCell>
-                          <TableCell align="center">{item.quantity}</TableCell>
-                          <TableCell align="right">${item.price?.toFixed(2)}</TableCell>
-                          <TableCell align="right">${(item.quantity * item.price)?.toFixed(2)}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+              {/* Two columns below the Stepper */}
+              <Grid container spacing={3.5} alignItems="stretch">
+                {/* Left Column: Customer details (xs={12} md={5}) */}
+                <Grid item xs={12} md={5}>
+                  <Stack spacing={2.5} sx={{ height: "100%" }}>
+                    <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2, bgcolor: "#ffffff", borderColor: "#eef2ed" }}>
+                      <Typography variant="subtitle2" fontWeight={700} color="primary.main" sx={{ mb: 1.5, letterSpacing: 0.5 }}>
+                        CUSTOMER DETAILS
+                      </Typography>
+                      <Typography variant="body2" fontWeight={600} gutterBottom>
+                        {selectedOrder.user?.firstName} {selectedOrder.user?.lastName}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" gutterBottom>
+                        Email: {selectedOrder.user?.email || "—"}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Phone: {selectedOrder.shippingAddress?.phone}
+                      </Typography>
+                    </Paper>
 
-                {/* Subtotals & Taxes */}
-                <Box sx={{ mt: 2, ml: "auto", maxWidth: 300 }}>
-                  <Stack spacing={1.2}>
-                    <Stack direction="row" justifyContent="space-between">
-                      <Typography variant="body2" color="text.secondary">Subtotal:</Typography>
-                      <Typography variant="body2" fontWeight={600}>${selectedOrder.subtotal?.toFixed(2)}</Typography>
-                    </Stack>
-                    {selectedOrder.discountAmount > 0 && (
-                      <Stack direction="row" justifyContent="space-between" sx={{ color: "error.main" }}>
-                        <Typography variant="body2">Discount:</Typography>
-                        <Typography variant="body2" fontWeight={600}>-${selectedOrder.discountAmount?.toFixed(2)}</Typography>
+                    <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2, bgcolor: "#ffffff", borderColor: "#eef2ed" }}>
+                      <Typography variant="subtitle2" fontWeight={700} color="primary.main" sx={{ mb: 1.5, letterSpacing: 0.5 }}>
+                        SHIPPING ADDRESS
+                      </Typography>
+                      <Typography variant="body2" fontWeight={600} gutterBottom>
+                        {selectedOrder.shippingAddress?.receiverName}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" gutterBottom>
+                        {selectedOrder.shippingAddress?.addressLine1}
+                      </Typography>
+                      {selectedOrder.shippingAddress?.addressLine2 && (
+                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                          {selectedOrder.shippingAddress.addressLine2}
+                        </Typography>
+                      )}
+                      <Typography variant="body2" color="text.secondary" gutterBottom>
+                        {selectedOrder.shippingAddress?.city}, {selectedOrder.shippingAddress?.state} - {selectedOrder.shippingAddress?.postalCode}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {selectedOrder.shippingAddress?.country}
+                      </Typography>
+                    </Paper>
+
+                    <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2, bgcolor: "#ffffff", borderColor: "#eef2ed" }}>
+                      <Typography variant="subtitle2" fontWeight={700} color="primary.main" sx={{ mb: 1.5, letterSpacing: 0.5 }}>
+                        TRANSACTION DETAILS
+                      </Typography>
+                      <Stack spacing={1}>
+                        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                          <Typography variant="body2" color="text.secondary">Payment Method:</Typography>
+                          <Typography variant="body2" fontWeight={600}>{selectedOrder.paymentMethod}</Typography>
+                        </Box>
+                        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                          <Typography variant="body2" color="text.secondary">Payment Status:</Typography>
+                          <Typography variant="body2" fontWeight={600}>{selectedOrder.paymentStatus}</Typography>
+                        </Box>
+                        {selectedOrder.paidAt && (
+                          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                            <Typography variant="body2" color="text.secondary">Paid At:</Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {new Date(selectedOrder.paidAt).toLocaleString()}
+                            </Typography>
+                          </Box>
+                        )}
                       </Stack>
-                    )}
-                    <Stack direction="row" justifyContent="space-between">
-                      <Typography variant="body2" color="text.secondary">Tax:</Typography>
-                      <Typography variant="body2" fontWeight={600}>${selectedOrder.tax?.toFixed(2)}</Typography>
-                    </Stack>
-                    <Stack direction="row" justifyContent="space-between">
-                      <Typography variant="body2" color="text.secondary">Shipping Charge:</Typography>
-                      <Typography variant="body2" fontWeight={600}>${selectedOrder.shippingCharge?.toFixed(2)}</Typography>
-                    </Stack>
-                    <Divider />
-                    <Stack direction="row" justifyContent="space-between">
-                      <Typography variant="subtitle2" fontWeight={700}>Grand Total:</Typography>
-                      <Typography variant="subtitle2" fontWeight={700} color="success.main">${selectedOrder.totalAmount?.toFixed(2)}</Typography>
-                    </Stack>
-                  </Stack>
-                </Box>
-              </Grid>
+                    </Paper>
 
-              {/* Delivery and Customer details */}
-              <Grid item xs={12} md={5}>
-                <Stack spacing={3}>
-                  <Box>
-                    <Typography variant="subtitle2" fontWeight={700} color="text.secondary" gutterBottom>
-                      CUSTOMER DETAILS
-                    </Typography>
-                    <Typography variant="body2" fontWeight={600}>
-                      {selectedOrder.user?.firstName} {selectedOrder.user?.lastName}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Email: {selectedOrder.user?.email || "—"}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Phone: {selectedOrder.shippingAddress?.phone}
-                    </Typography>
-                  </Box>
-
-                  <Box>
-                    <Typography variant="subtitle2" fontWeight={700} color="text.secondary" gutterBottom>
-                      SHIPPING ADDRESS
-                    </Typography>
-                    <Typography variant="body2" fontWeight={600}>
-                      {selectedOrder.shippingAddress?.receiverName}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {selectedOrder.shippingAddress?.addressLine1}
-                    </Typography>
-                    {selectedOrder.shippingAddress?.addressLine2 && (
-                      <Typography variant="body2" color="text.secondary">
-                        {selectedOrder.shippingAddress.addressLine2}
-                      </Typography>
-                    )}
-                    <Typography variant="body2" color="text.secondary">
-                      {selectedOrder.shippingAddress?.city}, {selectedOrder.shippingAddress?.state} - {selectedOrder.shippingAddress?.postalCode}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {selectedOrder.shippingAddress?.country}
-                    </Typography>
-                  </Box>
-
-                  <Box>
-                    <Typography variant="subtitle2" fontWeight={700} color="text.secondary" gutterBottom>
-                      TRANSACTION DETAILS
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Payment Method: <strong>{selectedOrder.paymentMethod}</strong>
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Payment Status: <strong>{selectedOrder.paymentStatus}</strong>
-                    </Typography>
-                    {selectedOrder.paidAt && (
-                      <Typography variant="body2" color="text.secondary">
-                        Paid At: {new Date(selectedOrder.paidAt).toLocaleString()}
-                      </Typography>
-                    )}
-                  </Box>
-
-                  {selectedOrder.trackingNumber && (
-                    <Box sx={{ p: 1.5, bgcolor: "#f1f8e9", borderRadius: 2, display: "flex", gap: 1, alignItems: "center" }}>
-                      <ShippingIcon color="success" />
-                      <Box>
-                        <Typography variant="caption" color="success.main" fontWeight={700}>TRACKING CODE</Typography>
-                        <Typography variant="body2" fontWeight={700}>{selectedOrder.trackingNumber}</Typography>
+                    {selectedOrder.trackingNumber && (
+                      <Box sx={{ p: 2, bgcolor: "#f1f8e9", borderRadius: 2, display: "flex", gap: 1.5, alignItems: "center", border: "1px solid #dcedc8" }}>
+                        <ShippingIcon color="success" />
+                        <Box>
+                          <Typography variant="caption" color="success.main" fontWeight={700}>TRACKING CODE</Typography>
+                          <Typography variant="body2" fontWeight={700}>{selectedOrder.trackingNumber}</Typography>
+                        </Box>
                       </Box>
-                    </Box>
-                  )}
+                    )}
 
-                  {selectedOrder.notes && (
-                    <Box sx={{ p: 1.5, bgcolor: "#fffde7", borderRadius: 2 }}>
-                      <Typography variant="caption" color="text.secondary" fontWeight={700}>ORDER NOTES</Typography>
-                      <Typography variant="body2" sx={{ fontStyle: "italic" }}>"{selectedOrder.notes}"</Typography>
+                    {selectedOrder.notes && (
+                      <Box sx={{ p: 2, bgcolor: "#fffde7", borderRadius: 2, border: "1px solid #fff9c4" }}>
+                        <Typography variant="caption" color="text.secondary" fontWeight={700}>ORDER NOTES</Typography>
+                        <Typography variant="body2" sx={{ fontStyle: "italic", mt: 0.5 }}>"{selectedOrder.notes}"</Typography>
+                      </Box>
+                    )}
+                  </Stack>
+                </Grid>
+
+                {/* Right Column: Items Purchased (xs={12} md={7}) */}
+                <Grid item xs={12} md={7}>
+                  <Paper variant="outlined" sx={{ p: 3, borderRadius: 2, bgcolor: "#ffffff", borderColor: "#eef2ed", height: "100%", display: "flex", flexDirection: "column" }}>
+                    <Typography variant="subtitle1" fontWeight={700} color="text.primary" sx={{ mb: 2 }}>
+                      Purchased Items
+                    </Typography>
+                    <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 1.5, borderColor: "#f0f0f0", overflow: "hidden", flexGrow: 1 }}>
+                      <Table size="small">
+                        <TableHead sx={{ bgcolor: "#f8f9fa" }}>
+                          <TableRow>
+                            <TableCell sx={{ fontWeight: 600 }}>Item</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 600 }}>Qty</TableCell>
+                            <TableCell align="right" sx={{ fontWeight: 600 }}>Price</TableCell>
+                            <TableCell align="right" sx={{ fontWeight: 600 }}>Total</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {selectedOrder.items?.map((item, index) => (
+                            <TableRow key={index} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                              <TableCell sx={{ display: "flex", alignItems: "center", gap: 1.5, py: 1.5 }}>
+                                {item.image ? (
+                                  <Box component="img" src={item.image} sx={{ width: 40, height: 40, borderRadius: 1.5, objectFit: "cover" }} />
+                                ) : (
+                                  <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: "#eee" }} />
+                                )}
+                                <Typography variant="body2" fontWeight={600}>{item.name}</Typography>
+                              </TableCell>
+                              <TableCell align="center">{item.quantity}</TableCell>
+                              <TableCell align="right">${item.price?.toFixed(2)}</TableCell>
+                              <TableCell align="right">${(item.quantity * item.price)?.toFixed(2)}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+
+                    {/* Subtotals & Taxes */}
+                    <Box sx={{ mt: 3, ml: "auto", width: "100%", maxWidth: 320 }}>
+                      <Stack spacing={1.5}>
+                        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                          <Typography variant="body2" color="text.secondary">Subtotal:</Typography>
+                          <Typography variant="body2" fontWeight={600}>${selectedOrder.subtotal?.toFixed(2)}</Typography>
+                        </Box>
+                        {selectedOrder.discountAmount > 0 && (
+                          <Box sx={{ display: "flex", justifyContent: "space-between", color: "error.main" }}>
+                            <Typography variant="body2">Discount:</Typography>
+                            <Typography variant="body2" fontWeight={600}>-${selectedOrder.discountAmount?.toFixed(2)}</Typography>
+                          </Box>
+                        )}
+                        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                          <Typography variant="body2" color="text.secondary">Tax:</Typography>
+                          <Typography variant="body2" fontWeight={600}>${selectedOrder.tax?.toFixed(2)}</Typography>
+                        </Box>
+                        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                          <Typography variant="body2" color="text.secondary">Shipping Charge:</Typography>
+                          <Typography variant="body2" fontWeight={600}>${selectedOrder.shippingCharge?.toFixed(2)}</Typography>
+                        </Box>
+                        <Divider />
+                        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                          <Typography variant="subtitle2" fontWeight={700}>Grand Total:</Typography>
+                          <Typography variant="subtitle2" fontWeight={700} color="success.main">${selectedOrder.totalAmount?.toFixed(2)}</Typography>
+                        </Box>
+                      </Stack>
                     </Box>
-                  )}
-                </Stack>
+                  </Paper>
+                </Grid>
               </Grid>
-            </Grid>
+            </Box>
           )}
         </DialogContent>
-        <DialogActions sx={{ px: 3, py: 2 }}>
-          <Button onClick={() => setDetailOpen(false)} variant="outlined" color="success" sx={{ textTransform: "none", borderRadius: 2 }}>
+        <DialogActions sx={{ px: 3, py: 2, bgcolor: "#f8f9fa", borderTop: "1px solid #eef2ed" }}>
+          <Button onClick={() => setDetailOpen(false)} variant="outlined" color="success" sx={{ textTransform: "none", borderRadius: 2, px: 3 }}>
             Close
           </Button>
         </DialogActions>
