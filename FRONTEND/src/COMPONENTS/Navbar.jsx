@@ -155,7 +155,7 @@ function Navbar() {
               <NavLink to="/seeds" className="navbar-link">
                 Seeds
               </NavLink>
-              
+
               {/* Seeds Simple Dropdown Menu */}
               <div className={`planters-simple-dropdown ${forceClose ? 'force-close' : ''}`} onClick={handleLinkClick}>
                 <Link to="/seeds?category=flower-seeds" className="simple-dropdown-item">
@@ -182,7 +182,7 @@ function Navbar() {
               <NavLink to="/planters" className="navbar-link">
                 Planters
               </NavLink>
-              
+
               {/* Planters Simple Dropdown Menu */}
               <div className={`planters-simple-dropdown ${forceClose ? 'force-close' : ''}`} onClick={handleLinkClick}>
                 <Link to="/planters?category=plastic-pots" className="simple-dropdown-item">
@@ -215,7 +215,7 @@ function Navbar() {
               <NavLink to="/fertilizers" className="navbar-link">
                 Fertilizers
               </NavLink>
-              
+
               {/* Fertilizers Simple Dropdown Menu */}
               <div className={`planters-simple-dropdown ${forceClose ? 'force-close' : ''}`} onClick={handleLinkClick}>
                 <Link to="/fertilizers?category=coco-bricks" className="simple-dropdown-item">
@@ -242,7 +242,7 @@ function Navbar() {
               <NavLink to="/garden-decor" className="navbar-link">
                 Garden Decor
               </NavLink>
-              
+
               {/* Garden Decor Simple Dropdown Menu */}
               <div className={`planters-simple-dropdown ${forceClose ? 'force-close' : ''}`} onClick={handleLinkClick}>
                 <Link to="/garden-decor?category=bird-houses" className="simple-dropdown-item">
