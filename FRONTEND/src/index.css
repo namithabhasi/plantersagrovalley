@@ -735,9 +735,22 @@ div.container {
 }
 
 .planters-nav-links .navbar-link:hover::after,
-.planters-nav-links .navbar-link.active::after {
+.planters-nav-links .navbar-link.active::after,
+.navbar-item-with-dropdown:hover .navbar-link::after,
+.navbar-item-with-simple-dropdown:hover .navbar-link::after {
   transform: scaleX(1);
   transform-origin: bottom left;
+}
+
+/* Hide active underline when hovering over other nav links */
+.planters-nav-links:hover .navbar-link.active::after {
+  transform: scaleX(0);
+}
+
+/* Re-show the active link's underline when it or its dropdown is hovered */
+.navbar-item-with-dropdown:hover .navbar-link.active::after,
+.navbar-item-with-simple-dropdown:hover .navbar-link.active::after {
+  transform: scaleX(1) !important;
 }
 
 
