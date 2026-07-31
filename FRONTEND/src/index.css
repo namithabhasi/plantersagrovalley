@@ -162,8 +162,8 @@ h5,
 h6 {
   font-family: var(--font-family-heading);
   color: var(--color-primary-dark);
-  font-weight: 400;
-  /* No boldness */
+  font-weight: 300;
+  /* Light font weight */
   line-height: var(--line-height-tight);
 }
 
@@ -283,17 +283,39 @@ img {
   margin-bottom: var(--space-8);
 }
 
-.section-title {
+.section-title,
+.bring-life-title,
+.soil-title,
+.corporate-title,
+.why-planters-title {
   font-family: var(--font-family-heading);
   font-size: 40px;
   /* Exact Plants Guru size */
-  font-weight: 400;
-  /* No boldness */
+  font-weight: 300;
+  /* Light font weight */
   letter-spacing: 0.6px;
   line-height: 52px;
   color: var(--color-primary-dark);
   display: block;
   text-align: center;
+  text-transform: uppercase;
+}
+
+.section-header-link {
+  position: absolute;
+  right: 0;
+  font-size: var(--font-size-sm);
+  letter-spacing: 1.5px;
+  color: var(--color-primary-dark);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--color-primary-dark);
+  padding-bottom: 2px;
+  transition: var(--transition-fast);
+}
+
+.section-header-link:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 /* --- Circular Category Grid --- */
@@ -694,6 +716,7 @@ div.container {
 .planters-nav-links .navbar-link {
   position: relative;
   padding-bottom: 4px;
+  z-index: 1000; /* Ensure it stacks above the dropdown menu to keep hover underline visible */
 }
 
 .planters-nav-links .navbar-link::after {
@@ -825,6 +848,17 @@ div.container {
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  margin-top: 20px;
+}
+
+.planters-simple-dropdown::before {
+  content: '';
+  position: absolute;
+  top: -24px;
+  left: 0;
+  width: 100%;
+  height: 24px;
+  background: transparent;
 }
 
 .navbar-item-with-simple-dropdown:hover .planters-simple-dropdown {
@@ -1473,11 +1507,6 @@ div.container {
 }
 
 .soil-title {
-  font-family: var(--font-family-heading);
-  font-size: 44px;
-  font-weight: 600;
-  line-height: 52px;
-  color: var(--color-primary-dark);
   margin-bottom: var(--space-1);
 }
 
@@ -1511,10 +1540,7 @@ div.container {
     max-width: 65%;
   }
 
-  .soil-title {
-    font-size: 36px;
-    line-height: 44px;
-  }
+
 
   .soil-subtitle {
     font-size: 24px;
@@ -1542,10 +1568,7 @@ div.container {
     -webkit-backdrop-filter: blur(8px);
   }
 
-  .soil-title {
-    font-size: 28px;
-    line-height: 36px;
-  }
+
 
   .soil-subtitle {
     font-size: 20px;
@@ -2230,8 +2253,8 @@ div.container {
    Bring Life Back to Nature Section Styles
    ========================================================================== */
 .bring-life-section {
-  padding: 24px 0;
-  background-color: #f7faf6; /* Premium soft green shade backdrop */
+  padding: var(--space-10) 0;
+  background-color: var(--color-bg-main);
 }
 
 .bring-life-container {
@@ -2250,11 +2273,8 @@ div.container {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid var(--color-primary-dark);
-  padding: 4px 8px;
-  border-radius: 3px;
   color: var(--color-primary-dark);
-  font-size: 9.5px;
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
   letter-spacing: 1.5px;
   width: fit-content;
@@ -2262,33 +2282,30 @@ div.container {
 }
 
 .bring-life-badge .badge-icon {
-  font-size: 10px;
+  font-size: 14px;
   color: var(--color-primary);
 }
 
 .bring-life-title {
-  font-family: var(--font-family-heading);
-  font-size: 28px;
-  font-weight: 500;
   line-height: 1.15;
-  color: var(--color-primary-dark);
   margin-top: 10px;
   margin-bottom: 6px;
 }
 
 .bring-life-tagline {
   font-family: var(--font-family-heading);
-  font-size: 13.5px;
-  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
   color: var(--color-primary);
   margin-bottom: 12px;
 }
 
 .bring-life-desc {
-  font-size: 12px;
-  font-weight: 300;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
   line-height: 1.6;
-  color: var(--color-text-muted);
+  color: var(--color-text-main);
   margin-bottom: 16px;
   text-align: justify; /* Ensure text starts and ends at same position on each line */
   text-justify: inter-word;
@@ -2324,7 +2341,7 @@ div.container {
 
 .feature-text {
   font-family: var(--font-family-heading);
-  font-size: 12.5px;
+  font-size: var(--font-size-sm);
   font-weight: 500;
   color: var(--color-text-main);
 }
@@ -2360,8 +2377,8 @@ div.container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
-  max-width: 480px; /* Restrict max width of the grid further to reduce card sizes and fit vertically */
-  margin: 0 auto; /* Center the grid inside the column */
+  max-width: 480px;
+  margin-left: auto;
 }
 
 .bring-life-card {
@@ -2405,16 +2422,28 @@ div.container {
 }
 
 @media (max-width: 768px) {
+  .section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    position: relative;
+  }
+  .section-header-link {
+    position: static;
+    margin-top: 8px;
+    width: fit-content;
+  }
   .bring-life-container {
     grid-template-columns: 1fr;
     gap: 40px;
-    padding: 0 16px;
   }
   .bring-life-section {
-    padding: 40px 0;
+    padding: var(--space-10) 0;
   }
   .bring-life-grid {
     gap: 16px;
+    margin: 0 auto;
   }
 }
 
@@ -2423,14 +2452,37 @@ div.container {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
-  .bring-life-title {
-    font-size: 26px;
-  }
+
 }
 
 @media (max-width: 400px) {
   .bring-life-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
+  }
+}
+
+/* Responsive Heading Sizes for Uniformity */
+@media (max-width: 992px) {
+  .section-title,
+  .bring-life-title,
+  .soil-title,
+  .corporate-title,
+  .why-planters-title {
+    font-size: 32px !important;
+    line-height: 40px !important;
+    font-weight: 300 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .section-title,
+  .bring-life-title,
+  .soil-title,
+  .corporate-title,
+  .why-planters-title {
+    font-size: 28px !important;
+    line-height: 36px !important;
+    font-weight: 300 !important;
   }
 }

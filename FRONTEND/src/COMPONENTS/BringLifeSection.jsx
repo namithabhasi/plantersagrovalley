@@ -37,8 +37,7 @@ function BringLifeSection() {
           </div>
           
           <h2 className="bring-life-title">
-            Bring Life <br />
-            Back to Nature.
+            BRING LIFE BACK TO NATURE.
           </h2>
           
           <p className="bring-life-tagline">

@@ -120,7 +120,6 @@ function Home() {
   return (
     <div>
       <HeroCarousel />
-      <BringLifeSection />
       <CategorySection />
 
       <section className="best-selling-section">
@@ -206,22 +205,12 @@ function Home() {
       </section>
 
       <section className="best-selling-section alt-bg py-16 md:py-20 min-h-[480px] md:min-h-[520px] flex items-center">
-        <div className="container w-full">
-          <div className="section-header" style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div className="container">
+          <div className="section-header">
             <h3 className="section-title">BUY INDOOR PLANTS</h3>
             <Link
               to="/plants"
-              className="navbar-link"
-              style={{
-                position: 'absolute',
-                right: 0,
-                fontSize: 'var(--font-size-sm)',
-                letterSpacing: '1.5px',
-                color: 'var(--color-primary-dark)',
-                textTransform: 'uppercase',
-                borderBottom: '1px solid var(--color-primary-dark)',
-                paddingBottom: '2px'
-              }}
+              className="section-header-link"
             >
               View All &rarr;
             </Link>
@@ -303,23 +292,15 @@ function Home() {
         </div>
       </section>
 
-      <section className="best-selling-section" style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-10)' }}>
+      <BringLifeSection />
+
+      <section className="best-selling-section alt-bg" style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-10)' }}>
         <div className="container">
-          <div className="section-header" style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div className="section-header">
             <h3 className="section-title">BUY FRUIT PLANTS</h3>
             <Link
               to="/plants"
-              className="navbar-link"
-              style={{
-                position: 'absolute',
-                right: 0,
-                fontSize: 'var(--font-size-sm)',
-                letterSpacing: '1.5px',
-                color: 'var(--color-primary-dark)',
-                textTransform: 'uppercase',
-                borderBottom: '1px solid var(--color-primary-dark)',
-                paddingBottom: '2px'
-              }}
+              className="section-header-link"
             >
               View All &rarr;
             </Link>
@@ -405,7 +386,7 @@ function Home() {
         <div className="container">
           <div className="soil-content-wrapper">
             <span className="soil-tag">100% Organic</span>
-            <h2 className="soil-title">Nourish Your Soil</h2>
+            <h2 className="soil-title">NOURISH YOUR SOIL</h2>
             <h3 className="soil-subtitle">Grow Naturally</h3>
             <p className="soil-description">
               Give your plants the perfect foundation with our premium organic fertilizers.
@@ -422,9 +403,9 @@ function Home() {
       </section>
 
       <section className="py-16 md:py-20 min-h-[480px] md:min-h-[520px] flex items-center border-t border-[var(--color-border)] bg-[var(--color-bg-main)]">
-        <div className="container w-full">
+        <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
-            <div className="w-full flex justify-center">
+            <div className="w-full flex justify-start">
               <img
                 src={corporateGiftImg}
                 alt="Corporate Plant Gifts"
@@ -436,10 +417,10 @@ function Home() {
               <span className="font-[var(--font-family-heading)] text-[var(--font-size-xs)] font-bold corporate-tag tracking-[2px] uppercase mb-2">
                 GREEN GIFTS
               </span>
-              <h2 className="font-[var(--font-family-heading)] text-3xl md:text-[40px] font-normal leading-tight text-[var(--color-primary-dark)] mb-4">
-                Corporate Plant Gifts
+              <h2 className="font-[var(--font-family-heading)] text-3xl md:text-[40px] font-normal leading-tight text-[var(--color-primary-dark)] mb-4 uppercase corporate-title">
+                CORPORATE PLANT GIFTS
               </h2>
-              <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed mb-6 max-w-lg corporate-description">
+              <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed mb-6 w-full corporate-description">
                 Stand out with corporate plant gifts for employees and clients.
                 Customize gift plants with your logo on pots, cards, and packaging.
                 Book now for meaningful green gifting!
@@ -454,13 +435,13 @@ function Home() {
         </div>
       </section>
 
-      <section className="mt-20 bg-[var(--color-primary-bg)] flex items-center justify-center" style={{ minHeight: '480px', paddingTop: '60px', paddingBottom: '60px' }}>
+      <section className="mt-20 bg-[var(--color-primary-bg)] flex items-center justify-center" style={{ minHeight: '380px', paddingTop: '40px', paddingBottom: '40px' }}>
         <div className="container flex flex-col items-center justify-center text-center">
           <h2
-            className="font-[var(--font-family-heading)] text-3xl md:text-4xl font-normal text-[var(--color-primary-dark)]"
-            style={{ marginTop: '0px', marginBottom: '40px', paddingTop: '10px', paddingBottom: '10px' }}
+            className="font-[var(--font-family-heading)] text-3xl md:text-4xl font-normal text-[var(--color-primary-dark)] uppercase why-planters-title"
+            style={{ marginTop: '0px', marginBottom: '24px', paddingTop: '10px', paddingBottom: '10px' }}
           >
-            Why Planters Agro Valley?
+            WHY PLANTERS AGRO VALLEY?
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 w-full max-w-5xl justify-items-center justify-center mx-auto">
