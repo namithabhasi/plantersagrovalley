@@ -11,6 +11,7 @@ import {
   Typography,
   InputAdornment,
   Avatar,
+  Select,
 } from "@mui/material";
 import {
   ArrowBack,
@@ -39,6 +40,7 @@ const AddUser = () => {
     isActive: true,
   });
 
+  const [countryCode, setCountryCode] = useState("+91");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -50,11 +52,29 @@ const AddUser = () => {
     }));
   };
 
+  const handlePhoneChange = (e) => {
+    const value = e.target.value;
+    // Only allow digits (0-9)
+    const cleaned = value.replace(/\D/g, "");
+    setFormData((prev) => ({
+      ...prev,
+      phone: cleaned,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
       return toast.error("Passwords do not match");
+    }
+
+    if (!formData.phone.trim()) {
+      return toast.error("Phone number is required");
+    }
+
+    if (!/^\d{7,15}$/.test(formData.phone)) {
+      return toast.error("Please enter a valid phone number (7 to 15 digits)");
     }
 
     try {
@@ -66,7 +86,7 @@ const AddUser = () => {
           firstName: formData.firstName,
           lastName: formData.lastName,
           email: formData.email,
-          phone: formData.phone,
+          phone: `${countryCode}${formData.phone}`,
           password: formData.password,
           role: formData.role,
           isActive: formData.isActive,
@@ -85,6 +105,7 @@ const AddUser = () => {
         role: "admin",
         isActive: true,
       });
+      setCountryCode("+91");
     } catch (err) {
       toast.error(
         err.response?.data?.message || "Failed to create user"
@@ -180,12 +201,20 @@ const AddUser = () => {
             <PersonAdd />
           </Avatar>
           <Box sx={{ textAlign: "left" }}>
-            <Typography variant="h6" fontWeight={700} color="success.main">
-              User Profile Information
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              Fill in the credential and personal details of the new account.
-            </Typography>
+           <Typography
+  variant="h6"
+  fontWeight={700}
+  sx={{ color: "#fff" }}
+>
+  User Profile Information
+</Typography>
+
+<Typography
+  variant="caption"
+  sx={{ color: "#fff" }}
+>
+  Fill in the credential and personal details of the new account.
+</Typography>
           </Box>
         </Box>
 
@@ -265,13 +294,42 @@ const AddUser = () => {
                   label="Phone"
                   name="phone"
                   value={formData.phone}
-                  onChange={handleChange}
+                  onChange={handlePhoneChange}
                   required
                   slotProps={{
                     input: {
                       startAdornment: (
-                        <InputAdornment position="start">
+                        <InputAdornment position="start" sx={{ gap: 0.5 }}>
                           <Phone fontSize="small" color="action" />
+                          <Select
+                            value={countryCode}
+                            onChange={(e) => setCountryCode(e.target.value)}
+                            variant="standard"
+                            disableUnderline
+                            sx={{
+                              fontSize: "0.875rem",
+                              fontWeight: 500,
+                              "& .MuiSelect-select": {
+                                paddingRight: "18px !important",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 0.5,
+                              },
+                            }}
+                          >
+                            <MenuItem value="+91">🇮🇳 +91</MenuItem>
+                            <MenuItem value="+1">🇺🇸 +1</MenuItem>
+                            <MenuItem value="+44">🇬🇧 +44</MenuItem>
+                            <MenuItem value="+971">🇦🇪 +971</MenuItem>
+                            <MenuItem value="+966">🇸🇦 +966</MenuItem>
+                            <MenuItem value="+968">🇴🇲 +968</MenuItem>
+                            <MenuItem value="+974">🇶🇦 +974</MenuItem>
+                            <MenuItem value="+973">🇧🇭 +973</MenuItem>
+                            <MenuItem value="+965">🇰🇼 +965</MenuItem>
+                            <MenuItem value="+61">🇦🇺 +61</MenuItem>
+                            <MenuItem value="+65">🇸🇬 +65</MenuItem>
+                            <MenuItem value="+60">🇲🇾 +60</MenuItem>
+                          </Select>
                         </InputAdornment>
                       ),
                     },
