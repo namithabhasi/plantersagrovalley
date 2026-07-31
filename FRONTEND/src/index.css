@@ -207,42 +207,7 @@ img {
    4. Component Styles
    ========================================================================== */
 
-/* --- Container --- */
-.container {
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: var(--space-4);
-  padding-right: var(--space-4);
-}
 
-@media (min-width: 640px) {
-  .container {
-    max-width: 640px;
-  }
-}
-
-@media (min-width: 768px) {
-  .container {
-    max-width: 768px;
-    padding-left: var(--space-6);
-    padding-right: var(--space-6);
-  }
-}
-
-@media (min-width: 1024px) {
-  .container {
-    max-width: 1024px;
-  }
-}
-
-@media (min-width: 1280px) {
-  .container {
-    max-width: 1280px;
-    padding-left: var(--space-8);
-    padding-right: var(--space-8);
-  }
-}
 
 
 /* --- Navigation / Menu Label (Exact Inspector Match) --- */
@@ -279,6 +244,7 @@ img {
 
 /* --- Section Headers --- */
 .section-header {
+  position: relative;
   text-align: center;
   margin-bottom: var(--space-8);
 }
@@ -304,6 +270,7 @@ img {
 .section-header-link {
   position: absolute;
   right: 0;
+  bottom: 12px;
   font-size: var(--font-size-sm);
   letter-spacing: 1.5px;
   color: var(--color-primary-dark);
@@ -661,10 +628,10 @@ div.container {
   /* Maximum content width */
   margin: 0 auto !important;
   /* Centers the content */
-  padding-left: 1.8rem !important;
-  /* 32px Left Padding (Desktop) */
-  padding-right: 1.8rem !important;
-  /* 32px Right Padding (Desktop) */
+  padding-left: 3.5rem !important;
+  /* 56px Left Padding (Desktop) */
+  padding-right: 3.5rem !important;
+  /* 56px Right Padding (Desktop) */
 }
 
 /* Responsive adjustments */
