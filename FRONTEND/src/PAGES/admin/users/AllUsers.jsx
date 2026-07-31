@@ -137,8 +137,13 @@ const AllUsers = ({ preselectedRole }) => {
             to="/dashboard/users/add"
             sx={{
               height: 40,
+              bgcolor: "success.main",
+              "&:hover": { bgcolor: "primary.main" , color : "#fff"},
+              textTransform: "none",
+              borderRadius: 2.5,
               px: 3,
               whiteSpace: "nowrap",
+              boxShadow: "0 4px 10px rgba(46, 125, 50, 0.15)",
             }}
           >
             Add User
