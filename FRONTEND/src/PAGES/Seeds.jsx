@@ -51,7 +51,7 @@ import forest5 from '../assets/FORESTARYSEEDS/image.png';
 import ls1 from '../assets/LAWNSEEDS/image copy.png';
 import ls2 from '../assets/LAWNSEEDS/image.png';
 
-const seedProducts = [
+export const seedProducts = [
     // Flower Seeds
     { id: 'seed-fs-1', category: 'flower-seeds', name: 'Rainbow Rose Seeds (Holland Variety)', price: 149, rating: 5, image: fs1, date: '2026-01-01', inStock: true, space: 'outdoors' },
     { id: 'seed-fs-2', category: 'flower-seeds', name: 'Rare Black Rose Shrub Seeds', price: 199, originalPrice: 249, discount: '-20%', rating: 5, image: fs2, date: '2026-01-02', inStock: true, space: 'outdoors' },

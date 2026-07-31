@@ -48,7 +48,13 @@ function Getintouch() {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    const val = type === 'checkbox' ? checked : value;
+    let val = type === 'checkbox' ? checked : value;
+
+    if (name === 'phone') {
+      // Only accept digits and limit to 10 characters
+      val = val.replace(/\D/g, '').slice(0, 10);
+    }
+
     setFormData(prev => ({ ...prev, [name]: val }));
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
@@ -62,13 +68,13 @@ function Getintouch() {
     }
     if (!formData.email.trim()) {
       newErrors.email = 'Email address is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
       newErrors.email = 'Please enter a valid email address';
     }
     if (!formData.phone.trim()) {
       newErrors.phone = 'Phone number is required';
-    } else if (!/^\+?[0-9]{7,15}$/.test(formData.phone.replace(/[\s-]/g, ''))) {
-      newErrors.phone = 'Please enter a valid phone number';
+    } else if (formData.phone.trim().length !== 10) {
+      newErrors.phone = 'Phone number must be exactly 10 digits';
     }
     if (!formData.comment.trim()) {
       newErrors.comment = 'Comment is required';

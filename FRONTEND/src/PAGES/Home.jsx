@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import HeroCarousel from '../COMPONENTS/HeroCarousel'
+import BringLifeSection from '../COMPONENTS/BringLifeSection'
 import CategorySection from '../COMPONENTS/CategorySection'
 import { FaStar, FaSeedling, FaTruck, FaUndo } from 'react-icons/fa'
 import { useCart } from '../context/CartContext'
@@ -115,10 +116,11 @@ function Home() {
 
     fetchProducts();
   }, []);
- 
+
   return (
     <div>
       <HeroCarousel />
+      <BringLifeSection />
       <CategorySection />
 
       <section className="best-selling-section">
@@ -437,7 +439,7 @@ function Home() {
               <h2 className="font-[var(--font-family-heading)] text-3xl md:text-[40px] font-normal leading-tight text-[var(--color-primary-dark)] mb-4">
                 Corporate Plant Gifts
               </h2>
-              <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed mb-6 max-w-lg">
+              <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed mb-6 max-w-lg corporate-description">
                 Stand out with corporate plant gifts for employees and clients.
                 Customize gift plants with your logo on pots, cards, and packaging.
                 Book now for meaningful green gifting!
@@ -454,7 +456,7 @@ function Home() {
 
       <section className="mt-20 bg-[var(--color-primary-bg)] flex items-center justify-center" style={{ minHeight: '480px', paddingTop: '60px', paddingBottom: '60px' }}>
         <div className="container flex flex-col items-center justify-center text-center">
-          <h2 
+          <h2
             className="font-[var(--font-family-heading)] text-3xl md:text-4xl font-normal text-[var(--color-primary-dark)]"
             style={{ marginTop: '0px', marginBottom: '40px', paddingTop: '10px', paddingBottom: '10px' }}
           >

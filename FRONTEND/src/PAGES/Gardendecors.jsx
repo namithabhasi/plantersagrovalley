@@ -32,7 +32,7 @@ const gardenCategories = [
     { id: 'terrarium-garden', name: 'Terrarium Garden' }
 ];
 
-const gardenProducts = [
+export const gardenProducts = [
     {
         id: 'g1',
         name: 'Premium Wooden Bird House',
