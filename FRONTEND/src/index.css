@@ -497,7 +497,8 @@ img {
   font-size: var(--font-size-sm);
   color: var(--color-text-light);
   text-decoration: line-through;
-  text-decoration-color: #cbd5e1; /* Light grey strike-through line to keep numbers readable */
+  text-decoration-color: #cbd5e1;
+  /* Light grey strike-through line to keep numbers readable */
 }
 
 /* Button Components */
@@ -1120,15 +1121,18 @@ div.container {
   position: relative;
   width: 100%;
   overflow: hidden;
-  background-color: var(--color-bg-secondary);
-  aspect-ratio: 16 / 9;
-  /* 1.77:1 ratio on small screens to give more vertical space */
+  background-color: #ffffff;
+  aspect-ratio: 2.1 / 1;
+  /* 2.1:1 ratio on small screens to give perfect aspect match for mobile */
+  min-height: 180px;
+  max-height: calc(100vh - 120px);
 }
 
 @media (min-width: 480px) {
   .hero-carousel {
     aspect-ratio: 16 / 8;
     /* 2:1 ratio */
+    min-height: 340px;
   }
 }
 
@@ -1136,6 +1140,7 @@ div.container {
   .hero-carousel {
     aspect-ratio: 16 / 7;
     /* 2.28:1 ratio */
+    min-height: 400px;
   }
 }
 
@@ -1143,6 +1148,7 @@ div.container {
   .hero-carousel {
     aspect-ratio: 21 / 9;
     /* 2.33:1 ratio */
+    min-height: 450px;
   }
 }
 
@@ -1179,44 +1185,55 @@ div.container {
   object-position: center;
 }
 
+@media (max-width: 767px) {
+  .carousel-image {
+    object-fit: contain;
+  }
+}
+
 .carousel-overlay {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding-bottom: 48px;
-  /* High position similar to plants guru bottom spacing */
+  padding-bottom: 40px;
+  /* Safe mobile position */
   background: rgba(0, 0, 0, 0.03);
   /* Extremely soft dark layer for better visual legibility */
   z-index: 3;
 }
 
+@media (min-width: 768px) {
+  .carousel-overlay {
+    padding-bottom: 64px;
+    /* Desktop padding-bottom */
+  }
+}
+
 .carousel-overlay .btn {
   width: auto;
   /* Prevent stretching to 100% on the hero overlay */
-  padding: 12px 36px;
-  font-family: var(--font-family-heading);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  box-shadow: var(--shadow-md);
-  text-decoration: none;
 }
 
-.carousel-overlay .btn:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
-}
 
 /* Indicators */
 .carousel-dots {
   position: absolute;
-  bottom: 16px;
+  bottom: 12px;
+  /* Mobile dot spacing */
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   gap: 8px;
   z-index: 10;
+}
+
+@media (min-width: 768px) {
+  .carousel-dots {
+    bottom: 20px;
+    /* Desktop dot spacing */
+  }
 }
 
 .carousel-dot {
@@ -1238,12 +1255,6 @@ div.container {
 }
 
 @media (max-width: 768px) {
-  .carousel-overlay .btn {
-    padding: 8px 18px;
-    font-size: var(--font-size-xs);
-    letter-spacing: 1px;
-  }
-
   .carousel-overlay {
     padding-bottom: 24px;
   }
@@ -1325,12 +1336,10 @@ div.container {
 /* Category Loading Skeleton */
 .plantsguru-category-card.skeleton {
   background: #f6f7f8;
-  background-image: linear-gradient(
-    90deg,
-    #f6f7f8 0px,
-    #edeef1 40px,
-    #f6f7f8 80px
-  );
+  background-image: linear-gradient(90deg,
+      #f6f7f8 0px,
+      #edeef1 40px,
+      #f6f7f8 80px);
   background-size: 200% 100%;
   animation: shimmer-cat 1.5s infinite linear;
   box-shadow: none;
@@ -1341,6 +1350,7 @@ div.container {
   0% {
     background-position: -150% 0;
   }
+
   100% {
     background-position: 150% 0;
   }
@@ -1487,6 +1497,8 @@ div.container {
   color: var(--color-text-main);
   margin-bottom: var(--space-6);
   max-width: 480px;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .soil-content-wrapper .btn {
@@ -1555,6 +1567,11 @@ div.container {
 .corporate-tag {
   color: #16a34a !important;
   /* Bright, vibrant kelly/forest green */
+}
+
+.corporate-description {
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .feature-title {
@@ -2207,4 +2224,213 @@ div.container {
 
 .Toastify__progress-bar--info {
   background: #3182ce !important;
+}
+
+/* ==========================================================================
+   Bring Life Back to Nature Section Styles
+   ========================================================================== */
+.bring-life-section {
+  padding: 24px 0;
+  background-color: #f7faf6; /* Premium soft green shade backdrop */
+}
+
+.bring-life-container {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr;
+  gap: 36px;
+  align-items: center;
+}
+
+.bring-life-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.bring-life-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--color-primary-dark);
+  padding: 4px 8px;
+  border-radius: 3px;
+  color: var(--color-primary-dark);
+  font-size: 9.5px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 1.5px;
+  width: fit-content;
+  text-transform: uppercase;
+}
+
+.bring-life-badge .badge-icon {
+  font-size: 10px;
+  color: var(--color-primary);
+}
+
+.bring-life-title {
+  font-family: var(--font-family-heading);
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--color-primary-dark);
+  margin-top: 10px;
+  margin-bottom: 6px;
+}
+
+.bring-life-tagline {
+  font-family: var(--font-family-heading);
+  font-size: 13.5px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  margin-bottom: 12px;
+}
+
+.bring-life-desc {
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  margin-bottom: 16px;
+  text-align: justify; /* Ensure text starts and ends at same position on each line */
+  text-justify: inter-word;
+}
+
+.bring-life-features {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.feature-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background-color: var(--color-primary-subtle);
+  border-radius: 4px;
+  color: var(--color-primary-dark);
+}
+
+.feature-icon {
+  font-size: 12px;
+}
+
+.feature-text {
+  font-family: var(--font-family-heading);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--color-text-main);
+}
+
+.btn-explore-green {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 18px;
+  background-color: var(--color-primary-dark);
+  color: #ffffff !important;
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  text-decoration: none !important;
+  width: fit-content;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  border: none;
+}
+
+.btn-explore-green:hover {
+  background-color: var(--color-primary);
+}
+
+.bring-life-right {
+  width: 100%;
+}
+
+.bring-life-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  max-width: 480px; /* Restrict max width of the grid further to reduce card sizes and fit vertically */
+  margin: 0 auto; /* Center the grid inside the column */
+}
+
+.bring-life-card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none !important;
+}
+
+.card-image-container {
+  aspect-ratio: 1.3 / 1;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 0 !important;
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0 !important;
+}
+
+.bring-life-card .card-title {
+  font-family: var(--font-family-heading);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--color-primary-dark);
+  text-align: center;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+/* Responsiveness Media Queries */
+@media (max-width: 1024px) {
+  .bring-life-container {
+    gap: 32px;
+  }
+  .bring-life-title {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .bring-life-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 0 16px;
+  }
+  .bring-life-section {
+    padding: 40px 0;
+  }
+  .bring-life-grid {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  .bring-life-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .bring-life-title {
+    font-size: 26px;
+  }
+}
+
+@media (max-width: 400px) {
+  .bring-life-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
 }

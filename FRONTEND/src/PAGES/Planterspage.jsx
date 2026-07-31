@@ -47,7 +47,7 @@ import grow2 from '../assets/GROWBAGS/Want Better Harvests_ 20 Elevated Garden B
 import grow3 from '../assets/GROWBAGS/image copy.png';
 import grow4 from '../assets/GROWBAGS/image.png';
 
-const planterProducts = [
+export const planterProducts = [
     // Plastic Pots
     { id: 'pot-pl-1', category: 'plastic-pots', name: 'Classic Terracotta Plastic Pot (10 inch)', price: 120, rating: 5, image: plastic1, date: '2026-01-01', inStock: true, space: 'outdoors' },
     { id: 'pot-pl-2', category: 'plastic-pots', name: 'Self-Watering White Plastic Planter', price: 180, originalPrice: 220, discount: '-18%', rating: 4, image: plastic2, date: '2026-01-02', inStock: true, space: 'indoors' },

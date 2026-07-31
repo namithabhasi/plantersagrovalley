@@ -46,6 +46,7 @@ import Plantrental from "./PAGES/Plantrental";
 import Gardenmaintanence from "./PAGES/Gardenmaintanence";
 import Verticalgarden from "./PAGES/Verticalgarden";
 import Balconygarden from "./PAGES/Balconygarden";
+import SearchPage from "./PAGES/SearchPage";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -93,6 +94,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/about" element={<Aboutus />} />
         <Route path="/faqs" element={<Faq />} />
+        <Route path="/search" element={<SearchPage />} />
         <Route path="/plants" element={<Plants />} />
         <Route path="/seeds" element={<Seeds />} />
         <Route path="/planters" element={<Planterspage />} />
