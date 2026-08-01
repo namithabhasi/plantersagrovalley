@@ -90,9 +90,13 @@ const Settings = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    let finalValue = value;
+    if (name === "storePhone") {
+      finalValue = value.replace(/\D/g, "");
+    }
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: finalValue,
     }));
   };
 
@@ -126,6 +130,9 @@ const Settings = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (formData.storePhone && !/^\d{10,15}$/.test(formData.storePhone)) {
+      return toast.error("Please enter a valid store phone number (10 to 15 digits)");
+    }
     try {
       setSaving(true);
       const data = new FormData();
@@ -249,6 +256,8 @@ const Settings = () => {
                           onChange={handleInputChange}
                           name="storePhone"
                           required
+                          error={formData.storePhone !== "" && !/^\d{10,15}$/.test(formData.storePhone)}
+                          helperText={formData.storePhone !== "" && !/^\d{10,15}$/.test(formData.storePhone) ? "Phone number must be between 10 and 15 digits" : ""}
                         />
                       </Grid>
                      
