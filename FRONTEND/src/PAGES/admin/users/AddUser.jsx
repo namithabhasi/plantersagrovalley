@@ -42,39 +42,116 @@ const AddUser = () => {
 
   const [countryCode, setCountryCode] = useState("+91");
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const validateField = (name, value, currentFormData = formData) => {
+    let error = "";
+    switch (name) {
+      case "firstName":
+        if (!value.trim()) {
+          error = "First name is required";
+        } else if (value.trim().length < 2) {
+          error = "First name must be at least 2 characters";
+        }
+        break;
+      case "lastName":
+        if (!value.trim()) {
+          error = "Last name is required";
+        } else if (value.trim().length < 2) {
+          error = "Last name must be at least 2 characters";
+        }
+        break;
+      case "email":
+        if (!value.trim()) {
+          error = "Email is required";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
+          error = "Please enter a valid email address";
+        }
+        break;
+      case "phone":
+        if (!value.trim()) {
+          error = "Phone number is required";
+        } else if (!/^\d{7,15}$/.test(value.trim())) {
+          error = "Phone number must be between 7 and 15 digits";
+        }
+        break;
+      case "password":
+        if (!value) {
+          error = "Password is required";
+        } else if (value.length < 6) {
+          error = "Password must be at least 6 characters";
+        }
+        break;
+      case "confirmPassword":
+        if (!value) {
+          error = "Confirm password is required";
+        } else if (value !== currentFormData.password) {
+          error = "Passwords do not match";
+        }
+        break;
+      default:
+        break;
+    }
+    setErrors((prev) => ({ ...prev, [name]: error }));
+    return error;
+  };
+
+  const validateForm = () => {
+    const newErrors = {
+      firstName: validateField("firstName", formData.firstName, formData),
+      lastName: validateField("lastName", formData.lastName, formData),
+      email: validateField("email", formData.email, formData),
+      phone: validateField("phone", formData.phone, formData),
+      password: validateField("password", formData.password, formData),
+      confirmPassword: validateField("confirmPassword", formData.confirmPassword, formData),
+    };
+
+    setErrors(newErrors);
+    return !Object.values(newErrors).some((err) => err !== "");
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => {
+      const nextData = {
+        ...prev,
+        [name]: value,
+      };
+      validateField(name, value, nextData);
+      
+      if (name === "password" && nextData.confirmPassword) {
+        validateField("confirmPassword", nextData.confirmPassword, nextData);
+      }
+      return nextData;
+    });
   };
 
   const handlePhoneChange = (e) => {
     const value = e.target.value;
-    // Only allow digits (0-9)
     const cleaned = value.replace(/\D/g, "");
-    setFormData((prev) => ({
-      ...prev,
-      phone: cleaned,
-    }));
+    setFormData((prev) => {
+      const nextData = {
+        ...prev,
+        phone: cleaned,
+      };
+      validateField("phone", cleaned, nextData);
+      return nextData;
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (formData.password !== formData.confirmPassword) {
-      return toast.error("Passwords do not match");
-    }
-
-    if (!formData.phone.trim()) {
-      return toast.error("Phone number is required");
-    }
-
-    if (!/^\d{7,15}$/.test(formData.phone)) {
-      return toast.error("Please enter a valid phone number (7 to 15 digits)");
+    if (!validateForm()) {
+      return toast.error("Please correct the errors in the form before submitting.");
     }
 
     try {
@@ -106,6 +183,14 @@ const AddUser = () => {
         isActive: true,
       });
       setCountryCode("+91");
+      setErrors({
+        firstName: "",
+        lastName: "",
+        phone: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
     } catch (err) {
       toast.error(
         err.response?.data?.message || "Failed to create user"
@@ -229,6 +314,8 @@ const AddUser = () => {
                   value={formData.firstName}
                   onChange={handleChange}
                   required
+                  error={Boolean(errors.firstName)}
+                  helperText={errors.firstName}
                   slotProps={{
                     input: {
                       startAdornment: (
@@ -250,6 +337,8 @@ const AddUser = () => {
                   value={formData.lastName}
                   onChange={handleChange}
                   required
+                  error={Boolean(errors.lastName)}
+                  helperText={errors.lastName}
                   slotProps={{
                     input: {
                       startAdornment: (
@@ -296,6 +385,8 @@ const AddUser = () => {
                   value={formData.phone}
                   onChange={handlePhoneChange}
                   required
+                  error={Boolean(errors.phone)}
+                  helperText={errors.phone}
                   slotProps={{
                     input: {
                       startAdornment: (
@@ -347,6 +438,8 @@ const AddUser = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
+                  error={Boolean(errors.email)}
+                  helperText={errors.email}
                   slotProps={{
                     input: {
                       startAdornment: (
@@ -369,6 +462,8 @@ const AddUser = () => {
                   value={formData.password}
                   onChange={handleChange}
                   required
+                  error={Boolean(errors.password)}
+                  helperText={errors.password}
                   slotProps={{
                     input: {
                       startAdornment: (
@@ -391,6 +486,8 @@ const AddUser = () => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   required
+                  error={Boolean(errors.confirmPassword)}
+                  helperText={errors.confirmPassword}
                   slotProps={{
                     input: {
                       startAdornment: (

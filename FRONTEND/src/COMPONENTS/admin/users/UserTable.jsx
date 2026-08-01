@@ -24,6 +24,8 @@ import {
   TextField,
   Button,
   Grid,
+  Select,
+  InputAdornment,
 } from "@mui/material";
 
 import {
@@ -32,6 +34,7 @@ import {
   Delete as DeleteIcon,
   ToggleOn as ToggleOnIcon,
   ToggleOff as ToggleOffIcon,
+  Phone as PhoneIcon,
 } from "@mui/icons-material";
 
 import axios from "../../../api/axiosInstance";
@@ -54,6 +57,83 @@ const UserTable = ({ users, loading, onRefresh }) => {
     password: "",
     confirmPassword: "",
   });
+
+  const [errors, setErrors] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const [countryCode, setCountryCode] = useState("+91");
+
+  const countryCodesList = ["+91", "+1", "+44", "+971", "+966", "+968", "+974", "+973", "+965", "+61", "+65", "+60"];
+
+  const validateField = (name, value, currentForm = editForm) => {
+    let error = "";
+    switch (name) {
+      case "firstName":
+        if (!value.trim()) {
+          error = "First name is required";
+        } else if (value.trim().length < 2) {
+          error = "First name must be at least 2 characters";
+        }
+        break;
+      case "lastName":
+        if (!value.trim()) {
+          error = "Last name is required";
+        } else if (value.trim().length < 2) {
+          error = "Last name must be at least 2 characters";
+        }
+        break;
+      case "email":
+        if (!value.trim()) {
+          error = "Email is required";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
+          error = "Please enter a valid email address";
+        }
+        break;
+      case "phone":
+        if (!value.trim()) {
+          error = "Phone number is required";
+        } else if (!/^\d{7,15}$/.test(value.trim())) {
+          error = "Phone number must be between 7 and 15 digits";
+        }
+        break;
+      case "password":
+        if (value && value.length < 6) {
+          error = "Password must be at least 6 characters";
+        }
+        break;
+      case "confirmPassword":
+        if (currentForm.password && !value) {
+          error = "Confirm password is required";
+        } else if (value !== currentForm.password) {
+          error = "Passwords do not match";
+        }
+        break;
+      default:
+        break;
+    }
+    setErrors((prev) => ({ ...prev, [name]: error }));
+    return error;
+  };
+
+  const validateForm = () => {
+    const newErrors = {
+      firstName: validateField("firstName", editForm.firstName, editForm),
+      lastName: validateField("lastName", editForm.lastName, editForm),
+      email: validateField("email", editForm.email, editForm),
+      phone: validateField("phone", editForm.phone, editForm),
+      password: validateField("password", editForm.password, editForm),
+      confirmPassword: validateField("confirmPassword", editForm.confirmPassword, editForm),
+    };
+
+    setErrors(newErrors);
+    return !Object.values(newErrors).some((err) => err !== "");
+  };
 
   const formatRole = (role) => {
     if (!role) return "";
@@ -83,16 +163,40 @@ const UserTable = ({ users, loading, onRefresh }) => {
   };
 
   const handleEditClick = () => {
+    let fullPhone = selectedUser.phone || "";
+    let matchedCode = "+91";
+    let parsedPhone = fullPhone;
+    
+    for (const code of countryCodesList) {
+      if (fullPhone.startsWith(code)) {
+        matchedCode = code;
+        parsedPhone = fullPhone.slice(code.length);
+        break;
+      }
+    }
+
+    setCountryCode(matchedCode);
+
     setEditForm({
       firstName: selectedUser.firstName || "",
       lastName: selectedUser.lastName || "",
       email: selectedUser.email || "",
-      phone: selectedUser.phone || "",
+      phone: parsedPhone,
       role: selectedUser.role || "customer",
       isActive: selectedUser.isActive,
       password: "",
       confirmPassword: "",
     });
+
+    setErrors({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
+    });
+
     setEditOpen(true);
     handleMenuClose();
   };
@@ -132,16 +236,36 @@ const UserTable = ({ users, loading, onRefresh }) => {
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
-    setEditForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setEditForm((prev) => {
+      const nextForm = {
+        ...prev,
+        [name]: value,
+      };
+      validateField(name, value, nextForm);
+      if (name === "password" && nextForm.confirmPassword) {
+        validateField("confirmPassword", nextForm.confirmPassword, nextForm);
+      }
+      return nextForm;
+    });
+  };
+
+  const handlePhoneChange = (e) => {
+    const value = e.target.value;
+    const cleaned = value.replace(/\D/g, "");
+    setEditForm((prev) => {
+      const nextForm = {
+        ...prev,
+        phone: cleaned,
+      };
+      validateField("phone", cleaned, nextForm);
+      return nextForm;
+    });
   };
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    if (editForm.password && editForm.password !== editForm.confirmPassword) {
-      return toast.error("Passwords do not match");
+    if (!validateForm()) {
+      return toast.error("Please correct the errors in the form before submitting.");
     }
 
     setLoadingAction(true);
@@ -150,7 +274,7 @@ const UserTable = ({ users, loading, onRefresh }) => {
         firstName: editForm.firstName,
         lastName: editForm.lastName,
         email: editForm.email,
-        phone: editForm.phone,
+        phone: `${countryCode}${editForm.phone}`,
         role: editForm.role,
         isActive: editForm.isActive,
       };
@@ -331,6 +455,8 @@ const UserTable = ({ users, loading, onRefresh }) => {
                   onChange={handleEditChange}
                   required
                   disabled={loadingAction}
+                  error={Boolean(errors.firstName)}
+                  helperText={errors.firstName}
                 />
               </Grid>
 
@@ -343,6 +469,8 @@ const UserTable = ({ users, loading, onRefresh }) => {
                   onChange={handleEditChange}
                   required
                   disabled={loadingAction}
+                  error={Boolean(errors.lastName)}
+                  helperText={errors.lastName}
                 />
               </Grid>
 
@@ -356,6 +484,8 @@ const UserTable = ({ users, loading, onRefresh }) => {
                   onChange={handleEditChange}
                   required
                   disabled={loadingAction}
+                  error={Boolean(errors.email)}
+                  helperText={errors.email}
                 />
               </Grid>
 
@@ -365,9 +495,50 @@ const UserTable = ({ users, loading, onRefresh }) => {
                   label="Phone"
                   name="phone"
                   value={editForm.phone}
-                  onChange={handleEditChange}
+                  onChange={handlePhoneChange}
                   required
                   disabled={loadingAction}
+                  error={Boolean(errors.phone)}
+                  helperText={errors.phone}
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <InputAdornment position="start" sx={{ gap: 0.5 }}>
+                          <PhoneIcon fontSize="small" color="action" />
+                          <Select
+                            value={countryCode}
+                            onChange={(e) => setCountryCode(e.target.value)}
+                            variant="standard"
+                            disableUnderline
+                            sx={{
+                              fontSize: "0.875rem",
+                              fontWeight: 500,
+                              "& .MuiSelect-select": {
+                                paddingRight: "18px !important",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 0.5,
+                              },
+                            }}
+                            disabled={loadingAction}
+                          >
+                            <MenuItem value="+91">🇮🇳 +91</MenuItem>
+                            <MenuItem value="+1">🇺🇸 +1</MenuItem>
+                            <MenuItem value="+44">🇬🇧 +44</MenuItem>
+                            <MenuItem value="+971">🇦🇪 +971</MenuItem>
+                            <MenuItem value="+966">🇸🇦 +966</MenuItem>
+                            <MenuItem value="+968">🇴🇲 +968</MenuItem>
+                            <MenuItem value="+974">🇶🇦 +974</MenuItem>
+                            <MenuItem value="+973">🇧🇭 +973</MenuItem>
+                            <MenuItem value="+965">🇰🇼 +965</MenuItem>
+                            <MenuItem value="+61">🇦🇺 +61</MenuItem>
+                            <MenuItem value="+65">🇸🇬 +65</MenuItem>
+                            <MenuItem value="+60">🇲🇾 +60</MenuItem>
+                          </Select>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
                 />
               </Grid>
 
@@ -416,7 +587,8 @@ const UserTable = ({ users, loading, onRefresh }) => {
                   type="password"
                   value={editForm.password}
                   onChange={handleEditChange}
-                  helperText="Leave blank if you don't want to change password"
+                  error={Boolean(errors.password)}
+                  helperText={errors.password || "Leave blank if you don't want to change password"}
                   disabled={loadingAction}
                 />
               </Grid>
@@ -429,6 +601,8 @@ const UserTable = ({ users, loading, onRefresh }) => {
                   type="password"
                   value={editForm.confirmPassword}
                   onChange={handleEditChange}
+                  error={Boolean(errors.confirmPassword)}
+                  helperText={errors.confirmPassword}
                   disabled={loadingAction}
                 />
               </Grid>

@@ -17,6 +17,7 @@ function Navbar() {
   const [forceClose, setForceClose] = useState(false);
   const { openCart, cartTotalCount } = useCart();
   const [dbLogo, setDbLogo] = useState("");
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchVal, setSearchVal] = useState("");
   const searchInputRef = React.useRef(null);
@@ -63,14 +64,19 @@ function Navbar() {
     }
   };
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
+    setProfileDropdownOpen(false);
+    setShowLogoutConfirm(true);
+  };
+
+  const confirmLogout = async () => {
+    setShowLogoutConfirm(false);
     try {
       await axios.post("/auth/logout");
     } catch (error) {
       console.error("Logout API failed:", error);
     } finally {
       dispatch(clearUser());
-      setProfileDropdownOpen(false);
       navigate("/");
     }
   };
@@ -488,6 +494,49 @@ function Navbar() {
           </nav>
         </div>
       </div>
+
+      {showLogoutConfirm && (
+        <div className="auth-modal-overlay" style={{ display: 'flex' }} onClick={() => setShowLogoutConfirm(false)}>
+          <div className="auth-modal-card" style={{ maxWidth: '360px', padding: '24px', textAlign: 'center', gap: '16px' }} onClick={(e) => e.stopPropagation()}>
+            <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#06492D', margin: 0 }}>Confirm Logout</h3>
+            <p style={{ fontSize: '14px', color: '#666', margin: 0 }}>Are you sure you want to log out of your account?</p>
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '8px' }}>
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: '6px',
+                  border: '1px solid #ccc',
+                  background: 'transparent',
+                  color: '#666',
+                  cursor: 'pointer',
+                  fontWeight: 500,
+                  fontSize: '14px',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmLogout}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: '#06492D',
+                  color: '#fff',
+                  cursor: 'pointer',
+                  fontWeight: 500,
+                  fontSize: '14px',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
