@@ -1,18 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { IoEyeOutline, IoEyeOffOutline } from 'react-icons/io5';
 import { toast } from 'react-toastify';
 import logo from '../assets/logo.png';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../redux/auth/authSlice';
+import { useCart } from '../context/CartContext';
+import axiosInstance from '../api/axiosInstance';
 
 function Signinpage() {
   const [isRegister, setIsRegister] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { cartItems, syncLocalCartToBackend } = useCart();
 
   // Form States
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
+    phone: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -22,6 +31,66 @@ function Signinpage() {
 
   // Error States for Inline Cautions
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    if (!clientId) return;
+
+    const initializeGoogleSignIn = () => {
+      if (window.google?.accounts?.id) {
+        window.google.accounts.id.initialize({
+          client_id: clientId,
+          callback: handleGoogleCredentialResponse,
+        });
+        window.google.accounts.id.renderButton(
+          document.getElementById("google-signin-btn"),
+          {
+            theme: "outline",
+            size: "large",
+            width: "100%",
+            text: "signin_with",
+            shape: "square"
+          }
+        );
+      }
+    };
+
+    const interval = setInterval(() => {
+      if (window.google?.accounts?.id) {
+        initializeGoogleSignIn();
+        clearInterval(interval);
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [isRegister]);
+
+  const handleGoogleCredentialResponse = async (response) => {
+    try {
+      setLoading(true);
+      const token = response.credential;
+      const { data } = await axiosInstance.post("/auth/google", { token });
+      
+      if (data.success) {
+        dispatch(setUser({ user: data.user, token: data.token }));
+        try {
+          await syncLocalCartToBackend(cartItems);
+        } catch (err) {
+          console.error("Cart sync error:", err);
+        }
+        toast.success("Signed in successfully via Google!");
+        navigate("/");
+      } else {
+        toast.error(data.message || "Google Authentication failed.");
+      }
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Something went wrong during Google Login."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -73,10 +142,22 @@ function Signinpage() {
 
   const validateRegister = () => {
     const newErrors = {};
-    if (!formData.name.trim()) {
-      newErrors.name = 'Full name is required';
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = 'First name is required';
+    } else if (formData.firstName.trim().length < 2 || formData.firstName.trim().length > 50) {
+      newErrors.firstName = 'First name must be between 2 and 50 characters';
     }
     
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = 'Last name is required';
+    } else if (formData.lastName.trim().length < 2 || formData.lastName.trim().length > 50) {
+      newErrors.lastName = 'Last name must be between 2 and 50 characters';
+    }
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    }
+
     if (!formData.email.trim()) {
       newErrors.email = 'Email address is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -85,8 +166,18 @@ function Signinpage() {
     
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+    } else {
+      if (formData.password.length < 8) {
+        newErrors.password = 'Password must be at least 8 characters';
+      } else if (!/[A-Z]/.test(formData.password)) {
+        newErrors.password = 'Password must contain at least one uppercase letter';
+      } else if (!/[a-z]/.test(formData.password)) {
+        newErrors.password = 'Password must contain at least one lowercase letter';
+      } else if (!/[0-9]/.test(formData.password)) {
+        newErrors.password = 'Password must contain at least one number';
+      } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(formData.password)) {
+        newErrors.password = 'Password must contain at least one special character';
+      }
     }
     
     if (formData.password !== formData.confirmPassword) {
@@ -101,17 +192,68 @@ function Signinpage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (isRegister) {
       if (!validateRegister()) return;
-      toast.success('Registration successful! Please sign in.');
-      setIsRegister(false);
+      try {
+        setLoading(true);
+        const payload = {
+          firstName: formData.firstName.trim(),
+          lastName: formData.lastName.trim(),
+          email: formData.email.trim(),
+          password: formData.password,
+          phone: formData.phone.trim(),
+        };
+        const { data } = await axiosInstance.post('/auth/register', payload);
+        if (data.success) {
+          dispatch(setUser({ user: data.user, token: data.token }));
+          try {
+            await syncLocalCartToBackend(cartItems);
+          } catch (err) {
+            console.error('Cart sync error:', err);
+          }
+          toast.success('Registration successful! Welcome.');
+          navigate('/');
+        } else {
+          toast.error(data.message || 'Registration failed.');
+        }
+      } catch (error) {
+        toast.error(
+          error.response?.data?.message || 'Something went wrong during registration.'
+        );
+      } finally {
+        setLoading(false);
+      }
     } else {
       if (!validateLogin()) return;
-      toast.success('Welcome back! Signed in successfully.');
-      navigate('/');
+      try {
+        setLoading(true);
+        const payload = {
+          email: formData.email.trim(),
+          password: formData.password,
+        };
+        const { data } = await axiosInstance.post('/auth/login', payload);
+        if (data.success) {
+          dispatch(setUser({ user: data.user, token: data.token }));
+          try {
+            await syncLocalCartToBackend(cartItems);
+          } catch (err) {
+            console.error('Cart sync error:', err);
+          }
+          toast.success('Welcome back! Signed in successfully.');
+          navigate('/');
+        } else {
+          toast.error(data.message || 'Login failed.');
+        }
+      } catch (error) {
+        toast.error(
+          error.response?.data?.message || 'Something went wrong during sign in.'
+        );
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -140,24 +282,65 @@ function Signinpage() {
         {/* Form Container */}
         <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4 w-full">
           {isRegister && (
-            <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-semibold uppercase tracking-wider text-black">
-                Full Name
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                placeholder="Enter your name"
-                className={`w-full bg-[#fcfcfc] border px-3.5 py-2.5 text-xs focus:bg-white outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-300 ${
-                  errors.name ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
-                }`}
-              />
-              {errors.name && (
-                <span className="text-[10px] text-red-600 mt-0.5">{errors.name}</span>
-              )}
-            </div>
+            <>
+              <div className="flex gap-2">
+                <div className="flex flex-col gap-1 flex-1">
+                  <label className="text-[10px] font-semibold uppercase tracking-wider text-black">
+                    First Name
+                  </label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    placeholder="John"
+                    className={`w-full bg-[#fcfcfc] border px-3.5 py-2.5 text-xs focus:bg-white outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-300 ${
+                      errors.firstName ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                    }`}
+                  />
+                  {errors.firstName && (
+                    <span className="text-[10px] text-red-600 mt-0.5">{errors.firstName}</span>
+                  )}
+                </div>
+                <div className="flex flex-col gap-1 flex-1">
+                  <label className="text-[10px] font-semibold uppercase tracking-wider text-black">
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    placeholder="Doe"
+                    className={`w-full bg-[#fcfcfc] border px-3.5 py-2.5 text-xs focus:bg-white outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-300 ${
+                      errors.lastName ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                    }`}
+                  />
+                  {errors.lastName && (
+                    <span className="text-[10px] text-red-600 mt-0.5">{errors.lastName}</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="text-[10px] font-semibold uppercase tracking-wider text-black">
+                  Phone Number
+                </label>
+                <input
+                  type="text"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  placeholder="9876543210"
+                  className={`w-full bg-[#fcfcfc] border px-3.5 py-2.5 text-xs focus:bg-white outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-300 ${
+                    errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                  }`}
+                />
+                {errors.phone && (
+                  <span className="text-[10px] text-red-600 mt-0.5">{errors.phone}</span>
+                )}
+              </div>
+            </>
           )}
 
           <div className="flex flex-col gap-1">
@@ -282,11 +465,36 @@ function Signinpage() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="btn btn-primary rounded-none w-full py-3 text-xs font-normal transition-all duration-300 uppercase tracking-[2px] mt-2"
+            disabled={loading}
+            className="btn btn-primary rounded-none w-full py-3 text-xs font-normal transition-all duration-300 uppercase tracking-[2px] mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isRegister ? 'Register' : 'Sign In'}
+            {loading ? 'Please wait...' : isRegister ? 'Register' : 'Sign In'}
           </button>
         </form>
+
+        <div className="relative flex py-1 items-center">
+          <div className="flex-grow border-t border-gray-200"></div>
+          <span className="flex-shrink mx-4 text-gray-400 text-[10px] uppercase font-light tracking-wider">or</span>
+          <div className="flex-grow border-t border-gray-200"></div>
+        </div>
+
+        {import.meta.env.VITE_GOOGLE_CLIENT_ID ? (
+          <div id="google-signin-btn" className="w-full flex justify-center mt-1"></div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => toast.warning("Google Login is not configured. Please add VITE_GOOGLE_CLIENT_ID to your FRONTEND/.env file.")}
+            className="w-full border border-gray-200 py-2.5 text-xs text-gray-500 hover:bg-gray-50 flex items-center justify-center gap-2 mt-1 rounded-none cursor-pointer"
+          >
+            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+              <path fill="#EA4335" d="M12 5.04c1.66 0 3.2.57 4.38 1.69l3.27-3.27C17.67 1.62 15.02 1 12 1 7.28 1 3.26 3.73 1.34 7.73l3.96 3.07C6.26 7.79 8.9 5.04 12 5.04z" />
+              <path fill="#4285F4" d="M23.45 12.3c0-.82-.07-1.6-.21-2.3H12v4.38h6.43c-.28 1.44-1.1 2.66-2.33 3.48l3.6 2.8c2.1-1.94 3.75-4.8 3.75-8.36z" />
+              <path fill="#FBBC05" d="M5.3 14.73A7.16 7.16 0 0 1 4.9 12c0-.96.17-1.88.47-2.73L1.4 6.2C.5 8 0 10 0 12s.5 4 1.4 5.8l3.9-3.07z" />
+              <path fill="#34A853" d="M12 23c3.24 0 5.97-1.08 7.96-2.91l-3.6-2.8c-1 .67-2.28 1.07-3.6 1.07-3.1 0-5.74-2.75-6.7-5.76L1.1 15.67C3.02 19.67 7.04 23 12 23z" />
+            </svg>
+            Sign in with Google
+          </button>
+        )}
 
         {/* Toggle Account Action */}
         <div className="text-center pt-2">
