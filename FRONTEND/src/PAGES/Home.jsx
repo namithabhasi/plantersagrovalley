@@ -26,13 +26,65 @@ import avocadoImg from '../assets/From Seed to Tree_ The Beauty of Home-Grown Or
 import jackfruitImg from '../assets/jackfruit.jpg'
 import corporateGiftImg from '../assets/corporategift.png'
 
-
+// Import assets for bonsai plants
+import bonsai1 from '../assets/BONSAIPLANTS/image.png'
+import bonsai2 from '../assets/BONSAIPLANTS/image copy.png'
+import bonsai3 from '../assets/BONSAIPLANTS/image copy 2.png'
+import bonsai4 from '../assets/BONSAIPLANTS/image copy 3.png'
+import bonsai5 from '../assets/BONSAIPLANTS/image copy 4.png'
+const mockBonsaiProducts = [
+  {
+    _id: 'mock-bonsai-1',
+    name: 'Grafted Ficus Bonsai',
+    price: 1299,
+    salePrice: 999,
+    images: [bonsai1],
+    averageRating: 4.8,
+    category: { name: 'Bonsai Plants' },
+    slug: 'grafted-ficus-bonsai',
+    inStock: true
+  },
+  {
+    _id: 'mock-bonsai-2',
+    name: 'Fukien Tea Bonsai',
+    price: 1499,
+    salePrice: 1199,
+    images: [bonsai2],
+    averageRating: 4.6,
+    category: { name: 'Bonsai Plants' },
+    slug: 'fukien-tea-bonsai',
+    inStock: true
+  },
+  {
+    _id: 'mock-bonsai-3',
+    name: 'Jade Succulent Bonsai',
+    price: 899,
+    salePrice: 699,
+    images: [bonsai3],
+    averageRating: 4.7,
+    category: { name: 'Bonsai Plants' },
+    slug: 'jade-succulent-bonsai',
+    inStock: true
+  },
+  {
+    _id: 'mock-bonsai-4',
+    name: 'Chinese Elm Bonsai',
+    price: 1899,
+    salePrice: 1599,
+    images: [bonsai4],
+    averageRating: 4.9,
+    category: { name: 'Bonsai Plants' },
+    slug: 'chinese-elm-bonsai',
+    inStock: true
+  }
+];
 
 function Home() {
   const { addToCart } = useCart();
 
   const [dbBestSellers, setDbBestSellers] = useState([]);
   const [dbIndoorPlants, setDbIndoorPlants] = useState([]);
+  const [dbBonsaiPlants] = useState(mockBonsaiProducts);
   const [dbFruitPlants, setDbFruitPlants] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -122,7 +174,7 @@ function Home() {
       <HeroCarousel />
       <CategorySection />
 
-      <section className="best-selling-section">
+      <section className="page-section">
         <div className="container">
           <div className="section-header">
             <h3 className="section-title">BUY BEST SELLING PLANTS</h3>
@@ -204,7 +256,7 @@ function Home() {
         </div>
       </section>
 
-      <section className="best-selling-section alt-bg py-16 md:py-20 min-h-[480px] md:min-h-[520px] flex items-center">
+      <section className="page-section alt-bg">
         <div className="container">
           <div className="section-header">
             <h3 className="section-title">BUY INDOOR PLANTS</h3>
@@ -294,7 +346,93 @@ function Home() {
 
       <BringLifeSection />
 
-      <section className="best-selling-section alt-bg" style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-10)' }}>
+      {/* Bonsai Plants Section */}
+      <section className="page-section alt-bg border-t border-[var(--color-border)]">
+        <div className="container">
+          <div className="section-header">
+            <h3 className="section-title">BUY BONSAI PLANTS</h3>
+          </div>
+
+          <div className="product-grid">
+            {loading ? (
+              [...Array(4)].map((_, index) => (
+                <div key={index} className="product-card-wrapper skeleton" style={{ minHeight: '350px' }}>
+                  <div className="product-card" style={{ flexGrow: 1, backgroundColor: '#f6f7f8' }}>
+                    <div className="product-card-image skeleton" style={{ height: '200px', backgroundColor: '#edeef1' }}></div>
+                    <div className="product-card-content" style={{ padding: '15px' }}>
+                      <div className="skeleton" style={{ height: '18px', width: '80%', backgroundColor: '#edeef1', marginBottom: '10px' }}></div>
+                      <div className="skeleton" style={{ height: '14px', width: '50%', backgroundColor: '#edeef1' }}></div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              dbBonsaiPlants.map((product) => {
+                const hasDiscount = product.salePrice && product.salePrice < product.price;
+                const originalPrice = hasDiscount ? product.price : null;
+                const displayPrice = hasDiscount ? product.salePrice : product.price;
+                const discountText = hasDiscount ? `-${Math.round(((product.price - product.salePrice) / product.price) * 100)}%` : null;
+                const rating = product.averageRating || 5;
+                const productImage = product.images && product.images[0] 
+                  ? (typeof product.images[0] === 'string' ? product.images[0] : product.images[0].url) 
+                  : haworthiaImg;
+
+                return (
+                  <div key={product._id} className="product-card-wrapper">
+                    <div className="product-card" style={{ flexGrow: 1 }}>
+                      {discountText && (
+                        <span className="card-badge sale">{discountText}</span>
+                      )}
+
+                      <div className="product-card-image">
+                        <img src={productImage} alt={product.name} />
+                      </div>
+
+                      <div className="product-card-content">
+                        <h4 className="product-title" title={product.name}>
+                          {product.name}
+                        </h4>
+
+                        <div className="product-price-row" style={{ marginTop: 'auto', marginBottom: 'var(--space-2)' }}>
+                          {originalPrice ? (
+                            <>
+                              <span className="price-original">Rs. {originalPrice}.00</span>
+                              <span className="price-current sale">Rs. {displayPrice}.00</span>
+                            </>
+                          ) : (
+                            <span className="price-current">Rs. {displayPrice}.00</span>
+                          )}
+                        </div>
+
+                        <div className="product-rating" style={{ marginBottom: 0, minHeight: '18px' }}>
+                          {[...Array(5)].map((_, i) => (
+                            <FaStar
+                              key={i}
+                              color={i < rating ? 'var(--color-gold)' : '#e2e8f0'}
+                              size={14}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => addToCart({ id: product._id, name: product.name, price: displayPrice, image: productImage })}
+                      className="btn btn-primary"
+                      style={{ borderRadius: '3px' }}
+                    >
+                      ADD TO CART
+                    </button>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Buy Fruit Plants Section (Changed to White shade background) */}
+      <section className="page-section border-t border-[var(--color-border)]">
         <div className="container">
           <div className="section-header">
             <h3 className="section-title">BUY FRUIT PLANTS</h3>
@@ -382,7 +520,7 @@ function Home() {
         </div>
       </section>
 
-      <section className="soil-nourish-section">
+      <section className="page-section soil-nourish-section">
         <div className="container">
           <div className="soil-content-wrapper">
             <span className="soil-tag">100% Organic</span>
@@ -402,7 +540,7 @@ function Home() {
         </div>
       </section>
 
-      <section className="py-16 md:py-20 min-h-[480px] md:min-h-[520px] flex items-center border-t border-[var(--color-border)] bg-[var(--color-bg-main)]">
+      <section className="page-section border-t border-[var(--color-border)]">
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
             <div className="w-full flex justify-start">
@@ -421,9 +559,7 @@ function Home() {
                 CORPORATE PLANT GIFTS
               </h2>
               <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed mb-6 w-full corporate-description">
-                Stand out with corporate plant gifts for employees and clients.
-                Customize gift plants with your logo on pots, cards, and packaging.
-                Book now for meaningful green gifting!
+                Make a lasting impression with our curated selection of premium corporate plant gifts, perfect for employees, clients, and corporate events. We offer fully customizable solutions, allowing you to showcase your brand by printing your logo on pots, customizing gift cards, and designing tailored eco-friendly packaging. Whether it is for onboarding, festivals, milestones, or appreciation, book now to bring the goodness of nature to your workspace and professional relationships.
               </p>
               <div className="w-full md:w-auto" style={{ marginTop: '20px' }}>
                 <Link to="/contact" className="btn btn-primary w-full md:w-auto px-8">
@@ -435,7 +571,7 @@ function Home() {
         </div>
       </section>
 
-      <section className="mt-20 bg-[var(--color-primary-bg)] flex items-center justify-center" style={{ minHeight: '380px', paddingTop: '40px', paddingBottom: '40px' }}>
+      <section className="page-section alt-bg flex items-center justify-center" style={{ minHeight: '440px' }}>
         <div className="container flex flex-col items-center justify-center text-center">
           <h2
             className="font-[var(--font-family-heading)] text-3xl md:text-4xl font-normal text-[var(--color-primary-dark)] uppercase why-planters-title"

@@ -207,6 +207,19 @@ img {
    4. Component Styles
    ========================================================================== */
 
+/* --- Global Page Section Spacing --- */
+.page-section {
+  padding: 3.5rem 0;
+  background-color: var(--color-bg-main);
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .page-section {
+    padding: var(--space-10) 0;
+  }
+}
+
 
 
 
@@ -628,10 +641,10 @@ div.container {
   /* Maximum content width */
   margin: 0 auto !important;
   /* Centers the content */
-  padding-left: 3.5rem !important;
-  /* 56px Left Padding (Desktop) */
-  padding-right: 3.5rem !important;
-  /* 56px Right Padding (Desktop) */
+  padding-left: 5rem !important;
+  /* 80px Left Padding (Desktop) */
+  padding-right: 5rem !important;
+  /* 80px Right Padding (Desktop) */
 }
 
 /* Responsive adjustments */
@@ -1291,10 +1304,7 @@ div.container {
 /* ==========================================================================
    9. Square Category Section (Plants Guru Style)
    ========================================================================== */
-.plantsguru-category-section {
-  padding: var(--space-10) 0;
-  background-color: var(--color-bg-main);
-}
+
 
 .plantsguru-category-grid {
   display: flex;
@@ -1320,6 +1330,14 @@ div.container {
 .plantsguru-category-grid::-webkit-scrollbar-thumb {
   background-color: var(--color-primary, #4caf50);
   border-radius: 3px;
+}
+
+@media (min-width: 769px) {
+  .plantsguru-category-grid {
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow-x: visible;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1443,12 +1461,7 @@ div.container {
   }
 }
 
-.best-selling-section {
-  padding: var(--space-10) 0;
-  background-color: var(--color-bg-main);
-}
-
-.best-selling-section.alt-bg {
+.page-section.alt-bg {
   background-color: var(--color-primary-bg);
 }
 
@@ -1459,7 +1472,6 @@ div.container {
   background-size: cover;
   background-position: center right;
   background-repeat: no-repeat;
-  padding: 100px 0;
   display: flex;
   align-items: center;
   min-height: 480px;
@@ -2232,15 +2244,12 @@ div.container {
 /* ==========================================================================
    Bring Life Back to Nature Section Styles
    ========================================================================== */
-.bring-life-section {
-  padding: var(--space-10) 0;
-  background-color: var(--color-bg-main);
-}
+
 
 .bring-life-container {
   display: grid;
-  grid-template-columns: 1fr 1.35fr;
-  gap: 36px;
+  grid-template-columns: 1fr auto;
+  gap: 48px;
   align-items: center;
 }
 
@@ -2357,7 +2366,7 @@ div.container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
-  max-width: 480px;
+  max-width: 420px;
   margin-left: auto;
 }
 
@@ -2368,7 +2377,7 @@ div.container {
 }
 
 .card-image-container {
-  aspect-ratio: 1.3 / 1;
+  aspect-ratio: 1.45 / 1;
   width: 100%;
   overflow: hidden;
   border-radius: 0 !important;
@@ -2383,18 +2392,22 @@ div.container {
 
 .bring-life-card .card-title {
   font-family: var(--font-family-heading);
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--color-primary-dark);
   text-align: center;
-  margin-top: 8px;
+  margin-top: 4px;
   margin-bottom: 0;
 }
 
 /* Responsiveness Media Queries */
 @media (max-width: 1024px) {
   .bring-life-container {
+    grid-template-columns: 1fr;
     gap: 32px;
+  }
+  .bring-life-grid {
+    margin: 0 auto;
   }
   .bring-life-title {
     font-size: 30px;
@@ -2418,9 +2431,7 @@ div.container {
     grid-template-columns: 1fr;
     gap: 40px;
   }
-  .bring-life-section {
-    padding: var(--space-10) 0;
-  }
+
   .bring-life-grid {
     gap: 16px;
     margin: 0 auto;
