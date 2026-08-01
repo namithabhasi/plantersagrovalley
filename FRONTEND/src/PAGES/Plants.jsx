@@ -63,7 +63,7 @@ import sum2 from '../assets/SUMMERFLOWERPLANTS/download (14).jpg';
 import sum3 from '../assets/SUMMERFLOWERPLANTS/download (15).jpg';
 import sum4 from '../assets/SUMMERFLOWERPLANTS/sadabahar_periwinkle.jpg';
 
-const plantProducts = [
+export const plantProducts = [
     // Air Plants
     { id: 'air-1', category: 'air-plants', name: 'Alocasia Macrorrhizos Variegata', price: 399, rating: 5, image: air1, date: '2026-01-01', inStock: true, space: 'indoors' },
     { id: 'air-2', category: 'air-plants', name: 'Aspidistra Elatior (Cast Iron Plant)', price: 299, rating: 4, image: air2, date: '2026-01-02', inStock: false, space: 'indoors' },

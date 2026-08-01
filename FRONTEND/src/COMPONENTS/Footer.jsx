@@ -9,9 +9,49 @@ import {
 } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { IoArrowForward, IoArrowUp } from "react-icons/io5";
+import { toast } from "react-toastify";
 
 const Footer = () => {
   const [showScroll, setShowScroll] = useState(false);
+  const [email, setEmail] = useState("");
+
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    if (!email) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
+    const existing = localStorage.getItem("subscribed_emails");
+    let emails = [];
+    if (existing) {
+      try {
+        emails = JSON.parse(existing);
+        if (!Array.isArray(emails)) {
+          emails = [];
+        }
+      } catch (err) {
+        emails = [];
+      }
+    }
+
+    if (emails.includes(email.toLowerCase().trim())) {
+      toast.info("This email is already subscribed!");
+      setEmail("");
+      return;
+    }
+
+    emails.push(email.toLowerCase().trim());
+    localStorage.setItem("subscribed_emails", JSON.stringify(emails));
+
+    toast.success("Subscribed!");
+    setEmail("");
+  };
 
   useEffect(() => {
     const checkScrollTop = () => {
@@ -148,16 +188,19 @@ const Footer = () => {
               Exclusive Benefits
             </h3>
             
-            <div className="footer-newsletter-input-wrapper flex items-center border-b border-white/20 pb-2.5 focus-within:border-white/50 transition-colors mt-3 sm:mt-4">
+            <form onSubmit={handleSubscribe} className="footer-newsletter-input-wrapper flex items-center border-b border-white/20 pb-2.5 focus-within:border-white/50 transition-colors mt-3 sm:mt-4">
               <input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter email here"
                 className="flex-1 bg-transparent text-xs sm:text-sm outline-none placeholder:text-white/50 text-white !border-none !p-0"
+                required
               />
-              <button className="text-white hover:text-white/80 transition-colors ml-3">
+              <button type="submit" className="text-white hover:text-white/80 transition-colors ml-3">
                 <IoArrowForward size={18} />
               </button>
-            </div>
+            </form>
 
             <p className="footer-newsletter-text mt-6 leading-relaxed font-light">
               Apply for our free membership to receive exclusive deals, news, and events.

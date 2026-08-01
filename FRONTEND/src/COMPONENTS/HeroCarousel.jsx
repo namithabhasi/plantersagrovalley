@@ -11,38 +11,38 @@ import carousel5 from '../assets/carouselimage5.png';
 const slides = [
   {
     image: carousel0,
-    link: '/planters',
-    buttonText: 'Shop Now',
+    link: '/plants',
+    buttonText: 'SHOP NOW',
     position: 'center 20%' // Prevent cutting off female head at top and text at bottom
   },
   {
     image: carousel1,
     link: '/plants',
-    buttonText: 'Shop Now',
+    buttonText: 'SHOP NOW',
     position: 'center 20%' // Prevent cutting off top and bottom content
   },
   {
     image: carousel2,
-    link: '/seeds',
-    buttonText: 'Shop Now',
+    link: '/planters',
+    buttonText: 'SHOP NOW',
     position: 'center'
   },
   {
     image: carousel3,
-    link: '/fertilizer',
-    buttonText: 'Shop Now',
+    link: '/seeds',
+    buttonText: 'SHOP NOW',
     position: 'center'
   },
   {
     image: carousel4,
-    link: '/garden-decor',
-    buttonText: 'Shop Now',
+    link: '/planters',
+    buttonText: 'SHOP NOW',
     position: 'center'
   },
   {
     image: carousel5,
     link: '/plants',
-    buttonText: 'Shop Now',
+    buttonText: 'SHOP NOW',
     position: 'center'
   }
 ];

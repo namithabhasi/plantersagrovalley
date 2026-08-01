@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import logo from '../assets/logo.png'; // The text logo is saved in logo.png
 import bush from '../assets/image.png'; // Background bush growing from the bottom-left corner
@@ -18,6 +18,42 @@ function Navbar() {
   const { openCart, cartTotalCount } = useCart();
   const [dbLogo, setDbLogo] = useState("");
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchVal, setSearchVal] = useState("");
+  const searchInputRef = React.useRef(null);
+  const mobileSearchInputRef = React.useRef(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/search") {
+      const params = new URLSearchParams(location.search);
+      const q = params.get('q') || '';
+      setSearchOpen(true);
+      setSearchVal(q);
+    } else {
+      setSearchOpen(false);
+      setSearchVal('');
+    }
+  }, [location]);
+
+  useEffect(() => {
+    if (searchOpen) {
+      if (searchInputRef.current) searchInputRef.current.focus();
+      if (mobileSearchInputRef.current) mobileSearchInputRef.current.focus();
+    }
+  }, [searchOpen]);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchVal.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchVal.trim())}`);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchVal('');
+    navigate('/search?q=');
+  };
 
   const handleProfileClick = (e) => {
     e.stopPropagation();
@@ -72,9 +108,44 @@ function Navbar() {
   };
 
   return (
-    <header className="planters-header select-none">
+    <header className="planters-header select-none relative">
       {/* Background growing bush illusion */}
       <img src={bush} alt="" className="planters-nav-bush" />
+
+      {/* Mobile Search Overlay */}
+      {searchOpen && (
+        <div className="absolute inset-0 bg-white z-50 flex items-center px-4 min-[1024px]:hidden">
+          <form onSubmit={handleSearchSubmit} className="w-full flex items-center gap-3">
+            <FiSearch size={20} className="text-[var(--color-primary-dark)] flex-shrink-0" />
+            <input
+              ref={mobileSearchInputRef}
+              type="text"
+              placeholder="Search plants, seeds, planters..."
+              value={searchVal}
+              onChange={(e) => setSearchVal(e.target.value)}
+              className="w-full py-1.5 font-[var(--font-family-base)] text-sm border-b border-[var(--color-border)] focus:border-[var(--color-primary)] outline-none bg-white text-[var(--color-text-main)]"
+            />
+            {searchVal && (
+              <button
+                type="button"
+                onClick={handleClearSearch}
+                className="p-1 text-[var(--color-text-muted)] hover:text-[var(--color-danger)]"
+                aria-label="Clear text"
+              >
+                <FiX size={16} />
+              </button>
+            )}
+            <button 
+              type="button" 
+              onClick={() => setSearchOpen(false)}
+              className="p-2 text-[var(--color-text-muted)] hover:text-[var(--color-danger)] text-xs font-semibold uppercase tracking-wider flex-shrink-0"
+              aria-label="Close search"
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+      )}
 
       <div className="container">
 
@@ -89,199 +160,237 @@ function Navbar() {
 
         {/* Center: Desktop Navigation Links (Clean layout with proper spacing and no line separators) */}
         <nav className="planters-nav">
-          <div className="planters-nav-links">
-            <div className="navbar-item-with-dropdown">
-              <NavLink to="/plants" className="navbar-link">
-                Plants
-              </NavLink>
+          {searchOpen ? (
+            <form onSubmit={handleSearchSubmit} className="relative flex items-center w-[350px] lg:w-[480px] gap-2">
+              <div className="relative flex-grow">
+                <FiSearch size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] pointer-events-none" />
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  placeholder="Search for plants, seeds, planters, fertilizers..."
+                  value={searchVal}
+                  onChange={(e) => setSearchVal(e.target.value)}
+                  style={{ paddingLeft: '42px', paddingRight: '36px' }}
+                  className="w-full py-1.5 font-[var(--font-family-base)] text-sm border border-[var(--color-border)] rounded-[var(--radius-xs)] outline-none focus:border-[var(--color-primary)] bg-white text-[var(--color-text-main)] transition-all"
+                />
+                {searchVal && (
+                  <button
+                    type="button"
+                    onClick={handleClearSearch}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[var(--color-text-muted)] hover:text-[var(--color-danger)] transition-colors"
+                    aria-label="Clear search text"
+                  >
+                    <FiX size={14} />
+                  </button>
+                )}
+              </div>
+              <button 
+                type="button" 
+                onClick={() => setSearchOpen(false)}
+                className="p-1.5 text-[var(--color-text-muted)] hover:text-[var(--color-danger)] transition-colors text-xs font-semibold uppercase tracking-wider"
+                aria-label="Close search"
+              >
+                Cancel
+              </button>
+            </form>
+          ) : (
+            <div className="planters-nav-links">
+              <div className="navbar-item-with-dropdown">
+                <NavLink to="/plants" className="navbar-link">
+                  Plants
+                </NavLink>
 
-              {/* Mega Dropdown Menu */}
-              <div className={`planters-mega-dropdown ${forceClose ? 'force-close' : ''}`} onClick={handleLinkClick}>
-                <div className="container mega-dropdown-grid">
+                {/* Mega Dropdown Menu */}
+                <div className={`planters-mega-dropdown ${forceClose ? 'force-close' : ''}`} onClick={handleLinkClick}>
+                  <div className="container mega-dropdown-grid">
 
-                  {/* Column 1: Plants by Type */}
-                  <div className="mega-dropdown-col">
-                    <h4 className="mega-dropdown-title">Plants By Type</h4>
-                    <ul className="mega-dropdown-list">
-                      <li><Link to="/plants?category=air-plants">Air Plants</Link></li>
-                      <li><Link to="/plants?category=aquatic-plants">Aquatic Plants</Link></li>
-                      <li><Link to="/plants?category=avenue-trees">Avenue Trees</Link></li>
-                      <li><Link to="/plants?category=bamboos">Bamboos</Link></li>
-                    </ul>
+                    {/* Column 1: Plants by Type */}
+                    <div className="mega-dropdown-col">
+                      <h4 className="mega-dropdown-title">Plants By Type</h4>
+                      <ul className="mega-dropdown-list">
+                        <li><Link to="/plants?category=air-plants">Air Plants</Link></li>
+                        <li><Link to="/plants?category=aquatic-plants">Aquatic Plants</Link></li>
+                        <li><Link to="/plants?category=avenue-trees">Avenue Trees</Link></li>
+                        <li><Link to="/plants?category=bamboos">Bamboos</Link></li>
+                      </ul>
+                    </div>
+
+                    {/* Column 2: Plants by Feature */}
+                    <div className="mega-dropdown-col">
+                      <h4 className="mega-dropdown-title">Plants By Feature</h4>
+                      <ul className="mega-dropdown-list">
+                        <li><Link to="/plants?category=indoor-plants">Air Purifier Plants</Link></li>
+                        <li><Link to="/plants?category=fragrant-plants">Fragrant Plants</Link></li>
+                        <li><Link to="/plants?category=outdoor-plants">Insect Repellents Plants</Link></li>
+                        <li><Link to="/plants?category=bamboos">Lucky Bamboos</Link></li>
+                      </ul>
+                    </div>
+
+                    {/* Column 3: Plants by Location */}
+                    <div className="mega-dropdown-col">
+                      <h4 className="mega-dropdown-title">Plants By Location</h4>
+                      <ul className="mega-dropdown-list">
+                        <li><Link to="/plants?category=indoor-plants">Indoor Plants</Link></li>
+                        <li><Link to="/plants?category=outdoor-plants">Outdoor Plants</Link></li>
+                        <li><Link to="/plants?category=balcony">Plants For Balcony</Link></li>
+                        <li><Link to="/plants?category=indoor-plants">Plants for Bedroom</Link></li>
+                      </ul>
+                    </div>
+
+                    {/* Column 4: Seasonal Plants */}
+                    <div className="mega-dropdown-col">
+                      <h4 className="mega-dropdown-title">Seasonal Plants</h4>
+                      <ul className="mega-dropdown-list">
+                        <li><Link to="/plants?category=summer-flowers">Annual Flower Plants</Link></li>
+                        <li><Link to="/plants?category=monsoon-flowers">Monsoon Flower Plants</Link></li>
+                        <li><Link to="/plants?category=outdoor-plants">Winter Flower Plants</Link></li>
+                        <li><Link to="/plants?category=summer-flowers">Summer Flower Plants</Link></li>
+                      </ul>
+                    </div>
+
+                    {/* Column 5: Top 10 Plants */}
+                    <div className="mega-dropdown-col">
+                      <h4 className="mega-dropdown-title">Top 10 Plants</h4>
+                      <ul className="mega-dropdown-list">
+                        <li><Link to="/plants?category=indoor-plants">Top 10 Air Purifier Plants</Link></li>
+                        <li><Link to="/plants?category=summer-flowers">Top 10 Flowering Plants</Link></li>
+                        <li><Link to="/plants?category=fragrant-plants">Top 10 Fragrant Plants</Link></li>
+                        <li><Link to="/plants?category=outdoor-plants">Top 10 Hardy Plants</Link></li>
+                      </ul>
+                    </div>
+
                   </div>
+                </div>
+              </div>
 
-                  {/* Column 2: Plants by Feature */}
-                  <div className="mega-dropdown-col">
-                    <h4 className="mega-dropdown-title">Plants By Feature</h4>
-                    <ul className="mega-dropdown-list">
-                      <li><Link to="/plants?category=indoor-plants">Air Purifier Plants</Link></li>
-                      <li><Link to="/plants?category=fragrant-plants">Fragrant Plants</Link></li>
-                      <li><Link to="/plants?category=outdoor-plants">Insect Repellents Plants</Link></li>
-                      <li><Link to="/plants?category=bamboos">Lucky Bamboos</Link></li>
-                    </ul>
-                  </div>
+              {/* Seeds dropdown */}
+              <div className="navbar-item-with-simple-dropdown">
+                <NavLink to="/seeds" className="navbar-link">
+                  Seeds
+                </NavLink>
+                <div className={`planters-simple-dropdown ${forceClose ? 'force-close' : ''}`} onClick={handleLinkClick}>
+                  <Link to="/seeds?category=flower-seeds" className="simple-dropdown-item">
+                    <span>Flower Seeds</span>
+                  </Link>
+                  <Link to="/seeds?category=vegetable-seeds" className="simple-dropdown-item">
+                    <span>Vegetable Seeds</span>
+                  </Link>
+                  <Link to="/seeds?category=herb-seeds" className="simple-dropdown-item">
+                    <span>Herb Seeds</span>
+                  </Link>
+                  <Link to="/seeds?category=flower-bulbs" className="simple-dropdown-item">
+                    <span>Flower Bulbs</span>
+                  </Link>
+                  <Link to="/seeds?category=foresty-seeds" className="simple-dropdown-item">
+                    <span>Foresty Seeds</span>
+                  </Link>
+                  <Link to="/seeds?category=lawn-seeds" className="simple-dropdown-item">
+                    <span>Lawn Seeds</span>
+                  </Link>
+                </div>
+              </div>
 
-                  {/* Column 3: Plants by Location */}
-                  <div className="mega-dropdown-col">
-                    <h4 className="mega-dropdown-title">Plants By Location</h4>
-                    <ul className="mega-dropdown-list">
-                      <li><Link to="/plants?category=indoor-plants">Indoor Plants</Link></li>
-                      <li><Link to="/plants?category=outdoor-plants">Outdoor Plants</Link></li>
-                      <li><Link to="/plants?category=balcony">Plants For Balcony</Link></li>
-                      <li><Link to="/plants?category=indoor-plants">Plants for Bedroom</Link></li>
-                    </ul>
-                  </div>
+              {/* Planters dropdown */}
+              <div className="navbar-item-with-simple-dropdown">
+                <NavLink to="/planters" className="navbar-link">
+                  Planters
+                </NavLink>
+                <div className={`planters-simple-dropdown ${forceClose ? 'force-close' : ''}`} onClick={handleLinkClick}>
+                  <Link to="/planters?category=plastic-pots" className="simple-dropdown-item">
+                    <span>Plastic Pots</span>
+                  </Link>
+                  <Link to="/planters?category=metal-pots" className="simple-dropdown-item">
+                    <span>Metal Pots</span>
+                  </Link>
+                  <Link to="/planters?category=ceramic-pots" className="simple-dropdown-item">
+                    <span>Ceramic Pots</span>
+                  </Link>
+                  <Link to="/planters?category=hanging-basket" className="simple-dropdown-item">
+                    <span>Hanging Basket</span>
+                  </Link>
+                  <Link to="/planters?category=grill-pots" className="simple-dropdown-item">
+                    <span>Grill/Railing Pots</span>
+                  </Link>
+                  <Link to="/planters?category=tower-planters" className="simple-dropdown-item">
+                    <span>Tower Planters</span>
+                  </Link>
+                  <Link to="/planters?category=germination-tray" className="simple-dropdown-item">
+                    <span>Germination Tray</span>
+                  </Link>
+                  <Link to="/planters?category=grow-bags" className="simple-dropdown-item">
+                    <span>Grow Bags</span>
+                  </Link>
+                </div>
+              </div>
 
-                  {/* Column 4: Seasonal Plants */}
-                  <div className="mega-dropdown-col">
-                    <h4 className="mega-dropdown-title">Seasonal Plants</h4>
-                    <ul className="mega-dropdown-list">
-                      <li><Link to="/plants?category=summer-flowers">Annual Flower Plants</Link></li>
-                      <li><Link to="/plants?category=monsoon-flowers">Monsoon Flower Plants</Link></li>
-                      <li><Link to="/plants?category=outdoor-plants">Winter Flower Plants</Link></li>
-                      <li><Link to="/plants?category=summer-flowers">Summer Flower Plants</Link></li>
-                    </ul>
-                  </div>
+              {/* Fertilizers dropdown */}
+              <div className="navbar-item-with-simple-dropdown">
+                <NavLink to="/fertilizers" className="navbar-link">
+                  Fertilizers
+                </NavLink>
+                <div className={`planters-simple-dropdown ${forceClose ? 'force-close' : ''}`} onClick={handleLinkClick}>
+                  <Link to="/fertilizers?category=coco-bricks" className="simple-dropdown-item">
+                    <span>Coco Bricks</span>
+                  </Link>
+                  <Link to="/fertilizers?category=compost" className="simple-dropdown-item">
+                    <span>Compost</span>
+                  </Link>
+                  <Link to="/fertilizers?category=cow-manure" className="simple-dropdown-item">
+                    <span>Cow Manure</span>
+                  </Link>
+                  <Link to="/fertilizers?category=moist-ball" className="simple-dropdown-item">
+                    <span>Moist Ball</span>
+                  </Link>
+                  <Link to="/fertilizers?category=moss-stick" className="simple-dropdown-item">
+                    <span>Moss Stick</span>
+                  </Link>
+                  <Link to="/fertilizers?category=plant-food" className="simple-dropdown-item">
+                    <span>Plant Food</span>
+                  </Link>
+                </div>
+              </div>
 
-                  {/* Column 5: Top 10 Plants */}
-                  <div className="mega-dropdown-col">
-                    <h4 className="mega-dropdown-title">Top 10 Plants</h4>
-                    <ul className="mega-dropdown-list">
-                      <li><Link to="/plants?category=indoor-plants">Top 10 Air Purifier Plants</Link></li>
-                      <li><Link to="/plants?category=summer-flowers">Top 10 Flowering Plants</Link></li>
-                      <li><Link to="/plants?category=fragrant-plants">Top 10 Fragrant Plants</Link></li>
-                      <li><Link to="/plants?category=outdoor-plants">Top 10 Hardy Plants</Link></li>
-                    </ul>
-                  </div>
-
+              {/* Garden Decor dropdown */}
+              <div className="navbar-item-with-simple-dropdown">
+                <NavLink to="/garden-decor" className="navbar-link">
+                  Garden Decor
+                </NavLink>
+                <div className={`planters-simple-dropdown ${forceClose ? 'force-close' : ''}`} onClick={handleLinkClick}>
+                  <Link to="/garden-decor?category=bird-houses" className="simple-dropdown-item">
+                    <span>Bird Houses</span>
+                  </Link>
+                  <Link to="/garden-decor?category=fairy-garden" className="simple-dropdown-item">
+                    <span>Fairy Garden</span>
+                  </Link>
+                  <Link to="/garden-decor?category=garden-fountains" className="simple-dropdown-item">
+                    <span>Garden Fountains</span>
+                  </Link>
+                  <Link to="/garden-decor?category=garden-tools" className="simple-dropdown-item">
+                    <span>Garden Tools</span>
+                  </Link>
+                  <Link to="/garden-decor?category=pebbles" className="simple-dropdown-item">
+                    <span>Pebbles</span>
+                  </Link>
+                  <Link to="/garden-decor?category=pot-stands" className="simple-dropdown-item">
+                    <span>Pot Stands</span>
+                  </Link>
+                  <Link to="/garden-decor?category=terrarium-garden" className="simple-dropdown-item">
+                    <span>Terrarium Garden</span>
+                  </Link>
                 </div>
               </div>
             </div>
-
-            <div className="navbar-item-with-simple-dropdown">
-              <NavLink to="/seeds" className="navbar-link">
-                Seeds
-              </NavLink>
-
-              {/* Seeds Simple Dropdown Menu */}
-              <div className={`planters-simple-dropdown ${forceClose ? 'force-close' : ''}`} onClick={handleLinkClick}>
-                <Link to="/seeds?category=flower-seeds" className="simple-dropdown-item">
-                  <span>Flower Seeds</span>
-                </Link>
-                <Link to="/seeds?category=vegetable-seeds" className="simple-dropdown-item">
-                  <span>Vegetable Seeds</span>
-                </Link>
-                <Link to="/seeds?category=herb-seeds" className="simple-dropdown-item">
-                  <span>Herb Seeds</span>
-                </Link>
-                <Link to="/seeds?category=flower-bulbs" className="simple-dropdown-item">
-                  <span>Flower Bulbs</span>
-                </Link>
-                <Link to="/seeds?category=foresty-seeds" className="simple-dropdown-item">
-                  <span>Foresty Seeds</span>
-                </Link>
-                <Link to="/seeds?category=lawn-seeds" className="simple-dropdown-item">
-                  <span>Lawn Seeds</span>
-                </Link>
-              </div>
-            </div>
-            <div className="navbar-item-with-simple-dropdown">
-              <NavLink to="/planters" className="navbar-link">
-                Planters
-              </NavLink>
-
-              {/* Planters Simple Dropdown Menu */}
-              <div className={`planters-simple-dropdown ${forceClose ? 'force-close' : ''}`} onClick={handleLinkClick}>
-                <Link to="/planters?category=plastic-pots" className="simple-dropdown-item">
-                  <span>Plastic Pots</span>
-                </Link>
-                <Link to="/planters?category=metal-pots" className="simple-dropdown-item">
-                  <span>Metal Pots</span>
-                </Link>
-                <Link to="/planters?category=ceramic-pots" className="simple-dropdown-item">
-                  <span>Ceramic Pots</span>
-                </Link>
-                <Link to="/planters?category=hanging-basket" className="simple-dropdown-item">
-                  <span>Hanging Basket</span>
-                </Link>
-                <Link to="/planters?category=grill-pots" className="simple-dropdown-item">
-                  <span>Grill/Railing Pots</span>
-                </Link>
-                <Link to="/planters?category=tower-planters" className="simple-dropdown-item">
-                  <span>Tower Planters</span>
-                </Link>
-                <Link to="/planters?category=germination-tray" className="simple-dropdown-item">
-                  <span>Germination Tray</span>
-                </Link>
-                <Link to="/planters?category=grow-bags" className="simple-dropdown-item">
-                  <span>Grow Bags</span>
-                </Link>
-              </div>
-            </div>
-            <div className="navbar-item-with-simple-dropdown">
-              <NavLink to="/fertilizers" className="navbar-link">
-                Fertilizers
-              </NavLink>
-
-              {/* Fertilizers Simple Dropdown Menu */}
-              <div className={`planters-simple-dropdown ${forceClose ? 'force-close' : ''}`} onClick={handleLinkClick}>
-                <Link to="/fertilizers?category=coco-bricks" className="simple-dropdown-item">
-                  <span>Coco Bricks</span>
-                </Link>
-                <Link to="/fertilizers?category=compost" className="simple-dropdown-item">
-                  <span>Compost</span>
-                </Link>
-                <Link to="/fertilizers?category=cow-manure" className="simple-dropdown-item">
-                  <span>Cow Manure</span>
-                </Link>
-                <Link to="/fertilizers?category=moist-ball" className="simple-dropdown-item">
-                  <span>Moist Ball</span>
-                </Link>
-                <Link to="/fertilizers?category=moss-stick" className="simple-dropdown-item">
-                  <span>Moss Stick</span>
-                </Link>
-                <Link to="/fertilizers?category=plant-food" className="simple-dropdown-item">
-                  <span>Plant Food</span>
-                </Link>
-              </div>
-            </div>
-            <div className="navbar-item-with-simple-dropdown">
-              <NavLink to="/garden-decor" className="navbar-link">
-                Garden Decor
-              </NavLink>
-
-              {/* Garden Decor Simple Dropdown Menu */}
-              <div className={`planters-simple-dropdown ${forceClose ? 'force-close' : ''}`} onClick={handleLinkClick}>
-                <Link to="/garden-decor?category=bird-houses" className="simple-dropdown-item">
-                  <span>Bird Houses</span>
-                </Link>
-                <Link to="/garden-decor?category=fairy-garden" className="simple-dropdown-item">
-                  <span>Fairy Garden</span>
-                </Link>
-                <Link to="/garden-decor?category=garden-fountains" className="simple-dropdown-item">
-                  <span>Garden Fountains</span>
-                </Link>
-                <Link to="/garden-decor?category=garden-tools" className="simple-dropdown-item">
-                  <span>Garden Tools</span>
-                </Link>
-                <Link to="/garden-decor?category=pebbles" className="simple-dropdown-item">
-                  <span>Pebbles</span>
-                </Link>
-                <Link to="/garden-decor?category=pot-stands" className="simple-dropdown-item">
-                  <span>Pot Stands</span>
-                </Link>
-                <Link to="/garden-decor?category=terrarium-garden" className="simple-dropdown-item">
-                  <span>Terrarium Garden</span>
-                </Link>
-              </div>
-            </div>
-          </div>
+          )}
         </nav>
 
         {/* Right Side: Thin Outline Action Icons */}
         <div className="planters-actions">
           {/* Search Icon */}
-          <button className="navbar-action-btn" aria-label="Search">
+          <button 
+            onClick={() => setSearchOpen(!searchOpen)} 
+            className="navbar-action-btn" 
+            aria-label="Search"
+          >
             <FiSearch size={22} />
           </button>
 

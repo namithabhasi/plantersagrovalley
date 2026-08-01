@@ -24,7 +24,7 @@ const fertilizerCategories = [
     { id: 'plant-food', name: 'Plant Food' }
 ];
 
-const fertilizerProducts = [
+export const fertilizerProducts = [
     {
         id: 'f1',
         name: 'Premium Coco Peat Brick (5kg)',

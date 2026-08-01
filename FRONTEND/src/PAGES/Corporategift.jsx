@@ -107,7 +107,7 @@ function Corporategift() {
               >
                 Corporate Plant Gifts [Bulk]
               </h1>
-              <p className="font-[var(--font-family-base)] text-sm text-[var(--color-text-main)] leading-relaxed mb-8 max-w-lg">
+              <p className="font-[var(--font-family-base)] text-sm text-[var(--color-text-main)] leading-relaxed mb-8 max-w-lg corporate-description">
                 Stand out with corporate plant gifts for employees and clients.
                 Customize gift plants with your logo on pots, cards, and packaging.
                 Book now for meaningful green gifting!
