@@ -17,6 +17,7 @@ import adminRoutes from "./routes/adminRoutes.js";
 import couponRoutes from "./routes/couponRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
+import enquiryRoutes from "./routes/enquiryRoutes.js";
 
 
 const app = express();
@@ -81,6 +82,7 @@ app.use("/api/payment", paymentRoutes);
 app.use("/api/coupons", couponRoutes);
 
 app.use("/api/settings", settingsRoutes);
+app.use("/api/enquiries", enquiryRoutes);
 
 app.use("/api/admin/dashboard", adminDashboardRoutes);
 app.use("/api/admin/notifications", notificationRoutes);

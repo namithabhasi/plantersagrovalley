@@ -25,6 +25,7 @@ import Orders from "./PAGES/admin/Orders";
 import Coupons from "./PAGES/admin/Coupons";
 import Reports from "./PAGES/admin/Reports";
 import Settings from "./PAGES/admin/Settings";
+import Enquiries from "./PAGES/admin/Enquiries";
 import Payment from "./PAGES/Payment";
 import Cart from "./PAGES/Cart";
 import Aboutus from "./PAGES/Aboutus";
@@ -125,6 +126,7 @@ function App() {
           <Route path="coupons" element={<Coupons />} />
           <Route path="reports" element={<Reports />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="enquiries" element={<Enquiries />} />
         </Route>
       </Routes>
       {!hideNavbarFooter && <Footer />}
