@@ -18,6 +18,10 @@ import {
   Divider,
   Button,
   CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
@@ -127,6 +131,7 @@ const AdminNavbar = ({ handleDrawerToggle }) => {
   // Profile menu logic
   const [profileAnchorEl, setProfileAnchorEl] = useState(null);
   const isProfileMenuOpen = Boolean(profileAnchorEl);
+  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
 
   const handleProfileClick = (event) => {
     setProfileAnchorEl(event.currentTarget);
@@ -136,7 +141,13 @@ const AdminNavbar = ({ handleDrawerToggle }) => {
     setProfileAnchorEl(null);
   };
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
+    handleProfileClose();
+    setLogoutConfirmOpen(true);
+  };
+
+  const confirmLogout = async () => {
+    setLogoutConfirmOpen(false);
     try {
       await axiosInstance.post("/auth/logout");
     } catch (error) {
@@ -626,6 +637,70 @@ const AdminNavbar = ({ handleDrawerToggle }) => {
             <Typography color="error" fontWeight="medium">Logout</Typography>
           </MenuItem>
         </Menu>
+
+        <Dialog
+          open={logoutConfirmOpen}
+          onClose={() => setLogoutConfirmOpen(false)}
+          slotProps={{
+            paper: {
+              sx: {
+                borderRadius: 3,
+                p: 3,
+                maxWidth: 360,
+                boxShadow: "0 12px 40px rgba(6, 42, 27, 0.15)",
+                border: "1px solid rgba(6, 73, 45, 0.08)",
+              },
+            },
+            backdrop: {
+              sx: {
+                backgroundColor: "rgba(6, 42, 27, 0.45)",
+                backdropFilter: "blur(8px)",
+              }
+            }
+          }}
+        >
+          <DialogTitle sx={{ fontWeight: 700, p: 0, mb: 1, color: "#06492D", fontSize: "1.25rem" }}>
+            Confirm Logout
+          </DialogTitle>
+          <DialogContent sx={{ p: 0, mb: 3 }}>
+            <Typography variant="body2" sx={{ color: "text.secondary" }}>
+              Are you sure you want to log out of your account?
+            </Typography>
+          </DialogContent>
+          <DialogActions sx={{ p: 0, justifyContent: "flex-end", gap: 1 }}>
+            <Button
+              onClick={() => setLogoutConfirmOpen(false)}
+              sx={{
+                textTransform: "none",
+                color: "text.secondary",
+                border: "1px solid #ccc",
+                borderRadius: 1.5,
+                px: 2,
+                py: 0.75,
+                fontSize: "0.875rem",
+                "&:hover": { bgcolor: "grey.100" }
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={confirmLogout}
+              variant="contained"
+              sx={{
+                textTransform: "none",
+                bgcolor: "#06492D",
+                color: "#fff",
+                borderRadius: 1.5,
+                px: 2,
+                py: 0.75,
+                fontSize: "0.875rem",
+                "&:hover": { bgcolor: "#053d25" }
+              }}
+            >
+              Logout
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Toolbar>
     </AppBar>
   );

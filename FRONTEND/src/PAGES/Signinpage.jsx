@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { IoEyeOutline, IoEyeOffOutline } from 'react-icons/io5';
 import { toast } from 'react-toastify';
 import logo from '../assets/logo.png';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../redux/auth/authSlice';
+import { useCart } from '../context/CartContext';
+import axiosInstance from '../api/axiosInstance';
 
 function Signinpage() {
   const [isRegister, setIsRegister] = useState(false);
@@ -10,10 +14,14 @@ function Signinpage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { cartItems, syncLocalCartToBackend } = useCart();
 
   // Form States
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
+    phone: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -23,6 +31,66 @@ function Signinpage() {
 
   // Error States for Inline Cautions
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    if (!clientId) return;
+
+    const initializeGoogleSignIn = () => {
+      if (window.google?.accounts?.id) {
+        window.google.accounts.id.initialize({
+          client_id: clientId,
+          callback: handleGoogleCredentialResponse,
+        });
+        window.google.accounts.id.renderButton(
+          document.getElementById("google-signin-btn"),
+          {
+            theme: "outline",
+            size: "large",
+            width: "100%",
+            text: "signin_with",
+            shape: "square"
+          }
+        );
+      }
+    };
+
+    const interval = setInterval(() => {
+      if (window.google?.accounts?.id) {
+        initializeGoogleSignIn();
+        clearInterval(interval);
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [isRegister]);
+
+  const handleGoogleCredentialResponse = async (response) => {
+    try {
+      setLoading(true);
+      const token = response.credential;
+      const { data } = await axiosInstance.post("/auth/google", { token });
+      
+      if (data.success) {
+        dispatch(setUser({ user: data.user, token: data.token }));
+        try {
+          await syncLocalCartToBackend(cartItems);
+        } catch (err) {
+          console.error("Cart sync error:", err);
+        }
+        toast.success("Signed in successfully via Google!");
+        navigate("/");
+      } else {
+        toast.error(data.message || "Google Authentication failed.");
+      }
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Something went wrong during Google Login."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -74,8 +142,10 @@ function Signinpage() {
 
   const validateRegister = () => {
     const newErrors = {};
-    if (!formData.name.trim()) {
-      newErrors.name = 'Full name is required';
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = 'First name is required';
+    } else if (formData.firstName.trim().length < 2 || formData.firstName.trim().length > 50) {
+      newErrors.firstName = 'First name must be between 2 and 50 characters';
     }
 
     if (!formData.email.trim()) {
@@ -107,17 +177,68 @@ function Signinpage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (isRegister) {
       if (!validateRegister()) return;
-      toast.success('Registration successful! Please sign in.');
-      setIsRegister(false);
+      try {
+        setLoading(true);
+        const payload = {
+          firstName: formData.firstName.trim(),
+          lastName: formData.lastName.trim(),
+          email: formData.email.trim(),
+          password: formData.password,
+          phone: formData.phone.trim(),
+        };
+        const { data } = await axiosInstance.post('/auth/register', payload);
+        if (data.success) {
+          dispatch(setUser({ user: data.user, token: data.token }));
+          try {
+            await syncLocalCartToBackend(cartItems);
+          } catch (err) {
+            console.error('Cart sync error:', err);
+          }
+          toast.success('Registration successful! Welcome.');
+          navigate('/');
+        } else {
+          toast.error(data.message || 'Registration failed.');
+        }
+      } catch (error) {
+        toast.error(
+          error.response?.data?.message || 'Something went wrong during registration.'
+        );
+      } finally {
+        setLoading(false);
+      }
     } else {
       if (!validateLogin()) return;
-      toast.success('Welcome back! Signed in successfully.');
-      navigate('/');
+      try {
+        setLoading(true);
+        const payload = {
+          email: formData.email.trim(),
+          password: formData.password,
+        };
+        const { data } = await axiosInstance.post('/auth/login', payload);
+        if (data.success) {
+          dispatch(setUser({ user: data.user, token: data.token }));
+          try {
+            await syncLocalCartToBackend(cartItems);
+          } catch (err) {
+            console.error('Cart sync error:', err);
+          }
+          toast.success('Welcome back! Signed in successfully.');
+          navigate('/');
+        } else {
+          toast.error(data.message || 'Login failed.');
+        }
+      } catch (error) {
+        toast.error(
+          error.response?.data?.message || 'Something went wrong during sign in.'
+        );
+      } finally {
+        setLoading(false);
+      }
     }
   };
 

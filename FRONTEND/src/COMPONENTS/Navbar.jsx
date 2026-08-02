@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import logo from '../assets/logo.png'; // The text logo is saved in logo.png
 import bush from '../assets/image.png'; // Background bush growing from the bottom-left corner
-import { FiSearch, FiUser, FiShoppingCart, FiMenu, FiX, FiChevronRight, FiChevronDown } from 'react-icons/fi';
+import { FiSearch, FiUser, FiShoppingCart, FiMenu, FiX, FiChevronRight, FiChevronDown, FiLayout, FiLogOut } from 'react-icons/fi';
 import { useCart } from '../context/CartContext';
 import axios from '../api/axiosInstance';
 import { openAuthModal, clearUser } from '../redux/auth/authSlice';
@@ -17,6 +17,7 @@ function Navbar() {
   const [forceClose, setForceClose] = useState(false);
   const { openCart, cartTotalCount } = useCart();
   const [dbLogo, setDbLogo] = useState("");
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchVal, setSearchVal] = useState("");
   const searchInputRef = React.useRef(null);
@@ -63,14 +64,19 @@ function Navbar() {
     }
   };
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
+    setProfileDropdownOpen(false);
+    setShowLogoutConfirm(true);
+  };
+
+  const confirmLogout = async () => {
+    setShowLogoutConfirm(false);
     try {
       await axios.post("/auth/logout");
     } catch (error) {
       console.error("Logout API failed:", error);
     } finally {
       dispatch(clearUser());
-      setProfileDropdownOpen(false);
       navigate("/");
     }
   };
@@ -388,10 +394,68 @@ function Navbar() {
             <FiSearch size={22} />
           </button>
 
-          {/* Profile Icon */}
-          <Link to="/signin" className="navbar-action-btn planters-profile-btn flex items-center justify-center" aria-label="Account">
-            <FiUser size={22} />
-          </Link>
+          {/* Profile Action */}
+          <div className="relative">
+            {user ? (
+              <button
+                onClick={handleProfileClick}
+                className="navbar-action-btn planters-profile-btn flex items-center justify-center relative cursor-pointer"
+                aria-label="Account Menu"
+              >
+                {user.profileImage ? (
+                  <img
+                    src={user.profileImage}
+                    alt={user.firstName}
+                    className="w-6 h-6 rounded-full object-cover"
+                  />
+                ) : (
+                  <FiUser size={22} />
+                )}
+              </button>
+            ) : (
+              <Link
+                to="/signin"
+                className="navbar-action-btn planters-profile-btn flex items-center justify-center"
+                aria-label="Account"
+              >
+                <FiUser size={22} />
+              </Link>
+            )}
+
+            {/* Profile Dropdown Menu */}
+            {user && profileDropdownOpen && (
+              <div className="planters-profile-dropdown">
+                <div className="planters-profile-dropdown-header">
+                  <p className="planters-profile-dropdown-name truncate">
+                    {user.firstName} {user.lastName}
+                  </p>
+                  <p className="planters-profile-dropdown-email truncate">
+                    {user.email}
+                  </p>
+                </div>
+                <div className="planters-profile-dropdown-items">
+                  {user.role && (user.role === 'admin' || user.role === 'super-admin' || user.role === 'shipping-manager') && (
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setProfileDropdownOpen(false)}
+                      className="planters-profile-dropdown-item"
+                    >
+                      <FiLayout size={14} />
+                      <span>Admin Dashboard</span>
+                    </Link>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="planters-profile-dropdown-item logout-btn"
+                  >
+                    <FiLogOut size={14} />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Cart Icon with badge */}
           <button
@@ -486,8 +550,107 @@ function Navbar() {
               <FiChevronRight size={18} />
             </NavLink>
           </nav>
+
+          {/* Mobile Profile & Logout Section */}
+          <div className="mt-auto border-t border-gray-100 pt-4 flex flex-col gap-3">
+            {user ? (
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-3">
+                  {user.profileImage ? (
+                    <img
+                      src={user.profileImage}
+                      alt={user.firstName}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 border border-gray-200">
+                      <FiUser size={20} />
+                    </div>
+                  )}
+                  <div className="truncate">
+                    <p className="text-sm font-semibold text-gray-800 truncate">
+                      {user.firstName} {user.lastName}
+                    </p>
+                    <p className="text-xs text-gray-400 truncate">
+                      {user.email}
+                    </p>
+                  </div>
+                </div>
+                {user.role && (user.role === 'admin' || user.role === 'super-admin' || user.role === 'shipping-manager') && (
+                  <Link
+                    to="/dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block text-center py-2 text-xs font-semibold text-[#06492D] bg-[#06492d0d] hover:bg-[#06492d1a]"
+                  >
+                    Go to Admin Dashboard
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="w-full text-center py-2.5 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 cursor-pointer border-none"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <Link
+                to="/signin"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full text-center block py-2.5 text-xs font-semibold uppercase tracking-wider text-white bg-[#06492D] hover:bg-[#053e26] border-none"
+              >
+                Sign In / Register
+              </Link>
+            )}
+          </div>
         </div>
       </div>
+
+      {showLogoutConfirm && (
+        <div className="auth-modal-overlay" style={{ display: 'flex' }} onClick={() => setShowLogoutConfirm(false)}>
+          <div className="auth-modal-card" style={{ maxWidth: '360px', padding: '24px', textAlign: 'center', gap: '16px' }} onClick={(e) => e.stopPropagation()}>
+            <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#06492D', margin: 0 }}>Confirm Logout</h3>
+            <p style={{ fontSize: '14px', color: '#666', margin: 0 }}>Are you sure you want to log out of your account?</p>
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '8px' }}>
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: '6px',
+                  border: '1px solid #ccc',
+                  background: 'transparent',
+                  color: '#666',
+                  cursor: 'pointer',
+                  fontWeight: 500,
+                  fontSize: '14px',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmLogout}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: '#06492D',
+                  color: '#fff',
+                  cursor: 'pointer',
+                  fontWeight: 500,
+                  fontSize: '14px',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
