@@ -48,6 +48,7 @@ import Verticalgarden from "./PAGES/Verticalgarden";
 import Balconygarden from "./PAGES/Balconygarden";
 import SearchPage from "./PAGES/SearchPage";
 import Forgotpassword from "./PAGES/Forgotpassword";
+import Blog from "./PAGES/Blog";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -97,6 +98,8 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/about" element={<Aboutus />} />
         <Route path="/faqs" element={<Faq />} />
+        <Route path="/blogs" element={<Blog />} />
+        <Route path="/blog" element={<Blog />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/plants" element={<Plants />} />
         <Route path="/seeds" element={<Seeds />} />
