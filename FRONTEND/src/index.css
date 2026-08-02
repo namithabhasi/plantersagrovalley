@@ -2248,7 +2248,6 @@ div.container {
   background: #3182ce !important;
 }
 
-<<<<<<< HEAD
 /* ==========================================================================
    Bring Life Back to Nature Section Styles
    ========================================================================== */
@@ -2484,7 +2483,8 @@ div.container {
     line-height: 36px !important;
     font-weight: 300 !important;
   }
-=======
+}
+
 /* --- Premium Profile Dropdown --- */
 .planters-profile-dropdown {
   position: absolute;
@@ -2569,5 +2569,4 @@ div.container {
 .planters-profile-dropdown-item.logout-btn:hover {
   background-color: #fff5f5;
   color: #bd2c2c;
->>>>>>> a5823c4 (logout button)
 }
