@@ -47,6 +47,7 @@ import Gardenmaintanence from "./PAGES/Gardenmaintanence";
 import Verticalgarden from "./PAGES/Verticalgarden";
 import Balconygarden from "./PAGES/Balconygarden";
 import SearchPage from "./PAGES/SearchPage";
+import Forgotpassword from "./PAGES/Forgotpassword";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -55,7 +56,8 @@ function App() {
   const hideNavbarFooter = location.pathname.startsWith('/dashboard') ||
     location.pathname === '/admin' ||
     location.pathname === '/payment' ||
-    location.pathname === '/signin';
+    location.pathname === '/signin' ||
+    location.pathname === '/forgot-password';
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -85,6 +87,7 @@ function App() {
       />
       <Routes>
         <Route path="/signin" element={<Signinpage />} />
+        <Route path="/forgot-password" element={<Forgotpassword />} />
         <Route path="/privacy-policy" element={<Privacypolicy />} />
         <Route path="/terms-conditions" element={<Terms />} />
         <Route path="/cancel-refund" element={<Cancelandrefund />} />

@@ -55,7 +55,7 @@ function CategorySection() {
 
   if (loading) {
     return (
-      <section className="plantsguru-category-section">
+      <section className="page-section plantsguru-category-section">
         <div className="container">
           <div className="section-header">
             <h3 className="section-title">SHOP BY CATEGORY</h3>
@@ -78,7 +78,7 @@ function CategorySection() {
   }
 
   return (
-    <section className="plantsguru-category-section">
+    <section className="page-section plantsguru-category-section">
       <div className="container">
         <div className="section-header">
           <h3 className="section-title">SHOP BY CATEGORY</h3>
