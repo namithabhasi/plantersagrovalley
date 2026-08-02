@@ -8,12 +8,20 @@ import nodemailer from "nodemailer";
  * @param {string} options.html - Email body (HTML)
  */
 const sendEmail = async ({ to, subject, html }) => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    throw new Error("SMTP email credentials (EMAIL_USER/EMAIL_PASS) are not configured in the server environment variables (.env).");
+  }
+
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true, // Use SSL
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
+    connectionTimeout: 10000, // 10 seconds
+    greetingTimeout: 10000,   // 10 seconds
   });
 
   const mailOptions = {
