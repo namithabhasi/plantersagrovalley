@@ -10,6 +10,13 @@ import air1 from '../assets/AIRPLANTS/Alocasia macrorrhizos Variegata.jpg';
 import air2 from '../assets/AIRPLANTS/Aspidistra elatior.jpg';
 import air3 from '../assets/AIRPLANTS/How to Grow and Care for Air Plants_ No Soil Required.jpg';
 import air4 from '../assets/AIRPLANTS/Peace Lily Air Purifying Plant Indoors Easy Care.jpg';
+import air5 from '../assets/AIRPLANTS/image.png';
+import air6 from '../assets/AIRPLANTS/image copy.png';
+import air7 from '../assets/AIRPLANTS/image copy 2.png';
+import air8 from '../assets/AIRPLANTS/image copy 3.png';
+import air9 from '../assets/AIRPLANTS/image copy 4.png';
+import air10 from '../assets/AIRPLANTS/image copy 5.png';
+import air11 from '../assets/AIRPLANTS/image copy 6.png';
 
 // Aquatic Plants
 import aq1 from '../assets/AQUATICPLANTS/25 Indoor Plants That Thrive on Coffee Grounds - Simple List.jpg';
@@ -63,16 +70,50 @@ import sum2 from '../assets/SUMMERFLOWERPLANTS/download (14).jpg';
 import sum3 from '../assets/SUMMERFLOWERPLANTS/download (15).jpg';
 import sum4 from '../assets/SUMMERFLOWERPLANTS/sadabahar_periwinkle.jpg';
 
+// Climbers & Creepers
+import climb1 from '../assets/climbersandcreapers/image.png';
+import climb2 from '../assets/climbersandcreapers/image copy.png';
+import climb3 from '../assets/climbersandcreapers/image copy 2.png';
+import climb4 from '../assets/climbersandcreapers/image copy 3.png';
+import climb5 from '../assets/climbersandcreapers/image copy 4.png';
+import climb6 from '../assets/climbersandcreapers/image copy 5.png';
+import climb7 from '../assets/climbersandcreapers/image copy 6.png';
+import climb8 from '../assets/climbersandcreapers/image copy 7.png';
+import climb9 from '../assets/climbersandcreapers/image copy 8.png';
+import climb10 from '../assets/climbersandcreapers/image copy 9.png';
+import climb11 from '../assets/climbersandcreapers/image copy 10.png';
+
 export const plantProducts = [
+    // Beautiful Flowering Plants, Climbers, and Creepers (Shown in the first rows when category is 'all')
+    { id: 'climb-6', category: 'climbers-creepers', name: 'Wisteria Flowering Vine', price: 499, originalPrice: 599, discount: '-16%', rating: 5, image: climb6, date: '2026-03-06', inStock: true, space: 'outdoors' },
+    { id: 'climb-3', category: 'climbers-creepers', name: 'Star Jasmine Climber', price: 349, rating: 5, image: climb3, date: '2026-03-03', inStock: true, space: 'outdoors' },
+    { id: 'climb-8', category: 'climbers-creepers', name: 'Honeysuckle Scented Climber', price: 329, rating: 5, image: climb8, date: '2026-03-08', inStock: true, space: 'outdoors' },
+    { id: 'climb-5', category: 'climbers-creepers', name: 'Bougainvillea Pink Creeper', price: 299, rating: 5, image: climb5, date: '2026-03-05', inStock: true, space: 'outdoors' },
+    { id: 'frag-1', category: 'fragrant-plants', name: 'Orange Jasmine / Kamini Pot', price: 279, rating: 5, image: frag1, date: '2026-01-20', inStock: true, space: 'outdoors' },
+    { id: 'sum-3', category: 'summer-flowers', name: 'Summer Sunflower Dwarf Sunny', price: 149, originalPrice: 199, discount: '-25%', rating: 5, image: sum3, date: '2026-02-06', inStock: true, space: 'outdoors' },
+    { id: 'mon-4', category: 'monsoon-flowers', name: 'Monsoon Plumeria Alba White', price: 399, rating: 5, image: mon4, date: '2026-01-30', inStock: true, space: 'outdoors' },
+    { id: 'out-1', category: 'outdoor-plants', name: 'Plumeria Rubra Frangipani Tree', price: 499, rating: 5, image: out1, date: '2026-01-31', inStock: true, space: 'outdoors' },
+    { id: 'climb-1', category: 'climbers-creepers', name: 'Devil\'s Ivy Vine', price: 199, rating: 5, image: climb1, date: '2026-03-01', inStock: true, space: 'indoors' },
+    { id: 'mon-3', category: 'monsoon-flowers', name: 'Monsoon Hibiscus Bright Red', price: 229, originalPrice: 299, discount: '-23%', rating: 5, image: mon3, date: '2026-01-29', inStock: true, space: 'outdoors' },
+    { id: 'out-4', category: 'outdoor-plants', name: 'Delicate Outdoor Red Rose Pot', price: 199, rating: 5, image: out4, date: '2026-02-03', inStock: true, space: 'outdoors' },
+    { id: 'climb-10', category: 'climbers-creepers', name: 'Money Plant Golden Creeper', price: 129, rating: 5, image: climb10, date: '2026-03-10', inStock: true, space: 'indoors' },
+
     // Air Plants
     { id: 'air-1', category: 'air-plants', name: 'Alocasia Macrorrhizos Variegata', price: 399, rating: 5, image: air1, date: '2026-01-01', inStock: true, space: 'indoors' },
     { id: 'air-2', category: 'air-plants', name: 'Aspidistra Elatior (Cast Iron Plant)', price: 299, rating: 4, image: air2, date: '2026-01-02', inStock: false, space: 'indoors' },
     { id: 'air-3', category: 'air-plants', name: 'Tillandsia Ionantha Air Plant', price: 199, originalPrice: 249, discount: '-20%', rating: 5, image: air3, date: '2026-01-03', inStock: true, space: 'indoors' },
     { id: 'air-4', category: 'air-plants', name: 'Peace Lily Air Purifying Plant', price: 249, rating: 5, image: air4, date: '2026-01-04', inStock: true, space: 'indoors' },
+    { id: 'air-5', category: 'air-plants', name: 'Xerographica Air Plant', price: 499, rating: 5, image: air5, date: '2026-01-04', inStock: true, space: 'indoors' },
+    { id: 'air-6', category: 'air-plants', name: 'Tillandsia Caput-Medusae', price: 349, rating: 4, image: air6, date: '2026-01-04', inStock: true, space: 'indoors' },
+    { id: 'air-7', category: 'air-plants', name: 'Tillandsia Xerographica Giant', price: 899, rating: 5, image: air7, date: '2026-01-04', inStock: true, space: 'indoors' },
+    { id: 'air-8', category: 'air-plants', name: 'Fasciculata Air Plant', price: 299, rating: 4, image: air8, date: '2026-01-04', inStock: true, space: 'indoors' },
+    { id: 'air-9', category: 'air-plants', name: 'Tillandsia Bulbosa', price: 249, rating: 4, image: air9, date: '2026-01-04', inStock: true, space: 'indoors' },
+    { id: 'air-10', category: 'air-plants', name: 'Spanish Moss Tillandsia', price: 199, rating: 4, image: air10, date: '2026-01-04', inStock: true, space: 'indoors' },
+    { id: 'air-11', category: 'air-plants', name: 'Tillandsia Andreana Rare', price: 549, rating: 5, image: air11, date: '2026-01-04', inStock: false, space: 'indoors' },
 
     // Aquatic Plants
     { id: 'aq-1', category: 'aquatic-plants', name: 'Aquatic Anthurium Plant', price: 349, rating: 4, image: aq1, date: '2026-01-05', inStock: true, space: 'indoors' },
-    { id: 'aq-2', category: 'aquatic-plants', name: 'Aquarium Freshwater Moss', price: 149, rating: 4, image: aq2, date: '2026-01-06', inStock: true, space: 'indoors' },
+    { id: 'aq-2', category: 'aquarium-freshwater-moss', name: 'Aquarium Freshwater Moss', price: 149, rating: 4, image: aq2, date: '2026-01-06', inStock: true, space: 'indoors' },
     { id: 'aq-3', category: 'aquatic-plants', name: 'Premium Water Lilies', price: 499, originalPrice: 599, discount: '-16%', rating: 5, image: aq3, date: '2026-01-07', inStock: true, space: 'outdoors' },
 
     // Avenue Trees
@@ -94,7 +135,6 @@ export const plantProducts = [
     { id: 'bam-3', category: 'bamboos', name: 'Lucky Bamboo Braided Sticks', price: 299, originalPrice: 399, discount: '-25%', rating: 5, image: bam3, date: '2026-01-19', inStock: true, space: 'indoors' },
 
     // Fragrant
-    { id: 'frag-1', category: 'fragrant-plants', name: 'Orange Jasmine / Kamini Pot', price: 279, rating: 5, image: frag1, date: '2026-01-20', inStock: true, space: 'outdoors' },
     { id: 'frag-2', category: 'fragrant-plants', name: 'Tuberose / Rajnigandha Bulbs', price: 199, originalPrice: 249, discount: '-20%', rating: 5, image: frag2, date: '2026-01-21', inStock: true, space: 'outdoors' },
     { id: 'frag-3', category: 'fragrant-plants', name: 'Mogra Jasmine Fragrant Plant', price: 149, rating: 4, image: frag3, date: '2026-01-22', inStock: false, space: 'outdoors' },
     { id: 'frag-4', category: 'fragrant-plants', name: 'Scented Gardenia Flowering Plant', price: 329, rating: 4, image: frag4, date: '2026-01-23', inStock: true, space: 'outdoors' },
@@ -107,20 +147,22 @@ export const plantProducts = [
     // Monsoon
     { id: 'mon-1', category: 'monsoon-flowers', name: 'Monsoon Rain Lily Pink Flower', price: 129, rating: 5, image: mon1, date: '2026-01-27', inStock: true, space: 'outdoors' },
     { id: 'mon-2', category: 'monsoon-flowers', name: 'Monsoon Balsam Mixed Flowers', price: 149, rating: 4, image: mon2, date: '2026-01-28', inStock: false, space: 'outdoors' },
-    { id: 'mon-3', category: 'monsoon-flowers', name: 'Monsoon Hibiscus Bright Red', price: 229, originalPrice: 299, discount: '-23%', rating: 4, image: mon3, date: '2026-01-29', inStock: true, space: 'outdoors' },
-    { id: 'mon-4', category: 'monsoon-flowers', name: 'Monsoon Plumeria Alba White', price: 399, rating: 5, image: mon4, date: '2026-01-30', inStock: true, space: 'outdoors' },
 
     // Outdoor
-    { id: 'out-1', category: 'outdoor-plants', name: 'Plumeria Rubra Frangipani Tree', price: 499, rating: 5, image: out1, date: '2026-01-31', inStock: true, space: 'outdoors' },
     { id: 'out-2', category: 'outdoor-plants', name: 'Outdoor Bougainvillea Specimen', price: 299, rating: 4, image: out2, date: '2026-02-01', inStock: true, space: 'outdoors' },
     { id: 'out-3', category: 'outdoor-plants', name: 'Outdoor Lush Areca Palm Tree', price: 349, originalPrice: 449, discount: '-22%', rating: 5, image: out3, date: '2026-02-02', inStock: true, space: 'outdoors' },
-    { id: 'out-4', category: 'outdoor-plants', name: 'Delicate Outdoor Red Rose Pot', price: 199, rating: 4, image: out4, date: '2026-02-03', inStock: true, space: 'outdoors' },
 
     // Summer
     { id: 'sum-1', category: 'summer-flowers', name: 'Summer French Marigold Gold', price: 99, rating: 4, image: sum1, date: '2026-02-04', inStock: true, space: 'outdoors' },
     { id: 'sum-2', category: 'summer-flowers', name: 'Summer Cosmos Mixed Petals', price: 119, rating: 4, image: sum2, date: '2026-02-05', inStock: true, space: 'outdoors' },
-    { id: 'sum-3', category: 'summer-flowers', name: 'Summer Sunflower Dwarf Sunny', price: 149, originalPrice: 199, discount: '-25%', rating: 5, image: sum3, date: '2026-02-06', inStock: true, space: 'outdoors' },
-    { id: 'sum-4', category: 'summer-flowers', name: 'Summer Periwinkle Sadabahar Pink', price: 89, rating: 4, image: sum4, date: '2026-02-07', inStock: true, space: 'outdoors' }
+    { id: 'sum-4', category: 'summer-flowers', name: 'Summer Periwinkle Sadabahar Pink', price: 89, rating: 4, image: sum4, date: '2026-02-07', inStock: true, space: 'outdoors' },
+
+    // Climbers & Creepers
+    { id: 'climb-2', category: 'climbers-creepers', name: 'Creeping Fig Ficus', price: 249, rating: 4, image: climb2, date: '2026-03-02', inStock: true, space: 'indoors' },
+    { id: 'climb-4', category: 'climbers-creepers', name: 'English Ivy Hedera', price: 179, originalPrice: 229, discount: '-21%', rating: 4, image: climb4, date: '2026-03-04', inStock: true, space: 'indoors' },
+    { id: 'climb-7', category: 'climbers-creepers', name: 'Morning Glory Vine', price: 149, rating: 4, image: climb7, date: '2026-03-07', inStock: false, space: 'outdoors' },
+    { id: 'climb-9', category: 'climbers-creepers', name: 'Passion Flower Passiflora', price: 379, rating: 4, image: climb9, date: '2026-03-09', inStock: true, space: 'outdoors' },
+    { id: 'climb-11', category: 'climbers-creepers', name: 'Boston Ivy Wall Climber', price: 279, rating: 4, image: climb11, date: '2026-03-11', inStock: true, space: 'outdoors' }
 ];
 
 const plantCategories = [
@@ -130,6 +172,7 @@ const plantCategories = [
     { id: 'avenue-trees', name: 'Avenue Trees' },
     { id: 'balcony', name: 'Balcony Plants' },
     { id: 'bamboos', name: 'Bamboos' },
+    { id: 'climbers-creepers', name: 'Climbers & Creepers' },
     { id: 'fragrant-plants', name: 'Fragrant Plants' },
     { id: 'indoor-plants', name: 'Indoor Plants' },
     { id: 'monsoon-flowers', name: 'Monsoon Flowers' },
@@ -159,10 +202,23 @@ function Plants() {
     const [indoorsChecked, setIndoorsChecked] = useState(false);
     const [outdoorsChecked, setOutdoorsChecked] = useState(false);
 
+    // Pagination States
+    const [currentPage, setCurrentPage] = useState(1);
+    const productsPerPage = 12;
+
+    // Reset pagination to page 1 whenever any filter or sort option changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activeCategory, inStockOnly, outOfStockOnly, minPrice, maxPrice, indoorsChecked, outdoorsChecked, sortBy]);
+
     useEffect(() => {
         const params = new URLSearchParams(location.search);
-        const cat = params.get('category');
+        let cat = params.get('category');
         if (cat) {
+            const cleaned = cat.toLowerCase();
+            if (cleaned === 'climbersandcreapers' || cleaned === 'climbers-and-creepers' || cleaned === 'climbers-creepers' || cleaned === 'climbersandcreapers') {
+                cat = 'climbers-creepers';
+            }
             setActiveCategory(cat);
         } else {
             setActiveCategory('all');
@@ -217,8 +273,13 @@ function Plants() {
         if (sortBy === 'newest') {
             return new Date(b.date) - new Date(a.date);
         }
-        return b.rating - a.rating;
     });
+
+    // Pagination slicing
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    const paginatedProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+    const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
 
     // Dynamic counts for stock and space filters based on active Category
     const categoryProducts = activeCategory === 'all'
@@ -513,7 +574,7 @@ function Plants() {
 
                         {/* Product Card Grid */}
                         <div className="product-grid plants-grid">
-                            {sortedProducts.map((product) => (
+                            {paginatedProducts.map((product) => (
                                 <div key={product.id} className="product-card-wrapper">
                                     <div className="product-card" style={{ flexGrow: 1 }}>
                                         {!product.inStock && (
@@ -566,6 +627,46 @@ function Plants() {
                                 </div>
                             ))}
                         </div>
+
+                        {/* Pagination Controls */}
+                        {totalPages > 1 && (
+                            <div className="pagination-container">
+                                <button
+                                    onClick={() => {
+                                        setCurrentPage(prev => Math.max(prev - 1, 1));
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                    }}
+                                    disabled={currentPage === 1}
+                                    className="pagination-btn pagination-arrow"
+                                >
+                                    &larr; Previous
+                                </button>
+                                
+                                {[...Array(totalPages)].map((_, index) => (
+                                    <button
+                                        key={index + 1}
+                                        onClick={() => {
+                                            setCurrentPage(index + 1);
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        }}
+                                        className={`pagination-btn ${currentPage === index + 1 ? 'active' : ''}`}
+                                    >
+                                        {index + 1}
+                                    </button>
+                                ))}
+
+                                <button
+                                    onClick={() => {
+                                        setCurrentPage(prev => Math.min(prev + 1, totalPages));
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                    }}
+                                    disabled={currentPage === totalPages}
+                                    className="pagination-btn pagination-arrow"
+                                >
+                                    Next &rarr;
+                                </button>
+                            </div>
+                        )}
 
                         {sortedProducts.length === 0 && (
                             <div className="text-center py-16 text-gray-500 font-[var(--font-family-base)]">
