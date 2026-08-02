@@ -91,11 +91,23 @@ function Getintouch() {
     if (!validateForm()) return;
 
     try {
-      // Simulate sending enquiry message
-      toast.success('Your message has been sent successfully!');
-      setFormData({ name: '', email: '', phone: '', comment: '', agreePrivacy: false });
+      const payload = {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        comment: formData.comment.trim()
+      };
+      const { data } = await axios.post('/enquiries', payload);
+      if (data.success) {
+        toast.success(data.message || 'Your message has been sent successfully!');
+        setFormData({ name: '', email: '', phone: '', comment: '', agreePrivacy: false });
+      } else {
+        toast.error(data.message || 'Failed to send message. Please try again.');
+      }
     } catch (error) {
-      toast.error('Failed to send message. Please try again.');
+      toast.error(
+        error.response?.data?.message || 'Failed to send message. Please try again.'
+      );
     }
   };
 

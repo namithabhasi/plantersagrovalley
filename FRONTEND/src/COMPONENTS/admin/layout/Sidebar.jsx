@@ -29,6 +29,7 @@ import {
   LocalOffer,
   BarChart,
   Settings,
+  Email,
 } from "@mui/icons-material";
 
 import { Link, useLocation } from "react-router-dom";
@@ -374,6 +375,27 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
             </ListItemIcon>
 
             <ListItemText primary="Reports" />
+          </ListItemButton>
+        )}
+
+        {/* Enquiries */}
+
+        {(role === "super-admin" || role === "admin") && (
+          <ListItemButton
+            component={Link}
+            to="/dashboard/enquiries"
+            sx={
+              location.pathname === "/dashboard/enquiries"
+                ? activeStyle
+                : {}
+            }
+            onClick={handleItemClick}
+          >
+            <ListItemIcon>
+              <Email />
+            </ListItemIcon>
+
+            <ListItemText primary="Enquiries" />
           </ListItemButton>
         )}
 
