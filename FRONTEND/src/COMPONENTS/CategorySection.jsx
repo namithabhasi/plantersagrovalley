@@ -9,6 +9,7 @@ import bulbsImg from '../assets/flowerbulbs.jpg';
 import plantersImg from '../assets/pots and planters.jpg';
 import decorImg from '../assets/gardendecors.jpg';
 import fertilizerImg from '../assets/fertilizer.jpg';
+import climbersImg from '../assets/climbersandcreapers/image.png';
 
 const getFallbackImage = (slug, name) => {
   const s = (slug || '').toLowerCase();
@@ -19,6 +20,7 @@ const getFallbackImage = (slug, name) => {
   if (s.includes('pot') || s.includes('planter') || n.includes('pot') || n.includes('planter')) return plantersImg;
   if (s.includes('decor') || s.includes('accessory') || n.includes('decor') || n.includes('accessory')) return decorImg;
   if (s.includes('fertilizer') || n.includes('fertilizer')) return fertilizerImg;
+  if (s.includes('climber') || s.includes('creeper') || s.includes('creap') || n.includes('climber') || n.includes('creeper') || n.includes('creap')) return climbersImg;
   
   return plantsImg;
 };
@@ -29,12 +31,16 @@ const getCategoryLink = (slug) => {
   if (s === 'pots-planters') return '/planters';
   if (s === 'fertilizer' || s === 'fertilizers') return '/fertilizer';
   if (s === 'garden-decor' || s === 'garden-accessories') return '/garden-decor';
+  if (s === 'climbers-creepers' || s === 'climbers-and-creepers' || s === 'climbersandcreapers') {
+    return '/plants?category=climbers-creepers';
+  }
   return `/plants?category=${slug}`;
 };
 
 function CategorySection() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -77,6 +83,9 @@ function CategorySection() {
     return null;
   }
 
+  // Display only the first 10 categories, toggle to show all remaining ones on 'View All' click
+  const displayedCategories = showAll ? categories : categories.slice(0, 10);
+
   return (
     <section className="page-section plantsguru-category-section">
       <div className="container">
@@ -84,7 +93,7 @@ function CategorySection() {
           <h3 className="section-title">SHOP BY CATEGORY</h3>
         </div>
         <div className="plantsguru-category-grid">
-          {categories.map((category) => (
+          {displayedCategories.map((category) => (
             <Link 
               key={category._id} 
               to={getCategoryLink(category.slug)} 
@@ -103,6 +112,18 @@ function CategorySection() {
             </Link>
           ))}
         </div>
+
+        {/* View All toggle button for remaining categories */}
+        {categories.length > 10 && (
+          <div className="flex justify-center mt-10">
+            <button 
+              onClick={() => setShowAll(!showAll)}
+              className="bg-transparent border-none p-0 pb-1.5 border-b-[1.5px] border-[var(--color-primary-dark)] text-[var(--color-primary-dark)] hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] font-normal text-sm tracking-[2px] font-[Poppins] cursor-pointer transition-all duration-200"
+            >
+              {showAll ? 'Show Less \u2190' : 'View All \u2192'}
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

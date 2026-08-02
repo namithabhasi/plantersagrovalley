@@ -102,7 +102,7 @@ function Corporategift() {
             {/* Left Content */}
             <div className="flex flex-col items-center md:items-start text-center md:text-left">
               <h1 
-                className="font-[var(--font-family-heading)] text-3xl md:text-[40px] font-normal leading-tight text-[var(--color-primary-dark)]"
+                className="font-[var(--font-family-heading)] text-3xl md:text-[40px] font-normal leading-tight text-[var(--color-primary-dark)] uppercase"
                 style={{ marginBottom: '24px' }}
               >
                 Corporate Plant Gifts [Bulk]

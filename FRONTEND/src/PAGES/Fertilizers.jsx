@@ -179,6 +179,15 @@ function Fertilizers() {
     const [indoorsChecked, setIndoorsChecked] = useState(false);
     const [outdoorsChecked, setOutdoorsChecked] = useState(false);
 
+    // Pagination States
+    const [currentPage, setCurrentPage] = useState(1);
+    const productsPerPage = 12;
+
+    // Reset pagination to page 1 whenever any filter or sort option changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activeCategory, inStockOnly, outOfStockOnly, minPrice, maxPrice, indoorsChecked, outdoorsChecked, sortBy]);
+
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const cat = params.get('category');
@@ -239,6 +248,12 @@ function Fertilizers() {
         }
         return b.rating - a.rating;
     });
+
+    // Pagination slicing
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    const paginatedProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+    const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
 
     // Dynamic counts
     const inStockCount = fertilizerProducts.filter(
@@ -509,7 +524,7 @@ function Fertilizers() {
 
                         {/* Product Card Grid */}
                         <div className="product-grid fertilizers-grid">
-                            {sortedProducts.map((product) => (
+                            {paginatedProducts.map((product) => (
                                 <div key={product.id} className="product-card-wrapper">
                                     <div className="product-card" style={{ flexGrow: 1 }}>
                                         {!product.inStock && (
@@ -564,6 +579,46 @@ function Fertilizers() {
                                 </div>
                             ))}
                         </div>
+
+                        {/* Pagination Controls */}
+                        {totalPages > 1 && (
+                            <div className="pagination-container">
+                                <button
+                                    onClick={() => {
+                                        setCurrentPage(prev => Math.max(prev - 1, 1));
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                    }}
+                                    disabled={currentPage === 1}
+                                    className="pagination-btn pagination-arrow"
+                                >
+                                    &larr; Previous
+                                </button>
+                                
+                                {[...Array(totalPages)].map((_, index) => (
+                                    <button
+                                        key={index + 1}
+                                        onClick={() => {
+                                            setCurrentPage(index + 1);
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        }}
+                                        className={`pagination-btn ${currentPage === index + 1 ? 'active' : ''}`}
+                                    >
+                                        {index + 1}
+                                    </button>
+                                ))}
+
+                                <button
+                                    onClick={() => {
+                                        setCurrentPage(prev => Math.min(prev + 1, totalPages));
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                    }}
+                                    disabled={currentPage === totalPages}
+                                    className="pagination-btn pagination-arrow"
+                                >
+                                    Next &rarr;
+                                </button>
+                            </div>
+                        )}
 
                         {sortedProducts.length === 0 && (
                             <div className="text-center py-16 text-gray-500 font-[var(--font-family-base)]">

@@ -291,11 +291,11 @@
   }
 
   .faq-category-list {
+    display: flex;
     flex-direction: row;
-    overflow-x: auto;
+    flex-wrap: wrap;
     gap: var(--space-3);
-    padding-bottom: var(--space-2);
-    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0;
   }
 
   .faq-cat-btn {

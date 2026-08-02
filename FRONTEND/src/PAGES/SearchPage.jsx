@@ -61,7 +61,7 @@ function SearchPage() {
         
         {/* Header */}
         <div className="section-header text-left mb-10 border-b border-[var(--color-border)] pb-6">
-          <h2 className="font-[var(--font-family-heading)] text-3xl md:text-4xl font-normal text-[var(--color-primary-dark)] mb-2">
+          <h2 className="search-page-title mb-2">
             Search Results
           </h2>
           <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-muted)]">
