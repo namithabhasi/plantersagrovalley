@@ -451,6 +451,18 @@ function Signinpage() {
         >
           {loading ? 'Please wait...' : (isRegister ? 'Register' : 'Sign In')}
         </button>
+
+        {/* Divider */}
+        <div className="flex items-center my-2">
+          <div className="flex-grow border-t border-gray-200"></div>
+          <span className="flex-shrink mx-4 text-gray-400 text-[10px] uppercase tracking-wider font-semibold">or</span>
+          <div className="flex-grow border-t border-gray-200"></div>
+        </div>
+
+        {/* Google Sign In Button */}
+        <div className="w-full flex justify-center mt-1">
+          <div id="google-signin-btn" className="w-full"></div>
+        </div>
       </form>
 
       {/* Toggle Account Action */}
