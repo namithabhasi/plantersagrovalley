@@ -114,3 +114,18 @@ export const orderIdValidator = [
     .isMongoId()
     .withMessage("Invalid order ID."),
 ];
+
+/**
+ * Validate Track Order request
+ */
+export const trackOrderValidator = [
+  body("trackingId")
+    .notEmpty()
+    .withMessage("Tracking ID is required.")
+    .trim(),
+
+  body("contactInfo")
+    .notEmpty()
+    .withMessage("Email or phone number is required.")
+    .trim(),
+];
