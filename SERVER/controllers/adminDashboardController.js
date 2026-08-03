@@ -195,6 +195,21 @@ export const getDashboard = async (req, res) => {
       },
     ]);
 
+    const monthNames = [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+
+    const formattedMonthlySales = monthlySales.map((item) => {
+      const monthIndex = item._id.month - 1;
+      const monthName = monthNames[monthIndex] || `Month ${item._id.month}`;
+      return {
+        month: `${monthName} ${item._id.year}`,
+        sales: item.sales,
+        orders: item.orders,
+      };
+    });
+
     return res.status(200).json({
       success: true,
       data: {
@@ -224,7 +239,7 @@ export const getDashboard = async (req, res) => {
 
         recentOrders,
 
-        monthlySales,
+        monthlySales: formattedMonthlySales,
 
         topSellingProducts,
       },

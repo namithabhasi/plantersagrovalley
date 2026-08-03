@@ -19,6 +19,7 @@ import settingsRoutes from "./routes/settingsRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import enquiryRoutes from "./routes/enquiryRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
+import serviceRoutes from "./routes/serviceRoutes.js";
 
 
 
@@ -86,6 +87,7 @@ app.use("/api/coupons", couponRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/enquiries", enquiryRoutes);
 app.use("/api/blogs", blogRoutes);
+app.use("/api/services", serviceRoutes);
 
 
 app.use("/api/admin/dashboard", adminDashboardRoutes);

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import axios from '../api/axiosInstance';
 import { 
   FaPhoneAlt, 
   FaEnvelope, 
@@ -30,6 +31,21 @@ function Gardenmaintanence() {
   });
 
   const [errors, setErrors] = useState({});
+  const [dynamicServices, setDynamicServices] = useState([]);
+
+  useEffect(() => {
+    const fetchDynamicServices = async () => {
+      try {
+        const { data } = await axios.get('/services?activeOnly=true&serviceType=garden-maintenance');
+        if (data.success) {
+          setDynamicServices(data.services || []);
+        }
+      } catch (err) {
+        console.error("Failed to fetch dynamic services", err);
+      }
+    };
+    fetchDynamicServices();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -70,10 +86,20 @@ function Gardenmaintanence() {
     if (!validateForm()) return;
 
     try {
-      toast.success('Your garden maintenance enquiry has been submitted successfully!');
-      setFormData({ name: '', email: '', phone: '', comment: '', agreePrivacy: false });
+      const response = await axios.post('/enquiries', {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        comment: formData.comment.trim(),
+      });
+      if (response.data.success) {
+        toast.success('Your garden maintenance enquiry has been submitted successfully!');
+        setFormData({ name: '', email: '', phone: '', comment: '', agreePrivacy: false });
+      } else {
+        toast.error(response.data.message || 'Failed to submit enquiry. Please try again.');
+      }
     } catch (error) {
-      toast.error('Failed to submit enquiry. Please try again.');
+      toast.error(error.response?.data?.message || 'Failed to submit enquiry. Please try again.');
     }
   };
 
@@ -315,6 +341,41 @@ function Gardenmaintanence() {
           </div>
         </div>
       </section>
+
+      {/* Dynamic Services Section */}
+      {dynamicServices.length > 0 && (
+        <section className="bg-white border-b border-gray-100" style={{ paddingTop: '100px', paddingBottom: '100px' }}>
+          <div className="container mx-auto">
+            <div className="text-center">
+              <h2 
+                className="font-[var(--font-family-heading)] text-2xl md:text-3xl font-normal text-[var(--color-primary-dark)] uppercase"
+                style={{ marginBottom: '48px' }}
+              >
+                OUR CUSTOM SERVICES
+              </h2>
+            </div>
+            <div className="flex flex-wrap justify-center gap-12 max-w-6xl mx-auto">
+              {dynamicServices.map((service) => (
+                <div key={service._id} className="product-card custom-service-card max-w-[var(--card-max-width)] w-full flex flex-col">
+                  {service.image && (
+                    <div className="product-card-image">
+                      <img src={service.image} alt={service.title} className="w-full h-full object-cover" />
+                    </div>
+                  )}
+                  <div className="product-card-content text-center flex-grow flex flex-col">
+                    <h4 className="product-title uppercase tracking-wider text-sm font-semibold text-gray-800 mb-2">
+                      {service.title}
+                    </h4>
+                    <p className="font-[var(--font-family-base)] text-xs text-[var(--color-text-muted)] leading-relaxed mt-auto">
+                      {service.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 4. Contact Form Section: Regular Contact Form */}
       <section id="contact-form-section" className="bg-white border-t border-gray-100" style={{ paddingTop: '60px', paddingBottom: '80px' }}>
