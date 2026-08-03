@@ -388,6 +388,14 @@ img {
   background-color: var(--color-primary-bg) !important;
 }
 
+.product-card.custom-service-card {
+  background-color: var(--color-primary-bg) !important;
+}
+
+.product-card.custom-service-card:hover {
+  background-color: var(--color-bg-main) !important;
+}
+
 /* Badges */
 .card-badge {
   position: absolute;

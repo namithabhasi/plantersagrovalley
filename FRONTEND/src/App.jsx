@@ -27,6 +27,7 @@ import Reports from "./PAGES/admin/Reports";
 import Settings from "./PAGES/admin/Settings";
 import Enquiries from "./PAGES/admin/Enquiries";
 import AdminBlogs from "./PAGES/admin/Blogs";
+import AdminServices from "./PAGES/admin/Services";
 
 import Payment from "./PAGES/Payment";
 import Cart from "./PAGES/Cart";
@@ -133,6 +134,7 @@ function App() {
           <Route path="settings" element={<Settings />} />
           <Route path="enquiries" element={<Enquiries />} />
           <Route path="blogs" element={<AdminBlogs />} />
+          <Route path="services" element={<AdminServices />} />
         </Route>
 
       </Routes>

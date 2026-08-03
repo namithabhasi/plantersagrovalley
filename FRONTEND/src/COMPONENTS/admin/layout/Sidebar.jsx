@@ -31,6 +31,7 @@ import {
   Settings,
   Email,
   Book,
+  Spa,
 } from "@mui/icons-material";
 
 
@@ -419,6 +420,25 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
             </ListItemIcon>
 
             <ListItemText primary="Blogs" />
+          </ListItemButton>
+        )}
+
+        {(role === "super-admin" || role === "admin") && (
+          <ListItemButton
+            component={Link}
+            to="/dashboard/services"
+            sx={
+              location.pathname === "/dashboard/services"
+                ? activeStyle
+                : {}
+            }
+            onClick={handleItemClick}
+          >
+            <ListItemIcon>
+              <Spa />
+            </ListItemIcon>
+
+            <ListItemText primary="Services" />
           </ListItemButton>
         )}
 
