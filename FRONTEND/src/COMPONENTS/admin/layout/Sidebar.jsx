@@ -30,7 +30,9 @@ import {
   BarChart,
   Settings,
   Email,
+  Book,
 } from "@mui/icons-material";
+
 
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -398,6 +400,28 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
             <ListItemText primary="Enquiries" />
           </ListItemButton>
         )}
+
+        {/* Blogs */}
+
+        {(role === "super-admin" || role === "admin") && (
+          <ListItemButton
+            component={Link}
+            to="/dashboard/blogs"
+            sx={
+              location.pathname === "/dashboard/blogs"
+                ? activeStyle
+                : {}
+            }
+            onClick={handleItemClick}
+          >
+            <ListItemIcon>
+              <Book />
+            </ListItemIcon>
+
+            <ListItemText primary="Blogs" />
+          </ListItemButton>
+        )}
+
 
         {/* Settings */}
 

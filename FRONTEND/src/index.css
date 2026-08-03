@@ -2715,3 +2715,13 @@ div.container {
   font-weight: 500 !important;
   letter-spacing: 0.5px !important;
 }
+
+.dynamic-blog-image {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: fill !important;
+}
+
+.dynamic-blog-summary {
+  text-align: center !important;
+}
