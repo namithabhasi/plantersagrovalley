@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import User from "../models/User.js";
 import Product from "../models/Product.js";
 import generateToken from "../utils/generateToken.js";
+import { sendOrderTrackingEmail } from "../utils/orderEmailHelper.js";
 
 import {
   getCart,
@@ -368,6 +369,9 @@ export const verifyPayment = async (req, res) => {
     // Commit Transaction
     await session.commitTransaction();
     session.endSession();
+
+    // Automatically send the order tracking ID to customer as mail
+    sendOrderTrackingEmail(order, orderUser);
 
     // If guest user, set cookie to log them in automatically
     if (!req.user) {

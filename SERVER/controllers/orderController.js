@@ -4,6 +4,7 @@ import Product from "../models/Product.js";
 import Coupon from "../models/Coupon.js";
 import Settings from "../models/Settings.js";
 import { createAdminNotification } from "../utils/notificationHelper.js";
+import { sendOrderTrackingEmail } from "../utils/orderEmailHelper.js";
 
 /**
  * Helper: Generate unique order number
@@ -280,6 +281,9 @@ export const placeOrder = async (req, res) => {
     cart.totalItems = 0;
     cart.totalPrice = 0;
     await cart.save();
+
+    // 10. Automatically send the order tracking ID to customer as mail
+    sendOrderTrackingEmail(order, req.user);
 
     res.status(201).json({
       success: true,
