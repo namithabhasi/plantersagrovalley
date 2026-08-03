@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
+import axios from '../api/axiosInstance';
 
 function Trackorder() {
-  const [trackingType, setTrackingType] = useState('orderNumber');
   const [trackingId, setTrackingId] = useState('');
   const [contactInfo, setContactInfo] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,7 +30,7 @@ function Trackorder() {
 
     let hasError = false;
     if (!trackingId.trim()) {
-      setTrackingIdError(trackingType === 'orderNumber' ? 'Order number is required.' : 'Tracking number is required.');
+      setTrackingIdError('Tracking ID is required.');
       hasError = true;
     }
     if (!contactInfo.trim()) {
@@ -45,33 +45,22 @@ function Trackorder() {
     setTrackedData(null);
     setLoading(true);
 
-    // Simulate API request delay
-    setTimeout(() => {
-      setLoading(false);
-
-      // Generate a mock response matching the design tokens
-      setTrackedData({
-        orderId: trackingType === 'orderNumber' ? trackingId.trim().toUpperCase() : 'PLA-2026-78901',
-        trackingNumber: trackingType === 'trackingNumber' ? trackingId.trim().toUpperCase() : 'TRK-987654321',
-        status: 'In Transit',
-        statusText: 'Your order is currently in transit and is expected to arrive on schedule.',
-        estimatedDelivery: 'August 02, 2026',
-        receiverName: 'Namith Bhasi',
-        deliveryCity: 'Kochi, Kerala',
-        steps: [
-          { label: 'Order Placed', date: 'July 28, 2026 10:14 AM', completed: true },
-          { label: 'Payment Confirmed', date: 'July 28, 2026 10:30 AM', completed: true },
-          { label: 'Packed & Ready', date: 'July 29, 2026 09:45 AM', completed: true },
-          { label: 'Shipped (In Transit)', date: 'July 29, 2026 02:15 PM', completed: true },
-          { label: 'Out for Delivery', date: 'Pending', completed: false },
-          { label: 'Delivered', date: 'Pending', completed: false }
-        ],
-        items: [
-          { name: 'Dracaena Mahatma Plant', quantity: 2, category: 'Air Purifying' },
-          { name: 'Organic Vermicompost - 5kg', quantity: 1, category: 'Fertilizers' }
-        ]
+    axios.post("/orders/track", {
+      trackingId: trackingId.trim(),
+      contactInfo: contactInfo.trim()
+    })
+      .then(response => {
+        setLoading(false);
+        if (response.data && response.data.success) {
+          setTrackedData(response.data.data);
+        } else {
+          setError(response.data.message || 'Could not retrieve tracking details.');
+        }
+      })
+      .catch(err => {
+        setLoading(false);
+        setError(err.response?.data?.message || 'Order not found or invalid details provided.');
       });
-    }, 900);
   };
 
   return (
@@ -95,48 +84,12 @@ function Trackorder() {
               Track Your Order
             </h1>
             <p className="text-xs text-gray-500 font-light leading-relaxed">
-              Just enter your Order ID or Tracking Number & it's done.
+              Just enter your Tracking ID & it's done.
             </p>
           </div>
 
           {/* Form */}
           <form onSubmit={handleTrack} className="flex flex-col gap-4">
-            
-            {/* Custom Radios - Clean and styled using primary green */}
-            <div className="flex justify-center items-center gap-6 py-1">
-              <label className="flex items-center gap-2 cursor-pointer text-xs text-gray-600 font-light select-none">
-                <input
-                  type="radio"
-                  name="trackingType"
-                  value="orderNumber"
-                  checked={trackingType === 'orderNumber'}
-                  onChange={() => {
-                    setTrackingType('orderNumber');
-                    setTrackedData(null);
-                    setTrackingIdError('');
-                    setContactInfoError('');
-                  }}
-                  className="w-3.5 h-3.5 accent-[#06492D] cursor-pointer"
-                />
-                Order Number
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer text-xs text-gray-600 font-light select-none">
-                <input
-                  type="radio"
-                  name="trackingType"
-                  value="trackingNumber"
-                  checked={trackingType === 'trackingNumber'}
-                  onChange={() => {
-                    setTrackingType('trackingNumber');
-                    setTrackedData(null);
-                    setTrackingIdError('');
-                    setContactInfoError('');
-                  }}
-                  className="w-3.5 h-3.5 accent-[#06492D] cursor-pointer"
-                />
-                Tracking Number
-              </label>
-            </div>
 
             {/* Inputs with 3px border-radius and no icons */}
             <div className="flex flex-col gap-3">
@@ -144,7 +97,7 @@ function Trackorder() {
                 <input
                   required
                   type="text"
-                  placeholder={trackingType === 'orderNumber' ? 'Enter order number' : 'Enter tracking number'}
+                  placeholder="Enter Tracking ID (e.g. PLA-XXXX)"
                   value={trackingId}
                   onChange={(e) => handleTrackingIdChange(e.target.value)}
                   style={{ borderRadius: '3px' }}

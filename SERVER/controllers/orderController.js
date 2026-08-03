@@ -782,3 +782,200 @@ export const deleteOrder = async (req, res) => {
     });
   }
 };
+
+/**
+ * @desc Track Order by Tracking ID (orderNumber) and contact info (email/phone)
+ * @route POST /api/orders/track
+ * @access Public
+ */
+export const trackOrder = async (req, res) => {
+  try {
+    const { trackingId, contactInfo } = req.body;
+
+    if (!trackingId || !contactInfo) {
+      return res.status(400).json({
+        success: false,
+        message: "Tracking ID and contact information are required.",
+      });
+    }
+
+    const trimmedTrackingId = trackingId.trim();
+    const trimmedContactInfo = contactInfo.trim().toLowerCase();
+
+    // Query order by orderNumber
+    const order = await Order.findOne({
+      orderNumber: { $regex: new RegExp("^" + trimmedTrackingId.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') + "$", "i") },
+      isDeleted: false,
+    })
+      .populate("user", "firstName lastName email phone")
+      .populate({
+        path: "items.product",
+        select: "name category",
+        populate: {
+          path: "category",
+          select: "name",
+        },
+      });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found with the provided Tracking ID.",
+      });
+    }
+
+    // Validate that contactInfo matches user email, user phone, or shipping phone
+    const userEmail = order.user && order.user.email ? order.user.email.toLowerCase() : "";
+    const userPhone = order.user && order.user.phone ? order.user.phone.replace(/[^0-9]/g, "") : "";
+    const shippingPhone = order.shippingAddress && order.shippingAddress.phone ? order.shippingAddress.phone.replace(/[^0-9]/g, "") : "";
+    const cleanedInputContact = trimmedContactInfo.replace(/[^0-9a-zA-Z@.]/g, "");
+
+    const matchesEmail = userEmail === trimmedContactInfo;
+    const matchesUserPhone = userPhone && (userPhone.endsWith(cleanedInputContact) || cleanedInputContact.endsWith(userPhone));
+    const matchesShippingPhone = shippingPhone && (shippingPhone.endsWith(cleanedInputContact) || cleanedInputContact.endsWith(shippingPhone));
+
+    if (!matchesEmail && !matchesUserPhone && !matchesShippingPhone) {
+      return res.status(403).json({
+        success: false,
+        message: "The contact information provided does not match our records for this order.",
+      });
+    }
+
+    // Determine status description text
+    let statusText = "";
+    switch (order.orderStatus) {
+      case "Pending":
+        statusText = "Your order is currently pending confirmation.";
+        break;
+      case "Confirmed":
+        statusText = "Your order has been confirmed and payment verified.";
+        break;
+      case "Processing":
+        statusText = "Your order is being processed and prepared.";
+        break;
+      case "Packed":
+        statusText = "Your order has been packed and is ready for shipment.";
+        break;
+      case "Shipped":
+        statusText = "Your order is currently in transit and is expected to arrive on schedule.";
+        break;
+      case "Delivered":
+        statusText = "Your order has been delivered successfully. Thank you for shopping with us!";
+        break;
+      case "Cancelled":
+        statusText = "Your order has been cancelled.";
+        break;
+      default:
+        statusText = "Your order status is updated.";
+    }
+
+    // Dynamic steps generation
+    const standardSteps = [
+      { label: "Order Placed", key: "Pending" },
+      { label: "Payment Confirmed", key: "Confirmed" },
+      { label: "Packed & Ready", key: "Packed" },
+      { label: "Shipped (In Transit)", key: "Shipped" },
+      { label: "Delivered", key: "Delivered" },
+    ];
+
+    const historyMap = {};
+    if (order.statusHistory) {
+      order.statusHistory.forEach((h) => {
+        historyMap[h.status] = h.updatedAt;
+      });
+    }
+
+    const statusSequence = ["Pending", "Confirmed", "Processing", "Packed", "Shipped", "Delivered"];
+    const currentIdx = statusSequence.indexOf(order.orderStatus);
+
+    const steps = standardSteps.map((step) => {
+      let completed = false;
+      let date = "Pending";
+      const stepIdx = statusSequence.indexOf(step.key);
+
+      if (step.key === "Packed") {
+        const packedDate = historyMap["Packed"];
+        const procDate = historyMap["Processing"];
+        const resolvedDate = packedDate || procDate;
+
+        if (resolvedDate) {
+          completed = true;
+          date = new Date(resolvedDate).toLocaleString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          });
+        } else if (currentIdx >= statusSequence.indexOf("Processing")) {
+          completed = true;
+          date = order.updatedAt
+            ? new Date(order.updatedAt).toLocaleString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true,
+              })
+            : "Completed";
+        }
+      } else {
+        const statusDate = historyMap[step.key];
+        if (statusDate) {
+          completed = true;
+          date = new Date(statusDate).toLocaleString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          });
+        } else if (currentIdx >= stepIdx && stepIdx !== -1) {
+          completed = true;
+          date = "Completed";
+        }
+      }
+
+      return {
+        label: step.label,
+        date,
+        completed,
+      };
+    });
+
+    const formattedItems = order.items.map((item) => ({
+      name: item.name,
+      quantity: item.quantity,
+      category: (item.product && item.product.category && item.product.category.name) || "General",
+    }));
+
+    res.status(200).json({
+      success: true,
+      data: {
+        orderId: order.orderNumber,
+        trackingNumber: order.trackingNumber || "N/A",
+        status: order.orderStatus,
+        statusText,
+        estimatedDelivery: order.estimatedDelivery
+          ? new Date(order.estimatedDelivery).toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })
+          : "Pending updates",
+        receiverName: order.shippingAddress.receiverName,
+        deliveryCity: `${order.shippingAddress.city}, ${order.shippingAddress.state}`,
+        steps,
+        items: formattedItems,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while tracking the order: " + error.message,
+    });
+  }
+};
