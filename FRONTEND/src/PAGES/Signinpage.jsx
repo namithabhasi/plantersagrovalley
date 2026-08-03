@@ -13,12 +13,14 @@ function Signinpage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { cartItems, syncLocalCartToBackend } = useCart();
 
   // Form States
   const [formData, setFormData] = useState({
+    name: '',
     firstName: '',
     lastName: '',
     phone: '',
@@ -142,10 +144,21 @@ function Signinpage() {
 
   const validateRegister = () => {
     const newErrors = {};
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = 'First name is required';
-    } else if (formData.firstName.trim().length < 2 || formData.firstName.trim().length > 50) {
-      newErrors.firstName = 'First name must be between 2 and 50 characters';
+    if (!formData.name || !formData.name.trim()) {
+      newErrors.name = 'Full name is required';
+    } else {
+      const nameParts = formData.name.trim().split(/\s+/);
+      if (nameParts.length < 2) {
+        newErrors.name = 'Please enter both your first and last name';
+      } else if (nameParts[0].length < 2 || nameParts[0].length > 50) {
+        newErrors.name = 'First name must be between 2 and 50 characters';
+      }
+    }
+
+    if (!formData.phone || !formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    } else if (!/^\+?[0-9\s\-()]{10,15}$/.test(formData.phone.trim())) {
+      newErrors.phone = 'Please enter a valid phone number';
     }
 
     if (!formData.email.trim()) {
@@ -156,13 +169,11 @@ function Signinpage() {
 
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (isRegister) {
+    } else {
       const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
       if (!passwordRegex.test(formData.password)) {
         newErrors.password = 'Password does not meet complexity requirements';
       }
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
     }
 
     if (formData.password !== formData.confirmPassword) {
@@ -184,12 +195,16 @@ function Signinpage() {
       if (!validateRegister()) return;
       try {
         setLoading(true);
+        const nameParts = formData.name.trim().split(/\s+/);
+        const firstName = nameParts[0] || '';
+        const lastName = nameParts.slice(1).join(' ') || '';
+
         const payload = {
-          firstName: formData.firstName.trim(),
-          lastName: formData.lastName.trim(),
+          firstName,
+          lastName,
           email: formData.email.trim(),
           password: formData.password,
-          phone: formData.phone.trim(),
+          phone: formData.phone ? formData.phone.trim() : '',
         };
         const { data } = await axiosInstance.post('/auth/register', payload);
         if (data.success) {
@@ -266,23 +281,43 @@ function Signinpage() {
       {/* Form Container */}
       <form onSubmit={handleSubmit} noValidate className={`flex flex-col w-full ${isRegister ? 'gap-3' : 'gap-4'}`}>
         {isRegister && (
-          <div className="flex flex-col gap-1">
-            <label className="text-[10px] font-semibold uppercase tracking-wider text-black">
-              Full Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              placeholder="Enter your name"
-              className={`w-full bg-[#fcfcfc] border px-3.5 py-2.5 text-xs focus:bg-white outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-300 ${errors.name ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
-                }`}
-            />
-            {errors.name && (
-              <span className="text-[10px] text-red-600 mt-0.5">{errors.name}</span>
-            )}
-          </div>
+          <>
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] font-semibold uppercase tracking-wider text-black">
+                Full Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                placeholder="Enter your name"
+                className={`w-full bg-[#fcfcfc] border px-3.5 py-2.5 text-xs focus:bg-white outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-300 ${errors.name ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                  }`}
+              />
+              {errors.name && (
+                <span className="text-[10px] text-red-600 mt-0.5">{errors.name}</span>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] font-semibold uppercase tracking-wider text-black">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                placeholder="Enter your phone number"
+                className={`w-full bg-[#fcfcfc] border px-3.5 py-2.5 text-xs focus:bg-white outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-300 ${errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                  }`}
+              />
+              {errors.phone && (
+                <span className="text-[10px] text-red-600 mt-0.5">{errors.phone}</span>
+              )}
+            </div>
+          </>
         )}
 
         <div className="flex flex-col gap-1">
@@ -411,10 +446,23 @@ function Signinpage() {
         {/* Submit Button */}
         <button
           type="submit"
-          className="btn btn-primary rounded-none w-full py-3 text-xs font-normal transition-all duration-300 uppercase tracking-[2px] mt-2"
+          disabled={loading}
+          className="btn btn-primary rounded-none w-full py-3 text-xs font-normal transition-all duration-300 uppercase tracking-[2px] mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isRegister ? 'Register' : 'Sign In'}
+          {loading ? 'Please wait...' : (isRegister ? 'Register' : 'Sign In')}
         </button>
+
+        {/* Divider */}
+        <div className="flex items-center my-2">
+          <div className="flex-grow border-t border-gray-200"></div>
+          <span className="flex-shrink mx-4 text-gray-400 text-[10px] uppercase tracking-wider font-semibold">or</span>
+          <div className="flex-grow border-t border-gray-200"></div>
+        </div>
+
+        {/* Google Sign In Button */}
+        <div className="w-full flex justify-center mt-1">
+          <div id="google-signin-btn" className="w-full"></div>
+        </div>
       </form>
 
       {/* Toggle Account Action */}
