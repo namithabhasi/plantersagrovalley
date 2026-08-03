@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FaCalendarAlt, FaChevronLeft, FaChevronRight, FaArrowLeft, FaClock, FaTag, FaArrowRight } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import axiosInstance from '../api/axiosInstance';
+
 
 // Import local assets from the assets directory to replace all Unsplash links
 import anthuriumPic from '../assets/Anthurium.png';
@@ -304,18 +306,42 @@ function Blog() {
   const [currentPage, setCurrentPage] = useState(pageParam);
   const [emailInput, setEmailInput] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [fetchedBlogs, setFetchedBlogs] = useState([]);
+
+  // Fetch blogs from API
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const { data } = await axiosInstance.get('/blogs?activeOnly=true');
+        if (data.success && data.blogs) {
+          const blogsWithId = data.blogs.map((b) => ({
+            ...b,
+            id: b._id, // Assign _id to id to prevent breaking page navigation
+          }));
+          setFetchedBlogs(blogsWithId);
+        }
+      } catch (error) {
+        console.error("Failed to fetch custom blogs:", error);
+      }
+    };
+    fetchBlogs();
+  }, []);
+
+  const allBlogs = React.useMemo(() => {
+    return [...BLOG_POSTS, ...fetchedBlogs];
+  }, [fetchedBlogs]);
 
   // Pagination config:
   // - Post 0 is the Featured Post (displayed only on page 1).
   // - The remaining posts are paginated separately at exactly 6 grid cards per page.
   const postsPerPage = 6;
-  const featuredPost = BLOG_POSTS[0];
-  const remainingPosts = BLOG_POSTS.slice(1);
+  const featuredPost = allBlogs[0];
+  const remainingPosts = allBlogs.slice(1);
 
   // Handle syncing state with URL parameters
   useEffect(() => {
     if (blogIdParam) {
-      const foundBlog = BLOG_POSTS.find(post => post.id === parseInt(blogIdParam));
+      const foundBlog = allBlogs.find(post => String(post.id) === String(blogIdParam));
       if (foundBlog) {
         setSelectedBlog(foundBlog);
         window.scrollTo(0, 0);
@@ -327,7 +353,9 @@ function Blog() {
       setSelectedBlog(null);
       setCurrentPage(pageParam);
     }
-  }, [blogIdParam, pageParam, navigate]);
+  }, [blogIdParam, pageParam, navigate, allBlogs]);
+
+
 
   // Navigate helper to change pages
   const handlePageChange = (pageNumber) => {
@@ -351,7 +379,7 @@ function Blog() {
     e.preventDefault();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const cleanedEmail = emailInput.trim().toLowerCase();
-    
+
     if (!cleanedEmail) {
       setErrorMsg("Email address cannot be empty.");
       return;
@@ -385,16 +413,17 @@ function Blog() {
 
   // If Detail View is active
   if (selectedBlog) {
-    const relatedPosts = BLOG_POSTS
-      .filter(post => post.id !== selectedBlog.id)
+    const relatedPosts = allBlogs
+      .filter(post => String(post.id) !== String(selectedBlog.id))
       .slice(0, 3);
+
 
     return (
       <div className="page-section bg-[var(--color-bg-main)] py-12">
         {/* Container styled exactly like Privacy Policy layout for clean text content alignment */}
         <div className="container flex justify-center mx-auto px-4 sm:px-6 lg:px-8">
           <div className="w-full max-w-[800px] flex flex-col gap-8">
-            
+
             {/* Back Button */}
             <div className="flex justify-start">
               <button
@@ -407,7 +436,7 @@ function Blog() {
 
             {/* Detailed Blog Container */}
             <div className="w-full flex flex-col gap-6">
-              
+
               {/* Meta Tags (Always Left Aligned) */}
               <div className="flex flex-wrap items-center justify-start gap-4 text-xs font-semibold text-[var(--color-primary)] uppercase tracking-widest font-[Poppins]">
                 <span className="bg-[var(--color-primary-subtle)] text-[var(--color-primary-dark)] px-3 py-1 rounded-[3px] flex items-center gap-1.5">
@@ -441,11 +470,12 @@ function Blog() {
               <img 
                 src={selectedBlog.image} 
                 alt={selectedBlog.title} 
-                style={{ display: 'block', width: '100%', maxWidth: '100%', height: 'auto', maxHeight: '380px', objectFit: 'cover', borderRadius: '3px', margin: '12px auto' }}
+                className={selectedBlog.imagePublicId ? 'dynamic-blog-image' : ''}
+                style={{ display: 'block', width: '100%', maxWidth: '100%', height: 'auto', maxHeight: '380px', borderRadius: '3px', margin: '12px auto' }}
               />
 
               {/* Content Body (Justified align, custom tag rules applied inside content string) */}
-              <div 
+              <div
                 className="blog-detail-content font-sans text-[var(--color-text-main)] text-[16px] leading-[1.8]"
                 style={{ marginTop: '20px' }}
                 dangerouslySetInnerHTML={{ __html: selectedBlog.content }}
@@ -459,7 +489,7 @@ function Blog() {
                 <p className="text-sm text-[var(--color-text-main)] font-sans w-full" style={{ marginBottom: '0px' }}>
                   Subscribe to our newsletters or share it with fellow plant enthusiasts to help spread the green movement!
                 </p>
-                
+
                 {/* Horizontal Centering container wrapping the form element */}
                 <div className="flex justify-center w-full" style={{ marginTop: '36px' }}>
                   <form onSubmit={handleSubscribe} className="w-full max-w-[320px] text-left" style={{ marginTop: '16px' }}>
@@ -474,8 +504,8 @@ function Blog() {
                         placeholder="Enter email here"
                         className="flex-1 bg-transparent text-xs sm:text-sm outline-none placeholder:text-gray-400 text-[var(--color-text-main)] !border-none !p-0 font-sans font-light select-text"
                       />
-                      <button 
-                        type="submit" 
+                      <button
+                        type="submit"
                         className="text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] transition-colors ml-3 cursor-pointer bg-transparent border-none p-0 flex items-center justify-center"
                       >
                         <FaArrowRight size={16} />
@@ -498,19 +528,20 @@ function Blog() {
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                   {relatedPosts.map(post => (
-                    <div 
-                      key={post.id} 
+                    <div
+                      key={post.id}
                       onClick={() => handleReadBlog(post.id)}
                       className="group cursor-pointer flex flex-col h-full bg-[var(--color-bg-main)] border border-[var(--color-border)] rounded-[3px] overflow-hidden hover:bg-[var(--color-primary-bg)] transition-colors duration-300"
+                      style={{ display: 'flex', flexDirection: 'column' }}
                     >
-                      <div className="w-full h-36 overflow-hidden bg-[var(--color-bg-secondary)] shrink-0 rounded-t-[3px]">
-                        <img 
-                          src={post.image} 
-                          alt={post.title} 
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
+                      <div className="h-56 w-full flex items-center justify-center bg-gray-100">
+                      <img
+                        src={post.image}
+                        alt={post.title}
+                        className={`w-full h-full group-hover:scale-105 transition-transform duration-500 ${post.imagePublicId ? 'dynamic-blog-image' : 'object-cover'}`}
+                      />
                       </div>
-                      <div className="p-4 flex flex-col flex-grow bg-transparent" style={{ paddingBottom: '20px' }}>
+                      <div className="p-4 flex flex-col bg-transparent" style={{ paddingBottom: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
                         <span className="text-[10px] font-semibold text-[var(--color-primary)] uppercase tracking-wider font-[Poppins] block text-left mb-1.5">
                           {post.category}
                         </span>
@@ -538,9 +569,9 @@ function Blog() {
   return (
     <div className="page-section bg-[var(--color-bg-main)] py-12">
       <div className="container">
-        
+
         {/* Horizontally & Vertically Centered Header & Intro Section */}
-        <div 
+        <div
           className="flex flex-col items-center justify-center text-center w-full px-6"
           style={{ marginBottom: '60px', paddingBottom: '10px' }}
         >
@@ -556,9 +587,9 @@ function Blog() {
         </div>
 
         {/* Featured Post (Only on Page 1) - Card container matching Home.jsx with explicit margins */}
-        {currentPage === 1 && BLOG_POSTS.length > 0 && (
+        {currentPage === 1 && allBlogs.length > 0 && (
           <div className="w-full block" style={{ marginBottom: '60px' }}>
-            <div 
+            <div
               onClick={() => handleReadBlog(featuredPost.id)}
               className="group cursor-pointer bg-[var(--color-bg-main)] border border-[var(--color-border)] rounded-[3px] overflow-hidden hover:bg-[var(--color-primary-bg)] transition-colors duration-300 flex flex-col lg:flex-row w-full gap-0"
               style={{ minHeight: '360px' }}
@@ -568,9 +599,9 @@ function Blog() {
                 <img 
                   src={featuredPost.image} 
                   alt={featuredPost.title} 
-                  className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700 ease-out"
+                  className={`w-full h-full group-hover:scale-[1.02] transition-transform duration-700 ease-out ${featuredPost.imagePublicId ? 'dynamic-blog-image' : 'object-cover'}`}
                 />
-                
+
                 {/* Image Glassmorphic overlay */}
                 <div className="absolute inset-0 p-6 flex items-center justify-center pointer-events-none">
                   <div className="max-w-[85%] bg-white/45 backdrop-blur-md border border-white/20 p-4 sm:p-6 rounded-[8px] text-center shadow-lg transition-all duration-300 group-hover:bg-white/60">
@@ -582,25 +613,25 @@ function Blog() {
               </div>
 
               {/* Featured Post Details (Padded explicitly with inline styles) */}
-              <div 
+              <div
                 className="w-full lg:w-[45%] flex flex-col justify-center flex-grow bg-transparent"
                 style={{ padding: '30px', minHeight: '350px' }}
               >
-                <span 
+                <span
                   className="text-xs font-semibold text-[var(--color-primary)] uppercase tracking-widest font-[Poppins] text-left block"
                   style={{ marginBottom: '6px' }}
                 >
                   FEATURED • {featuredPost.category}
                 </span>
-                
-                <h2 
+
+                <h2
                   className="font-[var(--font-family-heading)] text-xl sm:text-2xl lg:text-3xl font-semibold text-[var(--color-primary-dark)] group-hover:text-[var(--color-primary)] transition-colors duration-200 leading-snug text-left"
                   style={{ marginBottom: '12px' }}
                 >
                   {featuredPost.title}
                 </h2>
-                
-                <div 
+
+                <div
                   className="flex justify-between items-center text-xs text-[var(--color-text-main)] font-sans font-medium"
                   style={{ marginBottom: '14px' }}
                 >
@@ -610,7 +641,7 @@ function Blog() {
                   <span className="text-[var(--color-primary-dark)]">{featuredPost.readTime}</span>
                 </div>
 
-                <p 
+                <p
                   className="font-sans text-sm text-[var(--color-text-main)] leading-relaxed text-left line-clamp-4"
                   style={{ textAlign: 'justify', textJustify: 'inter-word', marginBottom: '20px' }}
                 >
@@ -628,93 +659,170 @@ function Blog() {
         )}
 
         {/* Blog Post Grid - Fully styled with 6 grid cards per page */}
-        <div 
+        <div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full"
           style={{ gap: '48px 32px', marginTop: '60px', clear: 'both' }}
         >
-          {currentGridPosts.map(post => (
-            <div 
-              key={post.id} 
-              onClick={() => handleReadBlog(post.id)}
-              className="group cursor-pointer flex flex-col bg-[var(--color-bg-main)] border border-[var(--color-border)] rounded-[3px] overflow-hidden hover:bg-[var(--color-primary-bg)] transition-colors duration-300 h-full w-full"
-              style={{ marginBottom: '16px' }}
-            >
-              {/* Card Image Container (More compact height in desktop) */}
-              <div className="relative h-48 sm:h-52 md:h-48 lg:h-44 w-full overflow-hidden bg-[var(--color-bg-secondary)] shrink-0">
-                <img 
-                  src={post.image} 
-                  alt={post.title} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                
-                {/* Glassmorphic miniature overlay */}
-                <div className="absolute inset-0 p-4 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="max-w-[90%] bg-white/45 backdrop-blur-md border border-white/20 p-3 rounded-[8px] text-center shadow-md">
-                    <h4 className="font-[var(--font-family-heading)] text-xs font-semibold text-[var(--color-primary-dark)] line-clamp-2">
+          {currentGridPosts.map(post => {
+            console.log("Post:", post.title, "ID:", post.id, "Type:", typeof post.id, "imagePublicId:", post.imagePublicId, "Fit:", post.imagePublicId ? 'contain' : 'cover');
+            
+            if (post.imagePublicId) {
+              /* DYNAMIC CARD JSX (Centered text, grid auto 1fr template stretching layout) */
+              return (
+                <div 
+                  key={post.id} 
+                  onClick={() => handleReadBlog(post.id)}
+                  className="group cursor-pointer flex flex-col h-full bg-[var(--color-bg-main)] border border-[var(--color-border)] rounded-[3px] overflow-hidden hover:bg-[var(--color-primary-bg)] transition-colors duration-300 w-full"
+                  style={{ marginBottom: '16px' }}
+                >
+                  {/* Card Image Container (More compact height in desktop) */}
+                  <div className="relative h-48 sm:h-52 md:h-48 lg:h-44 w-full overflow-hidden bg-[var(--color-bg-secondary)] shrink-0">
+                    <img 
+                      src={post.image} 
+                      alt={post.title} 
+                      className="w-full h-full group-hover:scale-105 transition-transform duration-500 dynamic-blog-image"
+                    />
+                    
+                    {/* Glassmorphic miniature overlay */}
+                    <div className="absolute inset-0 p-4 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="max-w-[90%] bg-white/45 backdrop-blur-md border border-white/20 p-3 rounded-[8px] text-center shadow-md">
+                        <h4 className="font-[var(--font-family-heading)] text-xs font-semibold text-[var(--color-primary-dark)] line-clamp-2">
+                          {post.title}
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card Details (Spaced, padded with tighter inline styles for compact viewport fit) */}
+                  <div 
+                    className="flex flex-col bg-transparent flex-grow"
+                    style={{ padding: '16px 20px 31px 20px' }}
+                  >
+                    <span 
+                      className="text-[10px] font-semibold text-[var(--color-primary)] uppercase tracking-wider font-[Poppins] block text-left"
+                      style={{ marginBottom: '6px' }}
+                    >
+                      {post.category}
+                    </span>
+
+                    <h3 
+                      className="font-[var(--font-family-heading)] text-base font-semibold text-[var(--color-primary-dark)] group-hover:text-[var(--color-primary)] transition-colors duration-200 line-clamp-2 leading-snug text-left"
+                      style={{ marginBottom: '12px' }}
+                    >
                       {post.title}
-                    </h4>
+                    </h3>
+
+                    <div 
+                      className="flex justify-between items-center text-xs text-[var(--color-text-main)] font-sans font-medium"
+                      style={{ marginBottom: '14px' }}
+                    >
+                      <span>{post.date}</span>
+                      <span className="text-[var(--color-primary-dark)]">{post.readTime}</span>
+                    </div>
+
+                    <div className="flex-grow flex items-center w-full" style={{ marginBottom: '20px' }}>
+                      <p 
+                        className="font-sans text-sm text-[var(--color-text-main)] leading-relaxed text-left line-clamp-4 w-full"
+                        style={{ textAlign: 'justify', textJustify: 'inter-word', margin: 0 }}
+                      >
+                        {post.summary}
+                      </p>
+                    </div>
+
+                    <div className="mt-auto flex justify-end">
+                      <span className="inline-flex items-center text-xs font-semibold uppercase tracking-wider text-[var(--color-primary-dark)] group-hover:text-[var(--color-primary)] transition-colors duration-200 font-[Poppins]">
+                        Read more <span className="ml-1.5">—</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            /* STATIC CARD JSX (Completely untouched original static card layout) */
+            return (
+              <div 
+                key={post.id} 
+                onClick={() => handleReadBlog(post.id)}
+                className="group cursor-pointer flex flex-col h-full bg-[var(--color-bg-main)] border border-[var(--color-border)] rounded-[3px] overflow-hidden hover:bg-[var(--color-primary-bg)] transition-colors duration-300 h-full w-full"
+                style={{ marginBottom: '16px' }}
+              >
+                {/* Card Image Container (More compact height in desktop) */}
+                <div className="relative h-48 sm:h-52 md:h-48 lg:h-44 w-full overflow-hidden bg-[var(--color-bg-secondary)] shrink-0">
+                  <img 
+                    src={post.image} 
+                    alt={post.title} 
+                    className="w-full h-full group-hover:scale-105 transition-transform duration-500 object-cover"
+                  />
+                  
+                  {/* Glassmorphic miniature overlay */}
+                  <div className="absolute inset-0 p-4 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="max-w-[90%] bg-white/45 backdrop-blur-md border border-white/20 p-3 rounded-[8px] text-center shadow-md">
+                      <h4 className="font-[var(--font-family-heading)] text-xs font-semibold text-[var(--color-primary-dark)] line-clamp-2">
+                        {post.title}
+                      </h4>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Card Details (Spaced, padded with tighter inline styles for compact viewport fit) */}
+                <div 
+                  className="flex flex-col bg-transparent flex-grow"
+                  style={{ padding: '16px 20px' }}
+                >
+                  <span 
+                    className="text-[10px] font-semibold text-[var(--color-primary)] uppercase tracking-wider font-[Poppins] block text-left"
+                    style={{ marginBottom: '6px' }}
+                  >
+                    {post.category}
+                  </span>
+
+                  <h3 
+                    className="font-[var(--font-family-heading)] text-base font-semibold text-[var(--color-primary-dark)] group-hover:text-[var(--color-primary)] transition-colors duration-200 line-clamp-2 leading-snug text-left"
+                    style={{ marginBottom: '12px' }}
+                  >
+                    {post.title}
+                  </h3>
+
+                  <div 
+                    className="flex justify-between items-center text-xs text-[var(--color-text-main)] font-sans font-medium"
+                    style={{ marginBottom: '14px' }}
+                  >
+                    <span>{post.date}</span>
+                    <span className="text-[var(--color-primary-dark)]">{post.readTime}</span>
+                  </div>
+
+                  <p 
+                    className="font-sans text-sm text-[var(--color-text-main)] leading-relaxed text-left line-clamp-4"
+                    style={{ textAlign: 'justify', textJustify: 'inter-word', marginBottom: '20px' }}
+                  >
+                    {post.summary}
+                  </p>
+
+                  <div className="mt-auto flex justify-end">
+                    <span className="inline-flex items-center text-xs font-semibold uppercase tracking-wider text-[var(--color-primary-dark)] group-hover:text-[var(--color-primary)] transition-colors duration-200 font-[Poppins]">
+                      Read more <span className="ml-1.5">—</span>
+                    </span>
                   </div>
                 </div>
               </div>
-
-              {/* Card Details (Spaced, padded with tighter inline styles for compact viewport fit) */}
-              <div 
-                className="flex flex-col flex-grow bg-transparent"
-                style={{ padding: '16px 20px' }}
-              >
-                <span 
-                  className="text-[10px] font-semibold text-[var(--color-primary)] uppercase tracking-wider font-[Poppins] block text-left"
-                  style={{ marginBottom: '6px' }}
-                >
-                  {post.category}
-                </span>
-
-                <h3 
-                  className="font-[var(--font-family-heading)] text-base font-semibold text-[var(--color-primary-dark)] group-hover:text-[var(--color-primary)] transition-colors duration-200 line-clamp-2 leading-snug text-left"
-                  style={{ marginBottom: '12px' }}
-                >
-                  {post.title}
-                </h3>
-
-                <div 
-                  className="flex justify-between items-center text-xs text-[var(--color-text-main)] font-sans font-medium"
-                  style={{ marginBottom: '14px' }}
-                >
-                  <span>{post.date}</span>
-                  <span className="text-[var(--color-primary-dark)]">{post.readTime}</span>
-                </div>
-
-                <p 
-                  className="font-sans text-sm text-[var(--color-text-main)] leading-relaxed text-left line-clamp-4"
-                  style={{ textAlign: 'justify', textJustify: 'inter-word', marginBottom: '20px' }}
-                >
-                  {post.summary}
-                </p>
-
-                <div className="mt-auto flex justify-end">
-                  <span className="inline-flex items-center text-xs font-semibold uppercase tracking-wider text-[var(--color-primary-dark)] group-hover:text-[var(--color-primary)] transition-colors duration-200 font-[Poppins]">
-                    Read more <span className="ml-1.5">—</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Pagination Section (Professional layout positioning, margin top, clear both) */}
         {totalPages > 1 && (
-          <div 
+          <div
             className="w-full flex justify-center items-center gap-2"
             style={{ marginTop: '100px', paddingBottom: '60px', clear: 'both' }}
           >
             <button
               onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
-              className={`flex items-center justify-center w-10 h-10 rounded-[3px] border transition-colors duration-200 ${
-                currentPage === 1 
-                  ? 'border-[var(--color-border)] text-[var(--color-text-light)] cursor-not-allowed bg-transparent' 
-                  : 'border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary-subtle)] cursor-pointer'
-              }`}
+              className={`flex items-center justify-center w-10 h-10 rounded-[3px] border transition-colors duration-200 ${currentPage === 1
+                ? 'border-[var(--color-border)] text-[var(--color-text-light)] cursor-not-allowed bg-transparent'
+                : 'border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary-subtle)] cursor-pointer'
+                }`}
             >
               <FaChevronLeft className="text-xs" />
             </button>
@@ -726,11 +834,10 @@ function Blog() {
                 <button
                   key={pageNumber}
                   onClick={() => handlePageChange(pageNumber)}
-                  className={`w-10 h-10 font-[Poppins] text-sm font-semibold rounded-[3px] border transition-all duration-200 cursor-pointer ${
-                    isActive 
-                      ? 'bg-[var(--color-primary-dark)] border-[var(--color-primary-dark)] text-white' 
-                      : 'border-[var(--color-border)] text-[var(--color-text-main)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]'
-                  }`}
+                  className={`w-10 h-10 font-[Poppins] text-sm font-semibold rounded-[3px] border transition-all duration-200 cursor-pointer ${isActive
+                    ? 'bg-[var(--color-primary-dark)] border-[var(--color-primary-dark)] text-white'
+                    : 'border-[var(--color-border)] text-[var(--color-text-main)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]'
+                    }`}
                 >
                   {pageNumber}
                 </button>
@@ -740,11 +847,10 @@ function Blog() {
             <button
               onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
               disabled={currentPage === totalPages}
-              className={`flex items-center justify-center w-10 h-10 rounded-[3px] border transition-colors duration-200 ${
-                currentPage === totalPages 
-                  ? 'border-[var(--color-border)] text-[var(--color-text-light)] cursor-not-allowed bg-transparent' 
-                  : 'border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary-subtle)] cursor-pointer'
-              }`}
+              className={`flex items-center justify-center w-10 h-10 rounded-[3px] border transition-colors duration-200 ${currentPage === totalPages
+                ? 'border-[var(--color-border)] text-[var(--color-text-light)] cursor-not-allowed bg-transparent'
+                : 'border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary-subtle)] cursor-pointer'
+                }`}
             >
               <FaChevronRight className="text-xs" />
             </button>
