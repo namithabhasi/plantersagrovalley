@@ -307,10 +307,14 @@ const Categories = () => {
             sx={{
               width: { xs: "100%", sm: 350, md: 450 },
               flexShrink: 0,
+              bgcolor: "#ffffff",
+              borderRadius: "var(--radius-lg)",
               "& .MuiOutlinedInput-root": {
                 height: 40,
                 borderRadius: "var(--radius-lg)",
-                borderColor: "var(--color-border)",
+                "& fieldset": {
+                  borderColor: "var(--color-border)",
+                },
               },
             }}
           />
