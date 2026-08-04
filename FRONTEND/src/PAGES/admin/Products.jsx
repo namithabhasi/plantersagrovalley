@@ -365,7 +365,7 @@ const Products = () => {
           direction={{ xs: "column", sm: "row" }}
           spacing={2}
           alignItems={{ xs: "stretch", sm: "center" }}
-          sx={{ width: { xs: "100%", md: "auto" } }}
+          sx={{ width: "100%" }}
         >
           <TextField
             placeholder="Search products by name, brand, SKU or tags..."

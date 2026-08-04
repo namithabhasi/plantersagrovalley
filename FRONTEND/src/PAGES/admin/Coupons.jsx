@@ -28,6 +28,7 @@ import {
   Switch,
   FormControlLabel,
   Grid,
+  Tooltip,
 } from "@mui/material";
 import {
   Add as AddIcon,
@@ -274,7 +275,7 @@ const Coupons = () => {
           direction={{ xs: "column", sm: "row" }}
           spacing={2}
           alignItems={{ xs: "stretch", sm: "center" }}
-          sx={{ width: { xs: "100%", md: "auto" } }}
+          sx={{ width: "100%" }}
         >
           <TextField
             placeholder="Search coupons by Code or Name..."
@@ -292,15 +293,21 @@ const Coupons = () => {
             variant="outlined"
             size="small"
             sx={{
-              width: { xs: "100%", md: 350 },
+              width: { xs: "100%", sm: 350, md: 450 },
+              flexShrink: 0,
+              bgcolor: "#ffffff",
+              borderRadius: "var(--radius-lg)",
               "& .MuiOutlinedInput-root": {
                 height: 40,
-                borderRadius: 2.5,
+                borderRadius: "var(--radius-lg)",
+                "& fieldset": {
+                  borderColor: "var(--color-border)",
+                },
               },
             }}
           />
 
-          <FormControl size="small" sx={{ minWidth: 200 }}>
+          <FormControl size="small" sx={{ minWidth: { xs: "100%", sm: 200 } }}>
             <InputLabel id="discount-filter-label">Filter by Type</InputLabel>
             <Select
               labelId="discount-filter-label"
@@ -312,7 +319,8 @@ const Coupons = () => {
               }}
               sx={{
                 height: 40,
-                borderRadius: 2.5,
+                borderRadius: "var(--radius-lg)",
+                borderColor: "var(--color-border)",
                 "& .MuiSelect-select": {
                   height: 40,
                   display: "flex",
@@ -335,13 +343,17 @@ const Coupons = () => {
           onClick={handleAddClick}
           sx={{
             height: 40,
-            bgcolor: "success.main",
-            "&:hover": { bgcolor: "primary.main" },
+            bgcolor: "var(--color-primary)",
+            color: "#fff",
+            borderRadius: "var(--radius-lg)",
             textTransform: "none",
-            borderRadius: 2.5,
             px: 3,
             whiteSpace: "nowrap",
-            boxShadow: "0 4px 10px rgba(46, 125, 50, 0.15)",
+            boxShadow: "none",
+            "&:hover": {
+              bgcolor: "var(--color-primary-dark)",
+              boxShadow: "none",
+            },
           }}
         >
           Add Coupon
@@ -358,8 +370,8 @@ const Coupons = () => {
           sx={{
             p: 5,
             textAlign: "center",
-            borderRadius: 3,
-            border: "1px dashed #e0e0e0",
+            borderRadius: "var(--radius-lg)",
+            border: "1px dashed var(--color-border)",
             boxShadow: "none",
             bgcolor: "transparent",
           }}
@@ -377,9 +389,10 @@ const Coupons = () => {
         <>
           <TableContainer
             component={Paper}
-            elevation={2}
+            variant="outlined"
             sx={{
-              borderRadius: 3,
+              borderRadius: "var(--radius-lg)",
+              borderColor: "var(--color-border)",
               mt: 2,
               overflowX: "auto",
             }}
@@ -387,14 +400,14 @@ const Coupons = () => {
             <Table>
               <TableHead sx={{ "& .MuiTableCell-head": { bgcolor: "#f5f5f5" } }}>
                 <TableRow>
-                  <TableCell><b>Coupon Code</b></TableCell>
-                  <TableCell><b>Coupon Name</b></TableCell>
-                  <TableCell><b>Discount Details</b></TableCell>
-                  <TableCell><b>Minimum Order</b></TableCell>
-                  <TableCell><b>Limit / Used</b></TableCell>
-                  <TableCell><b>Date Range</b></TableCell>
-                  <TableCell><b>Status</b></TableCell>
-                  <TableCell align="right"><b>Actions</b></TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Coupon Code</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Coupon Name</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Discount Details</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Minimum Order</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Limit / Used</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Date Range</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Status</TableCell>
+                  <TableCell align="right" sx={{ fontWeight: 600, py: 2 }}>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -403,16 +416,22 @@ const Coupons = () => {
                     <TableCell>
                       <Chip
                         label={coupon.code}
+                        size="small"
                         sx={{
                           fontFamily: "monospace",
                           fontWeight: 700,
-                          bgcolor: "success.light",
-                          color: "#fff",
-                          borderRadius: 1,
+                          bgcolor: "#e8f5e9",
+                          color: "var(--color-primary)",
+                          borderRadius: "var(--radius-sm)",
+                          border: "1px solid rgba(27, 122, 66, 0.2)",
                         }}
                       />
                     </TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>{coupon.name}</TableCell>
+                    <TableCell>
+                      <Typography variant="body2" fontWeight={600}>
+                        {coupon.name}
+                      </Typography>
+                    </TableCell>
                     <TableCell>
                       <Typography variant="body2" fontWeight={600}>
                         {coupon.discountType === "percentage" 
@@ -441,46 +460,50 @@ const Coupons = () => {
                       )}
                     </TableCell>
                     <TableCell>
-                      <Box sx={{ display: "flex", flexDirection: "column" }}>
-                        <Typography variant="caption">
-                          <strong>From:</strong> {new Date(coupon.validFrom).toLocaleDateString()}
-                        </Typography>
-                        <Typography variant="caption">
-                          <strong>Until:</strong> {new Date(coupon.validUntil).toLocaleDateString()}
-                        </Typography>
-                      </Box>
+                      <Typography variant="body2">
+                        {new Date(coupon.validFrom).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary" display="block">
+                        to {new Date(coupon.validUntil).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </Typography>
                     </TableCell>
                     <TableCell>
                       <Chip
                         label={coupon.isActive ? "Active" : "Inactive"}
-                        color={coupon.isActive ? "success" : "default"}
+                        color={coupon.isActive ? "success" : "error"}
                         size="small"
-                        sx={{
-                          fontWeight: 500,
-                          px: 1,
-                          bgcolor: coupon.isActive ? "success.main" : "grey.200",
-                          color: coupon.isActive ? "#ffffff" : "text.secondary",
-                        }}
                       />
                     </TableCell>
                     <TableCell align="right">
                       <Stack direction="row" spacing={1} justifyContent="flex-end">
-                        <IconButton
-                          color="primary"
-                          size="small"
-                          onClick={() => handleEditClick(coupon)}
-                          sx={{ bgcolor: "#e3f2fd", "&:hover": { bgcolor: "#bbdefb" } }}
-                        >
-                          <EditIcon fontSize="small" />
-                        </IconButton>
-                        <IconButton
-                          color="error"
-                          size="small"
-                          onClick={() => handleDeleteClick(coupon)}
-                          sx={{ bgcolor: "#ffebee", "&:hover": { bgcolor: "#ffcdd2" } }}
-                        >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
+                        <Tooltip title="Edit Coupon">
+                          <IconButton
+                            color="primary"
+                            size="small"
+                            onClick={() => handleEditClick(coupon)}
+                            sx={{ bgcolor: "#e3f2fd", "&:hover": { bgcolor: "#bbdefb" } }}
+                          >
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete Coupon">
+                          <IconButton
+                            color="error"
+                            size="small"
+                            onClick={() => handleDeleteClick(coupon)}
+                            sx={{ bgcolor: "#ffebee", "&:hover": { bgcolor: "#ffcdd2" } }}
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
                       </Stack>
                     </TableCell>
                   </TableRow>
@@ -510,7 +533,11 @@ const Coupons = () => {
         fullWidth
         slotProps={{
           paper: {
-            sx: { borderRadius: 3, p: 1 },
+            sx: {
+              borderRadius: "var(--radius-lg)",
+              boxShadow: "none",
+              border: "1px solid var(--color-border)",
+            },
           },
         }}
       >
@@ -518,7 +545,15 @@ const Coupons = () => {
           {isEditMode ? "Edit Coupon Details" : "Add New Coupon"}
         </DialogTitle>
         <Box component="form" onSubmit={handleSubmit}>
-          <DialogContent sx={{ px: 3, py: 1 }}>
+          <DialogContent
+            sx={{
+              px: 3,
+              py: 1,
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "var(--radius-lg)",
+              },
+            }}
+          >
             <Grid container spacing={2.5}>
               <Grid item xs={12} md={6}>
                 <TextField
@@ -690,12 +725,48 @@ const Coupons = () => {
               </Grid>
             </Grid>
           </DialogContent>
-          <DialogActions sx={{ px: 3, py: 2 }}>
-            <Button onClick={() => setFormOpen(false)} disabled={submitting} sx={{ color: "text.secondary" }}>
+          <DialogActions sx={{ px: 3, py: 2, bgcolor: "#f8f9fa", borderTop: "1px solid var(--color-border)" }}>
+            <Button
+              onClick={() => setFormOpen(false)}
+              variant="outlined"
+              disabled={submitting}
+              sx={{
+                color: "var(--color-primary)",
+                borderColor: "var(--color-border)",
+                borderRadius: "var(--radius-lg)",
+                textTransform: "none",
+                "&:hover": {
+                  borderColor: "var(--color-primary)",
+                  bgcolor: "var(--color-primary-subtle)",
+                },
+              }}
+            >
               Cancel
             </Button>
-            <Button type="submit" variant="contained" color="success" disabled={submitting} sx={{ borderRadius: 2, px: 3 }}>
-              {submitting ? <CircularProgress size={20} color="inherit" /> : isEditMode ? "Save Changes" : "Create Coupon"}
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={submitting}
+              sx={{
+                bgcolor: "var(--color-primary)",
+                color: "#fff",
+                borderRadius: "var(--radius-lg)",
+                textTransform: "none",
+                px: 3,
+                boxShadow: "none",
+                "&:hover": {
+                  bgcolor: "var(--color-primary-dark)",
+                  boxShadow: "none",
+                },
+              }}
+            >
+              {submitting ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : isEditMode ? (
+                "Save Changes"
+              ) : (
+                "Create Coupon"
+              )}
             </Button>
           </DialogActions>
         </Box>
@@ -707,12 +778,16 @@ const Coupons = () => {
         onClose={() => !submitting && setDeleteOpen(false)}
         slotProps={{
           paper: {
-            sx: { borderRadius: 3, p: 1 },
+            sx: {
+              borderRadius: "var(--radius-lg)",
+              boxShadow: "none",
+              border: "1px solid var(--color-border)",
+            },
           },
         }}
       >
         <DialogTitle sx={{ fontWeight: 700 }}>Delete Promo Coupon</DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ pb: 2 }}>
           <Typography variant="body1">
             Are you sure you want to delete coupon code <strong>{selectedCoupon?.code}</strong>?
           </Typography>
@@ -721,10 +796,36 @@ const Coupons = () => {
           </Typography>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setDeleteOpen(false)} disabled={submitting}>
+          <Button
+            onClick={() => setDeleteOpen(false)}
+            variant="outlined"
+            disabled={submitting}
+            sx={{
+              color: "var(--color-primary)",
+              borderColor: "var(--color-border)",
+              borderRadius: "var(--radius-lg)",
+              textTransform: "none",
+              "&:hover": {
+                borderColor: "var(--color-primary)",
+                bgcolor: "var(--color-primary-subtle)",
+              },
+            }}
+          >
             Cancel
           </Button>
-          <Button onClick={handleDeleteConfirm} color="error" variant="contained" disabled={submitting} sx={{ px: 3, borderRadius: 2 }}>
+          <Button
+            onClick={handleDeleteConfirm}
+            color="error"
+            variant="contained"
+            disabled={submitting}
+            sx={{
+              px: 3,
+              borderRadius: "var(--radius-lg)",
+              textTransform: "none",
+              boxShadow: "none",
+              "&:hover": { boxShadow: "none" },
+            }}
+          >
             {submitting ? <CircularProgress size={20} color="inherit" /> : "Delete"}
           </Button>
         </DialogActions>
