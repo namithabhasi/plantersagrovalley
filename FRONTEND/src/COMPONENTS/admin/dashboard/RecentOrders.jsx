@@ -31,9 +31,10 @@ const getStatusColor = (status) => {
 const RecentOrders = ({ orders = [] }) => {
   return (
     <Card
-      elevation={3}
+      variant="outlined"
       sx={{
-        borderRadius: 3,
+        borderRadius: "var(--radius-lg)",
+        borderColor: "var(--color-border)",
         mb: 3,
       }}
     >

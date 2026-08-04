@@ -15,9 +15,10 @@ import {
 const TopProducts = ({ products = [] }) => {
   return (
     <Card
-      elevation={3}
+      variant="outlined"
       sx={{
-        borderRadius: 3,
+        borderRadius: "var(--radius-lg)",
+        borderColor: "var(--color-border)",
         height: "100%",
       }}
     >
@@ -70,7 +71,7 @@ const TopProducts = ({ products = [] }) => {
                       <>
                         <Typography
                           variant="body2"
-                          color="text.secondary"
+                          sx={{ color: "var(--color-primary-light)" }}
                         >
                           Sold: {product.totalSold || 0}
                         </Typography>
