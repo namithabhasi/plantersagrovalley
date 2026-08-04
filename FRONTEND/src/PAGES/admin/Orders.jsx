@@ -268,11 +268,16 @@ const Orders = () => {
             variant="outlined"
             size="small"
             sx={{
-              flexGrow: 1,
-              maxWidth: { xs: "100%", md: 450 },
+              width: { xs: "100%", sm: 350, md: 450 },
+              flexShrink: 0,
+              bgcolor: "#ffffff",
+              borderRadius: "var(--radius-lg)",
               "& .MuiOutlinedInput-root": {
                 height: 40,
-                borderRadius: 2.5,
+                borderRadius: "var(--radius-lg)",
+                "& fieldset": {
+                  borderColor: "var(--color-border)",
+                },
               },
             }}
           />
@@ -289,7 +294,8 @@ const Orders = () => {
               }}
               sx={{
                 height: 40,
-                borderRadius: 2.5,
+                borderRadius: "var(--radius-lg)",
+                borderColor: "var(--color-border)",
                 "& .MuiSelect-select": {
                   height: 40,
                   display: "flex",
@@ -322,7 +328,8 @@ const Orders = () => {
               }}
               sx={{
                 height: 40,
-                borderRadius: 2.5,
+                borderRadius: "var(--radius-lg)",
+                borderColor: "var(--color-border)",
                 "& .MuiSelect-select": {
                   height: 40,
                   display: "flex",
@@ -352,8 +359,8 @@ const Orders = () => {
           sx={{
             p: 5,
             textAlign: "center",
-            borderRadius: 3,
-            border: "1px dashed #e0e0e0",
+            borderRadius: "var(--radius-lg)",
+            border: "1px dashed var(--color-border)",
             boxShadow: "none",
             bgcolor: "transparent",
           }}
@@ -369,9 +376,10 @@ const Orders = () => {
         <>
           <TableContainer
             component={Paper}
-            elevation={2}
+            variant="outlined"
             sx={{
-              borderRadius: 3,
+              borderRadius: "var(--radius-lg)",
+              borderColor: "var(--color-border)",
               mt: 2,
               overflowX: "auto",
             }}
@@ -433,18 +441,22 @@ const Orders = () => {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Chip label={order.paymentMethod} size="small" variant="outlined" sx={{ borderRadius: 1 }} />
+                      <Chip label={order.paymentMethod} size="small" variant="outlined" />
                     </TableCell>
                     <TableCell>
                       <Chip
                         label={order.paymentStatus}
                         size="small"
-                        sx={{
-                          fontWeight: 600,
-                          borderRadius: 1,
-                          bgcolor: PaymentStatusColors[order.paymentStatus]?.bg || "#f1f3f5",
-                          color: PaymentStatusColors[order.paymentStatus]?.color || "#495057",
-                        }}
+                        color={
+                          order.paymentStatus === "Paid"
+                            ? "success"
+                            : order.paymentStatus === "Failed"
+                            ? "error"
+                            : order.paymentStatus === "Pending"
+                            ? "warning"
+                            : "info"
+                        }
+                        sx={{ fontWeight: 600 }}
                       />
                     </TableCell>
                     <TableCell>
@@ -453,7 +465,6 @@ const Orders = () => {
                         size="small"
                         sx={{
                           fontWeight: 600,
-                          borderRadius: 1,
                           bgcolor: OrderStatusColors[order.orderStatus]?.bg || "#f1f3f5",
                           color: OrderStatusColors[order.orderStatus]?.color || "#495057",
                         }}
@@ -535,10 +546,13 @@ const Orders = () => {
         onClose={() => setDetailOpen(false)}
         maxWidth="md"
         fullWidth
-        PaperProps={{
-          sx: {
-            borderRadius: 3,
-            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.08)",
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: "var(--radius-lg)",
+              boxShadow: "none",
+              border: "1px solid var(--color-border)",
+            },
           },
         }}
       >
@@ -554,7 +568,7 @@ const Orders = () => {
           {selectedOrder && (
             <Box sx={{ display: "flex", flexDirection: "column", gap: 3.5 }}>
               {/* Stepper showing order path - full width */}
-              <Box sx={{ width: "100%", p: 3, bgcolor: "#ffffff", borderRadius: 2, border: "1px solid #eef2ed", boxShadow: "0 2px 8px rgba(0,0,0,0.02)" }}>
+              <Box sx={{ width: "100%", p: 3, bgcolor: "#ffffff", borderRadius: "var(--radius-lg)", border: "1px solid var(--color-border)", boxShadow: "none" }}>
                 <Stepper
                   activeStep={
                     ["Pending", "Confirmed", "Processing", "Packed", "Shipped", "Delivered"].indexOf(selectedOrder.orderStatus)
@@ -619,7 +633,7 @@ const Orders = () => {
                   ))}
                 </Stepper>
                 {selectedOrder.orderStatus === "Cancelled" && (
-                  <Box sx={{ mt: 2.5, p: 1.5, bgcolor: "#ffebee", borderRadius: 2, textAlign: "center", border: "1px solid #ffcdd2" }}>
+                  <Box sx={{ mt: 2.5, p: 1.5, bgcolor: "#ffebee", borderRadius: "var(--radius-lg)", textAlign: "center", border: "1px solid #ffcdd2" }}>
                     <Typography color="error.main" fontWeight={600} variant="body2">
                       This order was cancelled on {new Date(selectedOrder.cancelledAt || selectedOrder.updatedAt).toLocaleString()}
                     </Typography>
@@ -632,7 +646,7 @@ const Orders = () => {
                 {/* Left Column: Customer details (xs={12} md={5}) */}
                 <Grid item xs={12} md={5}>
                   <Stack spacing={2.5} sx={{ height: "100%" }}>
-                    <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2, bgcolor: "#ffffff", borderColor: "#eef2ed" }}>
+                    <Paper variant="outlined" sx={{ p: 2.5, borderRadius: "var(--radius-lg)", bgcolor: "#ffffff", borderColor: "var(--color-border)" }}>
                       <Typography variant="subtitle2" fontWeight={700} color="primary.main" sx={{ mb: 1.5, letterSpacing: 0.5 }}>
                         CUSTOMER DETAILS
                       </Typography>
@@ -647,7 +661,7 @@ const Orders = () => {
                       </Typography>
                     </Paper>
 
-                    <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2, bgcolor: "#ffffff", borderColor: "#eef2ed" }}>
+                    <Paper variant="outlined" sx={{ p: 2.5, borderRadius: "var(--radius-lg)", bgcolor: "#ffffff", borderColor: "var(--color-border)" }}>
                       <Typography variant="subtitle2" fontWeight={700} color="primary.main" sx={{ mb: 1.5, letterSpacing: 0.5 }}>
                         SHIPPING ADDRESS
                       </Typography>
@@ -670,7 +684,7 @@ const Orders = () => {
                       </Typography>
                     </Paper>
 
-                    <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2, bgcolor: "#ffffff", borderColor: "#eef2ed" }}>
+                    <Paper variant="outlined" sx={{ p: 2.5, borderRadius: "var(--radius-lg)", bgcolor: "#ffffff", borderColor: "var(--color-border)" }}>
                       <Typography variant="subtitle2" fontWeight={700} color="primary.main" sx={{ mb: 1.5, letterSpacing: 0.5 }}>
                         TRANSACTION DETAILS
                       </Typography>
@@ -695,7 +709,7 @@ const Orders = () => {
                     </Paper>
 
                     {selectedOrder.trackingNumber && (
-                      <Box sx={{ p: 2, bgcolor: "#f1f8e9", borderRadius: 2, display: "flex", gap: 1.5, alignItems: "center", border: "1px solid #dcedc8" }}>
+                      <Box sx={{ p: 2, bgcolor: "#f1f8e9", borderRadius: "var(--radius-lg)", display: "flex", gap: 1.5, alignItems: "center", border: "1px solid #dcedc8" }}>
                         <ShippingIcon color="success" />
                         <Box>
                           <Typography variant="caption" color="success.main" fontWeight={700}>TRACKING CODE</Typography>
@@ -705,7 +719,7 @@ const Orders = () => {
                     )}
 
                     {selectedOrder.notes && (
-                      <Box sx={{ p: 2, bgcolor: "#fffde7", borderRadius: 2, border: "1px solid #fff9c4" }}>
+                      <Box sx={{ p: 2, bgcolor: "#fffde7", borderRadius: "var(--radius-lg)", border: "1px solid #fff9c4" }}>
                         <Typography variant="caption" color="text.secondary" fontWeight={700}>ORDER NOTES</Typography>
                         <Typography variant="body2" sx={{ fontStyle: "italic", mt: 0.5 }}>"{selectedOrder.notes}"</Typography>
                       </Box>
@@ -715,11 +729,11 @@ const Orders = () => {
 
                 {/* Right Column: Items Purchased (xs={12} md={7}) */}
                 <Grid item xs={12} md={7}>
-                  <Paper variant="outlined" sx={{ p: 3, borderRadius: 2, bgcolor: "#ffffff", borderColor: "#eef2ed", height: "100%", display: "flex", flexDirection: "column" }}>
+                  <Paper variant="outlined" sx={{ p: 3, borderRadius: "var(--radius-lg)", bgcolor: "#ffffff", borderColor: "var(--color-border)", height: "100%", display: "flex", flexDirection: "column" }}>
                     <Typography variant="subtitle1" fontWeight={700} color="text.primary" sx={{ mb: 2 }}>
                       Purchased Items
                     </Typography>
-                    <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 1.5, borderColor: "#f0f0f0", overflow: "hidden", flexGrow: 1 }}>
+                    <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: "var(--radius-lg)", borderColor: "var(--color-border)", overflow: "hidden", flexGrow: 1 }}>
                       <Table size="small">
                         <TableHead sx={{ bgcolor: "#f8f9fa" }}>
                           <TableRow>
@@ -784,18 +798,42 @@ const Orders = () => {
           )}
         </DialogContent>
         <DialogActions sx={{ px: 3, py: 2, bgcolor: "#f8f9fa", borderTop: "1px solid #eef2ed" }}>
-          <Button onClick={() => setDetailOpen(false)} variant="outlined" color="success" sx={{ textTransform: "none", borderRadius: 2, px: 3 }}>
+          <Button
+            onClick={() => setDetailOpen(false)}
+            variant="outlined"
+            sx={{
+              color: "var(--color-primary)",
+              borderColor: "var(--color-border)",
+              borderRadius: "var(--radius-lg)",
+              textTransform: "none",
+              px: 3,
+              "&:hover": {
+                borderColor: "var(--color-primary)",
+                bgcolor: "var(--color-primary-subtle)",
+              },
+            }}
+          >
             Close
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Update Order Status Dialog */}
-      <Dialog open={statusOpen} onClose={() => setStatusOpen(false)} maxWidth="sm" fullWidth>
+      <Dialog
+        open={statusOpen}
+        onClose={() => setStatusOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        slotProps={{
+          paper: {
+            sx: { borderRadius: "var(--radius-lg)" }
+          }
+        }}
+      >
         <DialogTitle sx={{ fontWeight: 700 }}>Update Order Processing Status</DialogTitle>
         <Box component="form" onSubmit={handleStatusSubmit}>
           <DialogContent sx={{ px: 3, pt: 1, pb: 2 }}>
-            <Stack spacing={3}>
+            <Stack spacing={3} sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}>
               <FormControl fullWidth required>
                 <InputLabel id="update-order-status-label">Order Status</InputLabel>
                 <Select
@@ -856,10 +894,40 @@ const Orders = () => {
             </Stack>
           </DialogContent>
           <DialogActions sx={{ px: 3, py: 2 }}>
-            <Button onClick={() => setStatusOpen(false)} disabled={submitting} sx={{ color: "text.secondary" }}>
+            <Button
+              onClick={() => setStatusOpen(false)}
+              variant="outlined"
+              disabled={submitting}
+              sx={{
+                color: "var(--color-primary)",
+                borderColor: "var(--color-border)",
+                borderRadius: "var(--radius-lg)",
+                textTransform: "none",
+                "&:hover": {
+                  borderColor: "var(--color-primary)",
+                  bgcolor: "var(--color-primary-subtle)",
+                },
+              }}
+            >
               Cancel
             </Button>
-            <Button type="submit" variant="contained" color="success" disabled={submitting} sx={{ borderRadius: 2, px: 3 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={submitting}
+              sx={{
+                bgcolor: "var(--color-primary)",
+                color: "#fff",
+                borderRadius: "var(--radius-lg)",
+                textTransform: "none",
+                px: 3,
+                boxShadow: "none",
+                "&:hover": {
+                  bgcolor: "var(--color-primary-dark)",
+                  boxShadow: "none",
+                },
+              }}
+            >
               {submitting ? <CircularProgress size={20} color="inherit" /> : "Save Changes"}
             </Button>
           </DialogActions>
@@ -867,7 +935,15 @@ const Orders = () => {
       </Dialog>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteOpen} onClose={() => !submitting && setDeleteOpen(false)}>
+      <Dialog
+        open={deleteOpen}
+        onClose={() => !submitting && setDeleteOpen(false)}
+        slotProps={{
+          paper: {
+            sx: { borderRadius: "var(--radius-lg)" }
+          }
+        }}
+      >
         <DialogTitle sx={{ fontWeight: 700 }}>Delete Order Record</DialogTitle>
         <DialogContent>
           <Typography variant="body1">
@@ -878,10 +954,30 @@ const Orders = () => {
           </Typography>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setDeleteOpen(false)} disabled={submitting}>
+          <Button
+            onClick={() => setDeleteOpen(false)}
+            variant="outlined"
+            disabled={submitting}
+            sx={{
+              color: "var(--color-primary)",
+              borderColor: "var(--color-border)",
+              borderRadius: "var(--radius-lg)",
+              textTransform: "none",
+              "&:hover": {
+                borderColor: "var(--color-primary)",
+                bgcolor: "var(--color-primary-subtle)",
+              },
+            }}
+          >
             Cancel
           </Button>
-          <Button onClick={handleDeleteConfirm} color="error" variant="contained" disabled={submitting} sx={{ px: 3, borderRadius: 2 }}>
+          <Button
+            onClick={handleDeleteConfirm}
+            color="error"
+            variant="contained"
+            disabled={submitting}
+            sx={{ px: 3, borderRadius: "var(--radius-lg)" }}
+          >
             {submitting ? <CircularProgress size={20} color="inherit" /> : "Delete"}
           </Button>
         </DialogActions>
