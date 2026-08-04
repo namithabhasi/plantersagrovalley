@@ -297,8 +297,12 @@ const UserTable = ({ users, loading, onRefresh }) => {
     <>
       <TableContainer
         component={Paper}
-        elevation={2}
-        sx={{ borderRadius: 3, overflowX: "auto" }}
+        variant="outlined"
+        sx={{
+          borderRadius: "var(--radius-lg)",
+          borderColor: "var(--color-border)",
+          overflowX: "auto",
+        }}
       >
         <Table>
           <TableHead sx={{ "& .MuiTableCell-head": { bgcolor: "#f5f5f5" } }}>
@@ -457,6 +461,7 @@ const UserTable = ({ users, loading, onRefresh }) => {
                   disabled={loadingAction}
                   error={Boolean(errors.firstName)}
                   helperText={errors.firstName}
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
                 />
               </Grid>
 
@@ -471,6 +476,7 @@ const UserTable = ({ users, loading, onRefresh }) => {
                   disabled={loadingAction}
                   error={Boolean(errors.lastName)}
                   helperText={errors.lastName}
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
                 />
               </Grid>
 
@@ -486,6 +492,7 @@ const UserTable = ({ users, loading, onRefresh }) => {
                   disabled={loadingAction}
                   error={Boolean(errors.email)}
                   helperText={errors.email}
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
                 />
               </Grid>
 
@@ -500,6 +507,7 @@ const UserTable = ({ users, loading, onRefresh }) => {
                   disabled={loadingAction}
                   error={Boolean(errors.phone)}
                   helperText={errors.phone}
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
                   slotProps={{
                     input: {
                       startAdornment: (
@@ -551,6 +559,7 @@ const UserTable = ({ users, loading, onRefresh }) => {
                   value={editForm.role}
                   onChange={handleEditChange}
                   disabled={loadingAction}
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
                 >
                   <MenuItem value="customer">Customer</MenuItem>
                   <MenuItem value="shipping-manager">Shipping Manager</MenuItem>
@@ -573,6 +582,7 @@ const UserTable = ({ users, loading, onRefresh }) => {
                     }))
                   }
                   disabled={loadingAction}
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
                 >
                   <MenuItem value={true}>Active</MenuItem>
                   <MenuItem value={false}>Inactive</MenuItem>
@@ -590,6 +600,7 @@ const UserTable = ({ users, loading, onRefresh }) => {
                   error={Boolean(errors.password)}
                   helperText={errors.password || "Leave blank if you don't want to change password"}
                   disabled={loadingAction}
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
                 />
               </Grid>
 
@@ -604,6 +615,7 @@ const UserTable = ({ users, loading, onRefresh }) => {
                   error={Boolean(errors.confirmPassword)}
                   helperText={errors.confirmPassword}
                   disabled={loadingAction}
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
                 />
               </Grid>
             </Grid>
@@ -613,6 +625,16 @@ const UserTable = ({ users, loading, onRefresh }) => {
               onClick={() => setEditOpen(false)}
               variant="outlined"
               disabled={loadingAction}
+              sx={{
+                color: "var(--color-primary)",
+                borderColor: "var(--color-border)",
+                borderRadius: "var(--radius-lg)",
+                textTransform: "none",
+                "&:hover": {
+                  borderColor: "var(--color-primary)",
+                  bgcolor: "var(--color-primary-subtle)",
+                },
+              }}
             >
               Cancel
             </Button>
@@ -620,6 +642,15 @@ const UserTable = ({ users, loading, onRefresh }) => {
               type="submit"
               variant="contained"
               disabled={loadingAction}
+              sx={{
+                bgcolor: "var(--color-primary)",
+                color: "#fff",
+                borderRadius: "var(--radius-lg)",
+                textTransform: "none",
+                "&:hover": {
+                  bgcolor: "var(--color-primary-dark)",
+                },
+              }}
             >
               {loadingAction ? "Saving..." : "Save Changes"}
             </Button>
@@ -647,6 +678,16 @@ const UserTable = ({ users, loading, onRefresh }) => {
             onClick={() => setDeleteOpen(false)}
             variant="outlined"
             disabled={loadingAction}
+            sx={{
+              color: "var(--color-primary)",
+              borderColor: "var(--color-border)",
+              borderRadius: "var(--radius-lg)",
+              textTransform: "none",
+              "&:hover": {
+                borderColor: "var(--color-primary)",
+                bgcolor: "var(--color-primary-subtle)",
+              },
+            }}
           >
             Cancel
           </Button>
@@ -655,6 +696,7 @@ const UserTable = ({ users, loading, onRefresh }) => {
             variant="contained"
             color="error"
             disabled={loadingAction}
+            sx={{ borderRadius: "var(--radius-lg)", textTransform: "none" }}
           >
             {loadingAction ? "Deleting..." : "Delete"}
           </Button>

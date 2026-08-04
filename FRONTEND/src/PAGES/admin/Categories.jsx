@@ -305,10 +305,12 @@ const Categories = () => {
             variant="outlined"
             size="small"
             sx={{
-              width: { xs: "100%", md: 350 },
+              width: { xs: "100%", sm: 350, md: 450 },
+              flexShrink: 0,
               "& .MuiOutlinedInput-root": {
                 height: 40,
-                borderRadius: 2.5,
+                borderRadius: "var(--radius-lg)",
+                borderColor: "var(--color-border)",
               },
             }}
           />
@@ -320,13 +322,16 @@ const Categories = () => {
           onClick={handleAddClick}
           sx={{
             height: 40,
-            bgcolor: "success.main",
-            "&:hover": { bgcolor: "primary.main" },
+            bgcolor: "var(--color-primary)",
             textTransform: "none",
-            borderRadius: 2.5,
+            borderRadius: "var(--radius-lg)",
             px: 3,
             whiteSpace: "nowrap",
-            boxShadow: "0 4px 10px rgba(46, 125, 50, 0.15)",
+            boxShadow: "none",
+            "&:hover": {
+              bgcolor: "var(--color-primary-dark)",
+              boxShadow: "none",
+            },
           }}
         >
           Add Category
@@ -360,9 +365,10 @@ const Categories = () => {
         <>
           <TableContainer
             component={Paper}
-            elevation={2}
+            variant="outlined"
             sx={{
-              borderRadius: 3,
+              borderRadius: "var(--radius-lg)",
+              borderColor: "var(--color-border)",
               mt: 2,
               overflowX: "auto",
             }}
@@ -512,7 +518,7 @@ const Categories = () => {
         fullWidth
         slotProps={{
           paper: {
-            sx: { borderRadius: 3, p: 1 },
+            sx: { borderRadius: "var(--radius-lg)", p: 1 },
           },
         }}
       >
@@ -529,6 +535,7 @@ const Categories = () => {
                 onChange={handleNameChange}
                 required
                 disabled={submitting}
+                sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
               />
               <TextField
                 fullWidth
@@ -539,6 +546,7 @@ const Categories = () => {
                 required
                 disabled={submitting}
                 helperText="URL-friendly identifier (e.g. fresh-fruits)"
+                sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
               />
               <TextField
                 fullWidth
@@ -549,6 +557,7 @@ const Categories = () => {
                 multiline
                 rows={3}
                 disabled={submitting}
+                sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
               />
               <FormControl fullWidth disabled={submitting}>
                 <InputLabel id="parent-category-label">Parent Category</InputLabel>
@@ -558,6 +567,7 @@ const Categories = () => {
                   label="Parent Category"
                   onChange={handleInputChange}
                   name="parentCategory"
+                  sx={{ borderRadius: "var(--radius-lg)" }}
                 >
                   <MenuItem value="none">
                     <em>None (Primary Category)</em>
@@ -600,7 +610,7 @@ const Categories = () => {
                         sx={{
                           width: "100%",
                           height: "100%",
-                          borderRadius: 2,
+                          borderRadius: "var(--radius-lg)",
                           objectFit: "cover",
                           border: "1px solid #e0e0e0",
                         }}
@@ -635,7 +645,7 @@ const Categories = () => {
                         borderColor: "rgba(0, 0, 0, 0.23)",
                         color: "text.secondary",
                         textTransform: "none",
-                        borderRadius: 2,
+                        borderRadius: "var(--radius-lg)",
                         flexDirection: "column",
                         gap: 0.5,
                         "& .MuiButton-icon": { m: 0 },
@@ -662,17 +672,37 @@ const Categories = () => {
           <DialogActions sx={{ px: 3, py: 2 }}>
             <Button
               onClick={() => setFormOpen(false)}
+              variant="outlined"
               disabled={submitting}
-              sx={{ color: "text.secondary", textTransform: "none" }}
+              sx={{
+                color: "var(--color-primary)",
+                borderColor: "var(--color-border)",
+                borderRadius: "var(--radius-lg)",
+                textTransform: "none",
+                "&:hover": {
+                  borderColor: "var(--color-primary)",
+                  bgcolor: "var(--color-primary-subtle)",
+                },
+              }}
             >
               Cancel
             </Button>
             <Button
               type="submit"
               variant="contained"
-              color="success"
               disabled={submitting}
-              sx={{ textTransform: "none", px: 3, borderRadius: 2 }}
+              sx={{
+                bgcolor: "var(--color-primary)",
+                color: "#fff",
+                borderRadius: "var(--radius-lg)",
+                textTransform: "none",
+                px: 3,
+                boxShadow: "none",
+                "&:hover": {
+                  bgcolor: "var(--color-primary-dark)",
+                  boxShadow: "none",
+                },
+              }}
             >
               {submitting ? <CircularProgress size={20} color="inherit" /> : isEditMode ? "Save Changes" : "Create"}
             </Button>
@@ -686,7 +716,7 @@ const Categories = () => {
         onClose={() => !submitting && setDeleteOpen(false)}
         slotProps={{
           paper: {
-            sx: { borderRadius: 3, p: 1 },
+            sx: { borderRadius: "var(--radius-lg)", p: 1 },
           },
         }}
       >
@@ -701,7 +731,21 @@ const Categories = () => {
           </Typography>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setDeleteOpen(false)} disabled={submitting}>
+          <Button
+            onClick={() => setDeleteOpen(false)}
+            variant="outlined"
+            disabled={submitting}
+            sx={{
+              color: "var(--color-primary)",
+              borderColor: "var(--color-border)",
+              borderRadius: "var(--radius-lg)",
+              textTransform: "none",
+              "&:hover": {
+                borderColor: "var(--color-primary)",
+                bgcolor: "var(--color-primary-subtle)",
+              },
+            }}
+          >
             Cancel
           </Button>
           <Button
@@ -709,7 +753,7 @@ const Categories = () => {
             color="error"
             variant="contained"
             disabled={submitting}
-            sx={{ px: 3, borderRadius: 2 }}
+            sx={{ px: 3, borderRadius: "var(--radius-lg)" }}
           >
             {submitting ? <CircularProgress size={20} color="inherit" /> : "Delete"}
           </Button>

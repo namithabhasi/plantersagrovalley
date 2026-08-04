@@ -383,10 +383,12 @@ const Products = () => {
             variant="outlined"
             size="small"
             sx={{
-              width: { xs: "100%", md: 350 },
+              width: { xs: "100%", sm: 350, md: 450 },
+              flexShrink: 0,
               "& .MuiOutlinedInput-root": {
                 height: 40,
-                borderRadius: 2.5,
+                borderRadius: "var(--radius-lg)",
+                borderColor: "var(--color-border)",
               },
             }}
           />
@@ -403,7 +405,8 @@ const Products = () => {
               }}
               sx={{
                 height: 40,
-                borderRadius: 2.5,
+                borderRadius: "var(--radius-lg)",
+                borderColor: "var(--color-border)",
                 "& .MuiSelect-select": {
                   height: 40,
                   display: "flex",
@@ -429,13 +432,16 @@ const Products = () => {
           onClick={handleAddClick}
           sx={{
             height: 40,
-            bgcolor: "success.main",
-            "&:hover": { bgcolor: "primary.main" },
+            bgcolor: "var(--color-primary)",
             textTransform: "none",
-            borderRadius: 2.5,
+            borderRadius: "var(--radius-lg)",
             px: 3,
             whiteSpace: "nowrap",
-            boxShadow: "0 4px 10px rgba(46, 125, 50, 0.15)",
+            boxShadow: "none",
+            "&:hover": {
+              bgcolor: "var(--color-primary-dark)",
+              boxShadow: "none",
+            },
           }}
         >
           Add Product
@@ -452,8 +458,8 @@ const Products = () => {
           sx={{
             p: 5,
             textAlign: "center",
-            borderRadius: 3,
-            border: "1px dashed #e0e0e0",
+            borderRadius: "var(--radius-lg)",
+            border: "1px dashed var(--color-border)",
             boxShadow: "none",
             bgcolor: "transparent",
           }}
@@ -471,9 +477,10 @@ const Products = () => {
         <>
           <TableContainer
             component={Paper}
-            elevation={2}
+            variant="outlined"
             sx={{
-              borderRadius: 3,
+              borderRadius: "var(--radius-lg)",
+              borderColor: "var(--color-border)",
               mt: 2,
               overflowX: "auto",
             }}
@@ -669,7 +676,7 @@ const Products = () => {
         fullWidth
         slotProps={{
           paper: {
-            sx: { borderRadius: 3, p: 1 },
+            sx: { borderRadius: "var(--radius-lg)", p: 1 },
           },
         }}
       >
@@ -678,7 +685,7 @@ const Products = () => {
         </DialogTitle>
         <Box component="form" onSubmit={handleSubmit}>
           <DialogContent sx={{ px: 3, py: 1 }}>
-            <Grid container spacing={4}>
+            <Grid container spacing={4} sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}>
               {/* Left Column: Product Details */}
               <Grid item xs={12} md={7}>
                 <Stack spacing={2.5}>
@@ -891,7 +898,7 @@ const Products = () => {
                             sx={{
                               width: "100%",
                               height: "100%",
-                              borderRadius: 1.5,
+                              borderRadius: "var(--radius-lg)",
                               objectFit: "cover",
                               border: "1px solid #e0e0e0",
                             }}
@@ -929,7 +936,7 @@ const Products = () => {
                             borderColor: "rgba(0, 0, 0, 0.23)",
                             color: "text.secondary",
                             textTransform: "none",
-                            borderRadius: 1.5,
+                            borderRadius: "var(--radius-lg)",
                             fontSize: "0.75rem",
                             flexDirection: "column",
                             gap: 0.2,
@@ -962,17 +969,37 @@ const Products = () => {
           <DialogActions sx={{ px: 3, py: 2 }}>
             <Button
               onClick={() => setFormOpen(false)}
+              variant="outlined"
               disabled={submitting}
-              sx={{ color: "text.secondary", textTransform: "none" }}
+              sx={{
+                color: "var(--color-primary)",
+                borderColor: "var(--color-border)",
+                borderRadius: "var(--radius-lg)",
+                textTransform: "none",
+                "&:hover": {
+                  borderColor: "var(--color-primary)",
+                  bgcolor: "var(--color-primary-subtle)",
+                },
+              }}
             >
               Cancel
             </Button>
             <Button
               type="submit"
               variant="contained"
-              color="success"
               disabled={submitting}
-              sx={{ textTransform: "none", px: 3, borderRadius: 2 }}
+              sx={{
+                bgcolor: "var(--color-primary)",
+                color: "#fff",
+                borderRadius: "var(--radius-lg)",
+                textTransform: "none",
+                px: 3,
+                boxShadow: "none",
+                "&:hover": {
+                  bgcolor: "var(--color-primary-dark)",
+                  boxShadow: "none",
+                },
+              }}
             >
               {submitting ? <CircularProgress size={20} color="inherit" /> : isEditMode ? "Save Changes" : "Create Product"}
             </Button>
@@ -986,7 +1013,7 @@ const Products = () => {
         onClose={() => !submitting && setDeleteOpen(false)}
         slotProps={{
           paper: {
-            sx: { borderRadius: 3, p: 1 },
+            sx: { borderRadius: "var(--radius-lg)", p: 1 },
           },
         }}
       >
@@ -1001,7 +1028,21 @@ const Products = () => {
           </Typography>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setDeleteOpen(false)} disabled={submitting}>
+          <Button
+            onClick={() => setDeleteOpen(false)}
+            variant="outlined"
+            disabled={submitting}
+            sx={{
+              color: "var(--color-primary)",
+              borderColor: "var(--color-border)",
+              borderRadius: "var(--radius-lg)",
+              textTransform: "none",
+              "&:hover": {
+                borderColor: "var(--color-primary)",
+                bgcolor: "var(--color-primary-subtle)",
+              },
+            }}
+          >
             Cancel
           </Button>
           <Button
@@ -1009,7 +1050,7 @@ const Products = () => {
             color="error"
             variant="contained"
             disabled={submitting}
-            sx={{ px: 3, borderRadius: 2 }}
+            sx={{ px: 3, borderRadius: "var(--radius-lg)" }}
           >
             {submitting ? <CircularProgress size={20} color="inherit" /> : "Delete"}
           </Button>
