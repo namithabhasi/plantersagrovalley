@@ -162,6 +162,9 @@ export const getDashboard = async (req, res) => {
           quantitySold: {
             $sum: "$items.quantity",
           },
+          totalRevenue: {
+            $sum: { $multiply: ["$items.quantity", "$items.price"] },
+          },
         },
       },
       {
@@ -185,12 +188,16 @@ export const getDashboard = async (req, res) => {
       },
       {
         $project: {
-          _id: 0,
+          _id: "$product._id",
           productId: "$product._id",
+          name: "$product.name",
           productName: "$product.name",
           quantitySold: 1,
+          totalSold: "$quantitySold",
           stock: "$product.stock",
           price: "$product.price",
+          totalRevenue: 1,
+          images: "$product.images",
         },
       },
     ]);

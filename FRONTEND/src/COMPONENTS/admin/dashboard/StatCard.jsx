@@ -8,14 +8,14 @@ const StatCard = ({
 }) => {
   return (
     <Card
-      elevation={3}
+      variant="outlined"
       sx={{
-        borderRadius: 3,
+        borderRadius: "var(--radius-lg)",
         height: "100%",
+        borderColor: "var(--color-border)",
         transition: "0.3s",
         "&:hover": {
           transform: "translateY(-4px)",
-          boxShadow: 6,
         },
       }}
     >

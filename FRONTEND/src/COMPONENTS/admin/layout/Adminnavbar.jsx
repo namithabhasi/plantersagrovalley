@@ -340,7 +340,7 @@ const AdminNavbar = ({ handleDrawerToggle }) => {
                           variant="rounded"
                           sx={{ width: 32, height: 32, mr: 1.5, bgcolor: "#e8f5e9" }}
                         >
-                          <InventoryIcon fontSize="small" color="success" />
+                          <InventoryIcon fontSize="small" sx={{ color: "var(--color-primary-light)" }} />
                         </Avatar>
                         <ListItemText
                           primary={p.name}
