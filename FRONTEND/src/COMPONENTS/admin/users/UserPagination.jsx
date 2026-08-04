@@ -10,6 +10,23 @@ const UserPagination = ({ page, totalPages, setPage }) => {
         count={totalPages}
         onChange={(e, value) => setPage(value)}
         color="primary"
+        sx={{
+          "& .MuiPaginationItem-root": {
+            borderRadius: "var(--radius-full)",
+            "&.Mui-selected": {
+              bgcolor: "var(--color-primary-dark)",
+              color: "#fff",
+              "&:hover": {
+                bgcolor: "var(--color-primary)",
+                color: "#fff",
+              },
+            },
+            "&:hover": {
+              bgcolor: "var(--color-primary-subtle)",
+              color: "var(--color-primary-dark)",
+            },
+          },
+        }}
       />
     </Stack>
   );
