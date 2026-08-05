@@ -178,7 +178,7 @@ const Settings = () => {
     <Box>
       {/* Header */}
       <Box mb={5}>
-        <Typography variant="h4" fontWeight={800} sx={{ color: "success.main", mb: 0.5 }}>
+        <Typography variant="h4" fontWeight={700} mb={1}>
           Store Configuration
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 2 }}>

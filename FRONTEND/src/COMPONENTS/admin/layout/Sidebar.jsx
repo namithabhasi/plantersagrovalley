@@ -360,27 +360,6 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
           </ListItemButton>
         )}
 
-        {/* Reports */}
-
-        {(role === "super-admin" || role === "admin") && (
-          <ListItemButton
-            component={Link}
-            to="/dashboard/reports"
-            sx={
-              location.pathname === "/dashboard/reports"
-                ? activeStyle
-                : {}
-            }
-            onClick={handleItemClick}
-          >
-            <ListItemIcon>
-              <BarChart />
-            </ListItemIcon>
-
-            <ListItemText primary="Reports" />
-          </ListItemButton>
-        )}
-
         {/* Enquiries */}
 
         {(role === "super-admin" || role === "admin") && (
@@ -439,6 +418,27 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
             </ListItemIcon>
 
             <ListItemText primary="Services" />
+          </ListItemButton>
+        )}
+
+        {/* Reports */}
+
+        {(role === "super-admin" || role === "admin") && (
+          <ListItemButton
+            component={Link}
+            to="/dashboard/reports"
+            sx={
+              location.pathname === "/dashboard/reports"
+                ? activeStyle
+                : {}
+            }
+            onClick={handleItemClick}
+          >
+            <ListItemIcon>
+              <BarChart />
+            </ListItemIcon>
+
+            <ListItemText primary="Reports" />
           </ListItemButton>
         )}
 

@@ -266,7 +266,7 @@ const Categories = () => {
     <Box >
       {/* Header */}
       <Box mb={5}>
-        <Typography variant="h4" fontWeight={800} sx={{ color: "success.main", mb: 0.5 }}>
+        <Typography variant="h4" fontWeight={700} mb={1}>
           Category Management
         </Typography>
         <Typography sx={{ mt: 1, mb:2  }} variant="body2" color="text.secondary">

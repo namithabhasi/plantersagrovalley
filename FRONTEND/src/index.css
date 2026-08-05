@@ -161,7 +161,7 @@ h4,
 h5,
 h6 {
   font-family: var(--font-family-heading);
-  color: var(--color-primary-dark);
+  color: var(--color-primary);
   font-weight: 300;
   /* Light font weight */
   line-height: var(--line-height-tight);
