@@ -32,6 +32,7 @@ import {
   Email,
   Book,
   Spa,
+  MarkEmailRead,
 } from "@mui/icons-material";
 
 
@@ -378,6 +379,27 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
             </ListItemIcon>
 
             <ListItemText primary="Enquiries" />
+          </ListItemButton>
+        )}
+
+        {/* Subscribers */}
+
+        {(role === "super-admin" || role === "admin") && (
+          <ListItemButton
+            component={Link}
+            to="/dashboard/subscribers"
+            sx={
+              location.pathname === "/dashboard/subscribers"
+                ? activeStyle
+                : {}
+            }
+            onClick={handleItemClick}
+          >
+            <ListItemIcon>
+              <MarkEmailRead />
+            </ListItemIcon>
+
+            <ListItemText primary="Subscribers" />
           </ListItemButton>
         )}
 
