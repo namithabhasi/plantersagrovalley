@@ -10,12 +10,13 @@ import {
 import { FaXTwitter } from "react-icons/fa6";
 import { IoArrowForward, IoArrowUp } from "react-icons/io5";
 import { toast } from "react-toastify";
+import axiosInstance from "../api/axiosInstance";
 
 const Footer = () => {
   const [showScroll, setShowScroll] = useState(false);
   const [email, setEmail] = useState("");
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
     if (!email) {
       toast.error("Please enter a valid email address.");
@@ -27,30 +28,15 @@ const Footer = () => {
       return;
     }
 
-    const existing = localStorage.getItem("subscribed_emails");
-    let emails = [];
-    if (existing) {
-      try {
-        emails = JSON.parse(existing);
-        if (!Array.isArray(emails)) {
-          emails = [];
-        }
-      } catch (err) {
-        emails = [];
+    try {
+      const { data } = await axiosInstance.post("/subscribers", { email });
+      if (data.success) {
+        toast.success(data.message || "Subscribed successfully!");
+        setEmail("");
       }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to subscribe. Please try again.");
     }
-
-    if (emails.includes(email.toLowerCase().trim())) {
-      toast.info("This email is already subscribed!");
-      setEmail("");
-      return;
-    }
-
-    emails.push(email.toLowerCase().trim());
-    localStorage.setItem("subscribed_emails", JSON.stringify(emails));
-
-    toast.success("Subscribed!");
-    setEmail("");
   };
 
   useEffect(() => {
