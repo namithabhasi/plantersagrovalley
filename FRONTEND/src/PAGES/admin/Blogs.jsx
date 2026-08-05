@@ -523,7 +523,7 @@ const Blogs = () => {
           },
         }}
       >
-        <DialogTitle sx={{ fontWeight: 700, pb: 1.5, borderBottom: "1px solid var(--color-primary)" }}>
+        <DialogTitle sx={{ fontWeight: 700, pb: 1.5, borderBottom: "1px solid var(--color-border)" , color: "var(--color-primary)" }}>
           {isEditMode ? "✏️ Edit Blog Post" : "✨ Create New Blog Post"}
         </DialogTitle>
         <form onSubmit={handleSubmit}>

@@ -549,7 +549,7 @@ const Services = () => {
           },
         }}
       >
-        <DialogTitle sx={{ fontWeight: 700, pb: 1.5, borderBottom: "1px solid var(--color-border)" }}>
+        <DialogTitle sx={{ fontWeight: 700, pb: 1.5, borderBottom: "1px solid var(--color-border)" , color: "var(--color-primary)"}}>
           {isEditMode ? "✏️ Edit Service Listing" : "✨ Create New Service Listing"}
         </DialogTitle>
         <form onSubmit={handleSubmit}>

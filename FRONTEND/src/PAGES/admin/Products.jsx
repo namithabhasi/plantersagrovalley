@@ -684,7 +684,7 @@ const Products = () => {
           },
         }}
       >
-        <DialogTitle sx={{ fontWeight: 700, px: 3, pt: 2, pb: 1 }}>
+        <DialogTitle sx={{ fontWeight: 700, px: 3, pt: 2, pb: 1 , color: "var(--color-primary)" }}>
           {isEditMode ? "Edit Product Details" : "Add New Product"}
         </DialogTitle>
         <Box component="form" onSubmit={handleSubmit}>

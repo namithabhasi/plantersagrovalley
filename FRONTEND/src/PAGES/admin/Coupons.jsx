@@ -541,7 +541,7 @@ const Coupons = () => {
           },
         }}
       >
-        <DialogTitle sx={{ fontWeight: 700, px: 3, pt: 2, pb: 1 }}>
+        <DialogTitle sx={{ fontWeight: 700, px: 3, pt: 2, pb: 1 , color: "var(--color-primary)" }}>
           {isEditMode ? "Edit Coupon Details" : "Add New Coupon"}
         </DialogTitle>
         <Box component="form" onSubmit={handleSubmit}>
