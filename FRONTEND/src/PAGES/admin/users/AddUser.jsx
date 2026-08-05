@@ -253,7 +253,7 @@ const AddUser = () => {
             order: { xs: 1, sm: 2 },
           }}
         >
-          <Typography variant="h4" fontWeight={800} sx={{ color: "success.main", mb: 0.5 }}>
+          <Typography variant="h4" fontWeight={700} mb={1}>
             Add New User
           </Typography>
           <Typography variant="body2" color="text.secondary">

@@ -31,6 +31,7 @@ import {
   FormControlLabel,
   Grid,
   Divider,
+  Tooltip,
 } from "@mui/material";
 import {
   Add as AddIcon,
@@ -59,6 +60,7 @@ const Services = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all");
   const [page, setPage] = useState(1);
 
   // Dialog states
@@ -235,8 +237,16 @@ const Services = () => {
     setPage(1);
   };
 
-  // Filter services by search query
+  const handleCategoryFilterChange = (e) => {
+    setCategoryFilter(e.target.value);
+    setPage(1);
+  };
+
+  // Filter services by category and search query
   const filteredServices = services.filter((service) => {
+    if (categoryFilter !== "all" && service.serviceType !== categoryFilter) {
+      return false;
+    }
     const search = searchQuery.toLowerCase().trim();
     if (!search) return true;
     return (
@@ -258,10 +268,10 @@ const Services = () => {
     <Box>
       {/* Header */}
       <Box mb={5}>
-        <Typography variant="h4" fontWeight={800} sx={{ color: "success.main", mb: 0.5 }}>
+        <Typography variant="h4" fontWeight={700} mb={1}>
           Service Management
         </Typography>
-        <Typography sx={{ mt: 1, mb: 2 }} variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 2 }}>
           Manage the dynamic services and articles displayed on the public footer service pages
         </Typography>
       </Box>
@@ -292,13 +302,51 @@ const Services = () => {
             variant="outlined"
             size="small"
             sx={{
-              width: { xs: "100%", md: 350 },
+              width: { xs: "100%", sm: 350, md: 450 },
+              flexShrink: 0,
+              bgcolor: "#ffffff",
+              borderRadius: "var(--radius-lg)",
               "& .MuiOutlinedInput-root": {
                 height: 40,
-                borderRadius: 2.5,
+                borderRadius: "var(--radius-lg)",
+                "& fieldset": {
+                  borderColor: "var(--color-border)",
+                },
               },
             }}
           />
+
+          <FormControl
+            size="small"
+            sx={{
+              width: { xs: "100%", sm: 200 },
+              bgcolor: "#ffffff",
+              borderRadius: "var(--radius-lg)",
+              "& .MuiOutlinedInput-root": {
+                height: 40,
+                borderRadius: "var(--radius-lg)",
+                "& fieldset": {
+                  borderColor: "var(--color-border)",
+                },
+              },
+            }}
+          >
+            <InputLabel id="category-filter-label">Category</InputLabel>
+            <Select
+              labelId="category-filter-label"
+              id="category-filter"
+              value={categoryFilter}
+              label="Category"
+              onChange={handleCategoryFilterChange}
+            >
+              <MenuItem value="all">All Categories</MenuItem>
+              {Object.entries(serviceTypeMapping).map(([key, value]) => (
+                <MenuItem key={key} value={key}>
+                  {value}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Stack>
 
         <Button
@@ -307,13 +355,17 @@ const Services = () => {
           onClick={handleAddClick}
           sx={{
             height: 40,
-            bgcolor: "success.main",
-            "&:hover": { bgcolor: "primary.main" },
+            bgcolor: "var(--color-primary)",
+            color: "#ffffff",
+            borderRadius: "var(--radius-lg)",
             textTransform: "none",
-            borderRadius: 2.5,
             px: 3,
             whiteSpace: "nowrap",
-            boxShadow: "0 4px 10px rgba(46, 125, 50, 0.15)",
+            boxShadow: "none",
+            "&:hover": {
+              bgcolor: "var(--color-primary-dark)",
+              boxShadow: "none",
+            },
           }}
         >
           Add Service
@@ -328,18 +380,19 @@ const Services = () => {
       ) : filteredServices.length === 0 ? (
         <Paper
           sx={{
-            p: 5,
-            textAlign: "center",
-            borderRadius: 3,
-            border: "1px dashed #e0e0e0",
+            py: 8,
+            px: 2,
+            borderRadius: "var(--radius-lg)",
+            border: "1px dashed var(--color-border)",
             boxShadow: "none",
             bgcolor: "transparent",
+            textAlign: "center",
           }}
         >
           <Typography variant="h6" color="text.secondary" mb={1}>
             No services found
           </Typography>
-          <Typography variant="body2" color="text.disabled">
+          <Typography variant="body2" color="text.secondary">
             {searchQuery ? "Try refining your search query." : "Get started by adding a new service listing."}
           </Typography>
         </Paper>
@@ -347,9 +400,10 @@ const Services = () => {
         <>
           <TableContainer
             component={Paper}
-            elevation={2}
+            variant="outlined"
             sx={{
-              borderRadius: 3,
+              borderRadius: "var(--radius-lg)",
+              borderColor: "var(--color-border)",
               mt: 2,
               overflowX: "auto",
             }}
@@ -357,12 +411,12 @@ const Services = () => {
             <Table>
               <TableHead sx={{ "& .MuiTableCell-head": { bgcolor: "#f5f5f5" } }}>
                 <TableRow>
-                  <TableCell><b>Image</b></TableCell>
-                  <TableCell><b>Service Page</b></TableCell>
-                  <TableCell><b>Title</b></TableCell>
-                  <TableCell><b>Description</b></TableCell>
-                  <TableCell><b>Status</b></TableCell>
-                  <TableCell align="right"><b>Actions</b></TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Image</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Service Page</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Title</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Description</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Status</TableCell>
+                  <TableCell align="right" sx={{ fontWeight: 600, py: 2 }}>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -381,9 +435,9 @@ const Services = () => {
                           sx={{
                             width: 50,
                             height: 50,
-                            borderRadius: 2,
+                            borderRadius: "var(--radius-sm)",
                             objectFit: "cover",
-                            border: "1px solid #e0e0e0",
+                            border: "1px solid var(--color-border)",
                           }}
                         />
                       ) : (
@@ -391,14 +445,14 @@ const Services = () => {
                           sx={{
                             width: 50,
                             height: 50,
-                            borderRadius: 2,
+                            borderRadius: "var(--radius-sm)",
                             bgcolor: "#f0f2f5",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             color: "text.disabled",
                             fontSize: "0.75rem",
-                            border: "1px dashed #cccccc",
+                            border: "1px dashed var(--color-border)",
                           }}
                         >
                           No Img
@@ -409,9 +463,13 @@ const Services = () => {
                       <Chip
                         label={serviceTypeMapping[service.serviceType] || service.serviceType}
                         size="small"
-                        color="success"
-                        variant="outlined"
-                        sx={{ borderRadius: 1 }}
+                        sx={{
+                          fontWeight: 600,
+                          bgcolor: "#e8f5e9",
+                          color: "var(--color-primary)",
+                          border: "1px solid rgba(27, 122, 66, 0.2)",
+                          borderRadius: "var(--radius-sm)",
+                        }}
                       />
                     </TableCell>
                     <TableCell sx={{ fontWeight: 600, maxWidth: 200 }}>
@@ -427,34 +485,33 @@ const Services = () => {
                     <TableCell>
                       <Chip
                         label={service.isActive ? "Active" : "Inactive"}
-                        color={service.isActive ? "success" : "default"}
+                        color={service.isActive ? "success" : "error"}
                         size="small"
-                        sx={{
-                          fontWeight: 500,
-                          px: 1,
-                          bgcolor: service.isActive ? "success.main" : "grey.200",
-                          color: service.isActive ? "#ffffff" : "text.secondary",
-                        }}
+                        sx={{ fontWeight: 600, fontSize: "0.75rem", borderRadius: "var(--radius-sm)" }}
                       />
                     </TableCell>
                     <TableCell align="right">
                       <Stack direction="row" spacing={1} justifyContent="flex-end">
-                        <IconButton
-                          color="primary"
-                          size="small"
-                          onClick={() => handleEditClick(service)}
-                          sx={{ bgcolor: "#e3f2fd", "&:hover": { bgcolor: "#bbdefb" } }}
-                        >
-                          <EditIcon fontSize="small" />
-                        </IconButton>
-                        <IconButton
-                          color="error"
-                          size="small"
-                          onClick={() => handleDeleteClick(service)}
-                          sx={{ bgcolor: "#ffebee", "&:hover": { bgcolor: "#ffcdd2" } }}
-                        >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
+                        <Tooltip title="Edit Service">
+                          <IconButton
+                            color="primary"
+                            size="small"
+                            onClick={() => handleEditClick(service)}
+                            sx={{ bgcolor: "#e3f2fd", "&:hover": { bgcolor: "#bbdefb" } }}
+                          >
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete Service">
+                          <IconButton
+                            color="error"
+                            size="small"
+                            onClick={() => handleDeleteClick(service)}
+                            sx={{ bgcolor: "#ffebee", "&:hover": { bgcolor: "#ffcdd2" } }}
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
                       </Stack>
                     </TableCell>
                   </TableRow>
@@ -482,17 +539,32 @@ const Services = () => {
         onClose={() => !submitting && setFormOpen(false)}
         maxWidth="md"
         fullWidth
-        sx={{ "& .MuiDialog-paper": { borderRadius: 4 } }}
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: "var(--radius-lg)",
+              boxShadow: "none",
+              border: "1px solid var(--color-border)",
+            },
+          },
+        }}
       >
-        <DialogTitle sx={{ fontWeight: "bold", bgcolor: "#fdfdfd" }}>
+        <DialogTitle sx={{ fontWeight: 700, pb: 1.5, borderBottom: "1px solid var(--color-border)" }}>
           {isEditMode ? "✏️ Edit Service Listing" : "✨ Create New Service Listing"}
         </DialogTitle>
-        <Divider />
         <form onSubmit={handleSubmit}>
-          <DialogContent sx={{ p: 3 }}>
+          <DialogContent
+            sx={{
+              p: 3,
+              pt: 4,
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "var(--radius-lg)",
+              },
+            }}
+          >
             <Grid container spacing={3}>
               {/* Cover Image Upload */}
-              <Grid item xs={12} sm={4} display="flex" flexDirection="column" alignItems="center">
+              <Grid item xs={12} sm={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                 {imagePreview ? (
                   <Box sx={{ position: "relative", width: "100%", height: 180, mb: 2 }}>
                     <Box
@@ -502,9 +574,9 @@ const Services = () => {
                       sx={{
                         width: "100%",
                         height: "100%",
-                        borderRadius: 3,
+                        borderRadius: "var(--radius-lg)",
                         objectFit: "cover",
-                        border: "1px solid #e0e0e0",
+                        border: "1px solid var(--color-border)",
                       }}
                     />
                     <IconButton
@@ -526,12 +598,17 @@ const Services = () => {
                   <Button
                     variant="outlined"
                     component="label"
-                    color="success"
                     sx={{
                       width: "100%",
                       height: 180,
-                      borderRadius: 3,
+                      borderRadius: "var(--radius-lg)",
                       borderStyle: "dashed",
+                      borderColor: "var(--color-border)",
+                      color: "var(--color-primary)",
+                      "&:hover": {
+                        borderColor: "var(--color-primary)",
+                        bgcolor: "var(--color-primary-subtle)",
+                      },
                       flexDirection: "column",
                       gap: 1,
                       mb: 2,
@@ -612,22 +689,40 @@ const Services = () => {
               </Grid>
             </Grid>
           </DialogContent>
-          <Divider />
-          <DialogActions sx={{ p: 2.5, bgcolor: "#fdfdfd" }}>
+          <DialogActions sx={{ px: 3, py: 2, bgcolor: "#f8f9fa", borderTop: "1px solid var(--color-border)" }}>
             <Button
               onClick={() => setFormOpen(false)}
-              color="inherit"
               disabled={submitting}
-              sx={{ borderRadius: 2 }}
+              variant="outlined"
+              sx={{
+                color: "var(--color-primary)",
+                borderColor: "var(--color-border)",
+                borderRadius: "var(--radius-lg)",
+                textTransform: "none",
+                "&:hover": {
+                  borderColor: "var(--color-primary)",
+                  bgcolor: "var(--color-primary-subtle)",
+                },
+              }}
             >
               Cancel
             </Button>
             <Button
               type="submit"
               variant="contained"
-              color="success"
               disabled={submitting}
-              sx={{ borderRadius: 2, px: 3 }}
+              sx={{
+                bgcolor: "var(--color-primary)",
+                color: "#fff",
+                borderRadius: "var(--radius-lg)",
+                textTransform: "none",
+                px: 3,
+                boxShadow: "none",
+                "&:hover": {
+                  bgcolor: "var(--color-primary-dark)",
+                  boxShadow: "none",
+                },
+              }}
             >
               {submitting ? "Saving..." : "Save Service"}
             </Button>
@@ -639,28 +734,53 @@ const Services = () => {
       <Dialog
         open={deleteOpen}
         onClose={() => !submitting && setDeleteOpen(false)}
-        sx={{ "& .MuiDialog-paper": { borderRadius: 3 } }}
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: "var(--radius-lg)",
+              boxShadow: "none",
+              border: "1px solid var(--color-border)",
+            },
+          },
+        }}
       >
-        <DialogTitle sx={{ fontWeight: "bold" }}>⚠️ Delete Service Listing</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 700 }}>⚠️ Delete Service Listing</DialogTitle>
         <DialogContent>
           <Typography variant="body1">
             Are you sure you want to delete the service{" "}
             <strong>"{selectedService?.title}"</strong>? This action cannot be undone.
           </Typography>
         </DialogContent>
-        <DialogActions sx={{ p: 2 }}>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button
             onClick={() => setDeleteOpen(false)}
-            color="inherit"
             disabled={submitting}
+            variant="outlined"
+            sx={{
+              color: "var(--color-primary)",
+              borderColor: "var(--color-border)",
+              borderRadius: "var(--radius-lg)",
+              textTransform: "none",
+              "&:hover": {
+                borderColor: "var(--color-primary)",
+                bgcolor: "var(--color-primary-subtle)",
+              },
+            }}
           >
             Cancel
           </Button>
           <Button
             onClick={handleDeleteConfirm}
-            color="error"
-            variant="contained"
             disabled={submitting}
+            variant="contained"
+            color="error"
+            sx={{
+              px: 3,
+              borderRadius: "var(--radius-lg)",
+              textTransform: "none",
+              boxShadow: "none",
+              "&:hover": { boxShadow: "none" },
+            }}
           >
             {submitting ? "Deleting..." : "Delete"}
           </Button>

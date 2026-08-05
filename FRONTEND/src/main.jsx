@@ -12,29 +12,38 @@ import "./index.css";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#06331F", // --primary-color (Dark Green)
-      light: "#EBF3EC", // --secondary-color (Light Green)
+      main: "#06492D", // --color-primary-dark
+      light: "#e8f5e9", // --color-primary-subtle
       contrastText: "#ffffff",
     },
     secondary: {
-      main: "#EBF3EC",
-      contrastText: "#06331F",
+      main: "#e8f5e9", // --color-primary-subtle
+      contrastText: "#06492D", // --color-primary-dark
     },
     success: {
-      main: "#2E7D32", // --third-color (Green requested for highlights)
+      main: "#1b7a42", // --color-primary
       contrastText: "#ffffff",
     },
     error: {
-      main: "#dd3e21", // --accent-color (Red/Orange)
+      main: "#e74c3c", // --color-danger
       contrastText: "#ffffff",
     },
     text: {
-      primary: "#212326", // --text-main
-      secondary: "#2D2D2D", // --text-muted
+      primary: "#2c3e50", // --color-text-main
+      secondary: "#6c757d", // --color-text-muted
     },
   },
   typography: {
     fontFamily: "'Assistant', 'Poppins', 'Roboto', 'Helvetica', 'Arial', sans-serif",
+  },
+  components: {
+    MuiTypography: {
+      styleOverrides: {
+        h4: {
+          color: "var(--color-primary)",
+        },
+      },
+    },
   },
 });
 

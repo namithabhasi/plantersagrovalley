@@ -31,6 +31,7 @@ import {
   FormControlLabel,
   Grid,
   Divider,
+  Tooltip,
 } from "@mui/material";
 import {
   Add as AddIcon,
@@ -262,10 +263,10 @@ const Blogs = () => {
     <Box>
       {/* Header */}
       <Box mb={5}>
-        <Typography variant="h4" fontWeight={800} sx={{ color: "success.main", mb: 0.5 }}>
+        <Typography variant="h4" fontWeight={700} mb={1}>
           Blog Management
         </Typography>
-        <Typography sx={{ mt: 1, mb: 2 }} variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 2 }}>
           Manage your store's blog posts, articles, and educational content
         </Typography>
       </Box>
@@ -296,10 +297,16 @@ const Blogs = () => {
             variant="outlined"
             size="small"
             sx={{
-              width: { xs: "100%", md: 350 },
+              width: { xs: "100%", sm: 350, md: 450 },
+              flexShrink: 0,
+              bgcolor: "#ffffff",
+              borderRadius: "var(--radius-lg)",
               "& .MuiOutlinedInput-root": {
                 height: 40,
-                borderRadius: 2.5,
+                borderRadius: "var(--radius-lg)",
+                "& fieldset": {
+                  borderColor: "var(--color-border)",
+                },
               },
             }}
           />
@@ -311,13 +318,17 @@ const Blogs = () => {
           onClick={handleAddClick}
           sx={{
             height: 40,
-            bgcolor: "success.main",
-            "&:hover": { bgcolor: "primary.main" },
+            bgcolor: "var(--color-primary)",
+            color: "#ffffff",
+            borderRadius: "var(--radius-lg)",
             textTransform: "none",
-            borderRadius: 2.5,
             px: 3,
             whiteSpace: "nowrap",
-            boxShadow: "0 4px 10px rgba(46, 125, 50, 0.15)",
+            boxShadow: "none",
+            "&:hover": {
+              bgcolor: "var(--color-primary-dark)",
+              boxShadow: "none",
+            },
           }}
         >
           Add Blog
@@ -332,18 +343,19 @@ const Blogs = () => {
       ) : filteredBlogs.length === 0 ? (
         <Paper
           sx={{
-            p: 5,
-            textAlign: "center",
-            borderRadius: 3,
-            border: "1px dashed #e0e0e0",
+            py: 8,
+            px: 2,
+            borderRadius: "var(--radius-lg)",
+            border: "1px dashed var(--color-border)",
             boxShadow: "none",
             bgcolor: "transparent",
+            textAlign: "center",
           }}
         >
           <Typography variant="h6" color="text.secondary" mb={1}>
             No blogs found
           </Typography>
-          <Typography variant="body2" color="text.disabled">
+          <Typography variant="body2" color="text.secondary">
             {searchQuery ? "Try refining your search query." : "Get started by adding a new blog post."}
           </Typography>
         </Paper>
@@ -351,9 +363,10 @@ const Blogs = () => {
         <>
           <TableContainer
             component={Paper}
-            elevation={2}
+            variant="outlined"
             sx={{
-              borderRadius: 3,
+              borderRadius: "var(--radius-lg)",
+              borderColor: "var(--color-border)",
               mt: 2,
               overflowX: "auto",
             }}
@@ -361,14 +374,14 @@ const Blogs = () => {
             <Table>
               <TableHead sx={{ "& .MuiTableCell-head": { bgcolor: "#f5f5f5" } }}>
                 <TableRow>
-                  <TableCell><b>Image</b></TableCell>
-                  <TableCell><b>Title</b></TableCell>
-                  <TableCell><b>Category</b></TableCell>
-                  <TableCell><b>Author</b></TableCell>
-                  <TableCell><b>Read Time</b></TableCell>
-                  <TableCell><b>Published Date</b></TableCell>
-                  <TableCell><b>Status</b></TableCell>
-                  <TableCell align="right"><b>Actions</b></TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Image</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Title</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Category</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Author</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Read Time</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Published Date</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Status</TableCell>
+                  <TableCell align="right" sx={{ fontWeight: 600, py: 2 }}>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -387,9 +400,9 @@ const Blogs = () => {
                           sx={{
                             width: 50,
                             height: 50,
-                            borderRadius: 2,
+                            borderRadius: "var(--radius-sm)",
                             objectFit: "cover",
-                            border: "1px solid #e0e0e0",
+                            border: "1px solid var(--color-border)",
                           }}
                         />
                       ) : (
@@ -397,14 +410,14 @@ const Blogs = () => {
                           sx={{
                             width: 50,
                             height: 50,
-                            borderRadius: 2,
+                            borderRadius: "var(--radius-sm)",
                             bgcolor: "#f0f2f5",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             color: "text.disabled",
                             fontSize: "0.75rem",
-                            border: "1px dashed #cccccc",
+                            border: "1px dashed var(--color-border)",
                           }}
                         >
                           No Img
@@ -420,9 +433,13 @@ const Blogs = () => {
                       <Chip
                         label={blog.category}
                         size="small"
-                        color="success"
-                        variant="outlined"
-                        sx={{ borderRadius: 1 }}
+                        sx={{
+                          fontWeight: 600,
+                          bgcolor: "#e8f5e9",
+                          color: "var(--color-primary)",
+                          border: "1px solid rgba(27, 122, 66, 0.2)",
+                          borderRadius: "var(--radius-sm)",
+                        }}
                       />
                     </TableCell>
                     <TableCell>{blog.author}</TableCell>
@@ -434,7 +451,7 @@ const Blogs = () => {
                           fontFamily: "monospace",
                           bgcolor: "#f1f3f5",
                           color: "#495057",
-                          borderRadius: 1,
+                          borderRadius: "var(--radius-sm)",
                         }}
                       />
                     </TableCell>
@@ -442,34 +459,33 @@ const Blogs = () => {
                     <TableCell>
                       <Chip
                         label={blog.isActive ? "Active" : "Inactive"}
-                        color={blog.isActive ? "success" : "default"}
+                        color={blog.isActive ? "success" : "error"}
                         size="small"
-                        sx={{
-                          fontWeight: 500,
-                          px: 1,
-                          bgcolor: blog.isActive ? "success.main" : "grey.200",
-                          color: blog.isActive ? "#ffffff" : "text.secondary",
-                        }}
+                        sx={{ fontWeight: 600, fontSize: "0.75rem", borderRadius: "var(--radius-sm)" }}
                       />
                     </TableCell>
                     <TableCell align="right">
                       <Stack direction="row" spacing={1} justifyContent="flex-end">
-                        <IconButton
-                          color="primary"
-                          size="small"
-                          onClick={() => handleEditClick(blog)}
-                          sx={{ bgcolor: "#e3f2fd", "&:hover": { bgcolor: "#bbdefb" } }}
-                        >
-                          <EditIcon fontSize="small" />
-                        </IconButton>
-                        <IconButton
-                          color="error"
-                          size="small"
-                          onClick={() => handleDeleteClick(blog)}
-                          sx={{ bgcolor: "#ffebee", "&:hover": { bgcolor: "#ffcdd2" } }}
-                        >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
+                        <Tooltip title="Edit Blog">
+                          <IconButton
+                            color="primary"
+                            size="small"
+                            onClick={() => handleEditClick(blog)}
+                            sx={{ bgcolor: "#e3f2fd", "&:hover": { bgcolor: "#bbdefb" } }}
+                          >
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete Blog">
+                          <IconButton
+                            color="error"
+                            size="small"
+                            onClick={() => handleDeleteClick(blog)}
+                            sx={{ bgcolor: "#ffebee", "&:hover": { bgcolor: "#ffcdd2" } }}
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
                       </Stack>
                     </TableCell>
                   </TableRow>
@@ -497,17 +513,32 @@ const Blogs = () => {
         onClose={() => !submitting && setFormOpen(false)}
         maxWidth="md"
         fullWidth
-        sx={{ "& .MuiDialog-paper": { borderRadius: 4 } }}
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: "var(--radius-lg)",
+              boxShadow: "none",
+              border: "1px solid var(--color-border)",
+            },
+          },
+        }}
       >
-        <DialogTitle sx={{ fontWeight: "bold", bgcolor: "#fdfdfd" }}>
+        <DialogTitle sx={{ fontWeight: 700, pb: 1.5, borderBottom: "1px solid var(--color-border)" }}>
           {isEditMode ? "✏️ Edit Blog Post" : "✨ Create New Blog Post"}
         </DialogTitle>
-        <Divider />
         <form onSubmit={handleSubmit}>
-          <DialogContent sx={{ p: 3 }}>
+          <DialogContent
+            sx={{
+              p: 3,
+              pt: 4,
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "var(--radius-lg)",
+              },
+            }}
+          >
             <Grid container spacing={3}>
               {/* Cover Image Upload */}
-              <Grid item xs={12} sm={4} display="flex" flexDirection="column" alignItems="center">
+              <Grid item xs={12} sm={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                 {imagePreview ? (
                   <Box sx={{ position: "relative", width: "100%", height: 180, mb: 2 }}>
                     <Box
@@ -517,9 +548,9 @@ const Blogs = () => {
                       sx={{
                         width: "100%",
                         height: "100%",
-                        borderRadius: 3,
+                        borderRadius: "var(--radius-lg)",
                         objectFit: "cover",
-                        border: "1px solid #e0e0e0",
+                        border: "1px solid var(--color-border)",
                       }}
                     />
                     <IconButton
@@ -541,12 +572,17 @@ const Blogs = () => {
                   <Button
                     variant="outlined"
                     component="label"
-                    color="success"
                     sx={{
                       width: "100%",
                       height: 180,
-                      borderRadius: 3,
+                      borderRadius: "var(--radius-lg)",
                       borderStyle: "dashed",
+                      borderColor: "var(--color-border)",
+                      color: "var(--color-primary)",
+                      "&:hover": {
+                        borderColor: "var(--color-primary)",
+                        bgcolor: "var(--color-primary-subtle)",
+                      },
                       flexDirection: "column",
                       gap: 1,
                       mb: 2,
@@ -662,7 +698,8 @@ const Blogs = () => {
                     variant="outlined"
                     sx={{
                       p: 3,
-                      borderRadius: 3,
+                      borderRadius: "var(--radius-lg)",
+                      borderColor: "var(--color-border)",
                       bgcolor: "#fafafa",
                       maxHeight: 300,
                       overflowY: "auto",
@@ -695,22 +732,40 @@ const Blogs = () => {
               </Grid>
             </Grid>
           </DialogContent>
-          <Divider />
-          <DialogActions sx={{ p: 2.5, bgcolor: "#fdfdfd" }}>
+          <DialogActions sx={{ px: 3, py: 2, bgcolor: "#f8f9fa", borderTop: "1px solid var(--color-border)" }}>
             <Button
               onClick={() => setFormOpen(false)}
-              color="inherit"
               disabled={submitting}
-              sx={{ borderRadius: 2 }}
+              variant="outlined"
+              sx={{
+                color: "var(--color-primary)",
+                borderColor: "var(--color-border)",
+                borderRadius: "var(--radius-lg)",
+                textTransform: "none",
+                "&:hover": {
+                  borderColor: "var(--color-primary)",
+                  bgcolor: "var(--color-primary-subtle)",
+                },
+              }}
             >
               Cancel
             </Button>
             <Button
               type="submit"
               variant="contained"
-              color="success"
               disabled={submitting}
-              sx={{ borderRadius: 2, px: 3 }}
+              sx={{
+                bgcolor: "var(--color-primary)",
+                color: "#fff",
+                borderRadius: "var(--radius-lg)",
+                textTransform: "none",
+                px: 3,
+                boxShadow: "none",
+                "&:hover": {
+                  bgcolor: "var(--color-primary-dark)",
+                  boxShadow: "none",
+                },
+              }}
             >
               {submitting ? "Saving..." : "Save Blog"}
             </Button>
@@ -722,28 +777,53 @@ const Blogs = () => {
       <Dialog
         open={deleteOpen}
         onClose={() => !submitting && setDeleteOpen(false)}
-        sx={{ "& .MuiDialog-paper": { borderRadius: 3 } }}
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: "var(--radius-lg)",
+              boxShadow: "none",
+              border: "1px solid var(--color-border)",
+            },
+          },
+        }}
       >
-        <DialogTitle sx={{ fontWeight: "bold" }}>⚠️ Delete Blog Post</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 700 }}>⚠️ Delete Blog Post</DialogTitle>
         <DialogContent>
           <Typography variant="body1">
             Are you sure you want to delete the blog post{" "}
             <strong>"{selectedBlog?.title}"</strong>? This action cannot be undone.
           </Typography>
         </DialogContent>
-        <DialogActions sx={{ p: 2 }}>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button
             onClick={() => setDeleteOpen(false)}
-            color="inherit"
             disabled={submitting}
+            variant="outlined"
+            sx={{
+              color: "var(--color-primary)",
+              borderColor: "var(--color-border)",
+              borderRadius: "var(--radius-lg)",
+              textTransform: "none",
+              "&:hover": {
+                borderColor: "var(--color-primary)",
+                bgcolor: "var(--color-primary-subtle)",
+              },
+            }}
           >
             Cancel
           </Button>
           <Button
             onClick={handleDeleteConfirm}
-            color="error"
-            variant="contained"
             disabled={submitting}
+            variant="contained"
+            color="error"
+            sx={{
+              px: 3,
+              borderRadius: "var(--radius-lg)",
+              textTransform: "none",
+              boxShadow: "none",
+              "&:hover": { boxShadow: "none" },
+            }}
           >
             {submitting ? "Deleting..." : "Delete"}
           </Button>
