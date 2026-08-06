@@ -30,7 +30,11 @@ import {
   BarChart,
   Settings,
   Email,
+  Book,
+  Spa,
+  MarkEmailRead,
 } from "@mui/icons-material";
+
 
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -357,6 +361,88 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
           </ListItemButton>
         )}
 
+        {/* Enquiries */}
+
+        {(role === "super-admin" || role === "admin") && (
+          <ListItemButton
+            component={Link}
+            to="/dashboard/enquiries"
+            sx={
+              location.pathname === "/dashboard/enquiries"
+                ? activeStyle
+                : {}
+            }
+            onClick={handleItemClick}
+          >
+            <ListItemIcon>
+              <Email />
+            </ListItemIcon>
+
+            <ListItemText primary="Enquiries" />
+          </ListItemButton>
+        )}
+
+        {/* Subscribers */}
+
+        {(role === "super-admin" || role === "admin") && (
+          <ListItemButton
+            component={Link}
+            to="/dashboard/subscribers"
+            sx={
+              location.pathname === "/dashboard/subscribers"
+                ? activeStyle
+                : {}
+            }
+            onClick={handleItemClick}
+          >
+            <ListItemIcon>
+              <MarkEmailRead />
+            </ListItemIcon>
+
+            <ListItemText primary="Subscribers" />
+          </ListItemButton>
+        )}
+
+        {/* Blogs */}
+
+        {(role === "super-admin" || role === "admin") && (
+          <ListItemButton
+            component={Link}
+            to="/dashboard/blogs"
+            sx={
+              location.pathname === "/dashboard/blogs"
+                ? activeStyle
+                : {}
+            }
+            onClick={handleItemClick}
+          >
+            <ListItemIcon>
+              <Book />
+            </ListItemIcon>
+
+            <ListItemText primary="Blogs" />
+          </ListItemButton>
+        )}
+
+        {(role === "super-admin" || role === "admin") && (
+          <ListItemButton
+            component={Link}
+            to="/dashboard/services"
+            sx={
+              location.pathname === "/dashboard/services"
+                ? activeStyle
+                : {}
+            }
+            onClick={handleItemClick}
+          >
+            <ListItemIcon>
+              <Spa />
+            </ListItemIcon>
+
+            <ListItemText primary="Services" />
+          </ListItemButton>
+        )}
+
         {/* Reports */}
 
         {(role === "super-admin" || role === "admin") && (
@@ -378,26 +464,6 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
           </ListItemButton>
         )}
 
-        {/* Enquiries */}
-
-        {(role === "super-admin" || role === "admin") && (
-          <ListItemButton
-            component={Link}
-            to="/dashboard/enquiries"
-            sx={
-              location.pathname === "/dashboard/enquiries"
-                ? activeStyle
-                : {}
-            }
-            onClick={handleItemClick}
-          >
-            <ListItemIcon>
-              <Email />
-            </ListItemIcon>
-
-            <ListItemText primary="Enquiries" />
-          </ListItemButton>
-        )}
 
         {/* Settings */}
 

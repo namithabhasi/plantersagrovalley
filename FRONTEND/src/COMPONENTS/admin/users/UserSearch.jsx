@@ -8,12 +8,13 @@ const UserSearch = ({ search, setSearch }) => {
       sx={{
         display: "flex",
         alignItems: "center",
-        width: { xs: "100%", md: 350 },
+        width: { xs: "100%", sm: 350, md: 450 },
+        flexShrink: 0,
         height: 40,
         boxSizing: "border-box",
         px: 2,
-        border: "1px solid #ddd",
-        borderRadius: 2,
+        border: "1px solid var(--color-border)",
+        borderRadius: "var(--radius-lg)",
       }}
     >
       <InputBase

@@ -32,6 +32,7 @@ const UserFilters = ({
             sx={{
               height: 40,
               boxSizing: "border-box",
+              borderRadius: "var(--radius-lg)",
               "& .MuiSelect-select": {
                 height: 40,
                 display: "flex",
@@ -64,6 +65,7 @@ const UserFilters = ({
           sx={{
             height: 40,
             boxSizing: "border-box",
+            borderRadius: "var(--radius-lg)",
             "& .MuiSelect-select": {
               height: 40,
               display: "flex",

@@ -162,6 +162,9 @@ export const getDashboard = async (req, res) => {
           quantitySold: {
             $sum: "$items.quantity",
           },
+          totalRevenue: {
+            $sum: { $multiply: ["$items.quantity", "$items.price"] },
+          },
         },
       },
       {
@@ -185,15 +188,34 @@ export const getDashboard = async (req, res) => {
       },
       {
         $project: {
-          _id: 0,
+          _id: "$product._id",
           productId: "$product._id",
+          name: "$product.name",
           productName: "$product.name",
           quantitySold: 1,
+          totalSold: "$quantitySold",
           stock: "$product.stock",
           price: "$product.price",
+          totalRevenue: 1,
+          images: "$product.images",
         },
       },
     ]);
+
+    const monthNames = [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+
+    const formattedMonthlySales = monthlySales.map((item) => {
+      const monthIndex = item._id.month - 1;
+      const monthName = monthNames[monthIndex] || `Month ${item._id.month}`;
+      return {
+        month: `${monthName} ${item._id.year}`,
+        sales: item.sales,
+        orders: item.orders,
+      };
+    });
 
     return res.status(200).json({
       success: true,
@@ -224,7 +246,7 @@ export const getDashboard = async (req, res) => {
 
         recentOrders,
 
-        monthlySales,
+        monthlySales: formattedMonthlySales,
 
         topSellingProducts,
       },

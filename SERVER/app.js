@@ -18,6 +18,11 @@ import couponRoutes from "./routes/couponRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import enquiryRoutes from "./routes/enquiryRoutes.js";
+import blogRoutes from "./routes/blogRoutes.js";
+import serviceRoutes from "./routes/serviceRoutes.js";
+import subscriberRoutes from "./routes/subscriberRoutes.js";
+
+
 
 
 const app = express();
@@ -83,6 +88,11 @@ app.use("/api/coupons", couponRoutes);
 
 app.use("/api/settings", settingsRoutes);
 app.use("/api/enquiries", enquiryRoutes);
+app.use("/api/blogs", blogRoutes);
+app.use("/api/services", serviceRoutes);
+app.use("/api/subscribers", subscriberRoutes);
+
+
 
 app.use("/api/admin/dashboard", adminDashboardRoutes);
 app.use("/api/admin/notifications", notificationRoutes);

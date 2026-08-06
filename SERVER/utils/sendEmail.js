@@ -10,31 +10,35 @@ import nodemailer from "nodemailer";
 const sendEmail = async ({ to, subject, html }) => {
   // 1. If Resend API Key is defined, send via Resend HTTPS API (bypasses SMTP port blocks on Render free tier)
   if (process.env.RESEND_API_KEY) {
-    const fromEmail = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
-    console.log("Sending email via Resend API from:", fromEmail);
+    try {
+      const fromEmail = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+      console.log("Sending email via Resend API from:", fromEmail);
 
-    const response = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
-      },
-      body: JSON.stringify({
-        from: `Planters Agro Valley <${fromEmail}>`,
-        to: [to],
-        subject,
-        html,
-      }),
-    });
+      const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
+        },
+        body: JSON.stringify({
+          from: `Planters Agro Valley <${fromEmail}>`,
+          to: [to],
+          subject,
+          html,
+        }),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(`Resend API Error: ${data.message || response.statusText}`);
+      if (!response.ok) {
+        throw new Error(`Resend API Error: ${data.message || response.statusText}`);
+      }
+
+      console.log("Email sent successfully via Resend. ID:", data.id);
+      return;
+    } catch (error) {
+      console.warn("Resend API failed, falling back to SMTP...", error.message);
     }
-
-    console.log("Email sent successfully via Resend. ID:", data.id);
-    return;
   }
 
   // 2. Fallback to Gmail SMTP (requires EMAIL_USER and EMAIL_PASS)

@@ -42,6 +42,11 @@ import {
 import { toast } from "react-toastify";
 import axios from "../../api/axiosInstance";
 import UserPagination from "../../COMPONENTS/admin/users/UserPagination";
+const EnquiryStatusColors = {
+  unread: { bg: "#ffebee", color: "#b71c1c" },
+  read: { bg: "#fff3e0", color: "#e65100" },
+  replied: { bg: "#e8f5e9", color: "#2e7d32" },
+};
 
 const Enquiries = () => {
   const dispatch = useDispatch();
@@ -189,20 +194,6 @@ const Enquiries = () => {
     (page - 1) * itemsPerPage,
     page * itemsPerPage
   );
-
-  const getStatusChipColor = (status) => {
-    switch (status) {
-      case "unread":
-        return "error";
-      case "read":
-        return "warning";
-      case "replied":
-        return "success";
-      default:
-        return "default";
-    }
-  };
-
   const formatDate = (dateStr) => {
     const d = new Date(dateStr);
     return d.toLocaleString("en-US", {
@@ -224,78 +215,120 @@ const Enquiries = () => {
         mb={3}
       >
         <Box>
-          <Typography variant="h4" fontWeight={700} color="text.primary">
+          <Typography variant="h4" fontWeight={700}>
             Contact Enquiries
           </Typography>
-          <Typography variant="body2" color="text.secondary" mt={0.5}>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 2 }} >
             View and manage message submissions from customers on the Contact page
           </Typography>
         </Box>
       </Stack>
 
-      <Card sx={{ mb: 4, borderRadius: 2, boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}>
-        <CardContent sx={{ p: 2.5 }}>
-          <Stack
-            direction={{ xs: "column", md: "row" }}
-            spacing={2}
-            alignItems="center"
-          >
-            {/* Search Input */}
-            <TextField
-              fullWidth
-              size="small"
-              placeholder="Search by name, email, phone or comment..."
-              value={searchQuery}
+      {/* Search & Filters */}
+      <Stack
+        direction={{ xs: "column", md: "row" }}
+        spacing={2}
+        justifyContent="space-between"
+        alignItems={{ xs: "stretch", sm: "flex-end", md: "center" }}
+        mb={4}
+      >
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={2}
+          alignItems={{ xs: "stretch", sm: "center" }}
+          sx={{ width: "100%" }}
+        >
+          {/* Search Input */}
+          <TextField
+            placeholder="Search by name, email, phone or comment..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setPage(1);
+            }}
+            slotProps={{
+              input: {
+                startAdornment: <SearchIcon sx={{ color: "text.secondary", mr: 1 }} />,
+                endAdornment: searchQuery && (
+                  <IconButton
+                    size="small"
+                    onClick={() => {
+                      setSearchQuery("");
+                      dispatch(setSearchQueryRedux(""));
+                      setPage(1);
+                    }}
+                  >
+                    <ClearIcon sx={{ fontSize: 18 }} />
+                  </IconButton>
+                ),
+              },
+            }}
+            variant="outlined"
+            size="small"
+            sx={{
+              width: { xs: "100%", sm: 350, md: 450 },
+              flexShrink: 0,
+              bgcolor: "#ffffff",
+              borderRadius: "var(--radius-lg)",
+              "& .MuiOutlinedInput-root": {
+                height: 40,
+                borderRadius: "var(--radius-lg)",
+                "& fieldset": {
+                  borderColor: "var(--color-border)",
+                },
+              },
+            }}
+          />
+
+          {/* Status Filter */}
+          <FormControl size="small" sx={{ minWidth: { xs: "100%", sm: 200 } }}>
+            <InputLabel id="status-filter-label">Status</InputLabel>
+            <Select
+              labelId="status-filter-label"
+              value={statusFilter}
+              label="Status"
               onChange={(e) => {
-                setSearchQuery(e.target.value);
+                setStatusFilter(e.target.value);
                 setPage(1);
               }}
-              slotProps={{
-                input: {
-                  startAdornment: <SearchIcon color="action" sx={{ mr: 1, fontSize: 20 }} />,
-                  endAdornment: searchQuery && (
-                    <IconButton
-                      size="small"
-                      onClick={() => {
-                        setSearchQuery("");
-                        dispatch(setSearchQueryRedux(""));
-                        setPage(1);
-                      }}
-                    >
-                      <ClearIcon sx={{ fontSize: 18 }} />
-                    </IconButton>
-                  ),
+              sx={{
+                height: 40,
+                borderRadius: "var(--radius-lg)",
+                borderColor: "var(--color-border)",
+                "& .MuiSelect-select": {
+                  height: 40,
+                  display: "flex",
+                  alignItems: "center",
+                  boxSizing: "border-box",
+                  py: 0,
                 },
               }}
-            />
-
-            {/* Status Filter */}
-            <FormControl size="small" sx={{ minWidth: 160, width: { xs: "100%", md: "auto" } }}>
-              <InputLabel>Status</InputLabel>
-              <Select
-                value={statusFilter}
-                label="Status"
-                onChange={(e) => {
-                  setStatusFilter(e.target.value);
-                  setPage(1);
-                }}
-              >
-                <MenuItem value="all">All Enquiries</MenuItem>
-                <MenuItem value="unread">Unread</MenuItem>
-                <MenuItem value="read">Read</MenuItem>
-                <MenuItem value="replied">Replied</MenuItem>
-              </Select>
-            </FormControl>
-          </Stack>
-        </CardContent>
-      </Card>
+            >
+              <MenuItem value="all">All Enquiries</MenuItem>
+              <MenuItem value="unread">Unread</MenuItem>
+              <MenuItem value="read">Read</MenuItem>
+              <MenuItem value="replied">Replied</MenuItem>
+            </Select>
+          </FormControl>
+        </Stack>
+      </Stack>
 
       {loading ? (
         <Box display="flex" justifyContent="center" py={8}>
           <CircularProgress color="success" />
         </Box>
       ) : paginatedEnquiries.length === 0 ? (
-        <Paper sx={{ py: 8, px: 2, textCenter: "center", borderRadius: 2, textAlign: "center" }}>
+        <Paper
+          sx={{
+            py: 8,
+            px: 2,
+            borderRadius: "var(--radius-lg)",
+            border: "1px dashed var(--color-border)",
+            boxShadow: "none",
+            bgcolor: "transparent",
+            textAlign: "center",
+          }}
+        >
           <EmailIcon sx={{ fontSize: 64, color: "text.secondary", mb: 2, opacity: 0.5 }} />
           <Typography variant="h6" color="text.secondary" fontWeight={500}>
             No enquiries found
@@ -306,16 +339,25 @@ const Enquiries = () => {
         </Paper>
       ) : (
         <>
-          <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+          <TableContainer
+            component={Paper}
+            variant="outlined"
+            sx={{
+              borderRadius: "var(--radius-lg)",
+              borderColor: "var(--color-border)",
+              mt: 2,
+              overflowX: "auto",
+            }}
+          >
             <Table>
-              <TableHead sx={{ bgcolor: "grey.50" }}>
+              <TableHead sx={{ "& .MuiTableCell-head": { bgcolor: "#f5f5f5" } }}>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 600 }}>Date</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Contact Details</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Message Preview</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
-                  <TableCell sx={{ fontWeight: 600, textAlign: "right" }}>Actions</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Date</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Name</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Contact Details</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Message Preview</TableCell>
+                  <TableCell sx={{ fontWeight: 600, py: 2 }}>Status</TableCell>
+                  <TableCell align="right" sx={{ fontWeight: 600, py: 2 }}>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -357,55 +399,64 @@ const Enquiries = () => {
                     <TableCell>
                       <Chip
                         label={enquiry.status.toUpperCase()}
-                        color={getStatusChipColor(enquiry.status)}
                         size="small"
-                        sx={{ fontWeight: 600, fontSize: "0.7rem", borderRadius: "4px" }}
+                        sx={{
+                          fontWeight: 600,
+                          bgcolor: EnquiryStatusColors[enquiry.status]?.bg || "#f1f3f5",
+                          color: EnquiryStatusColors[enquiry.status]?.color || "#495057",
+                        }}
                       />
                     </TableCell>
-                    <TableCell sx={{ textAlign: "right", whiteSpace: "nowrap" }}>
-                      <Tooltip title="View Message">
-                        <IconButton
-                          color="primary"
-                          onClick={() => handleOpenDetail(enquiry)}
-                          size="small"
-                        >
-                          <VisibilityIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-
-                      {enquiry.status !== "replied" && (
-                        <Tooltip title="Mark as Replied">
+                    <TableCell align="right">
+                      <Stack direction="row" spacing={1} justifyContent="flex-end">
+                        <Tooltip title="View Message">
                           <IconButton
-                            color="success"
-                            onClick={() => handleUpdateStatus(enquiry._id, "replied")}
+                            color="info"
+                            onClick={() => handleOpenDetail(enquiry)}
                             size="small"
+                            sx={{ bgcolor: "#e0f7fa", "&:hover": { bgcolor: "#b2ebf2" } }}
                           >
-                            <CheckCircleIcon fontSize="small" />
+                            <VisibilityIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
-                      )}
 
-                      {enquiry.status === "replied" && (
-                        <Tooltip title="Mark as Read (Reset status)">
+                        {enquiry.status !== "replied" && (
+                          <Tooltip title="Mark as Replied">
+                            <IconButton
+                              color="success"
+                              onClick={() => handleUpdateStatus(enquiry._id, "replied")}
+                              size="small"
+                              sx={{ bgcolor: "#e8f5e9", "&:hover": { bgcolor: "#c8e6c9" } }}
+                            >
+                              <CheckCircleIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        )}
+
+                        {enquiry.status === "replied" && (
+                          <Tooltip title="Mark as Read (Reset status)">
+                            <IconButton
+                              color="warning"
+                              onClick={() => handleUpdateStatus(enquiry._id, "read")}
+                              size="small"
+                              sx={{ bgcolor: "#fff3e0", "&:hover": { bgcolor: "#ffe0b2" } }}
+                            >
+                              <MarkEmailReadIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        )}
+
+                        <Tooltip title="Delete Message">
                           <IconButton
-                            color="warning"
-                            onClick={() => handleUpdateStatus(enquiry._id, "read")}
+                            color="error"
+                            onClick={() => handleOpenDelete(enquiry)}
                             size="small"
+                            sx={{ bgcolor: "#ffebee", "&:hover": { bgcolor: "#ffcdd2" } }}
                           >
-                            <MarkEmailReadIcon fontSize="small" />
+                            <DeleteIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
-                      )}
-
-                      <Tooltip title="Delete Message">
-                        <IconButton
-                          color="error"
-                          onClick={() => handleOpenDelete(enquiry)}
-                          size="small"
-                        >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
+                      </Stack>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -424,29 +475,38 @@ const Enquiries = () => {
         maxWidth="sm"
         fullWidth
         slotProps={{
-          paper: { sx: { borderRadius: 2 } }
+          paper: {
+            sx: {
+              borderRadius: "var(--radius-lg)",
+              boxShadow: "none",
+              border: "1px solid var(--color-border)",
+            },
+          },
         }}
       >
-        <DialogTitle sx={{ pb: 1, borderBottom: "1px solid", borderColor: "grey.100" }}>
+        <DialogTitle sx={{ pb: 1, borderBottom: "1px solid var(--color-border)" }}>
           <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <Typography variant="h6" fontWeight={600}>
+            <Typography variant="h6" fontWeight={700}>
               Enquiry Details
             </Typography>
             {selectedEnquiry && (
               <Chip
                 label={selectedEnquiry.status.toUpperCase()}
-                color={getStatusChipColor(selectedEnquiry.status)}
                 size="small"
-                sx={{ fontWeight: 600, fontSize: "0.75rem", borderRadius: "4px" }}
+                sx={{
+                  fontWeight: 600,
+                  bgcolor: EnquiryStatusColors[selectedEnquiry.status]?.bg || "#f1f3f5",
+                  color: EnquiryStatusColors[selectedEnquiry.status]?.color || "#495057",
+                }}
               />
             )}
           </Stack>
         </DialogTitle>
         <DialogContent sx={{ pt: 3 }}>
           {selectedEnquiry && (
-            <Stack spacing={2.5}>
+            <Stack spacing={2.5} sx={{ mt: 1 }}>
               <Box>
-                <Typography variant="caption" color="text.secondary" fontWeight={600} uppercase sx={{ display: "block", mb: 0.5 }}>
+                <Typography variant="caption" color="text.secondary" fontWeight={600} sx={{ display: "block", mb: 0.5 }}>
                   SENDER
                 </Typography>
                 <Typography variant="body1" fontWeight={500}>
@@ -476,7 +536,7 @@ const Enquiries = () => {
                 <Typography variant="body2">{formatDate(selectedEnquiry.createdAt)}</Typography>
               </Box>
 
-              <Box sx={{ bgcolor: "grey.50", p: 2, borderRadius: 1, border: "1px solid", borderColor: "grey.200" }}>
+              <Box sx={{ bgcolor: "#f8f9fa", p: 2, borderRadius: "var(--radius-lg)", border: "1px solid var(--color-border)" }}>
                 <Typography variant="caption" color="text.secondary" fontWeight={600} sx={{ display: "block", mb: 1 }}>
                   MESSAGE
                 </Typography>
@@ -487,18 +547,42 @@ const Enquiries = () => {
             </Stack>
           )}
         </DialogContent>
-        <DialogActions sx={{ p: 2.5, borderTop: "1px solid", borderColor: "grey.100" }}>
+        <DialogActions sx={{ px: 3, py: 2, bgcolor: "#f8f9fa", borderTop: "1px solid var(--color-border)" }}>
           {selectedEnquiry && selectedEnquiry.status !== "replied" && (
             <Button
-              variant="outlined"
-              color="success"
+              variant="contained"
               startIcon={<ReplyIcon />}
               onClick={handleOpenReply}
+              sx={{
+                bgcolor: "var(--color-primary)",
+                color: "#fff",
+                borderRadius: "var(--radius-lg)",
+                textTransform: "none",
+                px: 3,
+                boxShadow: "none",
+                "&:hover": {
+                  bgcolor: "var(--color-primary-dark)",
+                  boxShadow: "none",
+                },
+              }}
             >
               Reply via Email
             </Button>
           )}
-          <Button variant="contained" color="primary" onClick={() => setDetailOpen(false)}>
+          <Button
+            variant="outlined"
+            onClick={() => setDetailOpen(false)}
+            sx={{
+              color: "var(--color-primary)",
+              borderColor: "var(--color-border)",
+              borderRadius: "var(--radius-lg)",
+              textTransform: "none",
+              "&:hover": {
+                borderColor: "var(--color-primary)",
+                bgcolor: "var(--color-primary-subtle)",
+              },
+            }}
+          >
             Close
           </Button>
         </DialogActions>
@@ -511,15 +595,28 @@ const Enquiries = () => {
         maxWidth="sm"
         fullWidth
         slotProps={{
-          paper: { sx: { borderRadius: 2 } }
+          paper: {
+            sx: {
+              borderRadius: "var(--radius-lg)",
+              boxShadow: "none",
+              border: "1px solid var(--color-border)",
+            },
+          },
         }}
       >
-        <DialogTitle sx={{ pb: 1, borderBottom: "1px solid", borderColor: "grey.100" }}>
-          <Typography variant="h6" fontWeight={600}>
+        <DialogTitle sx={{ pb: 1, borderBottom: "1px solid var(--color-border)" }}>
+          <Typography variant="h6" fontWeight={700}>
             Reply to Enquiry
           </Typography>
         </DialogTitle>
-        <DialogContent sx={{ pt: 3 }}>
+        <DialogContent
+          sx={{
+            pt: 3,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "var(--radius-lg)",
+            },
+          }}
+        >
           <Stack spacing={2.5} sx={{ mt: 1 }}>
             <TextField
               fullWidth
@@ -541,16 +638,41 @@ const Enquiries = () => {
             />
           </Stack>
         </DialogContent>
-        <DialogActions sx={{ p: 2.5, borderTop: "1px solid", borderColor: "grey.100" }}>
-          <Button variant="outlined" onClick={() => setReplyOpen(false)} disabled={sendingReply}>
+        <DialogActions sx={{ px: 3, py: 2, bgcolor: "#f8f9fa", borderTop: "1px solid var(--color-border)" }}>
+          <Button
+            variant="outlined"
+            onClick={() => setReplyOpen(false)}
+            disabled={sendingReply}
+            sx={{
+              color: "var(--color-primary)",
+              borderColor: "var(--color-border)",
+              borderRadius: "var(--radius-lg)",
+              textTransform: "none",
+              "&:hover": {
+                borderColor: "var(--color-primary)",
+                bgcolor: "var(--color-primary-subtle)",
+              },
+            }}
+          >
             Cancel
           </Button>
           <Button
             variant="contained"
-            color="success"
             startIcon={<ReplyIcon />}
             onClick={handleSendReply}
             disabled={sendingReply}
+            sx={{
+              bgcolor: "var(--color-primary)",
+              color: "#fff",
+              borderRadius: "var(--radius-lg)",
+              textTransform: "none",
+              px: 3,
+              boxShadow: "none",
+              "&:hover": {
+                bgcolor: "var(--color-primary-dark)",
+                boxShadow: "none",
+              },
+            }}
           >
             {sendingReply ? "Sending..." : "Send Email"}
           </Button>
@@ -562,21 +684,51 @@ const Enquiries = () => {
         open={deleteOpen}
         onClose={() => setDeleteOpen(false)}
         slotProps={{
-          paper: { sx: { borderRadius: 2 } }
+          paper: {
+            sx: {
+              borderRadius: "var(--radius-lg)",
+              boxShadow: "none",
+              border: "1px solid var(--color-border)",
+            },
+          },
         }}
       >
-        <DialogTitle sx={{ fontWeight: 600 }}>Confirm Delete</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 700 }}>Confirm Delete</DialogTitle>
         <DialogContent>
           <Typography variant="body1">
             Are you sure you want to permanently delete the enquiry from{" "}
             <strong>{selectedEnquiry?.name}</strong>? This action cannot be undone.
           </Typography>
         </DialogContent>
-        <DialogActions sx={{ p: 2.5 }}>
-          <Button variant="outlined" onClick={() => setDeleteOpen(false)}>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button
+            variant="outlined"
+            onClick={() => setDeleteOpen(false)}
+            sx={{
+              color: "var(--color-primary)",
+              borderColor: "var(--color-border)",
+              borderRadius: "var(--radius-lg)",
+              textTransform: "none",
+              "&:hover": {
+                borderColor: "var(--color-primary)",
+                bgcolor: "var(--color-primary-subtle)",
+              },
+            }}
+          >
             Cancel
           </Button>
-          <Button variant="contained" color="error" onClick={handleDeleteConfirm}>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={handleDeleteConfirm}
+            sx={{
+              px: 3,
+              borderRadius: "var(--radius-lg)",
+              textTransform: "none",
+              boxShadow: "none",
+              "&:hover": { boxShadow: "none" },
+            }}
+          >
             Delete
           </Button>
         </DialogActions>

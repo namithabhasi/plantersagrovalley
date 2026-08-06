@@ -10,6 +10,7 @@ import {
   getAllOrders,
   updateOrderStatus,
   deleteOrder,
+  trackOrder,
 } from "../controllers/orderController.js";
 
 
@@ -20,9 +21,17 @@ import {
   validateCouponValidator,
   updateOrderStatusValidator,
   orderIdValidator,
+  trackOrderValidator,
 } from "../validators/orderValidator.js";
-
 const router = express.Router();
+
+// Public Order Tracking (unauthenticated, requires trackingId and contactInfo)
+router.post(
+  "/track",
+  trackOrderValidator,
+  validationMiddleware,
+  trackOrder
+);
 
 // All order routes require authentication
 router.use(authenticate);

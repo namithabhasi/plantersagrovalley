@@ -230,14 +230,14 @@ const AddUser = () => {
             variant="outlined"
             startIcon={<ArrowBack />}
             sx={{
-              color: "success.main",
-              borderColor: "success.main",
+              color: "var(--color-primary)",
+              borderColor: "var(--color-primary)",
               "&:hover": {
-                borderColor: "primary.main",
-                bgcolor: "success.light",
+                borderColor: "var(--color-primary-dark)",
+                bgcolor: "var(--color-primary-subtle)",
               },
               textTransform: "none",
-              borderRadius: 2.5,
+              borderRadius: "var(--radius-lg)",
               px: 3,
               height: 40,
             }}
@@ -253,7 +253,7 @@ const AddUser = () => {
             order: { xs: 1, sm: 2 },
           }}
         >
-          <Typography variant="h4" fontWeight={800} sx={{ color: "success.main", mb: 0.5 }}>
+          <Typography variant="h4" fontWeight={700} mb={1}>
             Add New User
           </Typography>
           <Typography variant="body2" color="text.secondary">
@@ -263,11 +263,10 @@ const AddUser = () => {
       </Box>
 
       <Card
-        elevation={0}
+        variant="outlined"
         sx={{
-          borderRadius: 4,
-          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.04)",
-          border: "1px solid #f0f0f0",
+          borderRadius: "var(--radius-lg)",
+          borderColor: "var(--color-border)",
           overflow: "hidden",
         }}
       >
@@ -325,7 +324,7 @@ const AddUser = () => {
                       ),
                     },
                   }}
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
                 />
               </Grid>
 
@@ -348,7 +347,7 @@ const AddUser = () => {
                       ),
                     },
                   }}
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
                 />
               </Grid>
 
@@ -369,7 +368,7 @@ const AddUser = () => {
                       ),
                     },
                   }}
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
                 >
                   <MenuItem value="shipping-manager">Shipping Manager</MenuItem>
                   <MenuItem value="admin">Admin</MenuItem>
@@ -425,7 +424,7 @@ const AddUser = () => {
                       ),
                     },
                   }}
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
                 />
               </Grid>
 
@@ -449,7 +448,7 @@ const AddUser = () => {
                       ),
                     },
                   }}
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
                 />
               </Grid>
 
@@ -473,7 +472,7 @@ const AddUser = () => {
                       ),
                     },
                   }}
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
                 />
               </Grid>
 
@@ -497,7 +496,7 @@ const AddUser = () => {
                       ),
                     },
                   }}
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
                 />
               </Grid>
 
@@ -523,7 +522,7 @@ const AddUser = () => {
                       ),
                     },
                   }}
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
                 >
                   <MenuItem value={true}>Active</MenuItem>
                   <MenuItem value={false}>Inactive</MenuItem>
@@ -546,10 +545,16 @@ const AddUser = () => {
                 to="/dashboard/users"
                 variant="outlined"
                 sx={{
-                  borderRadius: 2.5,
+                  color: "var(--color-primary)",
+                  borderColor: "var(--color-border)",
+                  borderRadius: "var(--radius-lg)",
                   textTransform: "none",
                   px: 3,
                   height: 40,
+                  "&:hover": {
+                    borderColor: "var(--color-primary)",
+                    bgcolor: "var(--color-primary-subtle)",
+                  },
                 }}
               >
                 Cancel
@@ -561,13 +566,13 @@ const AddUser = () => {
                 startIcon={<Save />}
                 disabled={loading}
                 sx={{
-                  bgcolor: "success.main",
-                  "&:hover": { bgcolor: "primary.main" },
+                  bgcolor: "var(--color-primary)",
+                  "&:hover": { bgcolor: "var(--color-primary-dark)", boxShadow: "none" },
                   textTransform: "none",
-                  borderRadius: 2.5,
+                  borderRadius: "var(--radius-lg)",
                   px: 2,
                   height: 40,
-                  boxShadow: "0 4px 12px rgba(46, 125, 50, 0.2)",
+                  boxShadow: "none",
                 }}
               >
                 {loading ? "Creating..." : "Create User"}

@@ -92,46 +92,22 @@ const Reports = () => {
   const totalPieValue = pieChartData.reduce((acc, curr) => acc + curr.value, 0);
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", width: "100%" }}>
-      <Box sx={{ maxWidth: 1200, width: "100%" }}>
+    <Box>
       {/* Header */}
-      <Box
-  mb={5}
-  sx={{
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    textAlign: "left",
-  }}
->
-  <Typography
-    variant="h4"
-    fontWeight={800}
-    sx={{
-      color: "success.main",
-      mb: 0.5,
-    }}
-  >
-    Analytics & Reports
-  </Typography>
-
-  <Typography
-    variant="body2"
-    color="text.secondary"
-    sx={{
-      mt: 1,
-      mb: 2,
-    }}
-  >
-    View store statistics, revenue trends, inventory alerts, and product sales performance
-  </Typography>
-</Box>
+      <Box mb={5}>
+        <Typography variant="h4" fontWeight={700} mb={1}>
+          Analytics & Reports
+        </Typography>
+        <Typography sx={{ mt: 1 }} color="text.secondary">
+          View store statistics, revenue trends, inventory alerts, and product sales performance
+        </Typography>
+      </Box>
       {/* Metrics Cards Grid */}
-      <Grid container spacing={2} sx={{ mb: 4 }} justifyContent="center">
+      <Grid container spacing={3} sx={{ mb: 4, mt: 1, pt: 1 }} justifyContent="center">
         {/* Total Revenue */}
-        <Grid item xs={12} sm={6} md={4} lg={2.4}>
+        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 2.4 }}>
           <StatCard
-            title="TOTAL SALES"
+            title="Total Sales"
             value={`₹${Number(statistics?.totalRevenue || 0).toLocaleString()}`}
             icon={<CurrencyRupeeIcon fontSize="large" />}
             color="#0288d1"
@@ -139,9 +115,9 @@ const Reports = () => {
         </Grid>
 
         {/* Today's Sales */}
-        <Grid item xs={12} sm={6} md={4} lg={2.4}>
+        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 2.4 }}>
           <StatCard
-            title="TODAY'S REVENUE"
+            title="Today's Revenue"
             value={`₹${Number(statistics?.todayRevenue || 0).toLocaleString()}`}
             icon={<TrendingUpIcon fontSize="large" />}
             color="#1976d2"
@@ -149,9 +125,9 @@ const Reports = () => {
         </Grid>
 
         {/* Total Orders */}
-        <Grid item xs={12} sm={6} md={4} lg={2.4}>
+        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 2.4 }}>
           <StatCard
-            title="TOTAL ORDERS"
+            title="Total Orders"
             value={statistics?.totalOrders || 0}
             icon={<ShoppingCartIcon fontSize="large" />}
             color="#9c27b0"
@@ -159,9 +135,9 @@ const Reports = () => {
         </Grid>
 
         {/* Deliveries */}
-        <Grid item xs={12} sm={6} md={4} lg={2.4}>
+        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 2.4 }}>
           <StatCard
-            title="DELIVERED"
+            title="Delivered"
             value={statistics?.deliveredOrders || 0}
             icon={<CheckCircleIcon fontSize="large" />}
             color="#2E7D32"
@@ -169,9 +145,9 @@ const Reports = () => {
         </Grid>
 
         {/* Low Stock Alerts */}
-        <Grid item xs={12} sm={6} md={4} lg={2.4}>
+        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 2.4 }}>
           <StatCard
-            title="LOW INVENTORY"
+            title="Low Inventory"
             value={`${statistics?.lowStockProducts || 0} items`}
             icon={<WarningIcon fontSize="large" />}
             color="#d32f2f"
@@ -193,7 +169,7 @@ const Reports = () => {
       >
         {/* Sales & Orders Trend Area Chart */}
         <Box sx={{ minWidth: 0, display: "flex" }}>
-          <Card elevation={2} sx={{ borderRadius: 3, width: "100%", display: "flex", flexDirection: "column" }}>
+          <Card variant="outlined" sx={{ borderRadius: "var(--radius-lg)", borderColor: "var(--color-border)", width: "100%", display: "flex", flexDirection: "column" }}>
             <CardContent sx={{ p: 3, flexGrow: 1, display: "flex", flexDirection: "column" }}>
               <Typography variant="h6" fontWeight={700} sx={{ mb: 3, textAlign: "center" }}>
                 Sales & Order Volume Trends
@@ -228,7 +204,7 @@ const Reports = () => {
 
         {/* Order Status Distribution Pie Chart */}
         <Box sx={{ minWidth: 0, display: "flex" }}>
-          <Card elevation={2} sx={{ borderRadius: 3, width: "100%", display: "flex", flexDirection: "column" }}>
+          <Card variant="outlined" sx={{ borderRadius: "var(--radius-lg)", borderColor: "var(--color-border)", width: "100%", display: "flex", flexDirection: "column" }}>
             <CardContent sx={{ p: 3, flexGrow: 1, display: "flex", flexDirection: "column" }}>
               <Typography variant="h6" fontWeight={700} sx={{ mb: 3, textAlign: "center" }}>
                 Order Ratios By Status
@@ -281,9 +257,10 @@ const Reports = () => {
   }}
 >
   <Card
-    elevation={2}
+    variant="outlined"
     sx={{
-      borderRadius: 3,
+      borderRadius: "var(--radius-lg)",
+      borderColor: "var(--color-border)",
       width: {
         xs: "100%",
         md: "85%",
@@ -326,7 +303,6 @@ const Reports = () => {
   </Card>
 </Box>
       </Box>
-    </Box>
   );
 };
 
