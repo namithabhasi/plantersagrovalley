@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { openAuthModal } from '../redux/auth/authSlice';
 import { useCart } from '../context/CartContext';
 import { FaStar } from 'react-icons/fa';
 
@@ -11,6 +13,9 @@ import { fertilizerProducts } from './Fertilizers';
 import { gardenProducts } from './Gardendecors';
 
 function SearchPage() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
   const { addToCart } = useCart();
   const location = useLocation();
   const [products, setProducts] = useState([]);
@@ -158,7 +163,14 @@ function SearchPage() {
                   </div>
 
                   <button
-                    onClick={() => addToCart({ id: product.id, name: product.name, price: displayPrice, image: product.image })}
+                    onClick={() => {
+                      if (user) {
+                        navigate(`/product/${product.id}`);
+                      } else {
+                        sessionStorage.setItem("postLoginRedirect", `/product/${product.id}`);
+                        dispatch(openAuthModal("login"));
+                      }
+                    }}
                     className="btn btn-primary"
                     style={{ borderRadius: '3px' }}
                     disabled={!inStock}

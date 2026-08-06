@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import logo from '../assets/logo.png'; // The text logo is saved in logo.png
 import bush from '../assets/image.png'; // Background bush growing from the bottom-left corner
-import { FiSearch, FiUser, FiShoppingCart, FiMenu, FiX, FiChevronRight, FiChevronDown, FiLayout, FiLogOut } from 'react-icons/fi';
+import { FiSearch, FiUser, FiShoppingCart, FiMenu, FiX, FiChevronRight, FiChevronDown, FiLayout, FiLogOut, FiHeart, FiShoppingBag } from 'react-icons/fi';
 import { useCart } from '../context/CartContext';
 import axios from '../api/axiosInstance';
 import { openAuthModal, clearUser } from '../redux/auth/authSlice';
@@ -395,21 +395,24 @@ function Navbar() {
           </button>
 
           {/* Profile Action */}
-          <div className="relative">
+          <div className="relative planters-profile-wrapper">
             {user ? (
               <button
                 onClick={handleProfileClick}
-                className="navbar-action-btn planters-profile-btn flex items-center justify-center relative cursor-pointer"
+                className="navbar-action-btn planters-profile-btn flex items-center justify-center relative cursor-pointer p-0"
+                style={{ padding: 0, border: 'none', background: 'transparent' }}
                 aria-label="Account Menu"
               >
                 {user.profileImage ? (
                   <img
                     src={user.profileImage}
                     alt={user.firstName}
-                    className="w-6 h-6 rounded-full object-cover"
+                    className="w-8 h-8 rounded-full object-cover border border-[#06492d20] shadow-sm"
                   />
                 ) : (
-                  <FiUser size={22} />
+                  <div className="w-8 h-8 rounded-full bg-[var(--color-primary-dark)] text-white flex items-center justify-center text-sm font-semibold uppercase shadow-sm border border-[#06492d20]">
+                    {user.firstName?.charAt(0) || 'U'}
+                  </div>
                 )}
               </button>
             ) : (
@@ -444,6 +447,30 @@ function Navbar() {
                       <span>Admin Dashboard</span>
                     </Link>
                   )}
+                  <Link
+                    to="/profile"
+                    onClick={() => setProfileDropdownOpen(false)}
+                    className="planters-profile-dropdown-item"
+                  >
+                    <FiUser size={14} />
+                    <span>My Profile</span>
+                  </Link>
+                  <Link
+                    to="/wishlist"
+                    onClick={() => setProfileDropdownOpen(false)}
+                    className="planters-profile-dropdown-item"
+                  >
+                    <FiHeart size={14} />
+                    <span>Wishlist</span>
+                  </Link>
+                  <Link
+                    to="/my-orders"
+                    onClick={() => setProfileDropdownOpen(false)}
+                    className="planters-profile-dropdown-item"
+                  >
+                    <FiShoppingBag size={14} />
+                    <span>Orders</span>
+                  </Link>
                   <button
                     type="button"
                     onClick={handleLogout}
@@ -560,11 +587,11 @@ function Navbar() {
                     <img
                       src={user.profileImage}
                       alt={user.firstName}
-                      className="w-10 h-10 rounded-full object-cover"
+                      className="w-10 h-10 rounded-full object-cover border border-gray-100"
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 border border-gray-200">
-                      <FiUser size={20} />
+                    <div className="w-10 h-10 rounded-full bg-[var(--color-primary-dark)] text-white flex items-center justify-center text-base font-semibold shadow-sm uppercase border border-gray-100">
+                      {user.firstName?.charAt(0) || 'U'}
                     </div>
                   )}
                   <div className="truncate">
@@ -585,6 +612,30 @@ function Navbar() {
                     Go to Admin Dashboard
                   </Link>
                 )}
+                <Link
+                  to="/profile"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded"
+                >
+                  <FiUser size={16} />
+                  <span>My Profile</span>
+                </Link>
+                <Link
+                  to="/wishlist"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded"
+                >
+                  <FiHeart size={16} />
+                  <span>Wishlist</span>
+                </Link>
+                <Link
+                  to="/my-orders"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded"
+                >
+                  <FiShoppingBag size={16} />
+                  <span>Orders</span>
+                </Link>
                 <button
                   type="button"
                   onClick={() => {

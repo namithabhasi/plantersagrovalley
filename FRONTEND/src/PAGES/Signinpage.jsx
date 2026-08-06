@@ -80,8 +80,15 @@ function Signinpage() {
         } catch (err) {
           console.error("Cart sync error:", err);
         }
-        toast.success("Signed in successfully via Google!");
-        navigate("/");
+        const userName = data.user?.firstName || data.user?.name || data.user?.email?.split('@')[0] || 'User';
+        toast.success(`Welcome, ${userName}!`);
+        const pendingRedirect = sessionStorage.getItem("postLoginRedirect");
+        if (pendingRedirect) {
+          sessionStorage.removeItem("postLoginRedirect");
+          navigate(pendingRedirect);
+        } else {
+          navigate("/");
+        }
       } else {
         toast.error(data.message || "Google Authentication failed.");
       }
@@ -214,8 +221,15 @@ function Signinpage() {
           } catch (err) {
             console.error('Cart sync error:', err);
           }
-          toast.success('Registration successful! Welcome.');
-          navigate('/');
+          const userName = data.user?.firstName || data.user?.name || 'User';
+          toast.success(`Welcome, ${userName}!`);
+          const pendingRedirect = sessionStorage.getItem("postLoginRedirect");
+          if (pendingRedirect) {
+            sessionStorage.removeItem("postLoginRedirect");
+            navigate(pendingRedirect);
+          } else {
+            navigate('/');
+          }
         } else {
           toast.error(data.message || 'Registration failed.');
         }
@@ -242,8 +256,15 @@ function Signinpage() {
           } catch (err) {
             console.error('Cart sync error:', err);
           }
-          toast.success('Welcome back! Signed in successfully.');
-          navigate('/');
+          const loginUserName = data.user?.firstName || data.user?.name || data.user?.email?.split('@')[0] || 'User';
+          toast.success(`Welcome, ${loginUserName}!`);
+          const pendingRedirect = sessionStorage.getItem("postLoginRedirect");
+          if (pendingRedirect) {
+            sessionStorage.removeItem("postLoginRedirect");
+            navigate(pendingRedirect);
+          } else {
+            navigate('/');
+          }
         } else {
           toast.error(data.message || 'Login failed.');
         }
@@ -259,30 +280,38 @@ function Signinpage() {
 
   const cardContent = (
     <div
-      className={`w-full max-w-[380px] bg-white border border-[#e2e8f0] rounded-none shadow-sm flex flex-col transition-all duration-300 ${isRegister ? 'gap-4' : 'gap-6'}`}
-      style={{ padding: isRegister ? '16px 40px' : '40px' }}
+      className={`w-full max-w-[380px] bg-white border border-[#e2e8f0] rounded-none shadow-sm flex flex-col transition-all duration-300 ${isRegister ? 'gap-2' : 'gap-5'}`}
+      style={{ padding: isRegister ? '18px 32px' : '36px' }}
     >
+      <style>{`
+        input::-ms-reveal,
+        input::-ms-clear {
+          display: none !important;
+          width: 0 !important;
+          height: 0 !important;
+        }
+      `}</style>
 
       {/* Logo Section */}
-      <div className="flex flex-col items-center gap-2">
+      <div className="flex flex-col items-center gap-0.5">
         <Link to="/" className="flex justify-center items-center">
           <img
             src={logo}
             alt="Planters Logo"
-            style={{ height: '36px', width: 'auto', maxHeight: '36px', objectFit: 'contain' }}
-            className="!h-[36px] !w-auto object-contain"
+            style={{ height: isRegister ? '28px' : '32px', width: 'auto', maxHeight: '32px', objectFit: 'contain' }}
+            className="!w-auto object-contain"
           />
         </Link>
-        <div className="text-base font-[var(--font-family-heading)] font-semibold tracking-[2px] text-[#2c3e50] uppercase text-center mt-1">
+        <div className="text-xs font-[var(--font-family-heading)] font-semibold tracking-[2px] text-[#2c3e50] uppercase text-center mt-0.5">
           {isRegister ? 'Register' : 'Sign In'}
         </div>
       </div>
 
       {/* Form Container */}
-      <form onSubmit={handleSubmit} noValidate className={`flex flex-col w-full ${isRegister ? 'gap-3' : 'gap-4'}`}>
+      <form onSubmit={handleSubmit} noValidate className={`flex flex-col w-full ${isRegister ? 'gap-1.5' : 'gap-3.5'}`}>
         {isRegister && (
           <>
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-0.5">
               <label className="text-[10px] font-semibold uppercase tracking-wider text-black">
                 Full Name
               </label>
@@ -292,7 +321,7 @@ function Signinpage() {
                 value={formData.name}
                 onChange={handleInputChange}
                 placeholder="Enter your name"
-                className={`w-full bg-[#fcfcfc] border px-3.5 py-2.5 text-xs focus:bg-white outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-300 ${errors.name ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                className={`w-full bg-[#fcfcfc] border px-3 py-1.5 text-xs focus:bg-white outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-300 ${errors.name ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
                   }`}
               />
               {errors.name && (
@@ -300,7 +329,7 @@ function Signinpage() {
               )}
             </div>
 
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-0.5">
               <label className="text-[10px] font-semibold uppercase tracking-wider text-black">
                 Phone Number
               </label>
@@ -310,7 +339,7 @@ function Signinpage() {
                 value={formData.phone}
                 onChange={handleInputChange}
                 placeholder="Enter your phone number"
-                className={`w-full bg-[#fcfcfc] border px-3.5 py-2.5 text-xs focus:bg-white outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-300 ${errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                className={`w-full bg-[#fcfcfc] border px-3 py-1.5 text-xs focus:bg-white outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-300 ${errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
                   }`}
               />
               {errors.phone && (
@@ -320,7 +349,7 @@ function Signinpage() {
           </>
         )}
 
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-0.5">
           <label className="text-[10px] font-semibold uppercase tracking-wider text-black">
             Email Address
           </label>
@@ -330,7 +359,7 @@ function Signinpage() {
             value={formData.email}
             onChange={handleInputChange}
             placeholder="name@example.com"
-            className={`w-full bg-[#fcfcfc] border px-3.5 py-2.5 text-xs focus:bg-white outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-300 ${errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+            className={`w-full bg-[#fcfcfc] border px-3 ${isRegister ? 'py-1.5' : 'py-2'} text-xs focus:bg-white outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-300 ${errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
               }`}
           />
           {errors.email && (
@@ -338,7 +367,7 @@ function Signinpage() {
           )}
         </div>
 
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-0.5">
           <label className="text-[10px] font-semibold uppercase tracking-wider text-black">
             Password
           </label>
@@ -351,7 +380,7 @@ function Signinpage() {
               onFocus={() => setIsPasswordFocused(true)}
               onBlur={() => setIsPasswordFocused(false)}
               placeholder={isRegister ? 'Choose password' : 'Enter password'}
-              className={`w-full bg-[#fcfcfc] border pl-3.5 pr-10 py-2.5 text-xs focus:bg-white outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-300 ${errors.password ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+              className={`w-full bg-[#fcfcfc] border pl-3 pr-10 ${isRegister ? 'py-1.5' : 'py-2'} text-xs focus:bg-white outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-300 ${errors.password ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
                 }`}
             />
             <button
@@ -363,7 +392,7 @@ function Signinpage() {
             </button>
           </div>
           {isRegister && isPasswordFocused && (
-            <p className="text-[9.5px] text-red-600 font-medium leading-normal mt-1">
+            <p className="text-[9.5px] text-red-600 font-medium leading-normal mt-0.5">
               Password must be min 8 characters, with at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 symbol.
             </p>
           )}
@@ -373,7 +402,7 @@ function Signinpage() {
         </div>
 
         {isRegister && (
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-0.5">
             <label className="text-[10px] font-semibold uppercase tracking-wider text-black">
               Confirm Password
             </label>
@@ -384,7 +413,7 @@ function Signinpage() {
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
                 placeholder="Confirm password"
-                className={`w-full bg-[#fcfcfc] border pl-3.5 pr-10 py-2.5 text-xs focus:bg-white outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-300 ${errors.confirmPassword ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                className={`w-full bg-[#fcfcfc] border pl-3 pr-10 py-1.5 text-xs focus:bg-white outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-300 ${errors.confirmPassword ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
                   }`}
               />
               <button
@@ -402,10 +431,10 @@ function Signinpage() {
         )}
 
         {/* Checkbox / Forgot Password */}
-        <div className="w-full mt-1">
+        <div className="w-full mt-0.5">
           {isRegister ? (
-            <div className="flex flex-col gap-1.5 w-full">
-              <label className="flex items-center gap-2.5 cursor-pointer group text-gray-800 font-normal text-[11.5px]">
+            <div className="flex flex-col gap-1 w-full">
+              <label className="flex items-center gap-2 cursor-pointer group text-gray-800 font-normal text-[11.5px]">
                 <input
                   type="checkbox"
                   name="agreeTerms"
@@ -447,26 +476,26 @@ function Signinpage() {
         <button
           type="submit"
           disabled={loading}
-          className="btn btn-primary rounded-none w-full py-3 text-xs font-normal transition-all duration-300 uppercase tracking-[2px] mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className={`btn btn-primary rounded-none w-full text-xs font-semibold transition-all duration-300 uppercase tracking-[2px] mt-0.5 disabled:opacity-50 disabled:cursor-not-allowed ${isRegister ? 'py-2' : 'py-2.5'}`}
         >
           {loading ? 'Please wait...' : (isRegister ? 'Register' : 'Sign In')}
         </button>
 
         {/* Divider */}
-        <div className="flex items-center my-2">
+        <div className="flex items-center my-0.5">
           <div className="flex-grow border-t border-gray-200"></div>
-          <span className="flex-shrink mx-4 text-gray-400 text-[10px] uppercase tracking-wider font-semibold">or</span>
+          <span className="flex-shrink mx-3 text-gray-400 text-[10px] uppercase tracking-wider font-semibold">or</span>
           <div className="flex-grow border-t border-gray-200"></div>
         </div>
 
         {/* Google Sign In Button */}
-        <div className="w-full flex justify-center mt-1">
+        <div className="w-full flex justify-center mt-0.5">
           <div id="google-signin-btn" className="w-full"></div>
         </div>
       </form>
 
       {/* Toggle Account Action */}
-      <div className="text-center pt-2">
+      <div className="text-center pt-0.5">
         <p className="text-xs text-gray-800 font-normal">
           {isRegister ? 'Already have an account?' : "Don't have an account?"}{' '}
           <button
@@ -482,14 +511,8 @@ function Signinpage() {
   );
 
   return (
-    <div className={`min-h-screen w-full flex items-center justify-center bg-[#f8f9fa] select-none font-[var(--font-family-base)] ${isRegister ? 'page-section' : 'px-4 py-12'}`}>
-      {isRegister ? (
-        <div className="container flex justify-center">
-          {cardContent}
-        </div>
-      ) : (
-        cardContent
-      )}
+    <div className="min-h-screen w-full flex items-center justify-center bg-[#f8f9fa] select-none font-[var(--font-family-base)] py-6 px-4">
+      {cardContent}
     </div>
   );
 }

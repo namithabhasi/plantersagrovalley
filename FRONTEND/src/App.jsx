@@ -50,6 +50,12 @@ import Balconygarden from "./PAGES/Balconygarden";
 import SearchPage from "./PAGES/SearchPage";
 import Forgotpassword from "./PAGES/Forgotpassword";
 import Blog from "./PAGES/Blog";
+import Productdetails from "./PAGES/Productdetails";
+import Profile from "./PAGES/Profile";
+import Wishlist from "./PAGES/Wishlist";
+import MyOrders from "./PAGES/MyOrders";
+
+import Review from "./PAGES/Review";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -71,22 +77,6 @@ function App() {
       <Checkout />
       <AuthModal />
 
-
-
-
-      {/* toast container for creating toast */}
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
       <Routes>
         <Route path="/signin" element={<Signinpage />} />
         <Route path="/forgot-password" element={<Forgotpassword />} />
@@ -113,6 +103,12 @@ function App() {
         <Route path="/garden-maintenance" element={<Gardenmaintanence />} />
         <Route path="/vertical-garden" element={<Verticalgarden />} />
         <Route path="/balcony-garden" element={<Balconygarden />} />
+        <Route path="/product/:id" element={<Productdetails />} />
+        <Route path="/review" element={<Review />} />
+        <Route path="/product/:id/review" element={<Review />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/my-orders" element={<MyOrders />} />
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<SuperAdminLogin />} />
         <Route path="/dashboard" element={<AdminLayout />}>
@@ -132,6 +128,19 @@ function App() {
           <Route path="enquiries" element={<Enquiries />} />
         </Route>
       </Routes>
+          {/* toast container for creating toast */}
+      <ToastContainer
+        position="top-center"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       {!hideNavbarFooter && <Footer />}
     </CartProvider>
   );
