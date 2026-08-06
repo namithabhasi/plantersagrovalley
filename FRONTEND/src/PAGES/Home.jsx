@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { openAuthModal } from '../redux/auth/authSlice'
 import HeroCarousel from '../COMPONENTS/HeroCarousel'
 import BringLifeSection from '../COMPONENTS/BringLifeSection'
 import CategorySection from '../COMPONENTS/CategorySection'
@@ -80,6 +82,9 @@ const mockBonsaiProducts = [
 ];
 
 function Home() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
   const { addToCart } = useCart();
 
   const [dbBestSellers, setDbBestSellers] = useState([]);
@@ -242,7 +247,14 @@ function Home() {
                     </div>
 
                     <button
-                      onClick={() => addToCart({ id: product._id, name: product.name, price: displayPrice, image: productImage })}
+                      onClick={() => {
+                        if (user) {
+                          navigate(`/product/${product._id}`);
+                        } else {
+                          sessionStorage.setItem("postLoginRedirect", `/product/${product._id}`);
+                          dispatch(openAuthModal("login"));
+                        }
+                      }}
                       className="btn btn-primary"
                       style={{ borderRadius: '3px' }}
                     >
@@ -330,7 +342,14 @@ function Home() {
                     </div>
 
                     <button
-                      onClick={() => addToCart({ id: product._id, name: product.name, price: displayPrice, image: productImage })}
+                      onClick={() => {
+                        if (user) {
+                          navigate(`/product/${product._id}`);
+                        } else {
+                          sessionStorage.setItem("postLoginRedirect", `/product/${product._id}`);
+                          dispatch(openAuthModal("login"));
+                        }
+                      }}
                       className="btn btn-primary"
                       style={{ borderRadius: '3px' }}
                     >
@@ -417,7 +436,14 @@ function Home() {
                     </div>
 
                     <button
-                      onClick={() => addToCart({ id: product._id, name: product.name, price: displayPrice, image: productImage })}
+                      onClick={() => {
+                        if (user) {
+                          navigate(`/product/${product._id}`);
+                        } else {
+                          sessionStorage.setItem("postLoginRedirect", `/product/${product._id}`);
+                          dispatch(openAuthModal("login"));
+                        }
+                      }}
                       className="btn btn-primary"
                       style={{ borderRadius: '3px' }}
                     >
@@ -506,7 +532,14 @@ function Home() {
                     </div>
 
                     <button
-                      onClick={() => addToCart({ id: product._id, name: product.name, price: displayPrice, image: productImage })}
+                      onClick={() => {
+                        if (user) {
+                          navigate(`/product/${product._id}`);
+                        } else {
+                          sessionStorage.setItem("postLoginRedirect", `/product/${product._id}`);
+                          dispatch(openAuthModal("login"));
+                        }
+                      }}
                       className="btn btn-primary"
                       style={{ borderRadius: '3px' }}
                     >

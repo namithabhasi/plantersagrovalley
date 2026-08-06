@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { openAuthModal } from '../redux/auth/authSlice';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { FaStar } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
@@ -218,6 +220,9 @@ export const gardenProducts = [
 ];
 
 function Gardendecors() {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { user } = useSelector((state) => state.auth);
     const [activeCategory, setActiveCategory] = useState('all');
     const [sortBy, setSortBy] = useState('best-selling');
     const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
@@ -629,7 +634,14 @@ function Gardendecors() {
                                     </div>
 
                                     <button
-                                        onClick={() => addToCart({ id: product.id, name: product.name, price: product.price, image: product.image })}
+                                        onClick={() => {
+                                            if (user) {
+                                                navigate(`/product/${product.id}`);
+                                            } else {
+                                                sessionStorage.setItem("postLoginRedirect", `/product/${product.id}`);
+                                                dispatch(openAuthModal("login"));
+                                            }
+                                        }}
                                         className="btn btn-primary"
                                         style={{ borderRadius: '3px' }}
                                         disabled={!product.inStock}

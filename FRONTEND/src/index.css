@@ -161,7 +161,7 @@ h4,
 h5,
 h6 {
   font-family: var(--font-family-heading);
-  color: var(--color-primary);
+  color: var(--color-primary-dark);
   font-weight: 300;
   /* Light font weight */
   line-height: var(--line-height-tight);
@@ -187,10 +187,16 @@ h5 {
   font-size: var(--font-size-lg);
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   text-decoration-line: none !important;
 }
-del, strike, .line-through, [style*="line-through"] {
+
+del,
+strike,
+.line-through,
+[style*="line-through"] {
   text-decoration-line: line-through !important;
 }
 
@@ -388,14 +394,6 @@ img {
   background-color: var(--color-primary-bg) !important;
 }
 
-.product-card.custom-service-card {
-  background-color: var(--color-primary-bg) !important;
-}
-
-.product-card.custom-service-card:hover {
-  background-color: var(--color-bg-main) !important;
-}
-
 /* Badges */
 .card-badge {
   position: absolute;
@@ -518,32 +516,67 @@ img {
   /* Light grey strike-through line to keep numbers readable */
 }
 
-/* Button Components */
+/* Button Components & Global Action Classes */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-2) var(--space-4);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-  border-radius: 3px;
+  gap: 0.5rem;
+  padding: 10px 22px;
+  font-family: var(--font-family-base);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 3px !important;
   border: 1px solid transparent;
   cursor: pointer;
   transition: var(--transition-fast);
-  width: 100%;
   text-decoration: none !important;
+  line-height: 1.4;
 }
 
 .btn-primary {
   background-color: var(--color-primary-dark) !important;
   color: #ffffff !important;
+  border-color: var(--color-primary-dark) !important;
 }
 
 .btn-primary:hover {
-  background-color: var(--color-primary) !important;
-  color: #ffffff !important;
-  box-shadow: var(--shadow-sm);
+  background-color: #0b5936 !important;
+  border-color: #0b5936 !important;
+  box-shadow: 0 2px 6px rgba(6, 73, 45, 0.15);
 }
+
+.btn-outline-primary {
+  background-color: #ffffff !important;
+  color: var(--color-primary-dark) !important;
+  border-color: var(--color-primary-dark) !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--color-primary-subtle) !important;
+  color: var(--color-primary-dark) !important;
+}
+
+.btn-wishlist {
+  background-color: #ffffff !important;
+  color: var(--color-text-main) !important;
+  border-color: var(--color-border) !important;
+  border-radius: 3px !important;
+  font-weight: 600;
+}
+
+.btn-wishlist:hover {
+  border-color: var(--color-primary-dark) !important;
+  color: var(--color-primary-dark) !important;
+  background-color: #f8faf8 !important;
+}
+
+.btn-wishlist.active {
+  background-color: #fff0f0 !important;
+  color: var(--color-danger) !important;
+  border-color: #fca5a5 !important;
+}
+
 
 /* Inputs & Form Controls */
 input,
@@ -711,7 +744,8 @@ div.container {
 .planters-nav-links .navbar-link {
   position: relative;
   padding-bottom: 4px;
-  z-index: 1000; /* Ensure it stacks above the dropdown menu to keep hover underline visible */
+  z-index: 1000;
+  /* Ensure it stacks above the dropdown menu to keep hover underline visible */
 }
 
 .planters-nav-links .navbar-link::after {
@@ -820,16 +854,28 @@ div.container {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   opacity: 0;
   visibility: hidden;
-  transform: translateY(10px);
-  transition: opacity 0.25s ease-in-out, visibility 0.25s ease-in-out, transform 0.25s ease-in-out;
+  transform: translateY(6px);
+  transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
   z-index: 999;
   padding: 2.5rem 0;
+  pointer-events: none;
+}
+
+.planters-mega-dropdown::before {
+  content: '';
+  position: absolute;
+  top: -24px;
+  left: 0;
+  width: 100%;
+  height: 24px;
+  background: transparent;
 }
 
 .navbar-item-with-dropdown:hover .planters-mega-dropdown {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
+  pointer-events: auto;
 }
 
 /* --- Simple Dropdown menu styling for Seeds --- */
@@ -943,13 +989,14 @@ div.container {
   font-size: var(--font-size-sm);
   color: var(--color-text-main);
   text-decoration: none;
-  transition: color var(--transition-fast), padding-left var(--transition-fast);
+  transition: color 0.15s ease, transform 0.15s ease;
   display: inline-block;
+  will-change: transform;
 }
 
 .mega-dropdown-list li a:hover {
   color: var(--color-primary);
-  padding-left: 2px;
+  transform: translateX(2px);
 }
 
 .planters-header .container {
@@ -2183,78 +2230,7 @@ div.container {
   transform: translateY(10px) !important;
 }
 
-/* ==========================================================================
-   React Toastify Premium Style Overrides (Matching Store Design System)
-   ========================================================================== */
-.Toastify__toast-container {
-  padding: 12px;
-}
 
-.Toastify__toast {
-  border-radius: 12px !important;
-  font-family: var(--font-family-heading) !important;
-  font-size: var(--font-size-sm) !important;
-  font-weight: 500 !important;
-  box-shadow: 0 12px 30px rgba(6, 73, 45, 0.08) !important;
-  padding: 14px 20px !important;
-}
-
-.Toastify__toast--success {
-  background-color: var(--color-primary-bg) !important;
-  color: var(--color-primary-dark) !important;
-  border: 1px solid rgba(27, 122, 66, 0.15) !important;
-}
-
-.Toastify__toast--success .Toastify__toast-icon svg {
-  fill: var(--color-primary) !important;
-}
-
-.Toastify__toast--error {
-  background-color: #fdf2f2 !important;
-  color: #c81e1e !important;
-  border: 1px solid rgba(240, 82, 82, 0.15) !important;
-}
-
-.Toastify__toast--error .Toastify__toast-icon svg {
-  fill: #e74c3c !important;
-}
-
-.Toastify__toast--warning {
-  background-color: #fefaf0 !important;
-  color: #c05621 !important;
-  border: 1px solid rgba(243, 156, 18, 0.15) !important;
-}
-
-.Toastify__toast--warning .Toastify__toast-icon svg {
-  fill: var(--color-gold) !important;
-}
-
-.Toastify__toast--info {
-  background-color: #f0f7ff !important;
-  color: #1c3d5a !important;
-  border: 1px solid rgba(66, 153, 225, 0.15) !important;
-}
-
-.Toastify__toast--info .Toastify__toast-icon svg {
-  fill: #3182ce !important;
-}
-
-/* Custom progress bar styles to match theme colors */
-.Toastify__progress-bar--success {
-  background: linear-gradient(to right, var(--color-primary), var(--color-primary-light)) !important;
-}
-
-.Toastify__progress-bar--error {
-  background: #e74c3c !important;
-}
-
-.Toastify__progress-bar--warning {
-  background: var(--color-gold) !important;
-}
-
-.Toastify__progress-bar--info {
-  background: #3182ce !important;
-}
 
 /* ==========================================================================
    Bring Life Back to Nature Section Styles
@@ -2311,7 +2287,8 @@ div.container {
   line-height: 1.6;
   color: var(--color-text-main);
   margin-bottom: 16px;
-  text-align: justify; /* Ensure text starts and ends at same position on each line */
+  text-align: justify;
+  /* Ensure text starts and ends at same position on each line */
   text-justify: inter-word;
 }
 
@@ -2421,9 +2398,11 @@ div.container {
     grid-template-columns: 1fr;
     gap: 32px;
   }
+
   .bring-life-grid {
     margin: 0 auto;
   }
+
   .bring-life-title {
     font-size: 30px;
   }
@@ -2437,11 +2416,13 @@ div.container {
     align-items: center;
     position: relative;
   }
+
   .section-header-link {
     position: static;
     margin-top: 8px;
     width: fit-content;
   }
+
   .bring-life-container {
     grid-template-columns: 1fr;
     gap: 40px;
@@ -2470,6 +2451,7 @@ div.container {
 
 /* Responsive Heading Sizes for Uniformity */
 @media (max-width: 992px) {
+
   .section-title,
   .bring-life-title,
   .soil-title,
@@ -2482,6 +2464,7 @@ div.container {
 }
 
 @media (max-width: 768px) {
+
   .section-title,
   .bring-life-title,
   .soil-title,
@@ -2497,7 +2480,8 @@ div.container {
 .planters-profile-dropdown {
   position: absolute;
   top: 100%;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
   margin-top: 12px;
   width: 240px;
   background: #ffffff;
@@ -2512,11 +2496,12 @@ div.container {
 @keyframes dropdownFadeIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateX(-50%) translateY(8px);
   }
+
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0);
   }
 }
 
@@ -2639,6 +2624,7 @@ div.container {
 }
 
 @media (max-width: 992px) {
+
   .plants-page-title,
   .seeds-page-title,
   .fertilizers-page-title,
@@ -2652,6 +2638,7 @@ div.container {
 }
 
 @media (max-width: 768px) {
+
   .plants-page-title,
   .seeds-page-title,
   .fertilizers-page-title,
@@ -2724,12 +2711,111 @@ div.container {
   letter-spacing: 0.5px !important;
 }
 
-.dynamic-blog-image {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: fill !important;
+/* ==========================================================================
+   Profile Page Layout & Sidebar Container Styles
+   ========================================================================== */
+
+/* Profile Grid Container */
+.profile-layout-container {
+  display: grid;
+  grid-template-columns: 210px 1fr;
+  width: 100%;
+  gap: 0px !important;
+  align-items: stretch !important;
+  margin-top: 16px !important;
+  margin-bottom: 32px !important;
+  box-sizing: border-box;
+  min-height: 465px;
 }
 
-.dynamic-blog-summary {
-  text-align: center !important;
+/* Left Sidebar Wrapper */
+.profile-sidebar-wrapper {
+  background-color: #f8faf8;
+  border-right: 1px solid #edf2f0;
+  padding: 38px 24px !important;
+  height: auto !important;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  
+}
+
+/* Right Main Content Wrapper */
+.profile-main-content-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: auto !important;
+  padding: 14px 0px 14px 24px !important;
+  box-sizing: border-box;
+}
+
+/* Navigation Buttons */
+.profile-menu-btn {
+  width: 100%;
+  text-align: left;
+  padding: 9px 9px;
+  font-size: var(--font-size-xs) ;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: BLACK;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap !important;
+  transition: all 0.15s ease;
+  display: block;
+  margin: 15px;
+
+}
+
+
+
+.profile-menu-btn.active {
+  background-color: #06492D !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 992px) {
+  .profile-layout-container {
+    grid-template-columns: 1fr !important;
+    margin-top: 12px !important;
+  }
+  .profile-sidebar-wrapper {
+    display: none !important;
+  }
+  .profile-main-content-wrapper {
+    padding: 12px 0px !important;
+  }
+}
+
+/* ==========================================================================
+   Toastify Custom Styling (Matching App Brand & Typography)
+   ========================================================================== */
+:root {
+  --toastify-font-family: var(--font-family-base);
+  --toastify-text-color-light: var(--color-text-main);
+  --toastify-toast-width: 320px;
+  --toastify-toast-bd-radius: 4px;
+}
+
+.Toastify__toast {
+  font-family: var(--font-family-base) !important;
+  font-size: var(--font-size-sm) !important;
+  color: var(--color-text-main) !important;
+  border-radius: 4px !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12) !important;
+  border: 1px solid var(--color-border);
+}
+
+.Toastify__toast-body {
+  font-family: var(--font-family-base) !important;
+  color: var(--color-text-main) !important;
+  font-size: var(--font-size-sm) !important;
+  font-weight: var(--font-weight-regular) !important;
+  line-height: var(--line-height-normal) !important;
 }

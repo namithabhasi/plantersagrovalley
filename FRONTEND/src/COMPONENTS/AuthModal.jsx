@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { FiX } from "react-icons/fi";
 import { toast } from "react-toastify";
 import axiosInstance from "../api/axiosInstance";
@@ -10,6 +11,7 @@ import "./AuthModal.css";
 
 function AuthModal() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { isAuthModalOpen, authModalTab } = useSelector((state) => state.auth);
   const { cartItems, syncLocalCartToBackend } = useCart();
 
@@ -72,7 +74,8 @@ function AuthModal() {
       // Synchronize local cart to database
       await syncLocalCartToBackend(cartItems);
 
-      toast.success(isLogin ? "Welcome back!" : "Registration successful! Welcome.");
+      const userName = data.user?.firstName || data.user?.name || data.user?.email?.split('@')[0] || 'User';
+      toast.success(`Welcome, ${userName}!`);
       
       // Clear form inputs
       setEmail("");
@@ -83,6 +86,13 @@ function AuthModal() {
 
       // Close modal
       handleClose();
+
+      // Check for pending redirect
+      const pendingRedirect = sessionStorage.getItem("postLoginRedirect");
+      if (pendingRedirect) {
+        sessionStorage.removeItem("postLoginRedirect");
+        navigate(pendingRedirect);
+      }
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Something went wrong. Please try again."
