@@ -21,6 +21,7 @@ import enquiryRoutes from "./routes/enquiryRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
 import serviceRoutes from "./routes/serviceRoutes.js";
 import subscriberRoutes from "./routes/subscriberRoutes.js";
+import chatRoutes from "./modules/chat/routes/chatRoutes.js";
 
 
 
@@ -91,6 +92,7 @@ app.use("/api/enquiries", enquiryRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/subscribers", subscriberRoutes);
+app.use("/api/chat", chatRoutes);
 
 
 

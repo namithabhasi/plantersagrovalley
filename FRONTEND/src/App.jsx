@@ -29,6 +29,7 @@ import Enquiries from "./PAGES/admin/Enquiries";
 import AdminBlogs from "./PAGES/admin/Blogs";
 import AdminServices from "./PAGES/admin/Services";
 import Subscribers from "./PAGES/admin/Subscribers";
+import ChatSupport from "./PAGES/admin/ChatSupport";
 
 
 import Payment from "./PAGES/Payment";
@@ -59,6 +60,7 @@ import Productdetails from "./PAGES/Productdetails";
 import Profile from "./PAGES/Profile";
 import Wishlist from "./PAGES/Wishlist";
 import MyOrders from "./PAGES/MyOrders";
+import Chat from "./PAGES/Chat";
 
 import Review from "./PAGES/Review";
 
@@ -114,6 +116,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/my-orders" element={<MyOrders />} />
+        <Route path="/chat" element={<Chat />} />
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<SuperAdminLogin />} />
         <Route path="/dashboard" element={<AdminLayout />}>
@@ -134,6 +137,7 @@ function App() {
           <Route path="blogs" element={<AdminBlogs />} />
           <Route path="services" element={<AdminServices />} />
           <Route path="subscribers" element={<Subscribers />} />
+          <Route path="chat-support" element={<ChatSupport />} />
         </Route>
 
       </Routes>
@@ -151,6 +155,7 @@ function App() {
         theme="light"
       />
       {!hideNavbarFooter && <Footer />}
+      {!hideNavbarFooter && <Chat />}
     </CartProvider>
   );
 }

@@ -33,6 +33,7 @@ import {
   Book,
   Spa,
   MarkEmailRead,
+  SupportAgent,
 } from "@mui/icons-material";
 
 
@@ -379,6 +380,26 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
             </ListItemIcon>
 
             <ListItemText primary="Enquiries" />
+          </ListItemButton>
+        )}
+
+        {/* Live Chat Support */}
+        {(role === "super-admin" || role === "admin" || role === "shipping-manager") && (
+          <ListItemButton
+            component={Link}
+            to="/dashboard/chat-support"
+            sx={
+              location.pathname === "/dashboard/chat-support"
+                ? activeStyle
+                : {}
+            }
+            onClick={handleItemClick}
+          >
+            <ListItemIcon>
+              <SupportAgent />
+            </ListItemIcon>
+
+            <ListItemText primary="Live Chat" />
           </ListItemButton>
         )}
 
