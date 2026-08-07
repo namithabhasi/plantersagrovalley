@@ -5,6 +5,9 @@ import User from "../models/User.js";
 import Product from "../models/Product.js";
 import generateToken from "../utils/generateToken.js";
 import { sendOrderTrackingEmail } from "../utils/orderEmailHelper.js";
+import Subscriber from "../models/Subscriber.js";
+import Coupon from "../models/Coupon.js";
+import sendEmail from "../utils/sendEmail.js";
 
 import {
   getCart,
@@ -372,6 +375,78 @@ export const verifyPayment = async (req, res) => {
 
     // Automatically send the order tracking ID to customer as mail
     sendOrderTrackingEmail(order, orderUser);
+
+    // Automatically subscribe to newsletter if checked during checkout
+    if (req.body.emailMarketing) {
+      const emailToSub = orderUser.email.toLowerCase().trim();
+      Subscriber.findOne({ email: emailToSub })
+        .then(async (subscriber) => {
+          let isNewSub = false;
+          if (subscriber) {
+            if (subscriber.status !== "active") {
+              subscriber.status = "active";
+              await subscriber.save();
+              isNewSub = true;
+            }
+          } else {
+            await Subscriber.create({ email: emailToSub });
+            isNewSub = true;
+          }
+
+          if (isNewSub) {
+            let welcomeCoupon = await Coupon.findOne({ code: "WELCOME10", isDeleted: false });
+            if (!welcomeCoupon) {
+              welcomeCoupon = await Coupon.create({
+                code: "WELCOME10",
+                name: "Welcome Discount",
+                description: "10% off for subscribing to our newsletter",
+                discountType: "percentage",
+                discountValue: 10,
+                usageLimit: 0,
+                usagePerUser: 1,
+                validFrom: new Date(),
+                validUntil: new Date(Date.now() + 50 * 365 * 24 * 60 * 60 * 1000),
+                isActive: true,
+              });
+              console.log("WELCOME10 coupon created successfully during order check.");
+            }
+
+            const welcomeHtml = `
+              <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                  <h1 style="color: #042817; margin: 0; font-size: 28px; font-weight: 700;">Planters Agro Valley</h1>
+                  <p style="color: #4a5568; margin-top: 5px; font-size: 14px;">Welcome to Our Green Community 🌿</p>
+                </div>
+                <hr style="border: 0; border-top: 1px solid #edf2f7; margin: 20px 0;" />
+                <div style="color: #2d3748; line-height: 1.6;">
+                  <p style="font-size: 16px; font-weight: 600;">Hello there,</p>
+                  <p>Thank you for subscribing to our newsletter! We are thrilled to have you with us. From now on, you'll be the first to hear about our new plant arrivals, gardening events, tips, and exclusive subscriber-only deals.</p>
+                  
+                  <div style="background-color: #f7fafc; border: 1px dashed #48bb78; border-radius: 8px; padding: 20px; text-align: center; margin: 25px 0;">
+                    <p style="margin: 0; font-size: 14px; color: #4a5568; text-transform: uppercase; tracking-wider: 1px;">Your Welcome Gift</p>
+                    <h2 style="margin: 10px 0; color: #042817; font-size: 32px; font-weight: 800;">10% OFF</h2>
+                    <p style="margin: 5px 0 15px 0; font-size: 14px; color: #718096;">Use the code below at checkout on your first order:</p>
+                    <span style="background-color: #042817; color: #ffffff; padding: 10px 20px; font-size: 18px; font-weight: bold; border-radius: 6px; letter-spacing: 2px; display: inline-block;">WELCOME10</span>
+                  </div>
+                  
+                  <p>Happy Gardening!</p>
+                </div>
+                <hr style="border: 0; border-top: 1px solid #edf2f7; margin: 35px 0 20px 0;" />
+                <div style="text-align: center; font-size: 12px; color: #a0aec0;">
+                  <p>&copy; 2026 Planters Agro Valley. All rights reserved.</p>
+                </div>
+              </div>
+            `;
+
+            sendEmail({
+              to: emailToSub,
+              subject: "Welcome to Planters Agro Valley! 🌿 Here is your welcome gift",
+              html: welcomeHtml,
+            }).catch(e => console.error("Auto order welcome email failed:", e));
+          }
+        })
+        .catch((err) => console.error("Error subscribing user during checkout verification:", err));
+    }
 
     // If guest user, set cookie to log them in automatically
     if (!req.user) {
