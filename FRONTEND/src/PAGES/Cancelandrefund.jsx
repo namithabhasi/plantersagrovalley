@@ -33,9 +33,9 @@ function Cancelandrefund() {
 
               {/* Section 1: Eligible for Refund With Return */}
               <section className="flex flex-col gap-3">
-                <h2 className="text-lg font-medium text-[var(--color-primary-dark)] font-[var(--font-family-heading)] leading-snug">
-                  1. Eligible for Refund With Return
-                </h2>
+                <h3 className="text-lg font-medium text-[var(--color-primary-dark)] font-[var(--font-family-heading)] leading-snug cap">
+                  ELIGIBILITY FOR RETURNS AND REFUND
+                </h3>
                 <p>
                   If the product is delivered and you:
                 </p>
@@ -53,7 +53,7 @@ function Cancelandrefund() {
                   <li>You must arrange and bear the return shipping charges yourself.</li>
                   <li>You must share photos or a short video of the product and the packaging at the time of booking the return shipment, as proof of its unused and good condition.</li>
                   <li>
-                    Send the product to: <span className="font-medium text-[var(--color-text-main)]">Planters Agro Valley - GAT No 589, Tamhane Vasti, Solapur - Pune Hwy, Theur Phata, Infront of Jijau Garden, Pune, Maharashtra, 412201</span>
+                    Send the product to: <span className="font-medium text-[var(--color-text-main)]">Planters Agro Valley -North Paravur,Ernakulam,Kerala,India 683594</span>
                   </li>
                   <li>After we receive the product in acceptable and unused condition, we will initiate the refund.</li>
                   <li>The refund may take up to 5 working days to reflect in your account.</li>
@@ -64,9 +64,9 @@ function Cancelandrefund() {
 
               {/* Section 2: Eligible for Refund or Replacement Without Return */}
               <section className="flex flex-col gap-3">
-                <h2 className="text-lg font-medium text-[var(--color-primary-dark)] font-[var(--font-family-heading)] leading-snug">
-                  2. Eligible for Refund or Replacement Without Return
-                </h2>
+                <h3 className="text-lg font-medium text-[var(--color-primary-dark)] font-[var(--font-family-heading)] leading-snug">
+                  ELIGIBILTY FOR RETURN AND REFUND WITHOUT RETURN
+                </h3>
                 <p>
                   You qualify for a refund or a replacement without returning the product if:
                 </p>
@@ -106,9 +106,9 @@ function Cancelandrefund() {
 
               {/* Section 3: Order Cancellation */}
               <section className="flex flex-col gap-3">
-                <h2 className="text-lg font-medium text-[var(--color-primary-dark)] font-[var(--font-family-heading)] leading-snug">
-                  3. Order Cancellation
-                </h2>
+                <h3 className="text-lg font-medium text-[var(--color-primary-dark)] font-[var(--font-family-heading)] leading-snug">
+                  ORDER CANCELLATION
+                </h3>
                 <ul className="space-y-3 pl-5 list-disc marker:text-[var(--color-primary)]">
                   <li>
                     Customers can cancel their order before dispatch by writing an email to <a href="mailto:care@plantersagrovalley.com" className="text-[var(--color-primary-dark)] hover:underline font-mono font-medium">care@plantersagrovalley.com</a>.
