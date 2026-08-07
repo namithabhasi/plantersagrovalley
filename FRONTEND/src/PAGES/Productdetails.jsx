@@ -320,16 +320,23 @@ function Productdetails() {
           const apiProd = data.product;
           setProduct({
             ...apiProd,
-            subtitle: apiProd.subtitle || "Premium Agro Valley Product",
-            aboutItems: apiProd.aboutItems || [
-              "High quality material designed for extra durability and modern aesthetics.",
-              "Easy to clean, store, and maintain with minimal effort.",
-              "Multi-purpose utility suitable for indoor and outdoor settings."
+            subtitle: apiProd.subtitle || "Premium Agro Valley Botanical Specimen",
+            aboutItems: (apiProd.aboutItems && apiProd.aboutItems.length > 3) ? apiProd.aboutItems : [
+              "Hand-Picked Healthy Specimen – Cultivated in nutrient-rich organic potting mix under optimal nursery conditions for high hardiness and lush green growth.",
+              "Natural Air Purifier & Oxygen Booster – Actively absorbs indoor airborne toxins and elevates room humidity, promoting a calm, fresh living space.",
+              "Low Maintenance & High Adaptability – Ideal for beginner and seasoned plant lovers alike, requiring minimal weekly care and basic sunlight.",
+              "Multi-Purpose Indoor & Outdoor Accent – Elegantly elevates living room corners, study desks, balconies, window sills, and patio garden setups.",
+              "Eco-Friendly Moisture Guard Packaging – Shipped with specialized root moisture-retention packaging ensuring your plant arrives fresh, healthy, and damage-free.",
+              "Organic Plant Food Compatible – Responds exceptionally well to organic vermicompost and seaweed liquid liquid fertilizer during active growth seasons."
             ],
-            specifications: apiProd.specifications || {
-              "Material": "Premium Grade Quality",
-              "Placement": "Living Room, Balcony, Office",
-              "Special Feature": "Durable Build, Easy Maintenance"
+            specifications: (apiProd.specifications && Object.keys(apiProd.specifications).length > 3) ? apiProd.specifications : {
+              "Plant Category": apiProd.category?.name || "Indoor & Outdoor Botanical",
+              "Sunlight Requirement": "Bright Indirect Sunlight / Partial Shade",
+              "Watering Needs": "1-2 times weekly (when top 1-inch soil dries)",
+              "Soil & Potting Mix": "Well-draining Coco-peat, Vermicompost & Soil Mix",
+              "Placement": "Living Room, Balcony, Office Desk, Window Sill",
+              "Maintenance Level": "Easy & Beginner Friendly",
+              "Packaging": "Eco-Friendly Moisture Guard Protective Box"
             },
             isPlant: true
           });
@@ -705,21 +712,21 @@ function Productdetails() {
       {/* =========================================================================
          SECTION 2: Product Details & Specifications
          ========================================================================= */}
-      <div style={{ marginTop: '20px', marginBottom: '20px' }} className="w-full  py-10 sm:py-16 my-8 sm:my-12">
+      <div style={{ marginTop: '60px', marginBottom: '20px' }} className="w-full  py-10 sm:py-16 my-8 sm:my-12">
         <div style={{ marginTop: '20px', marginBottom: '20px' }} className="container px-4 sm:px-6 lg:px-8 mx-auto">
 
           <div className="mb-8 text-center">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#06492D] uppercase">
               Product Details
             </h2>
-            <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed text-center mt-1">Complete item overview, features and specifications</p>
+            <p style={{ marginTop: '10px', marginBottom: '10px' }} className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed text-center mt-1">Complete item overview, features and specifications</p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          <div style={{ marginTop: '10px', marginBottom: '10px' }} className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
 
             {/* Left Column: About this item (7 Cols) */}
             <div className="lg:col-span-7 space-y-6">
-              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 uppercase tracking-wide py-1">
+              <h3 style={{ marginTop: '10px', marginBottom: '10px' }} className="text-xl sm:text-2xl font-bold text-slate-900 uppercase tracking-wide py-1">
                 About this item
               </h3>
               <ul className="space-y-4 list-disc pl-5">
@@ -741,7 +748,7 @@ function Productdetails() {
             </div>
 
             {/* Right Column: Product Specifications Table (5 Cols) */}
-            <div className="lg:col-span-5">
+            <div style={{ marginTop: '10px', marginBottom: '10px' }}className="lg:col-span-5">
               <div style={{ padding: '20px' }} className="bg-white rounded-[3px] p-6 shadow-sm border border-slate-200/80">
                 <h3 className="text-xl font-bold text-[#06492D] uppercase tracking-wider mb-4 border-b border-slate-100 pb-3">
                   Specifications

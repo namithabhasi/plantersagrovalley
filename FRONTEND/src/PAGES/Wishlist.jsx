@@ -122,7 +122,7 @@ function Wishlist() {
       <section className="page-section !bg-[var(--color-primary-bg)]">
         <div className="container flex justify-center">
           <div className="w-full max-w-[800px] flex flex-col gap-6">
-            
+
             {/* Page Header (No Line Divider) */}
             {wishlistItems.length > 0 && (
               <div className="pb-2 text-left">
@@ -180,7 +180,7 @@ function Wishlist() {
                   return (
                     <div
                       key={product._id}
-                      className="bg-white hover:bg-white rounded-none border border-gray-200/80 p-4 sm:p-5 flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 transition-all duration-200 shadow-sm hover:shadow-md"
+                      className="bg-white hover:bg-white rounded-none border border-gray-200/80 p-4 sm:p-5 flex flex-col sm:flex-row items-center sm:items-center gap-4 sm:gap-6 transition-all duration-200 shadow-sm hover:shadow-md"
                     >
                       {/* Product Thumbnail */}
                       <Link
@@ -195,7 +195,7 @@ function Wishlist() {
                       </Link>
 
                       {/* Product Details & Action Buttons */}
-                      <div style={{ padding: "10px" }} className="flex-1 flex flex-col justify-between w-full h-full">
+                      <div style={{ padding: "10px" }} className="flex-1 flex flex-col justify-start gap-1 w-full">
                         <div>
                           {/* Title */}
                           <Link
@@ -245,7 +245,7 @@ function Wishlist() {
                         </div>
 
                         {/* Action Buttons Row (No Top Border Line Divider) */}
-                        <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-3 pt-1">
+                        <div style={{ marginTop: '10px', marginBottom: '10px' }} className="flex flex-wrap items-center gap-3 sm:gap-4 mt-3 pt-1">
                           {/* Dynamic Buy Now OR Out of Stock Button (Transparent BG, Larger Font) */}
                           {!isOutOfStock ? (
                             <Link
@@ -304,11 +304,10 @@ function Wishlist() {
                         <button
                           key={pageNum}
                           onClick={() => setCurrentPage(pageNum)}
-                          className={`px-3.5 py-1.5 text-xs font-medium rounded-none border transition-all cursor-pointer ${
-                            isActive
+                          className={`px-3.5 py-1.5 text-xs font-medium rounded-none border transition-all cursor-pointer ${isActive
                               ? "bg-[#06492D] text-white border-[#06492D]"
                               : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-                          }`}
+                            }`}
                         >
                           {pageNum}
                         </button>
