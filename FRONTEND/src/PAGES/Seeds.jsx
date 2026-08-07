@@ -234,8 +234,8 @@ function Seeds() {
                     </div>
 
                     <h1 className="seeds-page-title text-xl font-normal mb-3 text-[#1c2c21]">
-                        {activeCategory === 'all' 
-                            ? 'All Seeds' 
+                        {activeCategory === 'all'
+                            ? 'All Seeds'
                             : seedCategories.find(c => c.id === activeCategory)?.name || 'Seeds'}
                     </h1>
 
@@ -391,8 +391,8 @@ function Seeds() {
                                                     className="slider-thumb slider-thumb-right"
                                                 />
                                                 <div className="slider-track" />
-                                                <div 
-                                                    className="slider-range-bar" 
+                                                <div
+                                                    className="slider-range-bar"
                                                     style={{
                                                         left: `${(minPrice / 1000) * 100}%`,
                                                         right: `${100 - (maxPrice / 1000) * 100}%`
@@ -468,24 +468,24 @@ function Seeds() {
 
                             <div className="seeds-sort-container">
                                 <div className="custom-sort-dropdown">
-                                    <button 
+                                    <button
                                         className="sort-dropdown-btn"
                                         onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
                                     >
                                         <span>Sort by: {
                                             sortBy === 'best-selling' ? 'Best Selling' :
-                                            sortBy === 'price-low-high' ? 'Price: Low to High' :
-                                            sortBy === 'price-high-low' ? 'Price: High to Low' :
-                                            sortBy === 'name-a-z' ? 'Alphabetically: A-Z' :
-                                            sortBy === 'name-z-a' ? 'Alphabetically: Z-A' :
-                                            sortBy === 'newest' ? 'Newest Arrivals' : 'Best Selling'
+                                                sortBy === 'price-low-high' ? 'Price: Low to High' :
+                                                    sortBy === 'price-high-low' ? 'Price: High to Low' :
+                                                        sortBy === 'name-a-z' ? 'Alphabetically: A-Z' :
+                                                            sortBy === 'name-z-a' ? 'Alphabetically: Z-A' :
+                                                                sortBy === 'newest' ? 'Newest Arrivals' : 'Best Selling'
                                         }</span>
                                         <FiChevronDown size={14} />
                                     </button>
                                     {sortDropdownOpen && (
                                         <>
-                                            <div 
-                                                style={{ position: 'fixed', inset: 0, zIndex: 998 }} 
+                                            <div
+                                                style={{ position: 'fixed', inset: 0, zIndex: 998 }}
                                                 onClick={() => setSortDropdownOpen(false)}
                                             />
                                             <div className="sort-dropdown-menu" style={{ zIndex: 999 }}>
@@ -578,7 +578,7 @@ function Seeds() {
                                 >
                                     &larr; Previous
                                 </button>
-                                
+
                                 {[...Array(totalPages)].map((_, index) => (
                                     <button
                                         key={index + 1}

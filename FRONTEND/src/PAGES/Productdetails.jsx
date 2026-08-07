@@ -1,20 +1,20 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { 
-  FiShoppingCart, 
-  FiHeart, 
-  FiTruck, 
-  FiShield, 
-  FiRotateCcw, 
-  FiDollarSign, 
-  FiZap, 
-  FiLayers, 
-  FiCheckCircle, 
-  FiThumbsUp, 
-  FiChevronLeft, 
+import {
+  FiShoppingCart,
+  FiHeart,
+  FiTruck,
+  FiShield,
+  FiRotateCcw,
+  FiDollarSign,
+  FiZap,
+  FiLayers,
+  FiCheckCircle,
+  FiThumbsUp,
+  FiChevronLeft,
   FiChevronRight,
-  FiPlus, 
-  FiMinus, 
+  FiPlus,
+  FiMinus,
   FiX,
   FiSun,
   FiDroplet,
@@ -144,21 +144,7 @@ function Productdetails() {
   const [reviewsList, setReviewsList] = useState(initialMockReviews);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedTag, setSelectedTag] = useState(null);
-  const [likedReviewIds, setLikedReviewIds] = useState([]);
   const reviewsPerPage = 3;
-
-  const handleLikeReview = (reviewId) => {
-    const isLiked = likedReviewIds.includes(reviewId);
-    if (isLiked) {
-      setLikedReviewIds(prev => prev.filter(id => id !== reviewId));
-      setReviewsList(prev => prev.map(r => r.id === reviewId ? { ...r, likes: Math.max(0, (r.likes || 0) - 1) } : r));
-      toast.info("Upvote removed");
-    } else {
-      setLikedReviewIds(prev => [...prev, reviewId]);
-      setReviewsList(prev => prev.map(r => r.id === reviewId ? { ...r, likes: (r.likes || 0) + 1 } : r));
-      toast.success("Thank you for your feedback!");
-    }
-  };
 
   // Load customer reviews from LocalStorage on mount
   useEffect(() => {
@@ -251,213 +237,6 @@ function Productdetails() {
     return { average: avg, totalCount, breakdown };
   }, [reviewsList]);
 
-function getItemDetails(localProduct) {
-  const cat = (localProduct.category || '').toLowerCase();
-  const name = (localProduct.name || '').toLowerCase();
-
-  // If product already provides custom aboutItems or specifications, prioritize them!
-  if (localProduct.aboutItems && localProduct.specifications) {
-    return {
-      subtitle: localProduct.subtitle || "Premium Agro Valley Product",
-      aboutItems: localProduct.aboutItems,
-      specifications: localProduct.specifications,
-      description: localProduct.description || `${localProduct.name} - Premium quality gardening product.`,
-      isPlant: !cat.includes('planter') && !cat.includes('decor') && !cat.includes('shelf')
-    };
-  }
-
-  // Detect item types
-  const isClimber = cat.includes('climber') || name.includes('vine') || name.includes('climber') || name.includes('creeper') || name.includes('ivy');
-  const isFlowering = cat.includes('flower') || cat.includes('fragrant') || name.includes('rose') || name.includes('lily') || name.includes('jasmine') || name.includes('sunflower') || name.includes('plumeria') || name.includes('hibiscus') || name.includes('bougainvillea');
-  const isSeed = cat.includes('seed') || name.includes('seed');
-  const isFertilizer = cat.includes('fertilizer') || name.includes('fertilizer') || name.includes('compost') || name.includes('soil') || name.includes('manure') || name.includes('nutrient');
-  const isPlanter = cat.includes('planter') || name.includes('pot') || name.includes('planter') || name.includes('vase') || name.includes('stand');
-  const isGardenDecor = cat.includes('decor') || cat.includes('shelf') || name.includes('shelf') || name.includes('hanger') || name.includes('light');
-  const isBonsai = cat.includes('bonsai') || name.includes('bonsai');
-
-  if (isClimber) {
-    return {
-      subtitle: "Vigorous Flowering Vine & Outdoor Creeper",
-      description: localProduct.description || `Enhance your garden pergolas, arches, and balconies with ${localProduct.name}. Cultivated for fast growth, dense foliage, and vibrant seasonal flower clusters.`,
-      aboutItems: [
-        "Dense Canopy & Wall Coverage – Creates lush green screens on pergolas, balconies, garden trellises, and compound walls.",
-        "Abundant Fragrant Blooms – Generates continuous clusters of vibrant flowers that attract butterflies and natural pollinators.",
-        "Sturdy Trellis Training – Easily trained onto wooden lattices, wire meshes, railings, and bamboo supports.",
-        "High Weather Hardiness – Strong root system that thrives under outdoor sunlight and recovers quickly post pruning.",
-        "Nursery-Fresh Secure Packaging – Shipped directly with root moisture retention wrap for zero transit shock."
-      ],
-      specifications: {
-        "Plant Type": "Climbing Vine / Flowering Creeper",
-        "Sunlight": "Full Sun to Partial Shade (4-6 hrs daily)",
-        "Watering": "Moderate (2-3 times a week when soil dries)",
-        "Growth Rate": "Fast Growing Canopy",
-        "Placement": "Balcony Railings, Pergolas, Trellises, Garden Arches",
-        "Care Level": "Easy to Moderate"
-      },
-      isPlant: true
-    };
-  }
-
-  if (isFlowering) {
-    return {
-      subtitle: "Fresh Blooming Seasonal & Perennial Flower",
-      description: localProduct.description || `Fill your home and garden with pleasant fragrance and rich colors using ${localProduct.name}. Carefully nurtured under optimal nursery conditions.`,
-      aboutItems: [
-        "Vibrant Botanical Blooms – Produces fragrant, colorful flowers that elevate home entrance and garden aesthetics.",
-        "Sun-Loving Nursery Specimen – Grown for strong stem hardiness and continuous flowering throughout peak seasons.",
-        "Ideal for Containers & Pots – Flourishes effortlessly in patio pots, window boxes, and open garden beds.",
-        "Easy Care & Pruning – Simple to maintain with regular watering and monthly organic fertilizer feed.",
-        "Protected Root Packaging – Delivered with intact root ball and moisture barrier for safe home delivery."
-      ],
-      specifications: {
-        "Plant Type": "Flowering Botanical Perennial",
-        "Sunlight": "Direct Sunlight (4-6 hrs daily)",
-        "Watering": "Once every 2 days (Keep soil moist)",
-        "Bloom Season": "Spring to Autumn / Year-Round",
-        "Placement": "Balconies, Patios, Sunlit Windows, Flower Beds",
-        "Care Level": "Easy Care"
-      },
-      isPlant: true
-    };
-  }
-
-  if (isSeed) {
-    return {
-      subtitle: "100% Organic High Germination Seeds",
-      description: localProduct.description || `Grow fresh organic plants with ${localProduct.name}. Lab-tested batch for maximum germination success and healthy seedling growth.`,
-      aboutItems: [
-        "90%+ Germination Success Rate – Tested premium seed batch ensuring high seedling sprout consistency.",
-        "Non-GMO & 100% Organic – Pure natural seeds free from harmful chemical treatments or synthetic coatings.",
-        "Beginner Friendly Home Gardening – Suitable for kitchen gardens, balcony pots, growing trays, and outdoor beds.",
-        "Moisture-Proof Sealed Pouch – Special inner foil lining keeps seeds fresh with maximum viability.",
-        "Includes Sowing Instructions – Comes with clear guidelines for planting depth, soil mix, and harvest schedule."
-      ],
-      specifications: {
-        "Seed Type": "Organic Botanical Garden Seeds",
-        "Germination Rate": "85% to 92%",
-        "Sowing Season": "All Season / Spring & Monsoon",
-        "Harvest Time": "45 - 75 Days post sowing",
-        "Sunlight": "Full Sun (4-6 hrs)",
-        "Package": "Moisture-Locked Foil Sealed Packet"
-      },
-      isPlant: false
-    };
-  }
-
-  if (isFertilizer) {
-    return {
-      subtitle: "100% Natural Soil Nourishment & Organic Plant Food",
-      description: localProduct.description || `Provide your garden with essential nutrients using ${localProduct.name}. Enriched with vital micro-nutrients to promote strong roots, greener leaves, and abundant flowers.`,
-      aboutItems: [
-        "100% Pure Organic Formulation – Rich in nitrogen, phosphorus, potassium (NPK), and vital trace minerals.",
-        "Improves Soil Structure & Aeration – Enhances root oxygenation, earthworm activity, and water retention capacity.",
-        "Chemical-Free & Safe – Safe for edible vegetables, fruit trees, flowering potted plants, and indoor greenery.",
-        "Fast Root Absorption – Promotes rapid root establishment, vibrant leaf pigmentation, and heavier bloom yields.",
-        "Odourless Easy Application – Packaged in clean, sealed heavy-duty bags ready for immediate potting soil mix."
-      ],
-      specifications: {
-        "Product Type": "Organic Fertilizer & Soil Conditioner",
-        "Form": "Granular / Fine Organic Compost",
-        "Dosage": "50g - 100g per pot monthly",
-        "Suitable For": "Indoor & Outdoor Plants, Veggies, Lawns",
-        "Safety": "Non-Toxic, Pet & Environment Safe",
-        "Shelf Life": "24 Months"
-      },
-      isPlant: false
-    };
-  }
-
-  if (isPlanter) {
-    return {
-      subtitle: "Durable Weatherproof Decorative Planter Pot",
-      description: localProduct.description || `Give your plants an elegant foundation with ${localProduct.name}. Made with high-grade UV resistant material designed for indoor and outdoor living spaces.`,
-      aboutItems: [
-        "Premium Weatherproof Build – Crafted from high-grade UV resistant material that won't fade, crack, or warp.",
-        "Built-In Drainage Hole – Prevents root rot and overwatering with engineered bottom water drainage.",
-        "Modern Architectural Aesthetic – Clean lines and elegant finish that complements contemporary home & balcony interiors.",
-        "Sturdy Yet Lightweight – Easy to clean, reposition, and transport across various indoor & outdoor locations.",
-        "Breakage-Proof Secure Packaging – Shipped with double-walled protective cushioning for guaranteed safe arrival."
-      ],
-      specifications: {
-        "Item Type": "Decorative Planter Pot",
-        "Material": "High-Grade Weatherproof Resin / Ceramic",
-        "Drainage Hole": "Yes (Included)",
-        "Placement": "Indoor Living Rooms, Balconies, Patios, Offices",
-        "Finish": "Matte Powder Coated / Smooth Architectural",
-        "Durability": "UV & Frost Resistant"
-      },
-      isPlant: false
-    };
-  }
-
-  if (isGardenDecor) {
-    return {
-      subtitle: "Rustproof Heavy Duty Wall & Corner Garden Organizer",
-      description: localProduct.description || `Maximize your balcony and indoor plant display space with ${localProduct.name}. Engineered with heavy duty rustproof metal and dual mounting options.`,
-      aboutItems: [
-        "No-Drilling Installation Option – Heavy duty adhesive pads provide strong wall hold with zero tile damage.",
-        "Rustproof Heavy Duty Metal Build – Powder-coated metal finish designed specifically for wet and humid environments.",
-        "Smart Space Storage Layout – Maximizes unused vertical wall & corner space for pots, planters, and tools.",
-        "Multi-Room Versatility – Ideal for balcony gardens, bathroom counters, kitchen spice organizers, or patio walls.",
-        "Complete Hardware Kit Included – Supplied with both ultra-strong adhesive pads and heavy duty wall screws."
-      ],
-      specifications: {
-        "Material": "Powder Coated Heavy Duty Metal",
-        "Mounting Type": "Self-Adhesive Wall Mount & Screw Mount",
-        "Room Type": "Balcony, Patio, Kitchen, Bathroom, Living Room",
-        "Special Feature": "Rust Proof, Space Saving, High Load Capacity",
-        "Finish": "Matte Anti-Corrosion Coating",
-        "Load Capacity": "Up to 15 kg"
-      },
-      isPlant: false
-    };
-  }
-
-  if (isBonsai) {
-    return {
-      subtitle: "Artisanal Trained Miniature Tree Specimen",
-      description: localProduct.description || `Bring tranquility and Zen aesthetics to your living room or office desk with ${localProduct.name}. Cultivated and trained by expert bonsai artisans.`,
-      aboutItems: [
-        "Expertly Trained Trunk Structure – Cultivated over years for mature miniature tree proportions and aesthetic bark curves.",
-        "Air Purifying & Serene Atmosphere – Creates a relaxing natural focal point in home living rooms and executive offices.",
-        "Compact Pot Specimen – Planted in a premium ceramic bonsai pot with proper drainage and root stability.",
-        "Easy Care Guidelines Included – Simple watering and trimming instructions to maintain miniature shape.",
-        "Wooden Framed Transit Packaging – Shipped in specialized protective wooden/foam structure for safe arrival."
-      ],
-      specifications: {
-        "Plant Type": "Miniature Trained Bonsai Tree",
-        "Sunlight": "Bright Indirect Sunlight to Partial Sun",
-        "Watering": "2-3 times a week (Keep soil slightly moist)",
-        "Pot Type": "Glazed Ceramic Bonsai Container",
-        "Placement": "Living Room Tables, Office Desks, Balconies",
-        "Care Level": "Moderate"
-      },
-      isPlant: true
-    };
-  }
-
-  return {
-    subtitle: "Fresh Botanical Indoor & Outdoor Plant Specimen",
-    description: localProduct.description || `Bring fresh botanical greenery into your living space with ${localProduct.name}. Cultivated under optimal nursery conditions for high hardiness and foliage beauty.`,
-    aboutItems: [
-      "Hand-Picked Healthy Nursery Specimen – Cultivated under expert care for high hardiness and fresh leaf foliage.",
-      "Air Purifying & Aesthetic – Filters indoor air impurities while adding vibrant green ambiance to your decor.",
-      "Low to Moderate Maintenance – Thrives in well-draining soil mixes with simple weekly care.",
-      "Versatile Placement Options – Perfect for living room tables, balcony garden stands, office desks, and windows.",
-      "Eco-Friendly Secure Packaging – Shipped with root moisture retention wrap for zero transit shock."
-    ],
-    specifications: {
-      "Plant Type": "Botanical Nursery Plant",
-      "Sunlight": "Bright Indirect Sunlight / Partial Shade",
-      "Watering": "Once a week (when top soil layer dries)",
-      "Placement": "Indoor Living Room, Balcony, Office",
-      "Maintenance Level": "Easy Care",
-      "Pet Friendly": "Keep away from pets"
-    },
-    isPlant: true
-  };
-}
-
   // Fetch / resolve product details
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -465,22 +244,55 @@ function getItemDetails(localProduct) {
         setLoading(true);
         // 1. Check local catalog
         const localProduct = plantProducts.find(p => p.id === id) ||
-                             seedProducts.find(p => p.id === id) ||
-                             planterProducts.find(p => p.id === id) ||
-                             fertilizerProducts.find(p => p.id === id) ||
-                             gardenProducts.find(p => p.id === id);
-        
+          seedProducts.find(p => p.id === id) ||
+          planterProducts.find(p => p.id === id) ||
+          fertilizerProducts.find(p => p.id === id) ||
+          gardenProducts.find(p => p.id === id);
+
         if (localProduct) {
+          const isPlantCategory = (localProduct.category === 'Plants' || localProduct.category === 'Seeds' || !localProduct.category);
           const discountPct = localProduct.originalPrice && localProduct.originalPrice > localProduct.price
             ? Math.round(((localProduct.originalPrice - localProduct.price) / localProduct.originalPrice) * 100)
             : (localProduct.discount ? parseInt(localProduct.discount) : 17);
 
-          const itemDetails = getItemDetails(localProduct);
+          const defaultPlantAbout = [
+            "Hand-picked Healthy Specimen – Cultivated under optimal nursery conditions for high hardiness and vibrant growth.",
+            "Air Purifying & Aesthetic – Naturally filters indoor pollutants while adding fresh green ambiance to your living space.",
+            "Easy Maintenance – Thrives in well-draining soil mixes with minimal daily care required.",
+            "Versatile Placement – Perfect for balconies, living rooms, window sills, trellises, and office desks.",
+            "Eco-friendly Secure Packaging – Shipped with root moisture retention and protective eco-friendly packaging."
+          ];
+
+          const defaultPlantSpecs = {
+            "Plant Type": "Indoor / Outdoor Botanical",
+            "Watering": "Once a week (when top 1 inch soil dries)",
+            "Sunlight": "Bright indirect sunlight",
+            "Placement": "Living Room, Balcony, Office",
+            "Maintenance Level": "Easy to moderate",
+            "Pet Friendly": "Keep away from pets"
+          };
+
+          const defaultShelfAbout = [
+            "No Drilling Installation Option – Easy self adhesive mounting with strong wall hold and zero damage.",
+            "Rustproof Heavy Duty Metal Build – Premium powder coated metal designed for humid and wet environments.",
+            "Smart Space Storage – Maximizes unused corner spaces for organizers, toiletries, or decorative items.",
+            "Multi-Room Utility – Great for bathrooms, kitchen counters, laundry, or office supply organization.",
+            "Complete Accessory Kit – Includes strong adhesive pads and mounting hardware."
+          ];
+
+          const defaultShelfSpecs = {
+            "Material": "Powder Coated Metal",
+            "Mounting Type": "Adhesive Wall Mount",
+            "Room Type": "Bathroom, Kitchen, Balcony, Office",
+            "Shelf Type": "Corner / Wall Shelf",
+            "Special Feature": "Rust Proof, Heavy Duty, Space Saving",
+            "Finish Type": "Matte Powder Finish"
+          };
 
           setProduct({
             _id: localProduct.id,
             name: localProduct.name,
-            subtitle: itemDetails.subtitle,
+            subtitle: isPlantCategory ? "Fresh Botanical Plant" : "Durable Home & Garden Accessory",
             price: localProduct.price || 499,
             originalPrice: localProduct.originalPrice || (localProduct.price ? Math.round(localProduct.price * 1.25) : 599),
             discountText: discountPct ? `${discountPct}% OFF` : null,
@@ -490,11 +302,13 @@ function getItemDetails(localProduct) {
             ],
             inStock: localProduct.inStock !== false,
             category: { name: localProduct.category || 'Plants' },
-            subcategory: itemDetails.isPlant ? "Botanical Plants" : "Gardening & Decor",
-            description: itemDetails.description,
-            aboutItems: itemDetails.aboutItems,
-            specifications: itemDetails.specifications,
-            isPlant: itemDetails.isPlant
+            subcategory: isPlantCategory ? "Indoor Plants" : "Home Decor",
+            description: localProduct.description || (isPlantCategory
+              ? `Bring the beauty of nature home with ${localProduct.name}. Carefully grown for high hardiness, vibrant foliage, and effortless maintenance.`
+              : `High quality ${localProduct.name} built with durable weather-resistant materials for indoor and outdoor spaces.`),
+            aboutItems: isPlantCategory ? defaultPlantAbout : defaultShelfAbout,
+            specifications: isPlantCategory ? defaultPlantSpecs : defaultShelfSpecs,
+            isPlant: isPlantCategory
           });
           setLoading(false);
           return;
@@ -596,6 +410,12 @@ function getItemDetails(localProduct) {
     navigate('/cart');
   };
 
+  // Upvote / Like Review
+  const handleLikeReview = (reviewId) => {
+    setReviewsList(prev => prev.map(r => r.id === reviewId ? { ...r, likes: r.likes + 1, helpfulText: `${r.likes + 1} people found this helpful` } : r));
+    toast.success("Thank you for your feedback!");
+  };
+
   // Submit New Review (Pic 5 format)
   const handleReviewSubmit = (e) => {
     e.preventDefault();
@@ -641,13 +461,13 @@ function getItemDetails(localProduct) {
 
   return (
     <div style={{ marginTop: '20px' }} className="w-full bg-white min-h-screen pt-4 pb-16">
-      
+
       {/* =========================================================================
          SECTION 1: Main Product Overview & Image Gallery
          ========================================================================= */}
       <div className="container px-4 sm:px-6 lg:px-8 mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-14 mb-16 items-start">
-          
+
           {/* Left Column: Image Gallery Container */}
           <div className="md:col-span-5 flex flex-col gap-4 w-full">
             <div className="w-full h-[350px] sm:h-[400px] lg:h-[430px] bg-[#f8f9fa] rounded-[3px] overflow-hidden flex items-center justify-center relative group">
@@ -681,10 +501,10 @@ function getItemDetails(localProduct) {
 
           {/* Right Column: Product Information & Action Panel */}
           <div className="md:col-span-7 flex flex-col">
-            
+
             {/* Title & Subtitle */}
-            <div className="mt-1 mb-6 space-y-2">
-              <h1 className="section-title text-2xl sm:text-3xl font-bold tracking-tight py-1 leading-snug text-slate-900">
+            <div className="mt-1 mb-1.5 space-y-0.5">
+              <h1 className="section-title text-2xl sm:text-3xl font-bold tracking-tight py-0 leading-snug text-slate-900">
                 {product.name}
               </h1>
               {product.subtitle && (
@@ -694,39 +514,8 @@ function getItemDetails(localProduct) {
               )}
             </div>
 
-            {/* Rating Stars Row with Partial Star Support */}
-            <div className="flex items-center gap-3 cursor-pointer my-5">
-              <div className="flex items-center text-amber-500 gap-1">
-                {[...Array(5)].map((_, i) => {
-                  const avg = Number(ratingMetrics.average);
-                  const isFull = i < Math.floor(avg);
-                  const isPartial = i === Math.floor(avg) && avg % 1 !== 0;
-                  const partialPct = isPartial ? Math.round((avg % 1) * 100) : 0;
-
-                  if (isFull) {
-                    return <FaStar key={i} size={16} className="text-amber-500" />;
-                  } else if (isPartial) {
-                    return (
-                      <div  key={i} className="relative inline-block" style={{ width: 16, height: 16 }}>
-                        <FaStar size={16} className="text-slate-200" />
-                        <div className="absolute top-0 left-0 overflow-hidden" style={{ width: `${partialPct}%`, height: 16 }}>
-                          <FaStar size={16} className="text-amber-500" />
-                        </div>
-                      </div>
-                    );
-                  } else {
-                    return <FaStar key={i} size={16} className="text-slate-200" />;
-                  }
-                })}
-              </div>
-              <span className="text-sm font-bold text-slate-900">{ratingMetrics.average}</span>
-              <span className="text-sm text-slate-500 hover:underline hover:text-[#06492D]">
-                ({ratingMetrics.totalCount} reviews)
-              </span>
-            </div>
-
             {/* Price & Taxes Section */}
-            <div className="my-6 py-1">
+            <div className="my-1.5 py-0">
               <div className="flex items-baseline gap-3.5">
                 <span className="text-3xl font-bold text-[#06492D]">
                   ₹{displayPrice.toLocaleString('en-IN')}
@@ -742,16 +531,16 @@ function getItemDetails(localProduct) {
                   </span>
                 )}
               </div>
-              <span className="text-xs text-slate-500 block mt-2 font-medium">Inclusive of all taxes</span>
+              <span className="text-xs text-slate-500 block mt-0.5 font-medium">Inclusive of all taxes</span>
             </div>
 
             {/* Description Body Text */}
-            <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed my-6 py-2">
+            <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed my-1.5 py-0">
               {product.description}
             </p>
 
             {/* Feature Highlights */}
-            <div style={{padding:'10px'}} className="flex flex-wrap gap-4 sm:gap-6 my-6 py-2">
+            <div style={{ padding: '10px' }} className="flex flex-wrap gap-4 sm:gap-6 my-1.5 py-0">
               {product.isPlant ? (
                 <>
                   <div className="flex items-center gap-2 text-xs font-semibold text-slate-800">
@@ -793,63 +582,99 @@ function getItemDetails(localProduct) {
               )}
             </div>
 
-            {/* Quantity Selector */}
-            <div style={{padding:'10px'}} className="mt-8 mb-6 py-1">
-              <label className="text-xs font-bold uppercase tracking-wider block mb-3 text-slate-700">
-                Quantity
-              </label>
-              <div className="inline-flex items-center border border-slate-300 rounded-[3px] bg-white h-10">
-                <button
-                  onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                  className="w-10 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors border-r border-slate-200 cursor-pointer"
-                  aria-label="Decrease quantity"
-                >
-                  <FiMinus size={14} />
-                </button>
-                <span className="w-12 text-center text-sm font-bold text-slate-900">
-                  {quantity}
+            {/* Quantity Selector & Rating Stars Row (In Line!) */}
+            <div style={{ padding: '10px' }} className="flex flex-wrap items-center justify-between gap-4 mt-6 mb-4 py-1">
+              <div>
+                <label className="text-xs font-bold uppercase tracking-wider block mb-2.5 text-slate-700">
+                  Quantity
+                </label>
+                <div className="inline-flex items-center border border-slate-300 rounded-[3px] bg-white h-10">
+                  <button
+                    onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                    className="w-10 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors border-r border-slate-200 cursor-pointer"
+                    aria-label="Decrease quantity"
+                  >
+                    <FiMinus size={14} />
+                  </button>
+                  <span className="w-12 text-center text-sm font-bold text-slate-900">
+                    {quantity}
+                  </span>
+                  <button
+                    onClick={() => setQuantity(q => q + 1)}
+                    className="w-10 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors border-l border-slate-200 cursor-pointer"
+                    aria-label="Increase quantity"
+                  >
+                    <FiPlus size={14} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Rating Stars placed in line with Quantity */}
+              <div className="flex items-center gap-3 cursor-pointer pt-3 sm:pt-0">
+                <div className="flex items-center text-amber-500 gap-1">
+                  {[...Array(5)].map((_, i) => {
+                    const avg = Number(ratingMetrics.average);
+                    const isFull = i < Math.floor(avg);
+                    const isPartial = i === Math.floor(avg) && avg % 1 !== 0;
+                    const partialPct = isPartial ? Math.round((avg % 1) * 100) : 0;
+
+                    if (isFull) {
+                      return <FaStar key={i} size={16} className="text-amber-500" />;
+                    } else if (isPartial) {
+                      return (
+                        <div key={i} className="relative inline-block" style={{ width: 16, height: 16 }}>
+                          <FaStar size={16} className="text-slate-200" />
+                          <div className="absolute top-0 left-0 overflow-hidden" style={{ width: `${partialPct}%`, height: 16 }}>
+                            <FaStar size={16} className="text-amber-500" />
+                          </div>
+                        </div>
+                      );
+                    } else {
+                      return <FaStar key={i} size={16} className="text-slate-200" />;
+                    }
+                  })}
+                </div>
+                <span className="text-sm font-bold text-slate-900">{ratingMetrics.average}</span>
+                <span className="text-sm text-slate-500">
+                  ({ratingMetrics.totalCount} reviews)
                 </span>
-                <button
-                  onClick={() => setQuantity(q => q + 1)}
-                  className="w-10 h-full flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors border-l border-slate-200 cursor-pointer"
-                  aria-label="Increase quantity"
-                >
-                  <FiPlus size={14} />
-                </button>
               </div>
             </div>
 
-            {/* Action Buttons Row */}
-            <div style={{padding:'10px'}} className="flex items-center gap-4 sm:gap-6 mt-8 mb-10">
-              <button
-                onClick={handleAddToCart}
-                disabled={!product.inStock}
-                className="btn btn-primary flex-1 h-11 text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-2"
-              >
-                <FiShoppingCart size={17} />
-                <span>Add to Cart</span>
-              </button>
+            {/* Action Buttons Row - Mobile Responsive */}
+            <div style={{ padding: '10px' }} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mt-6 mb-10 w-full">
+              <div className="flex items-center gap-2 sm:gap-4 flex-1">
+                <button
+                  onClick={handleAddToCart}
+                  disabled={!product.inStock}
+                  className="btn btn-primary flex-1 min-h-[46px] py-3 px-2 sm:px-5 text-xs sm:text-sm font-bold uppercase tracking-normal sm:tracking-wider flex items-center justify-center gap-1.5 text-center whitespace-nowrap"
+                >
+                  <FiShoppingCart size={17} className="flex-shrink-0" />
+                  <span>Add to Cart</span>
+                </button>
 
-              <button
-                onClick={handleBuyNow}
-                disabled={!product.inStock}
-                className="btn btn-outline-primary flex-1 h-11 text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-2"
-              >
-                <span>Buy Now</span>
-              </button>
+                <button
+                  onClick={handleBuyNow}
+                  disabled={!product.inStock}
+                  className="btn btn-outline-primary flex-1 min-h-[46px] py-3 px-2 sm:px-5 text-xs sm:text-sm font-bold uppercase tracking-normal sm:tracking-wider flex items-center justify-center gap-1.5 text-center whitespace-nowrap"
+                >
+                  <span>Buy Now</span>
+                </button>
+              </div>
 
               <button
                 onClick={handleWishlistToggle}
                 disabled={addingWishlist}
-                className={`w-11 h-11 rounded-[3px] border flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer ${inWishlist ? 'bg-red-50 border-red-300 text-red-500 hover:bg-red-100' : 'bg-white border-slate-300 text-slate-600 hover:border-[#06492D] hover:text-red-500'}`}
+                className={`h-11 sm:w-11 px-4 sm:px-0 rounded-[3px] border flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer ${inWishlist ? 'bg-red-50 border-red-300 text-red-500 hover:bg-red-100' : 'bg-white border-slate-300 text-slate-600 hover:border-[#06492D] hover:text-red-500'}`}
                 title={inWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
               >
                 <FiHeart size={20} fill={inWishlist ? "currentColor" : "none"} />
+                <span className="sm:hidden ml-2 text-xs font-bold uppercase text-slate-700">Wishlist</span>
               </button>
             </div>
 
             {/* Trust Badges Row */}
-            <div style={{padding:'10px'}} className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-slate-50/80 rounded-[3px] py-6 px-4 mt-8 mb-4 text-center">
+            <div style={{ padding: '10px' }} className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-slate-50/80 rounded-[3px] py-6 px-4 mt-8 mb-4 text-center">
               <div className="flex flex-col items-center justify-center p-1">
                 <FiTruck size={20} className="text-[#06492D] mb-1.5" />
                 <span className="text-[11px] font-bold text-slate-900 block leading-tight">Free Delivery</span>
@@ -880,20 +705,20 @@ function getItemDetails(localProduct) {
       {/* =========================================================================
          SECTION 2: Product Details & Specifications
          ========================================================================= */}
-      <div className="w-full border-t border-b border-slate-200/70 py-16 sm:py-20 my-12">
-        <div className="container px-4 sm:px-6 lg:px-8 mx-auto">
-          
-          <div className="mb-10 pb-3 border-b border-slate-200/80">
-            <h2 className="text-2xl text-center sm:text-3xl font-bold tracking-tight text-[#06492D] uppercase">
+      <div style={{ marginTop: '20px', marginBottom: '20px' }} className="w-full  py-10 sm:py-16 my-8 sm:my-12">
+        <div style={{ marginTop: '20px', marginBottom: '20px' }} className="container px-4 sm:px-6 lg:px-8 mx-auto">
+
+          <div className="mb-8 text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#06492D] uppercase">
               Product Details
             </h2>
             <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed text-center mt-1">Complete item overview, features and specifications</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-            
+
             {/* Left Column: About this item (7 Cols) */}
-            <div  style={{marginTop:'10px',marginBottom:'10px'}} className="lg:col-span-7 space-y-6">
+            <div className="lg:col-span-7 space-y-6">
               <h3 className="text-xl sm:text-2xl font-bold text-slate-900 uppercase tracking-wide py-1">
                 About this item
               </h3>
@@ -916,11 +741,11 @@ function getItemDetails(localProduct) {
             </div>
 
             {/* Right Column: Product Specifications Table (5 Cols) */}
-            <div style={{marginTop:'10px',marginBottom:'10px'}} className="lg:col-span-5">
-              <div  style={{padding:'10px'}}className="bg-white rounded-[3px] p-6 shadow-sm border border-slate-200/80">
-                <h4 className="text-xl font-bold text-[#06492D] uppercase tracking-wider mb-4 border-b border-slate-100 pb-3">
+            <div className="lg:col-span-5">
+              <div style={{ padding: '20px' }} className="bg-white rounded-[3px] p-6 shadow-sm border border-slate-200/80">
+                <h3 className="text-xl font-bold text-[#06492D] uppercase tracking-wider mb-4 border-b border-slate-100 pb-3">
                   Specifications
-                </h4>
+                </h3>
                 <div className="divide-y divide-slate-100">
                   {product.specifications && Object.entries(product.specifications).map(([key, val], idx) => (
                     <div key={idx} className="py-3 grid grid-cols-5 gap-2">
@@ -935,13 +760,13 @@ function getItemDetails(localProduct) {
           </div>
 
           {/* Bank Offers Horizontal Bar */}
-          <div style={{marginTop:'10px',marginBottom:'10px'}} className="mt-15 pt-8 border-slate-200/80">
-            <h3 style={{marginTop:'10px',marginBottom:'10px'}} className="text-xl font-bold text-slate-900 mb-6 uppercase tracking-wide">
+          <div style={{ marginTop: '10px', marginBottom: '10px' }} className="mt-15 pt-8 border-slate-200/80">
+            <h3 style={{ marginTop: '10px', marginBottom: '10px' }} className="text-xl font-bold text-slate-900 mb-6 uppercase tracking-wide">
               Available Bank Offers
             </h3>
             <div style={{padding:'10px'}} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 my-6">
               {bankOffersData.map((offer) => (
-                <div style={{padding:'20px'}} key={offer.id} className="bg-white rounded-[3px] p-5 border border-slate-200/70 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between">
+                <div style={{padding:'10px'}} key={offer.id} className="bg-white rounded-[3px] p-5 border border-slate-200/70 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between">
                   <div>
                     <span className="text-xs font-bold px-2.5 py-1 rounded-[3px] bg-[#e8f5e9] text-[#06492D] inline-block mb-3">
                       {offer.logoText}
@@ -961,17 +786,17 @@ function getItemDetails(localProduct) {
       {/* =========================================================================
          SECTION 3: Customer Reviews Section (Positioned Directly Below Product Details)
          ========================================================================= */}
-      <div style={{padding:'20px'}} className="w-full bg-white py-16 sm:py-20">
+      <div style={{ marginTop: '10px', marginBottom: '10px' }} className="w-full bg-white py-16 sm:py-20">
         <div className="container px-4 sm:px-6 lg:px-8 mx-auto">
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+
             
-            {/* Left Sidebar (4 Columns Desktop): Amazon/Flipkart Rating Breakdown & Review CTA */}
             <div className="lg:col-span-4 space-y-8">
-              
+
               {/* Overall Ratings */}
-              <div  className="space-y-3">
-                <h3  className="text-2xl font-bold text-slate-900">CLIENT REVIEWS</h3>
+              <div className="space-y-3">
+                <h3 style={{ marginTop: '10px', marginBottom: '10px' }} className="text-2xl font-bold text-slate-900">CLIENT REVIEWS</h3>
                 <div className="flex items-center gap-2">
                   <div className="flex text-[#1b7a42] gap-1">
                     {[...Array(5)].map((_, i) => (
@@ -984,11 +809,11 @@ function getItemDetails(localProduct) {
               </div>
 
               {/* Star Rating Breakdown Progress Bars */}
-              <div style={{padding:'20px'}} className="space-y-3 pt-4 border-t border-slate-100 text-xs text-slate-900">
+              <div style={{ padding: '20px' }} className="space-y-3 pt-4 border-t border-slate-100 text-xs text-slate-900">
                 {[5, 4, 3, 2, 1].map((stars) => (
-                  <div style={{padding:'10px'}} key={stars} className="flex items-center gap-3">
+                  <div style={{ padding: '10px' }} key={stars} className="flex items-center gap-3">
                     <span className="w-12 font-medium text-slate-900 flex-shrink-0 hover:underline cursor-pointer">{stars} star</span>
-                    <div  className="flex-1 h-3.5 bg-slate-100 rounded-sm overflow-hidden border border-slate-200/60">
+                    <div className="flex-1 h-3.5 bg-slate-100 rounded-sm overflow-hidden border border-slate-200/60">
                       <div
                         className="h-full bg-[#f39c12] transition-all duration-500"
                         style={{ width: `${ratingMetrics.breakdown[stars]}%` }}
@@ -1002,31 +827,31 @@ function getItemDetails(localProduct) {
               </div>
 
               {/* Review This Product Card (Exact Pic 2 Layout) */}
-              <div style={{marginTop:'10px',marginBottom:'10px'}} className="pt-6 border-t border-slate-200 space-y-3">
-                <h4 style={{marginTop:'10px',marginBottom:'10px'}} className="text-xl font-bold text-[#06492D] tracking-wide leading-tight">REVIEW THIS PRODUCT</h4>
+              <div className="pt-6 border-t border-slate-200 space-y-3">
+                <h3 style={{ marginTop: '10px', marginBottom: '10px' }} className="text-xl font-bold text-[#06492D] tracking-wide leading-tight">REVIEW THIS PRODUCT</h3>
                 <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed">Share your thoughts with other customers</p>
-                <button
+                <button style={{ marginTop: '5px', marginBottom: '5px' }}
                   onClick={handleWriteReviewClick}
                   className="btn btn-primary w-full text-center flex items-center justify-center gap-2 uppercase tracking-wider py-3.5 mt-3 font-bold cursor-pointer shadow-sm"
                 >
                   <span>WRITE A REVIEW</span>
-                  <span>&gt;</span>
+                  
                 </button>
               </div>
 
             </div>
 
             {/* Right Main Column (8 Columns Desktop): Customers Say, Photos & Review Feed */}
-            <div className="lg:col-span-8 space-y-10">
-              
-              {/* Customers Say Block (Exact Pic 3 Top Section) */}
-              <div className="space-y-4 pb-6 border-b border-slate-100">
-                <h3 className="text-xl font-bold text-slate-900">CUSTOMERS SAY</h3>
-                <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed">
+            <div style={{ marginTop: '10px', marginBottom: '10px' }} className="lg:col-span-8 space-y-10">
+
+              {/* Customers Say Block */}
+              <div className="pb-8 border-b border-slate-200/80 mb-6">
+                <h3  className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight mb-4">CUSTOMERS SAY</h3>
+                <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed mb-6">
                   Customers find these items comfortable, with high build quality, easy maintenance, and superb design. They offer good value for money and provide a great fit for living spaces.
                 </p>
-                <div style={{marginTop:'10px',marginBottom:'10px'}}   className="flex flex-wrap items-center gap-2 pt-1 text-xs">
-                  <span  className="text-slate-500 font-semibold mr-1">Select to learn more:</span>
+                <div style={{ marginTop: '10px', marginBottom: '10px' }} className="flex flex-wrap items-center gap-3 pt-4  text-xs">
+                  <span className="text-slate-500 font-semibold mr-1">Select to learn more:</span>
                   {['Comfort', 'Quality', 'Value for money', 'Fit'].map((tag) => {
                     const isSelected = selectedTag === tag;
                     return (
@@ -1037,11 +862,10 @@ function getItemDetails(localProduct) {
                           setSelectedTag(isSelected ? null : tag);
                           setCurrentPage(1);
                         }}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-medium transition-all cursor-pointer border ${
-                          isSelected
-                            ? 'bg-[#06492D] text-white border-[#06492D] shadow-xs'
-                            : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
-                        }`}
+                        className={`inline-flex items-center gap-1.5 px-3.5 py-1.5  font-medium transition-all cursor-pointer  ${isSelected
+                          ? 'bg-[#06492D] text-white border-[#06492D] shadow-xs'
+                          : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
+                          }`}
                       >
                         <FiArrowUpRight size={13} className={isSelected ? 'text-white' : 'text-[#06492D]'} />
                         <span>{tag}</span>
@@ -1052,7 +876,7 @@ function getItemDetails(localProduct) {
                     );
                   })}
                   {selectedTag && (
-                    <button style={{marginTop:'10px',marginBottom:'10px'}}
+                    <button
                       onClick={() => setSelectedTag(null)}
                       className="text-xs text-red-600 hover:underline font-semibold ml-2 cursor-pointer"
                     >
@@ -1063,41 +887,41 @@ function getItemDetails(localProduct) {
               </div>
 
               {/* Customer Reviews Feed */}
-              <div style={{marginTop:'10px',marginBottom:'10px'}} className="space-y-8">
+              <div style={{ marginTop: '10px', marginBottom: '10px' }} className="space-y-10 pt-2">
                 {paginatedReviews.map((rev) => (
-                  <div key={rev.id} className="space-y-3 pb-8 border-b border-slate-200/80">
-                    
+                  <div key={rev.id} className="space-y-4 pb-8 border-b border-slate-200/80">
+
                     {/* Review Profile Header */}
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-slate-200 text-slate-700 font-bold text-sm flex items-center justify-center flex-shrink-0">
+                    <div style={{ marginTop: '10px', marginBottom: '10px' ,padding:'5px'}} className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-slate-200 text-slate-700 font-bold text-sm flex items-center justify-center flex-shrink-0">
                         {rev.avatar || rev.author.charAt(0).toUpperCase()}
                       </div>
-                      <span className="text-sm font-bold text-slate-900">{rev.author}</span>
+                      <span className="text-base font-bold text-slate-900">{rev.author}</span>
                     </div>
 
                     {/* Star Rating & Bold Title */}
-                    <div className="flex items-center gap-2 pt-1">
-                      <div className="flex text-[#f39c12] gap-0.5">
+                    <div className="flex items-center gap-2.5 pt-1">
+                      <div className="flex text-[#f39c12] gap-1">
                         {[...Array(5)].map((_, i) => (
                           <FaStar key={i} size={15} className={i < rev.rating ? 'text-[#f39c12]' : 'text-slate-200'} />
                         ))}
                       </div>
-                      <h4 className="font-bold text-slate-900 text-base">{rev.title}</h4>
+                      <h4 className="font-bold text-slate-900 text-base sm:text-lg">{rev.title}</h4>
                     </div>
 
                     {/* Metadata Line */}
-                    <div className="text-xs text-slate-500 flex flex-wrap items-center gap-2 font-medium">
+                    <div className="text-xs sm:text-sm text-slate-500 flex flex-wrap items-center gap-3 font-medium my-2">
                       <span> {rev.date === 'Today' ? '6 August 2026' : rev.date}</span>
-                      <span>|</span>
+                      <span className="text-slate-300">|</span>
                       <span>Size: {rev.size || 'Standard'}</span>
-                      <span>|</span>
+                      <span className="text-slate-300">|</span>
                       <span>Colour: {rev.color || 'Green'}</span>
-                      <span>|</span>
+                      <span className="text-slate-300">|</span>
                       <span className="text-amber-700 font-bold">Verified Purchase</span>
                     </div>
 
                     {/* Review Body Text */}
-                    <p style={{marginTop:'10px',marginBottom:'10px'}}className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed pt-1 pb-2">
+                    <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed py-1 my-1">
                       {rev.comment}
                     </p>
 
@@ -1110,37 +934,18 @@ function getItemDetails(localProduct) {
 
                     {/* Helpful text count */}
                     {rev.helpfulText && (
-                      <p style={{marginTop:'10px',marginBottom:'10px'}}className="text-xs text-slate-500">{rev.helpfulText}</p>
+                      <p className="text-xs text-slate-500 pt-1">{rev.helpfulText}</p>
                     )}
 
                     {/* Redesigned Helpful Pill Chip Button & Report link */}
-                    <div style={{marginTop:'10px',marginBottom:'10px'}} className="flex items-center gap-3 pt-2 text-xs">
+                    <div style={{ marginTop: '10px', marginBottom: '10px',padding:'5px'}}  className="flex items-center gap-4 pt-2 text-xs">
                       <button
-                        type="button"
                         onClick={() => handleLikeReview(rev.id)}
-                        className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-[3px] border text-xs font-semibold transition-all cursor-pointer shadow-2xs ${
-                          likedReviewIds.includes(rev.id)
-                            ? 'bg-[#e8f5e9] border-[#2da15d] text-[#06492D]'
-                            : 'bg-white border-slate-300 text-slate-700 hover:border-[#06492D] hover:bg-[#f3f8f3] hover:text-[#06492D]'
-                        }`}
+                        className="inline-flex items-center gap-1.5 px-4 py-1.5  text-xs font-semibold text-slate-700 hover:border-[#06492D] hover:bg-[#f3f8f3] hover:text-[#06492D] transition-all cursor-pointer shadow-2xs no-underline"
                       >
-                        <FiThumbsUp
-                          size={14}
-                          className={likedReviewIds.includes(rev.id) ? 'text-[#06492D] fill-current' : 'text-slate-500'}
-                        />
-                        <span>Helpful</span>
-                        <span className={`px-1.5 py-0.2 rounded-full text-[11px] font-bold ${
-                          likedReviewIds.includes(rev.id) ? 'bg-[#06492D] text-white' : 'bg-slate-100 text-slate-600'
-                        }`}>
-                          {rev.likes || 18}
-                        </span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => toast.info("Report submitted. Thank you.")}
-                        className="text-slate-400 hover:text-slate-600 transition-colors cursor-pointer font-normal text-xs ml-1"
-                      >
-                        Report
+                        <FiThumbsUp size={13} className="text-slate-500" />
+                        <span className="no-underline" >Helpful</span>
+                        {rev.likes > 0 && <span className="text-[#06492D] font-bold">({rev.likes})</span>}
                       </button>
                     </div>
 
@@ -1163,11 +968,10 @@ function getItemDetails(localProduct) {
                         <button
                           key={pageNum}
                           onClick={() => setCurrentPage(pageNum)}
-                          className={`px-3 py-1.5 rounded-[3px] text-xs font-bold transition-all cursor-pointer ${
-                            currentPage === pageNum
-                              ? 'bg-[#06492D] text-white border border-[#06492D]'
-                              : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50'
-                          }`}
+                          className={`px-3 py-1.5 rounded-[3px] text-xs font-bold transition-all cursor-pointer ${currentPage === pageNum
+                            ? 'bg-[#06492D] text-white border border-[#06492D]'
+                            : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50'
+                            }`}
                         >
                           {pageNum}
                         </button>
@@ -1194,7 +998,7 @@ function getItemDetails(localProduct) {
       {showReviewModal && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
           <div className="bg-white rounded-lg max-w-2xl w-full p-8 shadow-2xl relative border border-slate-200 overflow-y-auto max-h-[90vh]">
-            
+
             {/* Close Button */}
             <button
               onClick={() => setShowReviewModal(false)}
@@ -1214,7 +1018,7 @@ function getItemDetails(localProduct) {
             </div>
 
             <form onSubmit={handleReviewSubmit} className="space-y-6">
-              
+
               {/* Interactive Star Rating */}
               <div className="space-y-2">
                 <div className="flex gap-2">

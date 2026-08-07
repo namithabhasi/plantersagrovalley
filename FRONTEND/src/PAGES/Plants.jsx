@@ -309,8 +309,8 @@ function Plants() {
                     </div>
 
                     <h1 className="plants-page-title text-xl font-normal mb-3 text-[#1c2c21]">
-                        {activeCategory === 'all' 
-                            ? 'All Plants' 
+                        {activeCategory === 'all'
+                            ? 'All Plants'
                             : plantCategories.find(c => c.id === activeCategory)?.name || 'Plants'}
                     </h1>
 
@@ -466,8 +466,8 @@ function Plants() {
                                                     className="slider-thumb slider-thumb-right"
                                                 />
                                                 <div className="slider-track" />
-                                                <div 
-                                                    className="slider-range-bar" 
+                                                <div
+                                                    className="slider-range-bar"
                                                     style={{
                                                         left: `${(minPrice / 8500) * 100}%`,
                                                         right: `${100 - (maxPrice / 8500) * 100}%`
@@ -543,24 +543,24 @@ function Plants() {
 
                             <div className="plants-sort-container">
                                 <div className="custom-sort-dropdown">
-                                    <button 
+                                    <button
                                         className="sort-dropdown-btn"
                                         onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
                                     >
                                         <span>Sort by: {
                                             sortBy === 'best-selling' ? 'Best Selling' :
-                                            sortBy === 'price-low-high' ? 'Price: Low to High' :
-                                            sortBy === 'price-high-low' ? 'Price: High to Low' :
-                                            sortBy === 'name-a-z' ? 'Alphabetically: A-Z' :
-                                            sortBy === 'name-z-a' ? 'Alphabetically: Z-A' :
-                                            sortBy === 'newest' ? 'Newest Arrivals' : 'Best Selling'
+                                                sortBy === 'price-low-high' ? 'Price: Low to High' :
+                                                    sortBy === 'price-high-low' ? 'Price: High to Low' :
+                                                        sortBy === 'name-a-z' ? 'Alphabetically: A-Z' :
+                                                            sortBy === 'name-z-a' ? 'Alphabetically: Z-A' :
+                                                                sortBy === 'newest' ? 'Newest Arrivals' : 'Best Selling'
                                         }</span>
                                         <FiChevronDown size={14} />
                                     </button>
                                     {sortDropdownOpen && (
                                         <>
-                                            <div 
-                                                style={{ position: 'fixed', inset: 0, zIndex: 998 }} 
+                                            <div
+                                                style={{ position: 'fixed', inset: 0, zIndex: 998 }}
                                                 onClick={() => setSortDropdownOpen(false)}
                                             />
                                             <div className="sort-dropdown-menu" style={{ zIndex: 999 }}>
@@ -653,7 +653,7 @@ function Plants() {
                                 >
                                     &larr; Previous
                                 </button>
-                                
+
                                 {[...Array(totalPages)].map((_, index) => (
                                     <button
                                         key={index + 1}

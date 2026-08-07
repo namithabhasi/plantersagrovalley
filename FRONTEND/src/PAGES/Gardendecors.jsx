@@ -348,7 +348,7 @@ function Gardendecors() {
 
     return (
         <div className="gardendecors-page-wrapper text-[#1c2c21]">
-            
+
             {/* Breadcrumbs & Description Section */}
             <section className="gardendecors-header-section pt-16 pb-12">
                 <div className="container">
@@ -359,8 +359,8 @@ function Gardendecors() {
                     </div>
 
                     <h1 className="gardendecors-page-title text-xl font-normal mb-3 text-[#1c2c21]">
-                        {activeCategory === 'all' 
-                            ? 'All Garden Decors' 
+                        {activeCategory === 'all'
+                            ? 'All Garden Decors'
                             : gardenCategories.find(c => c.id === activeCategory)?.name || 'Garden Decor'}
                     </h1>
 
@@ -379,7 +379,7 @@ function Gardendecors() {
 
                         {/* 1. Category Accordion */}
                         <div className="filter-accordion">
-                            <div 
+                            <div
                                 className="filter-accordion-header"
                                 onClick={() => setCatsOpen(!catsOpen)}
                             >
@@ -389,7 +389,7 @@ function Gardendecors() {
 
                             {catsOpen && (
                                 <div className="filter-accordion-content">
-                                    <button 
+                                    <button
                                         onClick={() => setActiveCategory('all')}
                                         className="filter-reset-link"
                                     >
@@ -420,7 +420,7 @@ function Gardendecors() {
 
                         {/* 2. Availability Accordion */}
                         <div className="filter-accordion">
-                            <div 
+                            <div
                                 className="filter-accordion-header"
                                 onClick={() => setAvailOpen(!availOpen)}
                             >
@@ -431,7 +431,7 @@ function Gardendecors() {
                             {availOpen && (
                                 <div className="filter-accordion-content">
                                     <label className="filter-checkbox-label">
-                                        <input 
+                                        <input
                                             type="checkbox"
                                             checked={inStockOnly}
                                             onChange={(e) => setInStockOnly(e.target.checked)}
@@ -440,7 +440,7 @@ function Gardendecors() {
                                         <span>In Stock ({inStockCount})</span>
                                     </label>
                                     <label className="filter-checkbox-label">
-                                        <input 
+                                        <input
                                             type="checkbox"
                                             checked={outOfStockOnly}
                                             onChange={(e) => setOutOfStockOnly(e.target.checked)}
@@ -456,7 +456,7 @@ function Gardendecors() {
 
                         {/* 3. Price Accordion */}
                         <div className="filter-accordion">
-                            <div 
+                            <div
                                 className="filter-accordion-header"
                                 onClick={() => setPriceOpen(!priceOpen)}
                             >
@@ -471,14 +471,14 @@ function Gardendecors() {
                                             <span className="currency-symbol">₹</span>
                                             <div className="double-slider-wrapper">
                                                 <div className="slider-track" />
-                                                <div 
+                                                <div
                                                     className="slider-range-bar"
                                                     style={{
                                                         left: `${(minPrice / 2000) * 100}%`,
                                                         right: `${100 - (maxPrice / 2000) * 100}%`
                                                     }}
                                                 />
-                                                <input 
+                                                <input
                                                     type="range"
                                                     min="0"
                                                     max="2000"
@@ -486,7 +486,7 @@ function Gardendecors() {
                                                     onChange={(e) => handlePriceChange(e, 'min')}
                                                     className="slider-thumb"
                                                 />
-                                                <input 
+                                                <input
                                                     type="range"
                                                     min="0"
                                                     max="2000"
@@ -508,7 +508,7 @@ function Gardendecors() {
 
                         {/* 4. Suitability Accordion */}
                         <div className="filter-accordion">
-                            <div 
+                            <div
                                 className="filter-accordion-header"
                                 onClick={() => setSpaceOpen(!spaceOpen)}
                             >
@@ -519,7 +519,7 @@ function Gardendecors() {
                             {spaceOpen && (
                                 <div className="filter-accordion-content">
                                     <label className="filter-checkbox-label">
-                                        <input 
+                                        <input
                                             type="checkbox"
                                             checked={indoorsChecked}
                                             onChange={(e) => setIndoorsChecked(e.target.checked)}
@@ -528,7 +528,7 @@ function Gardendecors() {
                                         <span>Indoors ({indoorsCount})</span>
                                     </label>
                                     <label className="filter-checkbox-label">
-                                        <input 
+                                        <input
                                             type="checkbox"
                                             checked={outdoorsChecked}
                                             onChange={(e) => setOutdoorsChecked(e.target.checked)}
@@ -553,24 +553,24 @@ function Gardendecors() {
 
                             <div className="gardendecors-sort-container">
                                 <div className="custom-sort-dropdown">
-                                    <button 
+                                    <button
                                         className="sort-dropdown-btn"
                                         onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
                                     >
                                         <span>Sort by: {
                                             sortBy === 'best-selling' ? 'Best Selling' :
-                                            sortBy === 'price-low-high' ? 'Price: Low to High' :
-                                            sortBy === 'price-high-low' ? 'Price: High to Low' :
-                                            sortBy === 'name-a-z' ? 'Alphabetically: A-Z' :
-                                            sortBy === 'name-z-a' ? 'Alphabetically: Z-A' :
-                                            sortBy === 'newest' ? 'Newest Arrivals' : 'Best Selling'
+                                                sortBy === 'price-low-high' ? 'Price: Low to High' :
+                                                    sortBy === 'price-high-low' ? 'Price: High to Low' :
+                                                        sortBy === 'name-a-z' ? 'Alphabetically: A-Z' :
+                                                            sortBy === 'name-z-a' ? 'Alphabetically: Z-A' :
+                                                                sortBy === 'newest' ? 'Newest Arrivals' : 'Best Selling'
                                         }</span>
                                         <FiChevronDown size={14} />
                                     </button>
                                     {sortDropdownOpen && (
                                         <>
-                                            <div 
-                                                style={{ position: 'fixed', inset: 0, zIndex: 998 }} 
+                                            <div
+                                                style={{ position: 'fixed', inset: 0, zIndex: 998 }}
                                                 onClick={() => setSortDropdownOpen(false)}
                                             />
                                             <div className="sort-dropdown-menu" style={{ zIndex: 999 }}>
@@ -665,7 +665,7 @@ function Gardendecors() {
                                 >
                                     &larr; Previous
                                 </button>
-                                
+
                                 {[...Array(totalPages)].map((_, index) => (
                                     <button
                                         key={index + 1}

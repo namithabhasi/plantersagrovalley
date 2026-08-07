@@ -392,8 +392,8 @@ function Home() {
                 const displayPrice = hasDiscount ? product.salePrice : product.price;
                 const discountText = hasDiscount ? `-${Math.round(((product.price - product.salePrice) / product.price) * 100)}%` : null;
                 const rating = product.averageRating || 5;
-                const productImage = product.images && product.images[0] 
-                  ? (typeof product.images[0] === 'string' ? product.images[0] : product.images[0].url) 
+                const productImage = product.images && product.images[0]
+                  ? (typeof product.images[0] === 'string' ? product.images[0] : product.images[0].url)
                   : haworthiaImg;
 
                 return (

@@ -107,39 +107,39 @@ function Review() {
             </div>
 
             {/* Page Header (Matching Shipping Policy Header style) */}
-            <div className="border-b border-[var(--color-border)] pb-5 flex items-center gap-5">
+            <div className=" pb-5 flex items-center gap-5">
               <img
                 src={productImage}
                 alt={product.name}
-                className="w-20 h-20 object-cover rounded-[3px] flex-shrink-0 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] shadow-xs"
+                className="w-40 h-15 object-cover rounded-[3px] flex-shrink-0 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] shadow-xs"
               />
               <div className="flex flex-col gap-1">
-                <h1 className="text-3xl font-[var(--font-family-heading)] font-normal text-[var(--color-primary-dark)] uppercase tracking-wide">
-                  How was the item?
+                <h1 className="text-xl sm:text-2xl font-[var(--font-family-base)] font-bold text-[#06492D] uppercase tracking-wide">
+                  HOW WAS THE ITEM?
                 </h1>
-                <p className="text-[var(--font-size-md)] text-[var(--color-text-main)] font-medium tracking-wide">
+                <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed font-medium tracking-wide">
                   {product.name}
                 </p>
               </div>
             </div>
 
             {submitted ? (
-              <div className="text-center py-16 px-6 bg-[var(--color-primary-bg)] rounded-[3px] border border-[var(--color-primary-light)]/20 flex flex-col gap-4">
+              <div className="text-center py-16 px-6 bg-[var(--color-primary-bg)] rounded-[3px]  flex flex-col gap-4">
                 <div className="w-16 h-16 bg-[#e8f5e9] text-[var(--color-primary-dark)] rounded-full flex items-center justify-center mx-auto shadow-sm">
                   <FiCheckCircle size={36} />
                 </div>
-                <h2 className="text-2xl font-bold text-[var(--color-text-main)]">Review Submitted!</h2>
-                <p className="text-sm text-[var(--color-text-muted)]">Your valuable feedback helps other plant lovers make informed choices.</p>
+                <h2 className="text-xl font-bold text-[var(--color-text-main)] uppercase tracking-wide">REVIEW SUBMITTED!</h2>
+                <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-muted)] leading-relaxed">Your valuable feedback helps other plant lovers make informed choices.</p>
               </div>
             ) : (
               /* Content Body with Shipping Policy padding, gap, typography & dividers */
-              <form onSubmit={handleSubmit} className="flex flex-col gap-6 text-sm leading-relaxed text-[var(--color-text-main)] font-[var(--font-family-base)]">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-6 font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed">
 
                 {/* Overall Rating */}
                 <section className="flex flex-col gap-3">
-                  <h2 className="text-lg font-medium text-[var(--color-primary-dark)] font-[var(--font-family-heading)] leading-snug">
-                    Overall Rating
-                  </h2>
+                  <h3 className="text-base font-bold text-[#06492D] font-[var(--font-family-base)] uppercase tracking-wide">
+                    OVERALL RATING
+                  </h3>
                   <div className="flex items-center gap-2 py-1">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
@@ -156,7 +156,7 @@ function Review() {
                         />
                       </button>
                     ))}
-                    <span className="ml-3 text-sm font-semibold text-[#f39c12]">
+                    <span className="ml-3 font-[var(--font-family-base)] text-[var(--font-size-md)] font-semibold text-[#f39c12]">
                       {rating} / 5 Stars
                     </span>
                   </div>
@@ -166,16 +166,16 @@ function Review() {
 
                 {/* Write a review */}
                 <section className="flex flex-col gap-3">
-                  <h2 className="text-lg font-medium text-[var(--color-primary-dark)] font-[var(--font-family-heading)] leading-snug">
-                    Write a review
-                  </h2>
+                  <h3 className="text-base font-bold text-[#06492D] font-[var(--font-family-base)] uppercase tracking-wide">
+                    WRITE A REVIEW
+                  </h3>
                   <textarea
                     required
                     rows={5}
                     placeholder="What should other customers know? Share your experience with quality, delivery, and care."
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
-                    className="w-full border border-[var(--color-border)] rounded-[3px] p-4 text-sm text-[var(--color-text-main)] placeholder:text-[var(--color-text-light)] focus:outline-none focus:border-[var(--color-primary-dark)] focus:ring-1 focus:ring-[var(--color-primary-dark)] transition-colors leading-relaxed"
+                    className="w-full border border-[var(--color-border)] rounded-[3px] p-4 font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] placeholder:text-[var(--color-text-light)] focus:outline-none focus:border-[var(--color-primary-dark)] focus:ring-1 focus:ring-[var(--color-primary-dark)] transition-colors leading-relaxed"
                   />
                 </section>
 
@@ -183,9 +183,9 @@ function Review() {
 
                 {/* Share a video or photo */}
                 <section className="flex flex-col gap-3">
-                  <h2 className="text-lg font-medium text-[var(--color-primary-dark)] font-[var(--font-family-heading)] leading-snug">
-                    Share a video or photo
-                  </h2>
+                  <h3 className="text-base font-bold text-[#06492D] font-[var(--font-family-base)] uppercase tracking-wide">
+                    SHARE A VIDEO OR PHOTO
+                  </h3>
                   <input
                     type="file"
                     ref={fileInputRef}
@@ -212,7 +212,7 @@ function Review() {
                       className="border-2 border-dashed border-[var(--color-border)] hover:border-[var(--color-primary-dark)] rounded-[3px] p-6 text-center bg-[var(--color-primary-bg)] hover:bg-[#e8f5e9] transition-colors cursor-pointer flex flex-col items-center justify-center group"
                     >
                       <FiCamera size={32} className="text-[var(--color-text-muted)] group-hover:text-[var(--color-primary-dark)] mb-2 transition-colors" />
-                      <span className="text-sm font-semibold text-[var(--color-text-main)] group-hover:text-[var(--color-primary-dark)] transition-colors">Click to upload photos or videos</span>
+                      <span className="font-[var(--font-family-base)] text-[var(--font-size-md)] font-semibold text-[var(--color-text-main)] group-hover:text-[var(--color-primary-dark)] transition-colors">Click to upload photos or videos</span>
                       <span className="text-xs text-[var(--color-text-muted)] mt-1">PNG, JPG up to 5MB</span>
                     </div>
                   )}
@@ -222,16 +222,16 @@ function Review() {
 
                 {/* Title your review */}
                 <section className="flex flex-col gap-3">
-                  <h2 className="text-lg font-medium text-[var(--color-primary-dark)] font-[var(--font-family-heading)] leading-snug">
-                    Title your review (required)
-                  </h2>
+                  <h3 className="text-base font-bold text-[#06492D] font-[var(--font-family-base)] uppercase tracking-wide">
+                    TITLE YOUR REVIEW (REQUIRED)
+                  </h3>
                   <input
                     type="text"
                     required
                     placeholder="What's most important to know?"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full border border-[var(--color-border)] rounded-[3px] p-3.5 text-sm text-[var(--color-text-main)] placeholder:text-[var(--color-text-light)] focus:outline-none focus:border-[var(--color-primary-dark)] focus:ring-1 focus:ring-[var(--color-primary-dark)] transition-colors"
+                    className="w-full border border-[var(--color-border)] rounded-[3px] p-3.5 font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] placeholder:text-[var(--color-text-light)] focus:outline-none focus:border-[var(--color-primary-dark)] focus:ring-1 focus:ring-[var(--color-primary-dark)] transition-colors"
                   />
                 </section>
 
