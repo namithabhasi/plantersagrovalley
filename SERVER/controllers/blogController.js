@@ -45,7 +45,7 @@ export const createBlog = async (req, res) => {
     Subscriber.find({ status: "active" })
       .then((activeSubscribers) => {
         if (activeSubscribers && activeSubscribers.length > 0) {
-          const blogUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/blogs`;
+          const blogUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/blogs?id=${blog._id}`;
           const blogNotificationHtml = `
             <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
               <div style="text-align: center; margin-bottom: 20px;">

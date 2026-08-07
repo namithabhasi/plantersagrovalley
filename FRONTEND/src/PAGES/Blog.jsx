@@ -307,6 +307,7 @@ function Blog() {
   const [emailInput, setEmailInput] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [fetchedBlogs, setFetchedBlogs] = useState([]);
+  const [blogsLoading, setBlogsLoading] = useState(true);
 
   // Fetch blogs from API
   useEffect(() => {
@@ -322,6 +323,8 @@ function Blog() {
         }
       } catch (error) {
         console.error("Failed to fetch custom blogs:", error);
+      } finally {
+        setBlogsLoading(false);
       }
     };
     fetchBlogs();
@@ -345,7 +348,7 @@ function Blog() {
       if (foundBlog) {
         setSelectedBlog(foundBlog);
         window.scrollTo(0, 0);
-      } else {
+      } else if (!blogsLoading) {
         navigate('/blogs', { replace: true });
         setSelectedBlog(null);
       }
@@ -353,7 +356,7 @@ function Blog() {
       setSelectedBlog(null);
       setCurrentPage(pageParam);
     }
-  }, [blogIdParam, pageParam, navigate, allBlogs]);
+  }, [blogIdParam, pageParam, navigate, allBlogs, blogsLoading]);
 
 
 
