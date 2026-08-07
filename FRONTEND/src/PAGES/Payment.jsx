@@ -212,6 +212,7 @@ function Payment() {
               },
               couponCode: undefined,
               notes: "",
+              emailMarketing: emailMarketing,
             };
 
             if (!user) {
@@ -229,17 +230,8 @@ function Payment() {
 
             const verifyRes = await verifyPayment(verifyPayload);
 
-            if (verifyRes.data.success) {
+             if (verifyRes.data.success) {
               toast.success("Payment successful! Your order has been placed.");
-              
-              // Automatically subscribe to newsletter if checkbox is checked
-              if (emailMarketing) {
-                try {
-                  await axiosInstance.post("/subscribers", { email });
-                } catch (subErr) {
-                  console.error("Auto-checkout subscriber registration failed:", subErr);
-                }
-              }
               
               // Automatically sign in guest user if they checked out as guest
               if (verifyRes.data.user) {
