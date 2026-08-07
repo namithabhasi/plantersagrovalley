@@ -378,7 +378,7 @@ function Blog() {
   };
 
   // Handle email subscription submit with double-subscription block, error indicators, and toast
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const cleanedEmail = emailInput.trim().toLowerCase();
@@ -392,20 +392,21 @@ function Blog() {
       return;
     }
 
-    // Retrieve existing subscribers list from localStorage to block double subscriptions
-    const subscribers = JSON.parse(localStorage.getItem('planters_blog_subscribers') || '[]');
-    if (subscribers.includes(cleanedEmail)) {
-      setErrorMsg("This email address is already subscribed.");
-      return;
+    try {
+      const { data } = await axiosInstance.post("/subscribers", { email: cleanedEmail });
+      if (data.success) {
+        toast.success("Welcome to planters agro family!");
+        setEmailInput('');
+        setErrorMsg('');
+      }
+    } catch (error) {
+      const serverMessage = error.response?.data?.message;
+      if (serverMessage && serverMessage.toLowerCase().includes("already subscribed")) {
+        setErrorMsg("This email address is already subscribed.");
+      } else {
+        setErrorMsg(serverMessage || "Failed to subscribe. Please try again.");
+      }
     }
-
-    // Save new subscriber to the list
-    subscribers.push(cleanedEmail);
-    localStorage.setItem('planters_blog_subscribers', JSON.stringify(subscribers));
-
-    toast.success("Welcome to planters agro family!");
-    setEmailInput('');
-    setErrorMsg('');
   };
 
   // Pagination calculations:

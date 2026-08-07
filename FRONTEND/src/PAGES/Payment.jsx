@@ -8,6 +8,7 @@ import logo from '../assets/logo.png';
 import './Payment.css';
 import { createPaymentOrder, verifyPayment } from '../api/paymentApi';
 import { setUser, openAuthModal } from '../redux/auth/authSlice';
+import axiosInstance from '../api/axiosInstance';
 
 // Fallback mock items to match design when cart is empty
 import monsteraImg from '../assets/Crassula Ovata Green Succulent.jpg';
@@ -230,6 +231,15 @@ function Payment() {
 
             if (verifyRes.data.success) {
               toast.success("Payment successful! Your order has been placed.");
+              
+              // Automatically subscribe to newsletter if checkbox is checked
+              if (emailMarketing) {
+                try {
+                  await axiosInstance.post("/subscribers", { email });
+                } catch (subErr) {
+                  console.error("Auto-checkout subscriber registration failed:", subErr);
+                }
+              }
               
               // Automatically sign in guest user if they checked out as guest
               if (verifyRes.data.user) {
