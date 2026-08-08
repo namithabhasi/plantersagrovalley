@@ -6,6 +6,7 @@ import axios from '../api/axiosInstance';
 import { useCart } from '../context/CartContext';
 import Anthurium from '../assets/Anthurium.png';
 import haworthiaImg from '../assets/Haworthia.jpg';
+import OrderTrackingModal from '../COMPONENTS/OrderTrackingModal';
 
 function Orderdetails() {
   const { id } = useParams();
@@ -18,6 +19,7 @@ function Orderdetails() {
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
 
   const [returnedOrders, setReturnedOrders] = useState(() => {
     try {
@@ -245,7 +247,7 @@ function Orderdetails() {
             <h2 className="text-lg sm:text-xl font-bold text-gray-900 m-0 leading-snug uppercase">
               {order.orderStatus === 'Delivered' ? `DELIVERED ${formattedDeliveryDate.toUpperCase()}` : `STATUS: ${order.orderStatus.toUpperCase()}`}
             </h2>
-            <p className="text-xs sm:text-sm text-gray-600 mt-0.5 m-0 leading-normal">
+            <p className="text-sm text-gray-700 mt-0.5 m-0 leading-normal">
               {order.orderStatus === 'Delivered' 
                 ? "Package was handed to resident" 
                 : `Order Status: ${order.orderStatus} • Payment Method: ${order.paymentMethod}`}
@@ -273,31 +275,31 @@ function Orderdetails() {
                         {item.name}
                       </Link>
                       
-                      <p className="text-xs text-gray-500 m-0">
+                      <p className="text-sm text-gray-700 m-0">
                         Sold by: <span className="text-gray-700 font-medium">Cocoblu Retail / Planters Agro</span>
                       </p>
 
                       {/* Dynamic 7-Day Return Window Text */}
-                      <p className="text-xs text-gray-600 mt-1 m-0 font-normal leading-relaxed">
+                      <p className="text-sm text-gray-700 mt-1 m-0 font-normal leading-relaxed">
                         {isAlreadyReturned ? (
                           <span className="text-purple-700 font-semibold">Return requested on this item</span>
                         ) : isReturnOpen ? (
                           <span className="text-gray-700">Return window open through <span className="font-semibold text-gray-900">{formattedCutoffDate}</span></span>
                         ) : (
-                          <span className="text-gray-500">Return window closed on <span className="font-medium">{formattedCutoffDate}</span></span>
+                          <span className="text-gray-700">Return window closed on <span className="font-medium">{formattedCutoffDate}</span></span>
                         )}
                       </p>
 
-                      <p className="text-xs sm:text-sm font-semibold text-gray-900 mt-0.5 m-0">
+                      <p className="text-sm font-semibold text-gray-900 mt-0.5 m-0">
                         ₹{item.price || item.subtotal}.00
                       </p>
 
                       {/* Inner Action Pill Buttons */}
                       <div className="flex items-center gap-2 mt-2 flex-wrap">
                         <button 
-                          style={{ padding: '5px', borderRadius: '3px' }}
+                          style={{ padding: '6px 14px', borderRadius: '3px' }}
                           onClick={() => addToCart({ _id: item.product || item._id, name: item.name, price: item.price, image: itemImage })}
-                          className="bg-[#ffd814] hover:bg-[#f7ca00] active:bg-[#f0b800] text-gray-900 font-medium text-xs px-4 border border-[#fcd814] transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                          className="bg-[#ffd814] hover:bg-[#f7ca00] active:bg-[#f0b800] text-gray-900 font-medium text-sm px-4 border border-[#fcd814] transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
                         >
                           <FiRefreshCw size={13} />
                           <span>Buy it again</span>
@@ -315,12 +317,12 @@ function Orderdetails() {
 
                   {/* Right Action Stack */}
                   <div className="flex flex-col gap-2 w-full sm:w-52 shrink-0">
-                    <Link
-                      to={`/track-order?orderId=${order._id}`}
-                      className="order-action-btn"
+                    <button
+                      onClick={() => setIsTrackingModalOpen(true)}
+                      className="order-action-btn cursor-pointer"
                     >
                       Track package
-                    </Link>
+                    </button>
 
                     {isAlreadyReturned ? (
                       <button
@@ -428,6 +430,13 @@ function Orderdetails() {
         </div>
       </div>
     )}
+
+    {/* Order Tracking Modal */}
+    <OrderTrackingModal
+      isOpen={isTrackingModalOpen}
+      onClose={() => setIsTrackingModalOpen(false)}
+      order={order}
+    />
   </div>
   );
 }
