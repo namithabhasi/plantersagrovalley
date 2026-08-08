@@ -6,6 +6,7 @@ import axios from "../api/axiosInstance";
 import { useSelector } from "react-redux";
 import { useCart } from "../context/CartContext";
 import haworthiaImg from "../assets/Haworthia.jpg";
+import OrderTrackingModal from "../COMPONENTS/OrderTrackingModal";
 
 function MyOrders() {
   const { user } = useSelector((state) => state.auth);
@@ -37,6 +38,14 @@ function MyOrders() {
   const [isReturnModalOpen, setIsReturnModalOpen] = useState(false);
   const [selectedReturnOrder, setSelectedReturnOrder] = useState(null);
   const [returnReason, setReturnReason] = useState("Item damaged / Quality issue");
+
+  const [selectedTrackingOrder, setSelectedTrackingOrder] = useState(null);
+  const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
+
+  const handleOpenTrackingModal = (order) => {
+    setSelectedTrackingOrder(order);
+    setIsTrackingModalOpen(true);
+  };
 
   const handleOpenReturnModal = (order) => {
     const isAlreadyReturned = returnedOrders.some(r => r._id === order._id || r.orderNumber === order.orderNumber);
@@ -203,19 +212,19 @@ function MyOrders() {
                       className="bg-white rounded-lg border border-gray-300 overflow-hidden text-left flex flex-col gap-0 shadow-xs transition-all duration-200 hover:shadow-md"
                     >
                       {/* Top Bar Header (Light Gray Box) */}
-                      <div style={{ padding: '10px' }} className="bg-[#f6f6f6] border-b border-gray-200 flex flex-wrap justify-between items-center text-xs gap-3 py-2.5 px-3.5 sm:px-4 text-gray-600 leading-tight rounded-t-md">
+                      <div style={{ padding: '10px' }} className="bg-[#f6f6f6] border-b border-gray-200 flex flex-wrap justify-between items-center text-sm gap-3 py-2.5 px-3.5 sm:px-4 text-gray-700 leading-tight rounded-t-md">
                         <div className="flex flex-wrap items-center gap-4 sm:gap-8">
                           <div>
-                            <p className="uppercase text-[11px] font-semibold text-gray-500 tracking-wide m-0">ORDER PLACED</p>
-                            <p className="font-medium text-gray-800 text-xs mt-0.5 m-0">{formattedOrderDate}</p>
+                            <p className="uppercase text-xs font-semibold text-gray-700 tracking-wide m-0">ORDER PLACED</p>
+                            <p className="font-medium text-gray-800 text-sm mt-0.5 m-0">{formattedOrderDate}</p>
                           </div>
                           <div>
-                            <p className="uppercase text-[11px] font-semibold text-gray-500 tracking-wide m-0">TOTAL</p>
-                            <p className="font-semibold text-gray-800 text-xs mt-0.5 m-0">₹{order.totalAmount}.00</p>
+                            <p className="uppercase text-xs font-semibold text-gray-700 tracking-wide m-0">TOTAL</p>
+                            <p className="font-semibold text-gray-800 text-sm mt-0.5 m-0">₹{order.totalAmount}.00</p>
                           </div>
                           <div>
-                            <p className="uppercase text-[11px] font-semibold text-gray-500 tracking-wide m-0">SHIP TO</p>
-                            <p className="font-semibold text-blue-700 hover:underline cursor-pointer text-xs mt-0.5 flex items-center gap-0.5 m-0">
+                            <p className="uppercase text-xs font-semibold text-gray-700 tracking-wide m-0">SHIP TO</p>
+                            <p className="font-semibold text-blue-700 hover:underline cursor-pointer text-sm mt-0.5 flex items-center gap-0.5 m-0">
                               <span>{user?.firstName ? `${user.firstName} ${user.lastName || ''}`.toUpperCase() : "NAMITHA BHASI"}</span>
                               <FiChevronDown size={14} />
                             </p>
@@ -223,15 +232,15 @@ function MyOrders() {
                         </div>
 
                         <div className="text-right flex flex-col items-start sm:items-end gap-1">
-                          <p className="text-[11px] font-semibold text-gray-500 tracking-wide m-0 uppercase">
+                          <p className="text-xs font-semibold text-gray-700 tracking-wide m-0 uppercase">
                             ORDER # <span className="text-gray-700 font-mono">{order.orderNumber}</span>
                           </p>
-                          <div className="flex items-center gap-2 text-xs text-blue-700 font-normal">
-                            <Link to={`/order-details?orderId=${order._id}`} className="hover:underline text-blue-700 text-decoration-none">
+                          <div className="flex items-center gap-2 text-sm text-blue-700 font-semibold">
+                            <Link to={`/order-details?orderId=${order._id}`} className="hover:underline text-blue-700 font-semibold text-decoration-none">
                               View order details
                             </Link>
-                            <span className="text-gray-300">|</span>
-                            <span className="hover:underline cursor-pointer text-blue-700 flex items-center gap-0.5">
+                            <span className="text-gray-300 font-normal">|</span>
+                            <span className="hover:underline cursor-pointer text-blue-700 font-semibold flex items-center gap-0.5">
                               Invoice <FiChevronDown size={12} />
                             </span>
                           </div>
@@ -245,7 +254,7 @@ function MyOrders() {
                           <h3 className="text-base sm:text-lg font-bold text-gray-900 m-0 leading-snug uppercase">
                             {order.orderStatus === 'Delivered' ? `DELIVERED ${formattedDeliveryDate.toUpperCase()}` : `STATUS: ${order.orderStatus.toUpperCase()}`}
                           </h3>
-                          <p className="text-xs text-gray-600 mt-0.5 m-0 leading-normal">
+                          <p className="text-sm text-gray-700 mt-0.5 m-0 leading-normal">
                             {order.orderStatus === 'Delivered' 
                               ? "Package was handed to resident" 
                               : `Payment Status: ${order.paymentStatus} • Payment Method: ${order.paymentMethod}`}
@@ -273,27 +282,27 @@ function MyOrders() {
                                       {item.name}
                                     </Link>
                                     
-                                    <p className="text-xs text-gray-500 m-0">
+                                    <p className="text-sm text-gray-700 m-0 font-medium">
                                       Qty: {item.quantity} × ₹{item.price}.00
                                     </p>
 
                                     {/* Dynamic 7-Day Return Window Text */}
-                                    <p className="text-xs text-gray-600 mt-1 m-0 font-normal leading-relaxed">
+                                    <p className="text-sm text-gray-700 mt-1 m-0 font-normal leading-relaxed">
                                       {isAlreadyReturned ? (
                                         <span className="text-purple-700 font-semibold">Return requested on this item</span>
                                       ) : isReturnOpen ? (
                                         <span className="text-gray-700">Return window open through <span className="font-semibold text-gray-900">{formattedCutoffDate}</span></span>
                                       ) : (
-                                        <span className="text-gray-500">Return window closed on <span className="font-medium">{formattedCutoffDate}</span></span>
+                                        <span className="text-gray-700">Return window closed on <span className="font-medium">{formattedCutoffDate}</span></span>
                                       )}
                                     </p>
 
                                     {/* Inner Action Pill Buttons */}
                                     <div className="flex items-center gap-2 mt-2 flex-wrap">
                                       <button 
-                                        style={{ padding: '5px', borderRadius: '3px' }}
+                                        style={{ padding: '6px 14px', borderRadius: '3px' }}
                                         onClick={() => addToCart({ _id: item.product || item._id, name: item.name, price: item.price, image: itemImage })}
-                                        className="bg-[#ffd814] hover:bg-[#f7ca00] active:bg-[#f0b800] text-gray-900 font-medium text-xs px-4 border border-[#fcd814] transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                                        className="bg-[#ffd814] hover:bg-[#f7ca00] active:bg-[#f0b800] text-gray-900 font-medium text-sm px-4 border border-[#fcd814] transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
                                       >
                                         <FiRefreshCw size={13} />
                                         <span>Buy it again</span>
@@ -311,12 +320,12 @@ function MyOrders() {
 
                                 {/* Right Action Stack */}
                                 <div className="flex flex-col gap-2 w-full sm:w-52 shrink-0">
-                                  <Link
-                                    to={`/track-order?orderId=${order._id}`}
-                                    className="order-action-btn"
+                                  <button
+                                    onClick={() => handleOpenTrackingModal(order)}
+                                    className="order-action-btn cursor-pointer"
                                   >
                                     Track package
-                                  </Link>
+                                  </button>
 
                                   {isAlreadyReturned ? (
                                     <button
@@ -468,6 +477,13 @@ function MyOrders() {
           </div>
         </div>
       )}
+
+      {/* Order Tracking Modal */}
+      <OrderTrackingModal
+        isOpen={isTrackingModalOpen}
+        onClose={() => setIsTrackingModalOpen(false)}
+        order={selectedTrackingOrder}
+      />
     </div>
   );
 }

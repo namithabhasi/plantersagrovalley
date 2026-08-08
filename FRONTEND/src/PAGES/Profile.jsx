@@ -7,6 +7,7 @@ import axios from '../api/axiosInstance';
 import { useCart } from '../context/CartContext';
 import Anthurium from '../assets/Anthurium.png';
 import haworthiaImg from '../assets/Haworthia.jpg';
+import OrderTrackingModal from '../COMPONENTS/OrderTrackingModal';
 import './Plants.css';
 
 const NAV_ITEMS = [
@@ -33,6 +34,14 @@ function Profile() {
   const [active, setActive] = useState('profile');
   const [isEditing, setIsEditing] = useState(false);
   const [showStatsDropdown, setShowStatsDropdown] = useState(false);
+
+  const [selectedTrackingOrder, setSelectedTrackingOrder] = useState(null);
+  const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
+
+  const handleOpenTrackingModal = (order) => {
+    setSelectedTrackingOrder(order);
+    setIsTrackingModalOpen(true);
+  };
 
   // Auto-close dropdown when clicking outside
   useEffect(() => {
@@ -341,7 +350,7 @@ function Profile() {
 
     if (orders.length === 0) {
       return (
-        <div className="w-full text-left">
+        <div  className="w-full text-left">
           <div className="mb-4 flex items-center justify-between">
             <h4 className="text-2xl font-[var(--font-family-heading)] font-normal text-[var(--color-primary-dark)] uppercase tracking-wide m-0">
               My Orders
@@ -374,7 +383,7 @@ function Profile() {
     }
 
     return (
-      <div className="w-full space-y-6 text-left">
+      <div style={{marginTop:'40px'}}className="w-full space-y-6 text-left">
         <div>
           <div className="mb-4 pb-2 border-b border-gray-100 flex items-center justify-between">
             <div>
@@ -414,19 +423,19 @@ function Profile() {
                   className="bg-white rounded-lg border border-gray-300 overflow-hidden text-left flex flex-col gap-0 shadow-xs transition-all duration-200 hover:shadow-md"
                 >
                   {/* Top Bar Header (Light Gray Box) */}
-                  <div style={{ padding: '10px' }} className="bg-[#f6f6f6] border-b border-gray-200 flex flex-wrap justify-between items-center text-xs gap-3 py-2.5 px-3.5 sm:px-4 text-gray-600 leading-tight rounded-t-md">
+                  <div style={{ padding: '10px' }} className="bg-[#f6f6f6] border-b border-gray-200 flex flex-wrap justify-between items-center text-sm gap-3 py-2.5 px-3.5 sm:px-4 text-gray-700 leading-tight rounded-t-md">
                     <div className="flex flex-wrap items-center gap-4 sm:gap-8">
                       <div>
-                        <p className="uppercase text-[11px] font-semibold text-gray-500 tracking-wide m-0">ORDER PLACED</p>
-                        <p className="font-medium text-gray-800 text-xs mt-0.5 m-0">{formattedOrderDate}</p>
+                        <p className="uppercase text-xs font-semibold text-gray-700 tracking-wide m-0">ORDER PLACED</p>
+                        <p className="font-medium text-gray-800 text-sm mt-0.5 m-0">{formattedOrderDate}</p>
                       </div>
                       <div>
-                        <p className="uppercase text-[11px] font-semibold text-gray-500 tracking-wide m-0">TOTAL</p>
-                        <p className="font-semibold text-gray-800 text-xs mt-0.5 m-0">₹{order.totalAmount}.00</p>
+                        <p className="uppercase text-xs font-semibold text-gray-700 tracking-wide m-0">TOTAL</p>
+                        <p className="font-semibold text-gray-800 text-sm mt-0.5 m-0">₹{order.totalAmount}.00</p>
                       </div>
                       <div>
-                        <p className="uppercase text-[11px] font-semibold text-gray-500 tracking-wide m-0">SHIP TO</p>
-                        <p className="font-semibold text-blue-700 hover:underline cursor-pointer text-xs mt-0.5 flex items-center gap-0.5 m-0">
+                        <p className="uppercase text-xs font-semibold text-gray-700 tracking-wide m-0">SHIP TO</p>
+                        <p className="font-semibold text-blue-700 hover:underline cursor-pointer text-sm mt-0.5 flex items-center gap-0.5 m-0">
                           <span>{currentUser?.firstName ? `${currentUser.firstName} ${currentUser.lastName || ''}`.toUpperCase() : "NAMITHA BHASI"}</span>
                           <FiChevronDown size={14} />
                         </p>
@@ -434,15 +443,15 @@ function Profile() {
                     </div>
 
                     <div className="text-right flex flex-col items-start sm:items-end gap-1">
-                      <p className="text-[11px] font-semibold text-gray-500 tracking-wide m-0 uppercase">
+                      <p className="text-xs font-semibold text-gray-700 tracking-wide m-0 uppercase">
                         ORDER # <span className="text-gray-700 font-mono">{order.orderNumber}</span>
                       </p>
-                      <div className="flex items-center gap-2 text-xs text-blue-700 font-normal">
-                        <Link to={`/order-details?orderId=${order._id}`} className="hover:underline text-blue-700 text-decoration-none">
+                      <div className="flex items-center gap-2 text-sm text-blue-700 font-semibold">
+                        <Link to={`/order-details?orderId=${order._id}`} className="hover:underline text-blue-700 font-semibold text-decoration-none">
                           View order details
                         </Link>
-                        <span className="text-gray-300">|</span>
-                        <span className="hover:underline cursor-pointer text-blue-700 flex items-center gap-0.5">
+                        <span className="text-gray-300 font-normal">|</span>
+                        <span className="hover:underline cursor-pointer text-blue-700 font-semibold flex items-center gap-0.5">
                           Invoice <FiChevronDown size={12} />
                         </span>
                       </div>
@@ -456,7 +465,7 @@ function Profile() {
                       <h3 className="text-base sm:text-lg font-bold text-gray-900 m-0 leading-snug uppercase">
                         {order.orderStatus === 'Delivered' ? `DELIVERED ${formattedDeliveryDate.toUpperCase()}` : `STATUS: ${order.orderStatus.toUpperCase()}`}
                       </h3>
-                      <p className="text-xs text-gray-600 mt-0.5 m-0 leading-normal">
+                      <p className="text-sm text-gray-700 mt-0.5 m-0 leading-normal">
                         {order.orderStatus === 'Delivered' 
                           ? "Package was handed to resident" 
                           : `Payment Status: ${order.paymentStatus} • Payment Method: ${order.paymentMethod}`}
@@ -484,27 +493,27 @@ function Profile() {
                                   {item.name}
                                 </Link>
                                 
-                                <p className="text-xs text-gray-500 m-0">
+                                <p className="text-sm text-gray-700 m-0 font-medium">
                                   Qty: {item.quantity} × ₹{item.price}.00
                                 </p>
 
                                 {/* Dynamic 7-Day Return Window Text */}
-                                <p className="text-xs text-gray-600 mt-1 m-0 font-normal leading-relaxed">
+                                <p className="text-sm text-gray-700 mt-1 m-0 font-normal leading-relaxed">
                                   {isAlreadyReturned ? (
                                     <span className="text-purple-700 font-semibold">Return requested on this item</span>
                                   ) : isReturnOpen ? (
                                     <span className="text-gray-700">Return window open through <span className="font-semibold text-gray-900">{formattedCutoffDate}</span></span>
                                   ) : (
-                                    <span className="text-gray-500">Return window closed on <span className="font-medium">{formattedCutoffDate}</span></span>
+                                    <span className="text-gray-700">Return window closed on <span className="font-medium">{formattedCutoffDate}</span></span>
                                   )}
                                 </p>
 
                                 {/* Inner Action Pill Buttons */}
                                 <div className="flex items-center gap-2 mt-2 flex-wrap">
                                   <button 
-                                    style={{ padding: '5px', borderRadius: '3px' }}
+                                    style={{ padding: '6px 14px', borderRadius: '3px' }}
                                     onClick={() => addToCart({ _id: item.product || item._id, name: item.name, price: item.price, image: itemImage })}
-                                    className="bg-[#ffd814] hover:bg-[#f7ca00] active:bg-[#f0b800] text-gray-900 font-medium text-xs px-4 border border-[#fcd814] transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                                    className="bg-[#ffd814] hover:bg-[#f7ca00] active:bg-[#f0b800] text-gray-900 font-medium text-sm px-4 border border-[#fcd814] transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
                                   >
                                     <FiRefreshCw size={13} />
                                     <span>Buy it again</span>
@@ -522,12 +531,12 @@ function Profile() {
 
                             {/* Right Action Stack */}
                             <div className="flex flex-col gap-2 w-full sm:w-52 shrink-0">
-                              <Link
-                                to={`/track-order?orderId=${order._id}`}
-                                className="order-action-btn"
+                               <button
+                                onClick={() => handleOpenTrackingModal(order)}
+                                className="order-action-btn cursor-pointer"
                               >
                                 Track package
-                              </Link>
+                              </button>
 
                               {isAlreadyReturned ? (
                                 <button
@@ -580,7 +589,8 @@ function Profile() {
   const renderReturns = () => {
     if (returnedOrders.length === 0) {
       return (
-        <div className="w-full text-left">
+        <div style={{marginTop:'40px'}}
+         className="w-full text-left">
           <div className="mb-4">
             <h4 className="text-2xl font-[var(--font-family-heading)] font-normal text-[var(--color-primary-dark)] uppercase tracking-wide m-0">
               Returns & Refunds
@@ -603,7 +613,7 @@ function Profile() {
     }
 
     return (
-      <div className="w-full space-y-6 text-left">
+      <div  className="w-full space-y-6 text-left">
         <div>
           <div className="mb-4 pb-2 border-b border-gray-100 flex items-center justify-between">
             <div>
@@ -736,9 +746,9 @@ function Profile() {
     const currentWishlistItems = wishlistItems.slice(indexOfFirstWishlistItem, indexOfLastWishlistItem);
 
     return (
-      <div className="w-full space-y-6 text-left">
+      <div style={{marginTop:'40px'}} className="w-full space-y-6 text-left">
         <div>
-          {/* Header Row with Title on Left & Top-Right Compact Arrow Pagination */}
+          {/* Header Row with Title on Left & View All button navigating to /wishlist */}
           <div className="mb-4 pb-2 border-b border-gray-100 flex items-center justify-between">
             <div>
               <h4 className="text-2xl font-[var(--font-family-heading)] font-normal text-[var(--color-primary-dark)] uppercase tracking-wide">
@@ -749,30 +759,13 @@ function Profile() {
               </p>
             </div>
 
-            {/* Exclusive Top-Right Arrow Navigation */}
-            {totalWishlistPages > 1 && (
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-medium text-gray-500 mr-1">
-                  Page <strong className="text-[#06492D]">{wishlistPage}</strong> of {totalWishlistPages}
-                </span>
-                <button
-                  onClick={() => setWishlistPage((prev) => Math.max(prev - 1, 1))}
-                  disabled={wishlistPage === 1}
-                  className="p-1.5 bg-white border border-gray-300 rounded-none disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 transition cursor-pointer text-gray-700 flex items-center justify-center"
-                  title="Previous Page"
-                >
-                  <FiChevronLeft size={16} />
-                </button>
-                <button
-                  onClick={() => setWishlistPage((prev) => Math.min(prev + 1, totalWishlistPages))}
-                  disabled={wishlistPage === totalWishlistPages}
-                  className="p-1.5 bg-white border border-gray-300 rounded-none disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 transition cursor-pointer text-gray-700 flex items-center justify-center"
-                  title="Next Page"
-                >
-                  <FiChevronRight size={16} />
-                </button>
-              </div>
-            )}
+            <Link
+              to="/wishlist"
+              className="text-xs font-semibold text-[#06492D] hover:underline uppercase tracking-wider flex items-center gap-1.5 cursor-pointer text-decoration-none"
+            >
+              <span>View All</span>
+              <span className="text-sm">→</span>
+            </Link>
           </div>
 
           <div className="flex flex-col gap-4">
@@ -927,7 +920,7 @@ function Profile() {
     const addressFormatted = formatAddress(currentUser.address);
 
     return (
-      <div className="flex flex-col gap-4 sm:gap-6 text-left w-full">
+      <div style={{marginTop:'40px'}}className="flex flex-col gap-4 sm:gap-6 text-left w-full">
         {/* Top Action Bar: Shopping Bag Notification Icon + Dropdown & Edit Profile */}
         {!isEditing && (
           <div className="flex justify-between sm:justify-end items-center gap-3 w-full relative">
@@ -1328,19 +1321,8 @@ function Profile() {
 
               {/* Top client card */}
               <div className="flex flex-col items-center gap-1 border-b border-gray-200 pb-2.5 w-full" style={{ marginTop: '0px' }}>
-                <div
-                  className="profile-avatar-container w-10 h-10 bg-white text-[#1b7a42] flex items-center justify-center text-xs font-bold uppercase rounded-full shadow-sm"
-                  onClick={() => fileInputRef.current.click()}
-                  title="Click to update profile picture"
-                >
-                  {currentUser.profilePic ? (
-                    <img src={currentUser.profilePic} alt="Profile" className="w-full h-full object-cover rounded-full" />
-                  ) : (
-                    getInitials()
-                  )}
-                  <div className="profile-avatar-overlay">
-                    <FiCamera size={12} />
-                  </div>
+                <div className="profile-avatar-container w-10 h-10 bg-[#06492D] text-white flex items-center justify-center text-xs font-bold uppercase rounded-full shadow-sm">
+                  {getInitials()}
                 </div>
                 <p className="text-[11.5px] font-semibold text-gray-800 capitalize">
                   {currentUser.firstName} {currentUser.lastName}
@@ -1394,15 +1376,8 @@ function Profile() {
             <div className="block lg:hidden w-full mb-4 mt-4 pt-2">
               <div className="flex items-center justify-between bg-[#f3f8f3] border border-[#e2e8f0] p-3">
                 <div className="flex items-center gap-2.5">
-                  <div
-                    className="w-8 h-8 bg-white text-[#06492D] rounded-full flex items-center justify-center font-bold text-xs shadow-sm cursor-pointer"
-                    onClick={() => fileInputRef.current.click()}
-                  >
-                    {currentUser.profilePic ? (
-                      <img src={currentUser.profilePic} alt="Profile" className="w-full h-full object-cover rounded-full" />
-                    ) : (
-                      getInitials()
-                    )}
+                  <div className="w-8 h-8 bg-[#06492D] text-white rounded-full flex items-center justify-center font-bold text-xs shadow-sm">
+                    {getInitials()}
                   </div>
                   <span className="text-xs font-semibold text-[#06492D] capitalize">
                     {currentUser.firstName} {currentUser.lastName}
@@ -1502,6 +1477,13 @@ function Profile() {
           </div>
         </div>
       )}
+
+      {/* Order Tracking Modal */}
+      <OrderTrackingModal
+        isOpen={isTrackingModalOpen}
+        onClose={() => setIsTrackingModalOpen(false)}
+        order={selectedTrackingOrder}
+      />
     </div>
   );
 }

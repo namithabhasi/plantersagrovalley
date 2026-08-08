@@ -580,11 +580,12 @@ img {
 /* Order Action Buttons (Guaranteed White Hover Text) */
 .order-action-btn {
   background-color: #ffffff !important;
-  color: #1f2937 !important;
+  color: #111827 !important;
   border: 1px solid #d1d5db !important;
   border-radius: 3px !important;
-  padding: 5px 12px !important;
-  font-size: 12px !important;
+  padding: 6px 14px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
   transition: all 0.2s ease !important;
   text-decoration: none !important;
   display: inline-block !important;
@@ -602,12 +603,12 @@ img {
 
 .order-action-btn-red {
   background-color: #ffffff !important;
-  color: #b91c1c !important;
+  color: #991b1b !important;
   border: 1px solid #d1d5db !important;
   border-radius: 3px !important;
-  padding: 5px 12px !important;
-  font-size: 12px !important;
-  font-weight: 500 !important;
+  padding: 6px 14px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
   transition: all 0.2s ease !important;
   text-decoration: none !important;
   display: inline-block !important;
@@ -624,12 +625,12 @@ img {
 
 .order-action-btn-purple {
   background-color: #faf5ff !important;
-  color: #6b21a8 !important;
+  color: #581c87 !important;
   border: 1px solid #e9d5ff !important;
   border-radius: 3px !important;
-  padding: 5px 12px !important;
-  font-size: 12px !important;
-  font-weight: 500 !important;
+  padding: 6px 14px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
   transition: all 0.2s ease !important;
   text-decoration: none !important;
   display: inline-block !important;

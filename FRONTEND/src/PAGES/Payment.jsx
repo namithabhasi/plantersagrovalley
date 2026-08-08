@@ -9,7 +9,6 @@ import logo from '../assets/logo.png';
 import './Payment.css';
 import { createPaymentOrder, verifyPayment } from '../api/paymentApi';
 import { setUser, openAuthModal } from '../redux/auth/authSlice';
-import axiosInstance from '../api/axiosInstance';
 
 // Dynamically load Razorpay SDK Checkout script
 const loadRazorpayScript = () => {
@@ -355,11 +354,12 @@ function Payment() {
               style={{ padding: '20px' }}
               className="w-full max-w-xl bg-white border border-[#e2e8f0] rounded-[4px] text-center flex flex-col items-center justify-center gap-3 shadow-xs my-auto"
             >
-              <div className="w-12 h-12 bg-[#edf3ed] text-[#06492D] rounded-full flex items-center justify-center shadow-xs">
-                <FiTruck size={22} />
+              <div className="w-20 h-15 bg-[#edf3ed] text-[#06492D] rounded-full flex items-center justify-center shadow-xs">
+               <img src="https://cdn.pixabay.com/animation/2023/08/21/15/08/15-08-21-310__480.png" alt="" />
               </div>
               <h2 className="text-xl font-bold text-[#06492D] m-0 uppercase tracking-wide">Your Cart is Empty</h2>
-              <p className="text-xs text-gray-700 max-w-md m-0 leading-relaxed font-normal">
+              <p className="text-sm
+               text-gray-700 max-w-md m-0 leading-relaxed font-normal">
                 You don't have any items in your shopping cart to checkout. Explore our wide range of healthy plants and nursery supplies.
               </p>
               <Link
