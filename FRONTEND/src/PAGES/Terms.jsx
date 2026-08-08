@@ -23,9 +23,12 @@ function Terms() {
             </div>
 
             {/* Content Wrapper */}
-            <div className="flex flex-col gap-6 text-sm leading-relaxed text-[var(--color-text-main)] font-[var(--font-family-base)]">
+            <div 
+              className="flex flex-col gap-6 text-[var(--font-size-md)] leading-relaxed text-[var(--color-text-main)] font-[var(--font-family-base)]"
+              style={{ textAlign: 'justify', textJustify: 'inter-word', textAlignLast: 'left' }}
+            >
               
-              <p className="text-base text-[var(--color-text-main)] leading-relaxed">
+              <p className="text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed">
                 Please read the following terms of service very carefully. www.plantersagrovalley.com is a product of Planters Agro Valley.
               </p>
 

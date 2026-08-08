@@ -23,9 +23,12 @@ function Privacypolicy() {
             </div>
 
             {/* Content Wrapper */}
-            <div className="flex flex-col gap-6 text-sm leading-relaxed text-[var(--color-text-main)] font-[var(--font-family-base)]">
+            <div 
+              className="flex flex-col gap-6 text-[var(--font-size-md)] leading-relaxed text-[var(--color-text-main)] font-[var(--font-family-base)]"
+              style={{ textAlign: 'justify', textJustify: 'inter-word', textAlignLast: 'left' }}
+            >
               
-              <p className="text-base text-[var(--color-text-main)] leading-relaxed">
+              <p className="text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed">
                 Thanks for reviewing our privacy policy. Below is a detailed description of how we collect, store, and protect your information.
               </p>
 
@@ -71,7 +74,7 @@ function Privacypolicy() {
                 <p>
                   We seek to protect your rights of privacy on systems and the Site (<a href="https://www.plantersagrovalley.com" target="_blank" rel="noopener noreferrer" className="text-[var(--color-primary-dark)] hover:underline font-mono font-medium">www.plantersagrovalley.com</a>) controlled by us, but we are not liable for any unauthorized or unlawful disclosures of your personal and confidential information made by third parties who are not subject to our control, for example advertisers and websites that have links to our Site.
                 </p>
-                <p className="text-[var(--color-text-muted)] font-normal italic text-xs">
+                <p className="text-[var(--color-text-muted)] font-normal italic text-[var(--font-size-md)]">
                   Note: The information and privacy practices of our business partners, advertisers, sponsors or other sites to which we provide hyperlinks, may be different from ours. We may change this privacy policy at any time without notice by updating this page. Please check this page from time to time to ensure that you are happy with any changes.
                 </p>
               </section>
