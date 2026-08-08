@@ -126,12 +126,12 @@ function Getintouch() {
               >
                 LET'S KEEP YOUR GARDEN BEAUTIFUL TOGETHER
               </h2>
-              <p  style={{ marginBottom: '20px' }} className="font-[var(--font-family-base)] text-sm text-gray-700 leading-relaxed mb-10 max-w-sm">
+              <p style={{ marginBottom: '20px', textAlign: 'justify', textJustify: 'inter-word', textAlignLast: 'left' }} className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-gray-700 leading-relaxed mb-10 max-w-sm">
                 Get in touch with us for customized plant inquiries, garden maintenance, or any support needed.
               </p>
 
               {/* Contact Details List */}
-              <div className="flex flex-col gap-6 text-gray-700 text-sm mb-10">
+              <div className="flex flex-col gap-6 text-gray-700 text-[var(--font-size-md)] mb-10">
                 <a href={`tel:${contactInfo.mobile || "+918468888666"}`} className="flex items-center gap-3 justify-center md:justify-start text-gray-700 hover:text-[#06492D] transition-colors text-decoration-none">
                   <FaPhoneAlt className="text-[var(--color-primary-dark)]" size={15} />
                   <span>{contactInfo.mobile || "+91 8468888666"}</span>
@@ -153,7 +153,7 @@ function Getintouch() {
 
               {/* Social Media Links with Spacing */}
               <div className="mt-6 pt-4 flex flex-col gap-4 items-center md:items-start">
-                <span className="text-sm font-semibold text-gray-700 uppercase tracking-wider">Follow Us</span>
+                <span className="text-[var(--font-size-md)] font-semibold text-gray-700 uppercase tracking-wider">Follow Us</span>
                 <div className="flex items-center gap-5 text-gray-700">
                   <a href={contactInfo.facebook || "https://facebook.com"} target="_blank" rel="noopener noreferrer" className="hover:text-[#06492D] transition-colors" aria-label="Facebook">
                     <FaFacebookF size={16} />
@@ -189,12 +189,12 @@ function Getintouch() {
                     value={formData.name}
                     onChange={handleInputChange}
                     placeholder="Name"
-                    className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-sm outline-none rounded-none transition-colors duration-200 text-gray-700 placeholder-gray-400 ${
+                    className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-gray-700 placeholder-gray-400 ${
                       errors.name ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
                     }`}
                   />
                   {errors.name && (
-                    <span className="text-sm text-red-500 mt-1 text-left">
+                    <span className="text-[var(--font-size-md)] text-red-500 mt-1 text-left">
                       {errors.name}
                     </span>
                   )}
@@ -208,12 +208,12 @@ function Getintouch() {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="Email"
-                    className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-sm outline-none rounded-none transition-colors duration-200 text-gray-700 placeholder-gray-400 ${
+                    className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-gray-700 placeholder-gray-400 ${
                       errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
                     }`}
                   />
                   {errors.email && (
-                    <span className="text-sm text-red-500 mt-1 text-left">
+                    <span className="text-[var(--font-size-md)] text-red-500 mt-1 text-left">
                       {errors.email}
                     </span>
                   )}
@@ -230,12 +230,12 @@ function Getintouch() {
                     inputMode="numeric"
                     pattern="[0-9]*"
                     placeholder="Phone number"
-                    className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-sm outline-none rounded-none transition-colors duration-200 text-gray-700 placeholder-gray-400 ${
+                    className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-gray-700 placeholder-gray-400 ${
                       errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
                     }`}
                   />
                   {errors.phone && (
-                    <span className="text-sm text-red-500 mt-1 text-left">
+                    <span className="text-[var(--font-size-md)] text-red-500 mt-1 text-left">
                       {errors.phone}
                     </span>
                   )}
@@ -249,12 +249,12 @@ function Getintouch() {
                     value={formData.comment}
                     onChange={handleInputChange}
                     placeholder="Comment"
-                    className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-sm outline-none rounded-none transition-colors duration-200 text-gray-700 placeholder-gray-400 resize-none ${
+                    className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-gray-700 placeholder-gray-400 resize-none ${
                       errors.comment ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
                     }`}
                   />
                   {errors.comment && (
-                    <span className="text-sm text-red-500 mt-1 text-left">
+                    <span className="text-[var(--font-size-md)] text-red-500 mt-1 text-left">
                       {errors.comment}
                     </span>
                   )}
@@ -262,7 +262,7 @@ function Getintouch() {
 
                 {/* Privacy Checkbox with Extra Spacing */}
                 <div className="flex flex-col gap-1 mt-2 relative">
-                  <label className="flex items-center gap-3 cursor-pointer group text-gray-700 text-sm text-left">
+                  <label className="flex items-center gap-3 cursor-pointer group text-gray-700 text-[var(--font-size-md)] text-left">
                     <input
                       type="checkbox"
                       name="agreePrivacy"
@@ -285,7 +285,7 @@ function Getintouch() {
                     </span>
                   </label>
                   {errors.agreePrivacy && (
-                    <span className="text-sm text-red-500 mt-1 text-left">
+                    <span className="text-[var(--font-size-md)] text-red-500 mt-1 text-left">
                       {errors.agreePrivacy}
                     </span>
                   )}
@@ -295,7 +295,7 @@ function Getintouch() {
                 <div className="w-full flex justify-center mt-2">
                   <button
                     type="submit"
-                    className="btn btn-primary rounded-none w-full max-w-[180px] py-3.5 text-sm font-semibold tracking-wider uppercase hover:scale-[1.01] active:scale-[0.99] transition-all"
+                    className="btn btn-primary rounded-none w-full max-w-[180px] py-3.5 text-[var(--font-size-md)] font-semibold tracking-wider uppercase hover:scale-[1.01] active:scale-[0.99] transition-all"
                   >
                     Send Message
                   </button>

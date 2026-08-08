@@ -27,7 +27,10 @@ function Shippingpolicy() {
             </div>
 
             {/* Content Body */}
-            <div className="flex flex-col gap-6 text-sm leading-relaxed text-[var(--color-text-main)] font-[var(--font-family-base)]">
+            <div 
+              className="flex flex-col gap-6 text-[var(--font-size-md)] leading-relaxed text-[var(--color-text-main)] font-[var(--font-family-base)]"
+              style={{ textAlign: 'justify', textJustify: 'inter-word', textAlignLast: 'left' }}
+            >
               
               {/* General Dispatch */}
               <section className="flex flex-col gap-3">
@@ -85,7 +88,7 @@ function Shippingpolicy() {
                     <div
                       key={idx}
                       style={{ borderRadius: '3px' }}
-                      className="border border-[var(--color-border)] bg-[var(--color-primary-bg)] p-4 text-center text-xs text-[var(--color-text-main)] font-[var(--font-family-base)] font-medium hover:border-[var(--color-primary)] transition-colors select-none"
+                      className="border border-[var(--color-border)] bg-[var(--color-primary-bg)] p-4 text-center text-[var(--font-size-md)] text-[var(--color-text-main)] font-[var(--font-family-base)] font-medium hover:border-[var(--color-primary)] transition-colors select-none"
                     >
                       {partner}
                     </div>
