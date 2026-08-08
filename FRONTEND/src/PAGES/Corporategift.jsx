@@ -561,10 +561,20 @@ function Corporategift() {
         return (
           <section className="bg-white border-b border-gray-100 overflow-hidden" style={{ paddingTop: '50px', paddingBottom: '50px' }}>
             <div className="container mx-auto px-4 md:px-6 max-w-6xl w-full">
-              <div className="text-center">
-                <h2 className="section-title" style={{ marginBottom: '30px' }}>
+              <div className="relative flex flex-col md:flex-row items-center justify-center w-full mb-[30px]">
+                <h2 className="section-title text-center" style={{ marginBottom: 0 }}>
                   OUR CUSTOM SERVICES
                 </h2>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const allIds = allCustomServices.map(s => s._id);
+                    setExpandedServiceIds(prev => prev.length === allIds.length ? [] : allIds);
+                  }}
+                  className="md:absolute right-0 text-xs font-semibold tracking-wider text-[#06492D] hover:underline uppercase cursor-pointer transition-colors flex items-center gap-1 mt-2 md:mt-0"
+                >
+                  {expandedServiceIds.length === allCustomServices.map(s => s._id).length ? 'VIEW LESS ↑' : 'VIEW ALL →'}
+                </button>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto items-stretch justify-items-center w-full">
                 {allCustomServices.map((service) => {
