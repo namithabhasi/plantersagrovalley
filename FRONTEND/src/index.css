@@ -577,6 +577,77 @@ img {
   border-color: #fca5a5 !important;
 }
 
+/* Order Action Buttons (Guaranteed White Hover Text) */
+.order-action-btn {
+  background-color: #ffffff !important;
+  color: #1f2937 !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 3px !important;
+  padding: 5px 12px !important;
+  font-size: 12px !important;
+  transition: all 0.2s ease !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+  text-align: center !important;
+  width: 100% !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  cursor: pointer !important;
+}
+
+.order-action-btn:hover {
+  background-color: #06492D !important;
+  color: #ffffff !important;
+  border-color: #06492D !important;
+}
+
+.order-action-btn-red {
+  background-color: #ffffff !important;
+  color: #b91c1c !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 3px !important;
+  padding: 5px 12px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+  text-align: center !important;
+  width: 100% !important;
+  cursor: pointer !important;
+}
+
+.order-action-btn-red:hover {
+  background-color: #06492D !important;
+  color: #ffffff !important;
+  border-color: #06492D !important;
+}
+
+.order-action-btn-purple {
+  background-color: #faf5ff !important;
+  color: #6b21a8 !important;
+  border: 1px solid #e9d5ff !important;
+  border-radius: 3px !important;
+  padding: 5px 12px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+  text-align: center !important;
+  width: 100% !important;
+  cursor: pointer !important;
+}
+
+.order-action-btn-purple:hover {
+  background-color: #06492D !important;
+  color: #ffffff !important;
+  border-color: #06492D !important;
+}
+
+.order-action-btn-inline {
+  width: auto !important;
+}
+
 
 /* Inputs & Form Controls */
 input,
@@ -987,7 +1058,7 @@ div.container {
 .mega-dropdown-list li a {
   font-family: var(--font-family-base);
   font-size: var(--font-size-sm);
-  color: var(--color-text-main);
+  color: var(--color-primary-dark);
   text-decoration: none;
   transition: color 0.15s ease, transform 0.15s ease;
   display: inline-block;
@@ -2476,7 +2547,7 @@ div.container {
   }
 }
 
-/* --- Premium Profile Dropdown --- */
+/* --- Premium Profile Dropdown Matching Nav Dropdown Green Shade & Specs --- */
 .planters-profile-dropdown {
   position: absolute;
   top: 100%;
@@ -2484,9 +2555,10 @@ div.container {
   transform: translateX(-50%);
   margin-top: 12px;
   width: 240px;
-  background: #ffffff;
-  border: 1px solid #eaeaea;
-  border-radius: 8px;
+  background-color: #f7faf6;
+  /* Soft green backdrop matching Garden Decor & Seeds dropdowns */
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   z-index: 999;
   overflow: hidden;
@@ -2506,23 +2578,24 @@ div.container {
 }
 
 .planters-profile-dropdown-header {
-  padding: 16px;
-  background: #fafbfa;
-  border-bottom: 1px solid #f0f2f0;
+  padding: 14px 16px;
+  background: #edf3ed;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .planters-profile-dropdown-name {
   font-size: 13px;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-weight: 700;
+  color: var(--color-primary-dark);
   margin: 0 0 2px 0;
-  text-transform: capitalize;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   font-family: var(--font-family-heading), sans-serif;
 }
 
 .planters-profile-dropdown-email {
   font-size: 11px;
-  color: #8c8c8c;
+  color: #667085;
   margin: 0;
   word-break: break-all;
   font-weight: 400;
@@ -2538,9 +2611,9 @@ div.container {
   gap: 10px;
   width: 100%;
   padding: 10px 16px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
-  color: #4a4a4a;
+  color: var(--color-primary-dark);
   text-decoration: none;
   background: transparent;
   border: none;
@@ -2551,8 +2624,9 @@ div.container {
 }
 
 .planters-profile-dropdown-item:hover {
-  background-color: #f4f7f5;
+  background-color: rgba(28, 44, 33, 0.05);
   color: #06492D;
+  padding-left: 20px;
 }
 
 .planters-profile-dropdown-item.logout-btn {
@@ -2560,8 +2634,9 @@ div.container {
 }
 
 .planters-profile-dropdown-item.logout-btn:hover {
-  background-color: #fff5f5;
+  background-color: #fee2e2;
   color: #bd2c2c;
+  padding-left: 20px;
 }
 
 /* Scoped Blog Detail Typography and Spacing Rules */

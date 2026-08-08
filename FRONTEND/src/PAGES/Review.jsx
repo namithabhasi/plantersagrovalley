@@ -1,31 +1,87 @@
-import React, { useState, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { FiArrowLeft, FiCamera, FiCheckCircle, FiX } from 'react-icons/fi';
 import { FaStar } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
+import axios from '../api/axiosInstance';
 import haworthiaImg from '../assets/Haworthia.jpg';
 import '../index.css';
 
 function Review() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const productIdFromQuery = searchParams.get("productId") || searchParams.get("id");
+  const targetProductId = id || productIdFromQuery;
+
   const fileInputRef = useRef(null);
   const { user } = useSelector((state) => state.auth || {});
 
-  const product = location.state?.product || {
-    id: 'default',
-    _id: 'default',
-    name: "Wisteria Flowering Vine",
-    image: haworthiaImg
-  };
+  const [product, setProduct] = useState(() => {
+    return location.state?.product || {
+      id: targetProductId || 'default',
+      _id: targetProductId || 'default',
+      name: "Wisteria Flowering Vine",
+      image: haworthiaImg
+    };
+  });
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (targetProductId && targetProductId !== 'default' && (!location.state?.product || location.state?.product?._id !== targetProductId)) {
+        try {
+          const { data } = await axios.get(`/products/${targetProductId}`);
+          if (data.success && data.product) {
+            const fetchedProd = data.product;
+            const prodImg = fetchedProd.images && fetchedProd.images[0] ? fetchedProd.images[0].url : haworthiaImg;
+            setProduct({
+              id: fetchedProd._id,
+              _id: fetchedProd._id,
+              name: fetchedProd.name,
+              image: prodImg
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching product for review:", error);
+        }
+      }
+    };
+    fetchProduct();
+  }, [targetProductId, location.state]);
 
   const [rating, setRating] = useState(5);
   const [hoverRating, setHoverRating] = useState(0);
   const [title, setTitle] = useState('');
   const [comment, setComment] = useState('');
   const [photo, setPhoto] = useState(null);
+  const [allowPublicName, setAllowPublicName] = useState(true);
   const [submitted, setSubmitted] = useState(false);
+
+  // Helper to extract full user name from Auth Redux store
+  const getUserDisplayName = () => {
+    if (!user) return 'Verified Customer';
+    if (user.name && user.name.trim()) return user.name.trim();
+    if (user.firstName || user.lastName) {
+      const full = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+      if (full) return full;
+    }
+    if (user.email) {
+      const parts = user.email.split('@')[0];
+      return parts.charAt(0).toUpperCase() + parts.slice(1);
+    }
+    return 'Verified Customer';
+  };
+
+  // Helper to get formatted current date (e.g. "7 August 2026")
+  const getFormattedCurrentDate = () => {
+    return new Date().toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  };
 
   // File Upload Handler
   const handlePhotoUpload = (e) => {
@@ -52,14 +108,17 @@ function Review() {
     }
 
     const targetId = product._id || product.id || 'default';
-    const userName = user?.name || 'Verified Customer';
+    const computedName = getUserDisplayName();
+    const finalAuthor = allowPublicName ? computedName : 'Verified Customer';
+    const avatarChar = finalAuthor.charAt(0).toUpperCase();
+    const currentDate = getFormattedCurrentDate();
 
     const newReviewObj = {
       id: Date.now(),
       productId: targetId,
-      author: userName,
-      avatar: userName.charAt(0).toUpperCase(),
-      date: 'Today',
+      author: finalAuthor,
+      avatar: avatarChar,
+      date: currentDate,
       rating: Number(rating),
       title: title.trim(),
       comment: comment.trim(),
@@ -233,6 +292,32 @@ function Review() {
                     onChange={(e) => setTitle(e.target.value)}
                     className="w-full border border-[var(--color-border)] rounded-[3px] p-3.5 font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] placeholder:text-[var(--color-text-light)] focus:outline-none focus:border-[var(--color-primary-dark)] focus:ring-1 focus:ring-[var(--color-primary-dark)] transition-colors"
                   />
+                </section>
+
+                <hr className="border-[var(--color-border)]" />
+
+                {/* Privacy & Display Name Consent Disclaimer */}
+                <section className="py-2 flex flex-col gap-2">
+                  <label className="flex items-start gap-2.5 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={allowPublicName}
+                      onChange={(e) => setAllowPublicName(e.target.checked)}
+                      className="w-4 h-4 accent-[#06492D] rounded cursor-pointer mt-0.5"
+                    />
+                    <div className="flex flex-col gap-1">
+                      <span className="font-[var(--font-family-base)] text-xs sm:text-sm font-semibold text-gray-800 leading-snug">
+                        I hereby consent to display my full name publicly with this review
+                      </span>
+                      <p className="text-[11.5px] text-gray-500 font-normal leading-relaxed">
+                        {allowPublicName ? (
+                          <>Disclaimer: Your review will be published under your full name (<strong className="text-[#06492D] font-semibold">{getUserDisplayName()}</strong>).</>
+                        ) : (
+                          <>Disclaimer: Your name will remain hidden and displayed as <strong className="text-gray-700 font-semibold">Verified Customer</strong>.</>
+                        )}
+                      </p>
+                    </div>
+                  </label>
                 </section>
 
                 {/* Submit Button */}

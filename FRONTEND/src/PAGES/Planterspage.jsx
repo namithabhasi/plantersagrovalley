@@ -557,9 +557,9 @@ function Planterspage() {
                                         }}
                                         className="btn btn-primary"
                                         style={{ borderRadius: '3px' }}
-                                        disabled={!product.inStock}
+                                        disabled={product.inStock === false || product.isOutOfStock === true}
                                     >
-                                        {product.inStock ? 'ADD TO CART' : 'OUT OF STOCK'}
+                                        {product.inStock !== false && !product.isOutOfStock ? 'ADD TO CART' : 'OUT OF STOCK'}
                                     </button>
                                 </div>
                             ))}

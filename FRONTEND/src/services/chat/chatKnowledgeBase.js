@@ -63,16 +63,21 @@ export const KNOWLEDGE_BASE = {
   },
 
   orderTracking: {
-    keywords: ["track", "status", "order status", "where is my order", "order ID", "tracking number", "when will my order arrive"],
+    keywords: ["track", "status", "order status", "where is my order", "order id", "tracking number", "when will my order arrive", "my order", "check order"],
     responses: [
-      "📦 **Order Tracking**:\nYou can track your live order by visiting our [Track Order Page](/track-order) or by entering your Order ID and mobile number!"
+      "📦 **Order Tracking**:\nYou can track your live order status by visiting our [Track Order Page](/track-order) or by entering your Order ID and mobile number!"
     ]
   },
 
   shipping: {
-    keywords: ["shipping", "delivery charge", "free shipping", "shipping cost", "delivery time", "how long deliver", "pincode", "courier"],
+    keywords: [
+      "shipping", "delivery charge", "free shipping", "shipping cost", "delivery time", "how long deliver", 
+      "pincode", "courier", "dispatch", "dispatched", "dispatching", "dispatch time", "time to dispatch", 
+      "order dispatch", "how long to dispatch", "how long it will take to dispatch", "when dispatch", 
+      "when will my order be dispatched", "dispatch my order", "processing time", "when ship", "when will it ship"
+    ],
     responses: [
-      "🚚 **Shipping & Delivery Info**:\n- **FREE Shipping** on orders above ₹499! (Flat ₹49 for orders below ₹499).\n- Dispatch within 24-48 business hours.\n- Delivery takes 2-5 business days across 25,000+ pincodes in India via BlueDart, Delhivery & Xpressbees."
+      "🚚 **Order Dispatch & Delivery Time**:\n- **Dispatch Time**: Every order is carefully inspected, packed with care, and **dispatched within 24 to 48 business hours**!\n- **Delivery Time**: Once dispatched, delivery typically takes **2 to 5 business days** across 25,000+ pincodes in India via BlueDart, Delhivery & Xpressbees.\n- **Tracking**: You can track your live order anytime on our [Track Order Page](/track-order)!"
     ]
   },
 

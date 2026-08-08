@@ -70,7 +70,6 @@ function Wishlist() {
       price: price,
       image: productImage
     });
-    toast.success(`${product.name} added to cart!`);
   };
 
   const handleShareWhatsApp = (product) => {
@@ -126,9 +125,9 @@ function Wishlist() {
             {/* Page Header (No Line Divider) */}
             {wishlistItems.length > 0 && (
               <div className="pb-2 text-left">
-                <h2 className="text-3xl font-[var(--font-family-heading)] font-normal text-[var(--color-primary-dark)] uppercase tracking-wide">
+                <h4 className="text-3xl font-[var(--font-family-heading)] font-normal text-[var(--color-primary-dark)] uppercase tracking-wide">
                   My Wishlist
-                </h2>
+                </h4>
                 <p className="text-[var(--font-size-xs)] text-[var(--color-text-muted)] font-normal mt-1 tracking-wider">
                   {wishlistItems.length} {wishlistItems.length === 1 ? "item" : "items"} saved in your wishlist
                 </p>
@@ -287,27 +286,28 @@ function Wishlist() {
 
                 {/* Pagination Controls */}
                 {totalPages > 1 && (
-                  <div className="flex items-center justify-center gap-2 mt-6 pt-4">
+                  <div className="pagination-container !mt-6 !pt-4">
                     <button
-                      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                      onClick={() => {
+                        setCurrentPage((prev) => Math.max(prev - 1, 1));
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
                       disabled={currentPage === 1}
-                      className="p-2 bg-white border border-gray-300 rounded-none disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 transition cursor-pointer text-gray-700"
-                      title="Previous Page"
+                      className="pagination-btn pagination-arrow"
                     >
-                      <FiChevronLeft size={16} />
+                      &larr; Previous
                     </button>
 
                     {[...Array(totalPages)].map((_, idx) => {
                       const pageNum = idx + 1;
-                      const isActive = pageNum === currentPage;
                       return (
                         <button
                           key={pageNum}
-                          onClick={() => setCurrentPage(pageNum)}
-                          className={`px-3.5 py-1.5 text-xs font-medium rounded-none border transition-all cursor-pointer ${isActive
-                              ? "bg-[#06492D] text-white border-[#06492D]"
-                              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-                            }`}
+                          onClick={() => {
+                            setCurrentPage(pageNum);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }}
+                          className={`pagination-btn ${currentPage === pageNum ? 'active' : ''}`}
                         >
                           {pageNum}
                         </button>
@@ -315,12 +315,14 @@ function Wishlist() {
                     })}
 
                     <button
-                      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                      onClick={() => {
+                        setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
                       disabled={currentPage === totalPages}
-                      className="p-2 bg-white border border-gray-300 rounded-none disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 transition cursor-pointer text-gray-700"
-                      title="Next Page"
+                      className="pagination-btn pagination-arrow"
                     >
-                      <FiChevronRight size={16} />
+                      Next &rarr;
                     </button>
                   </div>
                 )}

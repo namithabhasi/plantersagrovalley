@@ -60,6 +60,7 @@ import Productdetails from "./PAGES/Productdetails";
 import Profile from "./PAGES/Profile";
 import Wishlist from "./PAGES/Wishlist";
 import MyOrders from "./PAGES/MyOrders";
+import Orderdetails from "./PAGES/Orderdetails";
 import Chat from "./PAGES/Chat";
 
 import Review from "./PAGES/Review";
@@ -116,6 +117,8 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/my-orders" element={<MyOrders />} />
+        <Route path="/order-details" element={<Orderdetails />} />
+        <Route path="/order-details/:id" element={<Orderdetails />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<SuperAdminLogin />} />

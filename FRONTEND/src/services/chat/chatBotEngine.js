@@ -5,11 +5,26 @@
 
 import { KNOWLEDGE_BASE } from "./chatKnowledgeBase";
 
-// Dynamic Plant Care & Knowledge Generator for unprogrammed queries
+// Dynamic Knowledge Generator for unprogrammed queries
 function generatePlantAIResponse(query) {
   const lower = query.toLowerCase();
 
-  // 1. Plant Types & Care Queries
+  // 1. Order, Dispatch & Shipping Queries
+  if (lower.includes("dispatch") || lower.includes("ship") || lower.includes("deliver") || lower.includes("courier") || lower.includes("track") || lower.includes("order")) {
+    return "🚚 **Order Dispatch & Shipping Info**:\n" +
+           "- **Dispatch Time**: Orders are inspected, packed with care, and **dispatched within 24 to 48 business hours**.\n" +
+           "- **Delivery Time**: Delivery takes **2 to 5 business days** nationwide via BlueDart, Delhivery, and Xpressbees.\n" +
+           "- **Tracking**: You can track your live order status on our [Track Order Page](/track-order) or view updates in your [Profile](/profile)!";
+  }
+
+  // 2. Payment & Pricing Queries
+  if (lower.includes("pay") || lower.includes("cod") || lower.includes("price") || lower.includes("cost") || lower.includes("money") || lower.includes("charge")) {
+    return "💳 **Payment & Shipping Charges**:\n" +
+           "- **Free Shipping**: Available on all orders above ₹499! (Flat ₹49 for orders under ₹499).\n" +
+           "- **Payment Methods**: Cash on Delivery (COD), UPI (GPay, PhonePe, Paytm), Cards & Netbanking are accepted.";
+  }
+
+  // 3. Plant Care Specific Queries
   if (lower.includes("soil") || lower.includes("mud") || lower.includes("potting mix")) {
     return "🌱 **Soil & Potting Mix Care**:\nFor healthy plants, use well-draining soil mixed with coco-peat, vermicompost, and perlite in a 40:40:20 ratio. This prevents root rot and keeps soil airy!";
   }
@@ -19,7 +34,7 @@ function generatePlantAIResponse(query) {
   if (lower.includes("prun") || lower.includes("cut") || lower.includes("trim")) {
     return "✂️ **Pruning Advice**:\nTrim dead or yellow leaves at a 45-degree angle near the main stem using clean pruning shears. Pruning encourages bushier, vibrant new growth!";
   }
-  if (lower.includes("propagat") || lower.includes("stem") || lower.includes("cut")) {
+  if (lower.includes("propagat") || lower.includes("stem")) {
     return "🌱 **Propagation Tip**:\nTake a healthy 4-6 inch stem cutting below a node. Place it in clean water or moist potting mix in bright indirect sunlight until roots develop (2-3 weeks).";
   }
   if (lower.includes("sun") || lower.includes("balcony") || lower.includes("window")) {
@@ -29,7 +44,7 @@ function generatePlantAIResponse(query) {
     return "🪴 **Pots & Planters**:\nWe offer high quality Ceramic, Plastic, Metal, and Hanging Pots! Always select a pot with drainage holes 2 inches larger than the root ball.";
   }
 
-  // 2. Specific Plant Name Detection (Dynamic fallback for any plant mentioned)
+  // 4. Specific Plant Name Detection
   const commonPlants = [
     "rose", "tulip", "jasmine", "hibiscus", "cactus", "orchid", "bamboo",
     "aloe", "fern", "bonsai", "mango", "lemon", "money plant", "palm",
@@ -42,11 +57,10 @@ function generatePlantAIResponse(query) {
     return `🌱 **${capitalized} Plant Information**:\n${capitalized} plants thrive well in well-draining soil and bright indirect light. Keep the soil slightly moist and avoid stagnant water in the pot.\n\nYou can explore available ${capitalized} varieties in our [Plants Catalog](/plants) or [Seeds Collection](/seeds)!`;
   }
 
-  // 3. General Helpful E-Commerce & Gardening Assistance
+  // 5. Default General Support Assistance
   return `🌿 **Planters Agro Valley Support**:\nRegarding your query about "${query}":\n\n` +
-         `Our gardening specialists recommend providing adequate indirect light and well-draining soil. ` +
-         `You can browse our full catalog under [Plants](/plants), [Seeds](/seeds), or [Fertilizers](/fertilizers).\n\n` +
-         `For custom queries, feel free to contact our team at **support@plantersagrovalley.com** or **+91 98765 43210**!`;
+         `Our customer support team is available Mon - Sat (9 AM - 7 PM). You can explore our full catalog under [Plants](/plants), [Seeds](/seeds), or track orders via [Track Order](/track-order).\n\n` +
+         `For immediate assistance, feel free to contact us at **support@plantersagrovalley.com** or **+91 98765 43210**!`;
 }
 
 /**
