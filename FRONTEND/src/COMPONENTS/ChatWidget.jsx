@@ -100,7 +100,9 @@ export default function ChatWidget() {
         botReplyText = BOT_ANSWERS[text];
       } else if (text) {
         const lower = text.toLowerCase();
-        if (lower.includes("track") || lower.includes("order")) {
+        if (lower.includes("dispatch") || lower.includes("how long") || lower.includes("how much time") || lower.includes("turnaround")) {
+          botReplyText = BOT_ANSWERS["How long it will take to dispatch my order?"];
+        } else if (lower.includes("track") || lower.includes("where is my order")) {
           botReplyText = BOT_ANSWERS["Track my order"];
         } else if (lower.includes("ship") || lower.includes("charge") || lower.includes("delivery fee")) {
           botReplyText = BOT_ANSWERS["What will be shipping Charges?"];

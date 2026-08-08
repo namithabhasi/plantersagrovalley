@@ -26,7 +26,7 @@ import {
 import { FaStar } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import axios from '../api/axiosInstance';
-import { useCart } from '../context/CartContext';
+import { useCart, getMongoIdFromMockId } from '../context/CartContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { openAuthModal } from '../redux/auth/authSlice';
 import { plantProducts } from './Plants';
@@ -119,7 +119,7 @@ function Productdetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { addToCart } = useCart();
+  const { addToCart, cartItems, openCart } = useCart();
   const { user } = useSelector((state) => state.auth || {});
 
   const handleWriteReviewClick = () => {
@@ -151,7 +151,12 @@ function Productdetails() {
     try {
       const saved = JSON.parse(localStorage.getItem('planters_custom_reviews') || '[]');
       if (saved && saved.length > 0) {
-        setReviewsList([...saved, ...initialMockReviews]);
+        const todayStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+        const cleanedSaved = saved.map(r => ({
+          ...r,
+          date: (r.date === 'Today' || r.date === '6 August 2026') ? todayStr : r.date
+        }));
+        setReviewsList([...cleanedSaved, ...initialMockReviews]);
       }
     } catch (err) {
       console.error("Error loading reviews:", err);
@@ -355,18 +360,19 @@ function Productdetails() {
     fetchProductDetails();
   }, [id, navigate]);
 
-  // Check wishlist status
+  // Check wishlist status safely
   useEffect(() => {
     const checkWishlist = async () => {
       if (!user || !product) return;
       try {
+        const mongoId = getMongoIdFromMockId(product._id);
         const { data } = await axios.get('/wishlist');
         if (data.success && data.wishlist) {
-          const exists = data.wishlist.products?.some(p => p._id === product._id);
+          const exists = data.wishlist.products?.some(p => p._id === product._id || p._id === mongoId);
           setInWishlist(!!exists);
         }
       } catch (error) {
-        console.error("Error checking wishlist status:", error);
+        console.warn("Error checking wishlist status:", error);
       }
     };
     checkWishlist();
@@ -375,31 +381,58 @@ function Productdetails() {
   const handleWishlistToggle = async () => {
     if (!user) {
       toast.info("Please log in to add items to your wishlist.");
+      dispatch(openAuthModal({ tab: "login" }));
       return;
     }
+    if (!product) return;
+
     try {
       setAddingWishlist(true);
+      const mongoId = getMongoIdFromMockId(product._id);
       if (inWishlist) {
-        await axios.delete(`/wishlist/${product._id}`);
+        await axios.delete(`/wishlist/${mongoId}`).catch(() => {});
         setInWishlist(false);
         toast.success("Removed from wishlist");
       } else {
-        await axios.post('/wishlist', { productId: product._id });
+        await axios.post('/wishlist', { productId: mongoId }).catch(() => {});
         setInWishlist(true);
         toast.success("Added to wishlist");
       }
     } catch (error) {
-      console.error("Wishlist operation failed:", error);
-      toast.error("Failed to update wishlist.");
+      console.warn("Wishlist operation issue:", error);
     } finally {
       setAddingWishlist(false);
     }
   };
 
   const handleAddToCart = () => {
-    if (!product) return;
+    if (!product) {
+      toast.error("Product information not available.");
+      return;
+    }
+
+    const isOutOfStock =
+      product.inStock === false ||
+      product.isOutOfStock === true ||
+      (product.countInStock !== undefined && product.countInStock <= 0) ||
+      (product.stock !== undefined && product.stock <= 0);
+
+    if (isOutOfStock) {
+      toast.error("Sorry, this item is currently out of stock.");
+      return;
+    }
+
+    const isAlreadyInCart = cartItems.some(
+      (item) => item.id === product._id || item.name === product.name
+    );
+
+    if (isAlreadyInCart) {
+      if (openCart) openCart();
+      return;
+    }
+
     const productImage = product.images && product.images[0] ? product.images[0].url : haworthiaImg;
-    const displayPrice = product.salePrice && product.salePrice < product.price ? product.salePrice : product.price;
+    const displayPrice = product.salePrice && product.salePrice < product.price ? product.salePrice : (product.price || 0);
 
     for (let i = 0; i < quantity; i++) {
       addToCart({
@@ -409,12 +442,47 @@ function Productdetails() {
         image: productImage
       });
     }
-    toast.success(`${product.name} (x${quantity}) added to cart!`);
+
+    if (openCart) openCart();
   };
 
   const handleBuyNow = () => {
-    handleAddToCart();
-    navigate('/cart');
+    if (!product) return;
+
+    const isOutOfStock =
+      product.inStock === false ||
+      product.isOutOfStock === true ||
+      (product.countInStock !== undefined && product.countInStock <= 0) ||
+      (product.stock !== undefined && product.stock <= 0);
+
+    if (isOutOfStock) {
+      toast.error("Sorry, this item is currently out of stock.");
+      return;
+    }
+
+    const isAlreadyInCart = cartItems.some(
+      (item) => item.id === product._id || item.name === product.name
+    );
+
+    if (!isAlreadyInCart) {
+      const productImage = product.images && product.images[0] ? product.images[0].url : haworthiaImg;
+      const displayPrice = product.salePrice && product.salePrice < product.price ? product.salePrice : (product.price || 0);
+
+      for (let i = 0; i < quantity; i++) {
+        addToCart({
+          id: product._id,
+          name: product.name,
+          price: displayPrice,
+          image: productImage
+        });
+      }
+    }
+
+    if (openCart) {
+      openCart();
+    } else {
+      navigate('/cart');
+    }
   };
 
   // Upvote / Like Review
@@ -461,6 +529,12 @@ function Productdetails() {
   }
 
   if (!product) return null;
+
+  const isOutOfStock =
+    product.inStock === false ||
+    product.isOutOfStock === true ||
+    (product.countInStock !== undefined && product.countInStock <= 0) ||
+    (product.stock !== undefined && product.stock <= 0);
 
   const displayPrice = product.price;
   const originalPrice = product.originalPrice;
@@ -653,7 +727,7 @@ function Productdetails() {
               <div className="flex items-center gap-2 sm:gap-4 flex-1">
                 <button
                   onClick={handleAddToCart}
-                  disabled={!product.inStock}
+                  disabled={isOutOfStock}
                   className="btn btn-primary flex-1 min-h-[46px] py-3 px-2 sm:px-5 text-xs sm:text-sm font-bold uppercase tracking-normal sm:tracking-wider flex items-center justify-center gap-1.5 text-center whitespace-nowrap"
                 >
                   <FiShoppingCart size={17} className="flex-shrink-0" />
@@ -662,7 +736,7 @@ function Productdetails() {
 
                 <button
                   onClick={handleBuyNow}
-                  disabled={!product.inStock}
+                  disabled={isOutOfStock}
                   className="btn btn-outline-primary flex-1 min-h-[46px] py-3 px-2 sm:px-5 text-xs sm:text-sm font-bold uppercase tracking-normal sm:tracking-wider flex items-center justify-center gap-1.5 text-center whitespace-nowrap"
                 >
                   <span>Buy Now</span>
@@ -918,7 +992,7 @@ function Productdetails() {
 
                     {/* Metadata Line */}
                     <div className="text-xs sm:text-sm text-slate-500 flex flex-wrap items-center gap-3 font-medium my-2">
-                      <span> {rev.date === 'Today' ? '6 August 2026' : rev.date}</span>
+                      <span>{rev.date === 'Today' ? new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : rev.date}</span>
                       <span className="text-slate-300">|</span>
                       <span>Size: {rev.size || 'Standard'}</span>
                       <span className="text-slate-300">|</span>
@@ -961,35 +1035,34 @@ function Productdetails() {
 
                 {/* Pagination Controls */}
                 {totalPages > 1 && (
-                  <div className="flex items-center justify-center gap-2 pt-6 border-t border-slate-100">
+                  <div className="pagination-container !mt-8 !pt-6 border-t border-slate-100">
                     <button
+                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                       disabled={currentPage === 1}
-                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                      className="px-3 py-1.5 rounded-[3px] border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                      className="pagination-btn pagination-arrow"
                     >
-                      &lt; Previous
+                      &larr; Previous
                     </button>
-                    {[...Array(totalPages)].map((_, idx) => {
-                      const pageNum = idx + 1;
+
+                    {[...Array(totalPages)].map((_, index) => {
+                      const pageNum = index + 1;
                       return (
                         <button
                           key={pageNum}
                           onClick={() => setCurrentPage(pageNum)}
-                          className={`px-3 py-1.5 rounded-[3px] text-xs font-bold transition-all cursor-pointer ${currentPage === pageNum
-                            ? 'bg-[#06492D] text-white border border-[#06492D]'
-                            : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50'
-                            }`}
+                          className={`pagination-btn ${currentPage === pageNum ? 'active' : ''}`}
                         >
                           {pageNum}
                         </button>
                       );
                     })}
+
                     <button
+                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                       disabled={currentPage === totalPages}
-                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                      className="px-3 py-1.5 rounded-[3px] border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                      className="pagination-btn pagination-arrow"
                     >
-                      Next &gt;
+                      Next &rarr;
                     </button>
                   </div>
                 )}
