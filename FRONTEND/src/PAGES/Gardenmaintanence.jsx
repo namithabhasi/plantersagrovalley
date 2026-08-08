@@ -39,6 +39,7 @@ function Gardenmaintanence() {
   const [errors, setErrors] = useState({});
   const [dynamicServices, setDynamicServices] = useState([]);
   const [expandedServices, setExpandedServices] = useState([]);
+  const [showAllCustomServices, setShowAllCustomServices] = useState(false);
   const [contactInfo, setContactInfo] = useState({
     infoEmail: 'info@plantersagrovalley.com',
     careEmail: 'care@plantersagrovalley.com',
@@ -178,41 +179,40 @@ function Gardenmaintanence() {
       `}</style>
 
       {/* 1. Hero / Title Section: Pic Left and Text Right Layout */}
-      <section className="bg-[#fcfdfc] flex items-center" style={{ paddingTop: '20px', paddingBottom: '20px' }}>
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
+      <section className="bg-[#fcfdfc] flex items-center py-10 md:py-14">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center max-w-6xl mx-auto">
             
             {/* Left Column: Image */}
             <div className="w-full flex justify-center md:justify-start">
               <img
                 src={heroImg}
                 alt="Garden Maintenance"
-                className="w-full max-w-[400px] h-[200px] md:h-[250px] object-cover rounded-none border border-gray-100 shadow-sm"
+                className="w-full max-w-[440px] h-[240px] md:h-[320px] object-cover rounded-none border border-gray-100 shadow-sm"
               />
             </div>
 
             {/* Right Column: Text Content */}
             <div className="flex flex-col items-center md:items-start text-center md:text-left">
-              <span className="text-[var(--font-size-md)] font-semibold uppercase tracking-[3px] text-gray-500 mb-2 block">
+              <span className="text-[var(--font-size-md)] font-semibold uppercase tracking-[3px] text-[#06492D] mb-3 text-center block w-full">
                 Garden Maintenance
               </span>
               <h1 
                 className="section-title text-center md:text-left"
-                style={{ marginBottom: '30px' }}
+                style={{ marginBottom: '16px' }}
               >
-                WE CARE FOR YOUR GARDEN, YOU ENJOY IT
+                EXPERT CARE FOR A VIBRANT, FLOURISHING GARDEN
               </h1>
-              <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed mb-8 max-w-lg">
+              <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed mb-6 max-w-lg">
                 Professional care for a healthy, vibrant and beautiful garden all year round. Our experienced team handles everything from lawn mowing and pruning to cleanup.
               </p>
-              <div className="w-full md:w-auto flex justify-center md:justify-start">
+              <div className="w-full flex justify-center" style={{ marginTop: '5px' }}>
                 <a
                   href="#contact-form-section"
                   onClick={handleScrollToContact}
-                  className="btn btn-primary px-10 py-3.5 text-xs font-semibold tracking-wider uppercase rounded-none hover:scale-[1.01] active:scale-[0.99] transition-all inline-flex items-center justify-center gap-2"
-                  style={{ width: '180px', marginTop: '10px' }}
+                  className="btn btn-primary px-8 py-3.5 text-xs font-semibold tracking-wider uppercase rounded-none hover:scale-[1.01] active:scale-[0.99] transition-all inline-flex items-center justify-center"
                 >
-                  <FaPaperPlane size={11} /> Contact Now
+                  Contact Now
                 </a>
               </div>
             </div>
@@ -306,11 +306,14 @@ function Gardenmaintanence() {
                 <div className="product-card-image w-full h-44 overflow-hidden flex-shrink-0">
                   <img src={lawnImg} alt="Lawn Care" className="w-full h-full object-cover" />
                 </div>
-                <div className="product-card-content text-center flex-grow flex flex-col items-center justify-center p-3 my-auto">
-                  <h4 className="product-title uppercase tracking-wider text-xs font-semibold text-[#06492D] mb-2 text-center whitespace-nowrap">
+                <div className="product-card-content text-center flex-grow flex flex-col items-center justify-start pt-5 pb-5 px-3">
+                  <h4 className="product-title uppercase tracking-wider text-xs font-semibold text-[#06492D] mb-3 text-center whitespace-nowrap">
                     LAWN CARE
                   </h4>
-                  <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-muted)] leading-relaxed text-center max-w-[195px] mx-auto">
+                  <p 
+                    className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed px-1"
+                    style={{ textAlign: 'justify', textJustify: 'inter-word', textAlignLast: 'left' }}
+                  >
                     Complete mowing, edging, and lawn treatment for a lush green lawn.
                   </p>
                 </div>
@@ -323,11 +326,14 @@ function Gardenmaintanence() {
                 <div className="product-card-image w-full h-44 overflow-hidden flex-shrink-0">
                   <img src={pruningImg} alt="Pruning & Trimming" className="w-full h-full object-cover" />
                 </div>
-                <div className="product-card-content text-center flex-grow flex flex-col items-center justify-center p-3 my-auto">
-                  <h4 className="product-title uppercase tracking-wider text-xs font-semibold text-[#06492D] mb-2 text-center whitespace-nowrap">
+                <div className="product-card-content text-center flex-grow flex flex-col items-center justify-start pt-5 pb-5 px-3">
+                  <h4 className="product-title uppercase tracking-wider text-xs font-semibold text-[#06492D] mb-3 text-center whitespace-nowrap">
                     PRUNING &amp; TRIMMING
                   </h4>
-                  <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-muted)] leading-relaxed text-center max-w-[195px] mx-auto">
+                  <p 
+                    className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed px-1"
+                    style={{ textAlign: 'justify', textJustify: 'inter-word', textAlignLast: 'left' }}
+                  >
                     Expert pruning and trimming to keep all your plants healthy and shaped.
                   </p>
                 </div>
@@ -340,11 +346,14 @@ function Gardenmaintanence() {
                 <div className="product-card-image w-full h-44 overflow-hidden flex-shrink-0">
                   <img src={plantImg} alt="Plant Care" className="w-full h-full object-cover" />
                 </div>
-                <div className="product-card-content text-center flex-grow flex flex-col items-center justify-center p-3 my-auto">
-                  <h4 className="product-title uppercase tracking-wider text-xs font-semibold text-[#06492D] mb-2 text-center whitespace-nowrap">
+                <div className="product-card-content text-center flex-grow flex flex-col items-center justify-start pt-5 pb-5 px-3">
+                  <h4 className="product-title uppercase tracking-wider text-xs font-semibold text-[#06492D] mb-3 text-center whitespace-nowrap">
                     PLANT CARE
                   </h4>
-                  <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-muted)] leading-relaxed text-center max-w-[195px] mx-auto">
+                  <p 
+                    className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed px-1"
+                    style={{ textAlign: 'justify', textJustify: 'inter-word', textAlignLast: 'left' }}
+                  >
                     We nurture your plants with proper nutrition, watering, and expert care.
                   </p>
                 </div>
@@ -357,11 +366,14 @@ function Gardenmaintanence() {
                 <div className="product-card-image w-full h-44 overflow-hidden flex-shrink-0">
                   <img src={fertImg} alt="Fertilizing" className="w-full h-full object-cover" />
                 </div>
-                <div className="product-card-content text-center flex-grow flex flex-col items-center justify-center p-3 my-auto">
-                  <h4 className="product-title uppercase tracking-wider text-xs font-semibold text-[#06492D] mb-2 text-center whitespace-nowrap">
+                <div className="product-card-content text-center flex-grow flex flex-col items-center justify-start pt-5 pb-5 px-3">
+                  <h4 className="product-title uppercase tracking-wider text-xs font-semibold text-[#06492D] mb-3 text-center whitespace-nowrap">
                     FERTILIZING
                   </h4>
-                  <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-muted)] leading-relaxed text-center max-w-[195px] mx-auto">
+                  <p 
+                    className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed px-1"
+                    style={{ textAlign: 'justify', textJustify: 'inter-word', textAlignLast: 'left' }}
+                  >
                     Proper organic feeding for strong root systems and vibrant plant growth.
                   </p>
                 </div>
@@ -374,11 +386,14 @@ function Gardenmaintanence() {
                 <div className="product-card-image w-full h-44 overflow-hidden flex-shrink-0">
                   <img src={cleanupImg} alt="Garden Clean-up" className="w-full h-full object-cover" />
                 </div>
-                <div className="product-card-content text-center flex-grow flex flex-col items-center justify-center p-3 my-auto">
-                  <h4 className="product-title uppercase tracking-wider text-xs font-semibold text-[#06492D] mb-2 text-center whitespace-nowrap">
+                <div className="product-card-content text-center flex-grow flex flex-col items-center justify-start pt-5 pb-5 px-3">
+                  <h4 className="product-title uppercase tracking-wider text-xs font-semibold text-[#06492D] mb-3 text-center whitespace-nowrap">
                     GARDEN CLEAN-UP
                   </h4>
-                  <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-muted)] leading-relaxed text-center max-w-[195px] mx-auto">
+                  <p 
+                    className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed px-1"
+                    style={{ textAlign: 'justify', textJustify: 'inter-word', textAlignLast: 'left' }}
+                  >
                     We keep your garden clean, tidy, weed-free, and protected from pests.
                   </p>
                 </div>
@@ -410,6 +425,10 @@ function Gardenmaintanence() {
           ? [...dynamicServices, ...fallbackCustomServices] 
           : fallbackCustomServices;
 
+        const displayedCustomServices = showAllCustomServices 
+          ? allCustomServices 
+          : allCustomServices.slice(0, 3);
+
         return (
           <section className="bg-white overflow-hidden" style={{ paddingTop: '50px', paddingBottom: '50px' }}>
             <div className="container mx-auto px-4 md:px-6 max-w-6xl w-full">
@@ -417,19 +436,18 @@ function Gardenmaintanence() {
                 <h2 className="section-title text-center" style={{ marginBottom: '10px' }}>
                   OUR CUSTOM SERVICES
                 </h2>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const allIds = allCustomServices.map(s => s._id);
-                    setExpandedServices(prev => prev.length === allIds.length ? [] : allIds);
-                  }}
-                  className="md:absolute right-0 text-xs font-semibold tracking-wider text-[#06492D] hover:underline uppercase cursor-pointer transition-colors flex items-center gap-1 mt-2 md:mt-0"
-                >
-                  {expandedServices.length === allCustomServices.map(s => s._id).length ? 'VIEW LESS ↑' : 'VIEW ALL →'}
-                </button>
+                {allCustomServices.length > 3 && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAllCustomServices(prev => !prev)}
+                    className="md:absolute right-0 text-xs font-semibold tracking-wider text-[#06492D] hover:underline uppercase cursor-pointer transition-colors flex items-center gap-1 mt-2 md:mt-0"
+                  >
+                    {showAllCustomServices ? 'VIEW LESS ↑' : 'VIEW ALL →'}
+                  </button>
+                )}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto items-stretch justify-items-center w-full">
-                {allCustomServices.map((service) => {
+                {displayedCustomServices.map((service) => {
                   const isExpanded = expandedServices.includes(service._id);
                   return (
                     <div key={service._id} className="product-card-wrapper w-full flex justify-center">
@@ -444,7 +462,7 @@ function Gardenmaintanence() {
                             {service.title}
                           </h4>
                           <p 
-                            className={`font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-muted)] leading-relaxed mt-auto ${
+                            className={`font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed mt-auto ${
                               !isExpanded ? 'line-clamp-3 overflow-hidden text-ellipsis' : ''
                             }`}
                             style={{
@@ -482,47 +500,47 @@ function Gardenmaintanence() {
       })()}
 
       {/* 4. Contact Form Section: Regular Contact Form */}
-      <section id="contact-form-section" className="bg-[var(--color-primary-bg)]" style={{ paddingTop: '60px', paddingBottom: '80px' }}>
+      <section id="contact-form-section" className="bg-[var(--color-primary-bg)] px-4 md:px-6" style={{ paddingTop: '50px', paddingBottom: '70px' }}>
         <div className="container mx-auto">
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 lg:gap-20 items-start max-w-5xl mx-auto w-full">
             {/* Left Column: Let's Keep Your Garden Beautiful Together */}
-            <div className="flex flex-col text-center md:text-left">
+            <div className="flex flex-col items-center md:items-start text-center md:text-left w-full">
               <h2 
-                className="section-title text-center md:text-left"
-                style={{ marginBottom: '30px' }}
+                className="section-title text-center md:text-left w-full"
+                style={{ marginBottom: '24px' }}
               >
                 LET'S KEEP YOUR GARDEN BEAUTIFUL TOGETHER
               </h2>
-              <p style={{ marginBottom: '20px', textAlign: 'justify', textJustify: 'inter-word', textAlignLast: 'left' }} className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-gray-700 leading-relaxed mb-10 max-w-sm">
+              <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed mb-8 max-w-md text-center md:text-left">
                 Get in touch with us for customized plant inquiries, garden maintenance, or any support needed.
               </p>
 
               {/* Contact Details List */}
-              <div className="flex flex-col gap-6 text-[var(--color-text-main)] text-[var(--font-size-md)] mb-6">
+              <div className="flex flex-col gap-5 text-[var(--color-text-main)] text-[var(--font-size-md)] mb-8 w-full items-center md:items-start">
                 <a href={`tel:${contactInfo.mobile || "+918468888666"}`} className="flex items-center gap-3 justify-center md:justify-start text-[var(--color-text-main)] hover:text-[#06492D] transition-colors text-decoration-none">
-                  <FaPhoneAlt className="text-[var(--color-primary-dark)]" size={15} />
+                  <FaPhoneAlt className="text-[var(--color-primary-dark)] flex-shrink-0" size={15} />
                   <span>{contactInfo.mobile || "+91-8468888666"}</span>
                 </a>
                 <a href={`mailto:${contactInfo.infoEmail || "info@plantersagrovalley.com"}`} className="flex items-center gap-3 justify-center md:justify-start text-[var(--color-text-main)] hover:text-[#06492D] transition-colors text-decoration-none">
-                  <FaEnvelope className="text-[var(--color-primary-dark)]" size={15} />
+                  <FaEnvelope className="text-[var(--color-primary-dark)] flex-shrink-0" size={15} />
                   <span>{contactInfo.infoEmail || "info@plantersagrovalley.com"}</span>
                 </a>
                 <a 
                   href="https://maps.google.com/?q=Planters+Agro+Valley,+Ernakulam,+Kerala,+India" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 justify-center md:justify-start text-[var(--color-text-main)] hover:text-[#06492D] hover:underline cursor-pointer text-decoration-none transition-colors"
+                  className="flex items-start md:items-center gap-3 justify-center md:justify-start text-[var(--color-text-main)] hover:text-[#06492D] hover:underline cursor-pointer text-decoration-none transition-colors text-center md:text-left"
                 >
-                  <FaMapMarkerAlt className="text-[var(--color-primary-dark)]" size={15} />
+                  <FaMapMarkerAlt className="text-[var(--color-primary-dark)] mt-0.5 md:mt-0 flex-shrink-0" size={15} />
                   <span>Planters Agro Valley, Ernakulam, Kerala, India</span>
                 </a>
               </div>
 
               {/* Social Media Links with marginTop: 10px */}
-              <div className="pt-4 flex flex-col gap-4 items-center md:items-start" style={{ marginTop: '10px' }}>
+              <div className="pt-2 flex flex-col gap-3 items-center md:items-start w-full" style={{ marginTop: '10px' }}>
                 <span className="text-[var(--font-size-md)] font-semibold text-[var(--color-text-main)] uppercase tracking-wider">Follow Us</span>
-                <div className="flex items-center gap-5 text-[var(--color-text-main)]">
+                <div className="flex items-center justify-center md:justify-start gap-5 text-[var(--color-text-main)]">
                   <a href={contactInfo.facebook || "https://facebook.com"} target="_blank" rel="noopener noreferrer" className="hover:text-[#06492D] transition-colors" aria-label="Facebook">
                     <FaFacebookF size={16} />
                   </a>
@@ -547,7 +565,7 @@ function Gardenmaintanence() {
 
             {/* Right Column: Regular Contact Form */}
             <div className="w-full flex justify-center md:justify-start">
-              <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4 w-full max-w-[400px]">
+              <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-3.5 w-full max-w-[400px]">
                 
                 {/* Name Input */}
                 <div className="flex flex-col gap-1 w-full">
@@ -562,7 +580,7 @@ function Gardenmaintanence() {
                     }`}
                   />
                   {errors.name && (
-                    <span className="text-[var(--font-size-md)] text-red-500 mt-1 font-light text-left">
+                    <span className="text-xs text-red-500 mt-1 font-medium text-left">
                       {errors.name}
                     </span>
                   )}
@@ -581,7 +599,7 @@ function Gardenmaintanence() {
                     }`}
                   />
                   {errors.email && (
-                    <span className="text-[var(--font-size-md)] text-red-500 mt-1 font-light text-left">
+                    <span className="text-xs text-red-500 mt-1 font-medium text-left">
                       {errors.email}
                     </span>
                   )}
@@ -600,7 +618,7 @@ function Gardenmaintanence() {
                     }`}
                   />
                   {errors.phone && (
-                    <span className="text-[var(--font-size-md)] text-red-500 mt-1 font-light text-left">
+                    <span className="text-xs text-red-500 mt-1 font-medium text-left">
                       {errors.phone}
                     </span>
                   )}
@@ -610,7 +628,7 @@ function Gardenmaintanence() {
                 <div className="flex flex-col gap-1 w-full">
                   <textarea
                     name="comment"
-                    rows={5}
+                    rows={4}
                     value={formData.comment}
                     onChange={handleInputChange}
                     placeholder="Comment"
@@ -619,7 +637,7 @@ function Gardenmaintanence() {
                     }`}
                   />
                   {errors.comment && (
-                    <span className="text-[var(--font-size-md)] text-red-500 mt-1 font-light text-left">
+                    <span className="text-xs text-red-500 mt-1 font-medium text-left">
                       {errors.comment}
                     </span>
                   )}
@@ -650,7 +668,7 @@ function Gardenmaintanence() {
                     </span>
                   </label>
                   {errors.agreePrivacy && (
-                    <span className="text-[var(--font-size-md)] text-red-500 mt-1 font-light text-left">
+                    <span className="text-xs text-red-500 mt-1 font-medium text-left">
                       {errors.agreePrivacy}
                     </span>
                   )}

@@ -72,8 +72,8 @@ function Getintouch() {
     }
     if (!formData.phone.trim()) {
       newErrors.phone = 'Phone number is required';
-    } else if (formData.phone.trim().length !== 10) {
-      newErrors.phone = 'Phone number must be exactly 10 digits';
+    } else if (!/^[6-9]\d{9}$/.test(formData.phone.trim())) {
+      newErrors.phone = 'Please enter a valid 10-digit mobile number';
     }
     if (!formData.comment.trim()) {
       newErrors.comment = 'Comment is required';
@@ -113,7 +113,7 @@ function Getintouch() {
   return (
     <div className="w-full bg-white select-none font-[var(--font-family-base)]">
       {/* Redesigned Contact Section matching Gardenmaintanence.jsx padding, spacing and layout */}
-      <section id="contact-form-section" className="bg-white border-t border-gray-100" style={{ paddingTop: '60px', paddingBottom: '80px' }}>
+      <section id="contact-form-section" className="bg-[var(--color-primary-bg)] px-4 md:px-6" style={{ paddingTop: '50px', paddingBottom: '70px' }}>
         <div className="container mx-auto">
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start max-w-5xl mx-auto">
@@ -147,7 +147,7 @@ function Getintouch() {
                   className="flex items-center gap-3 justify-center md:justify-start text-gray-700 hover:text-[#06492D] hover:underline cursor-pointer text-decoration-none transition-colors"
                 >
                   <FaMapMarkerAlt className="text-[var(--color-primary-dark)]" size={15} />
-                  <span style={{ marginBottom: '20px' }} >Planters Agro Valley, Ernakulam, Kerala, India</span>
+                  <span>Planters Agro Valley, Ernakulam, Kerala, India</span>
                 </a>
               </div>
 
@@ -179,7 +179,7 @@ function Getintouch() {
 
             {/* Right Column: Contact Form */}
             <div className="w-full flex justify-center md:justify-start">
-              <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4 w-full max-w-[400px]">
+              <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-3.5 w-full max-w-[400px]">
                 
                 {/* Name Input */}
                 <div className="flex flex-col gap-1 w-full">
@@ -189,12 +189,12 @@ function Getintouch() {
                     value={formData.name}
                     onChange={handleInputChange}
                     placeholder="Name"
-                    className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-gray-700 placeholder-gray-400 ${
-                      errors.name ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                    className={`w-full bg-white border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-gray-700 placeholder-gray-400 ${
+                      errors.name ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-[#06492D]'
                     }`}
                   />
                   {errors.name && (
-                    <span className="text-[var(--font-size-md)] text-red-500 mt-1 text-left">
+                    <span className="text-xs text-red-500 mt-1 font-medium text-left">
                       {errors.name}
                     </span>
                   )}
@@ -208,12 +208,12 @@ function Getintouch() {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="Email"
-                    className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-gray-700 placeholder-gray-400 ${
-                      errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                    className={`w-full bg-white border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-gray-700 placeholder-gray-400 ${
+                      errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-[#06492D]'
                     }`}
                   />
                   {errors.email && (
-                    <span className="text-[var(--font-size-md)] text-red-500 mt-1 text-left">
+                    <span className="text-xs text-red-500 mt-1 font-medium text-left">
                       {errors.email}
                     </span>
                   )}
@@ -230,12 +230,12 @@ function Getintouch() {
                     inputMode="numeric"
                     pattern="[0-9]*"
                     placeholder="Phone number"
-                    className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-gray-700 placeholder-gray-400 ${
-                      errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                    className={`w-full bg-white border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-gray-700 placeholder-gray-400 ${
+                      errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-[#06492D]'
                     }`}
                   />
                   {errors.phone && (
-                    <span className="text-[var(--font-size-md)] text-red-500 mt-1 text-left">
+                    <span className="text-xs text-red-500 mt-1 font-medium text-left">
                       {errors.phone}
                     </span>
                   )}
@@ -245,23 +245,23 @@ function Getintouch() {
                 <div className="flex flex-col gap-1 w-full">
                   <textarea
                     name="comment"
-                    rows={5}
+                    rows={4}
                     value={formData.comment}
                     onChange={handleInputChange}
                     placeholder="Comment"
-                    className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-gray-700 placeholder-gray-400 resize-none ${
-                      errors.comment ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                    className={`w-full bg-white border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-gray-700 placeholder-gray-400 resize-none ${
+                      errors.comment ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-[#06492D]'
                     }`}
                   />
                   {errors.comment && (
-                    <span className="text-[var(--font-size-md)] text-red-500 mt-1 text-left">
+                    <span className="text-xs text-red-500 mt-1 font-medium text-left">
                       {errors.comment}
                     </span>
                   )}
                 </div>
 
                 {/* Privacy Checkbox with Extra Spacing */}
-                <div className="flex flex-col gap-1 mt-2 relative">
+                <div className="flex flex-col gap-1 mt-1 relative">
                   <label className="flex items-center gap-3 cursor-pointer group text-gray-700 text-[var(--font-size-md)] text-left">
                     <input
                       type="checkbox"
@@ -270,7 +270,7 @@ function Getintouch() {
                       onChange={handleInputChange}
                       className="sr-only"
                     />
-                    <div className={`w-4 h-4 flex items-center justify-center border rounded-none shrink-0 transition-all duration-200 ${formData.agreePrivacy ? 'bg-[#06492D] border-[#06492D] text-white' : 'border-gray-300 group-hover:border-gray-400'}`}>
+                    <div className={`w-4 h-4 flex items-center justify-center border rounded-none shrink-0 transition-all duration-200 ${formData.agreePrivacy ? 'bg-[#06492D] border-[#06492D] text-white' : 'bg-white border-gray-300 group-hover:border-[#06492D]'}`}>
                       {formData.agreePrivacy && (
                         <svg className="w-3 h-3 fill-current" viewBox="0 0 20 20">
                           <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
@@ -285,7 +285,7 @@ function Getintouch() {
                     </span>
                   </label>
                   {errors.agreePrivacy && (
-                    <span className="text-[var(--font-size-md)] text-red-500 mt-1 text-left">
+                    <span className="text-xs text-red-500 mt-1 font-medium text-left">
                       {errors.agreePrivacy}
                     </span>
                   )}
@@ -295,7 +295,7 @@ function Getintouch() {
                 <div className="w-full flex justify-center mt-2">
                   <button
                     type="submit"
-                    className="btn btn-primary rounded-none w-full max-w-[180px] py-3.5 text-[var(--font-size-md)] font-semibold tracking-wider uppercase hover:scale-[1.01] active:scale-[0.99] transition-all"
+                    className="btn btn-primary rounded-none w-full max-w-[180px] py-3.5 text-xs font-semibold tracking-wider uppercase hover:scale-[1.01] active:scale-[0.99] transition-all"
                   >
                     Send Message
                   </button>

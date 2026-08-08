@@ -44,6 +44,7 @@ function Plantrental() {
   const [expandedOfferings, setExpandedOfferings] = useState([]);
   const [expandedSteps, setExpandedSteps] = useState([]);
   const [expandedServices, setExpandedServices] = useState([]);
+  const [showAllCustomServices, setShowAllCustomServices] = useState(false);
 
   const toggleOfferingExpand = (id) => {
     setExpandedOfferings(prev => 
@@ -103,8 +104,8 @@ function Plantrental() {
     }
     if (!formData.phone.trim()) {
       newErrors.phone = 'Phone number is required';
-    } else if (formData.phone.length !== 10) {
-      newErrors.phone = 'Phone number must be exactly 10 digits';
+    } else if (!/^[6-9]\d{9}$/.test(formData.phone.trim())) {
+      newErrors.phone = 'Please enter a valid 10-digit mobile number';
     }
     if (!formData.comment.trim()) {
       newErrors.comment = 'Comment is required';
@@ -508,6 +509,10 @@ function Plantrental() {
           ? [...dynamicServices, ...fallbackCustomServices] 
           : fallbackCustomServices;
 
+        const displayedCustomServices = showAllCustomServices 
+          ? allCustomServices 
+          : allCustomServices.slice(0, 3);
+
         return (
           <section className="bg-white border-b border-gray-100 overflow-hidden" style={{ paddingTop: '50px', paddingBottom: '50px' }}>
             <div className="container mx-auto px-4 md:px-6 max-w-6xl w-full">
@@ -515,19 +520,18 @@ function Plantrental() {
                 <h2 className="section-title text-center" style={{ marginBottom: 0 }}>
                   OUR CUSTOM SERVICES
                 </h2>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const allIds = allCustomServices.map(s => s._id);
-                    setExpandedServices(prev => prev.length === allIds.length ? [] : allIds);
-                  }}
-                  className="md:absolute right-0 text-xs font-semibold tracking-wider text-[#06492D] hover:underline uppercase cursor-pointer transition-colors flex items-center gap-1 mt-2 md:mt-0"
-                >
-                  {expandedServices.length === allCustomServices.map(s => s._id).length ? 'VIEW LESS ↑' : 'VIEW ALL →'}
-                </button>
+                {allCustomServices.length > 3 && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAllCustomServices(prev => !prev)}
+                    className="md:absolute right-0 text-xs font-semibold tracking-wider text-[#06492D] hover:underline uppercase cursor-pointer transition-colors flex items-center gap-1 mt-2 md:mt-0"
+                  >
+                    {showAllCustomServices ? 'VIEW LESS ↑' : 'VIEW ALL →'}
+                  </button>
+                )}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto items-stretch justify-items-center w-full">
-                {allCustomServices.map((service) => {
+                {displayedCustomServices.map((service) => {
                   const isExpanded = expandedServices.includes(service._id);
                   return (
                     <div key={service._id} className="product-card-wrapper w-full flex justify-center">
@@ -542,7 +546,7 @@ function Plantrental() {
                             {service.title}
                           </h4>
                           <p 
-                            className={`font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-muted)] leading-relaxed mt-auto ${
+                            className={`font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed mt-auto ${
                               !isExpanded ? 'line-clamp-3 overflow-hidden text-ellipsis' : ''
                             }`}
                             style={{
@@ -591,7 +595,7 @@ function Plantrental() {
             </h2>
           </div>
 
-          <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5 w-full">
+          <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4 w-full">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1 w-full">
                 <input
@@ -600,11 +604,11 @@ function Plantrental() {
                   value={formData.name}
                   onChange={handleInputChange}
                   placeholder="Name"
-                  className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 ${
-                    errors.name ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                  className={`w-full bg-white border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 ${
+                    errors.name ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-[#06492D]'
                   }`}
                 />
-                {errors.name && <span className="text-[var(--font-size-md)] text-red-600 mt-0.5">{errors.name}</span>}
+                {errors.name && <span className="text-xs text-red-500 mt-1 font-medium text-left">{errors.name}</span>}
               </div>
 
               <div className="flex flex-col gap-1 w-full">
@@ -614,11 +618,11 @@ function Plantrental() {
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder="Email"
-                  className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 ${
-                    errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                  className={`w-full bg-white border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 ${
+                    errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-[#06492D]'
                   }`}
                 />
-                {errors.email && <span className="text-[var(--font-size-md)] text-red-600 mt-0.5">{errors.email}</span>}
+                {errors.email && <span className="text-xs text-red-500 mt-1 font-medium text-left">{errors.email}</span>}
               </div>
             </div>
 
@@ -632,25 +636,25 @@ function Plantrental() {
                 value={formData.phone}
                 onChange={handleInputChange}
                 placeholder="10-digit Phone number"
-                className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 ${
-                  errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                className={`w-full bg-white border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 ${
+                  errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-[#06492D]'
                 }`}
               />
-              {errors.phone && <span className="text-[var(--font-size-md)] text-red-600 mt-0.5">{errors.phone}</span>}
+              {errors.phone && <span className="text-xs text-red-500 mt-1 font-medium text-left">{errors.phone}</span>}
             </div>
 
             <div className="flex flex-col gap-1 w-full">
               <textarea
                 name="comment"
-                rows={6}
+                rows={4}
                 value={formData.comment}
                 onChange={handleInputChange}
                 placeholder="Comment"
-                className={`w-full bg-[#fcfcfc] border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 resize-none ${
-                  errors.comment ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                className={`w-full bg-white border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 resize-none ${
+                  errors.comment ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-[#06492D]'
                 }`}
               />
-              {errors.comment && <span className="text-[var(--font-size-md)] text-red-600 mt-0.5">{errors.comment}</span>}
+              {errors.comment && <span className="text-xs text-red-500 mt-1 font-medium text-left">{errors.comment}</span>}
             </div>
 
             {/* Privacy Checkbox with Spacing & High Visibility */}
@@ -678,7 +682,7 @@ function Plantrental() {
                 </span>
               </label>
               {errors.agreePrivacy && (
-                <span className="text-[var(--font-size-md)] text-red-600 block">{errors.agreePrivacy}</span>
+                <span className="text-xs text-red-500 mt-1 font-medium text-left block">{errors.agreePrivacy}</span>
               )}
             </div>
 

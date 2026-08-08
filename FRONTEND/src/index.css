@@ -171,6 +171,18 @@ h6 {
   line-height: var(--line-height-tight);
 }
 
+.section-title {
+  font-family: var(--font-family-heading);
+  font-size: 32px;
+  font-weight: 300;
+  letter-spacing: 0.6px;
+  line-height: 42px;
+  color: var(--color-primary-dark);
+  display: block;
+  text-align: center;
+  text-transform: uppercase;
+}
+
 h1 {
   font-size: var(--font-size-3xl);
 }
