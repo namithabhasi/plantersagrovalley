@@ -31,12 +31,16 @@
   --color-success: #27ae60;
 
   /* Neutral Tones */
-  --color-text-main: #2c3e50;
-  /* Primary Dark Slate Body Text */
-  --color-text-muted: #6c757d;
-  /* Muted Gray Secondary Text */
-  --color-text-light: #95a5a6;
-  /* Light Gray */
+  --color-charcoal-dark: #1F2937;
+  /* Premium Dark Charcoal */
+  --color-charcoal-medium: #374151;
+  /* Medium Charcoal */
+  --color-text-main: #1F2937;
+  /* Primary Dark Charcoal Body Text */
+  --color-text-muted: #374151;
+  /* Medium Charcoal Secondary Text */
+  --color-text-light: #6B7280;
+  /* Light Charcoal Gray */
   --color-bg-main: #ffffff;
   /* Pure White Background */
   --color-bg-secondary: #f8f9fa;
