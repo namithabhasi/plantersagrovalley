@@ -9,6 +9,7 @@ import Anthurium from '../assets/Anthurium.png';
 import haworthiaImg from '../assets/Haworthia.jpg';
 import { getItemImage } from '../utils/itemImageHelper';
 import OrderTrackingModal from '../COMPONENTS/OrderTrackingModal';
+import ReturnTrackingModal from '../COMPONENTS/ReturnTrackingModal';
 import InvoiceModal from '../COMPONENTS/InvoiceModal';
 import OrderSummaryModal from '../COMPONENTS/OrderSummaryModal';
 import './Plants.css';
@@ -40,6 +41,13 @@ function Profile() {
 
   const [selectedTrackingOrder, setSelectedTrackingOrder] = useState(null);
   const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
+  const [selectedReturnStatusOrder, setSelectedReturnStatusOrder] = useState(null);
+  const [isReturnTrackingModalOpen, setIsReturnTrackingModalOpen] = useState(false);
+
+  const handleOpenReturnStatusModal = (order) => {
+    setSelectedReturnStatusOrder(order);
+    setIsReturnTrackingModalOpen(true);
+  };
 
   const [openShipToOrderId, setOpenShipToOrderId] = useState(null);
   const [openInvoiceOrderId, setOpenInvoiceOrderId] = useState(null);
@@ -156,11 +164,22 @@ function Profile() {
     setIsReturnModalOpen(true);
   };
 
-  const handleSubmitReturn = () => {
+  const handleSubmitReturn = async () => {
     if (!selectedReturnOrder) return;
+
+    const targetId = selectedReturnOrder._id || selectedReturnOrder.orderNumber;
+
+    try {
+      await axios.put(`/orders/${targetId}/return`, {
+        returnReason: returnReason || "Item damaged / Quality issue"
+      });
+    } catch (e) {
+      console.warn("Backend return request error (updating local state):", e);
+    }
 
     const returnedObj = {
       ...selectedReturnOrder,
+      orderStatus: "Return Requested",
       returnReason: returnReason || "Return requested by customer",
       returnDate: new Date().toISOString(),
       returnStatus: "Return Requested",
@@ -168,11 +187,10 @@ function Profile() {
     };
 
     setReturnedOrders(prev => [returnedObj, ...prev]);
-
-    setOrders(prev => prev.map(o => (o._id === selectedReturnOrder._id || o.orderNumber === selectedReturnOrder.orderNumber) ? { ...o, orderStatus: 'Returned' } : o));
+    setOrders(prev => prev.map(o => (o._id === targetId || o.orderNumber === targetId) ? { ...o, orderStatus: 'Return Requested' } : o));
 
     setIsReturnModalOpen(false);
-    toast.success("Return request submitted! You can view it under Returns & Refunds.");
+    toast.success("Return request submitted to admin! You can view it under Returns & Refunds.");
   };
 
   // Fetch counts on load
@@ -416,7 +434,7 @@ function Profile() {
               <h4 className="text-2xl font-[var(--font-family-heading)] font-normal text-[var(--color-primary-dark)] uppercase tracking-wide m-0">
                 My Orders
               </h4>
-              <p className="text-[var(--font-size-xs)] text-[var(--color-text-muted)] font-normal mt-1 tracking-wider">
+              <p  style={{marginBottom:'30px'}}className="text-[var(--font-size-xs)] text-[var(--color-text-muted)] font-normal mt-1 tracking-wider">
                 {orders.length} {orders.length === 1 ? "order" : "orders"} placed
               </p>
             </div>
@@ -619,6 +637,7 @@ function Profile() {
 
                                   <Link 
                                     to={`/product/${item.product || item._id}`}
+                                    state={{ product: { _id: item.product || item._id, name: item.name, image: itemImage, price: item.price } }}
                                     className="order-action-btn order-action-btn-inline"
                                   >
                                     View your item
@@ -638,8 +657,8 @@ function Profile() {
 
                               {isAlreadyReturned ? (
                                 <button
-                                  onClick={() => setActive('returns')}
-                                  className="order-action-btn-purple"
+                                  onClick={() => handleOpenReturnStatusModal(order)}
+                                  className="order-action-btn cursor-pointer"
                                 >
                                   View Return Status
                                 </button>
@@ -718,14 +737,21 @@ function Profile() {
               <h4 className="text-2xl font-[var(--font-family-heading)] font-normal text-[var(--color-primary-dark)] uppercase tracking-wide m-0">
                 Returns & Refunds
               </h4>
-              <p className="text-[var(--font-size-xs)] text-[var(--color-text-muted)] font-normal mt-1 tracking-wider">
+              <p style={{marginBottom:'30px'}} className="text-[var(--font-size-xs)] text-[var(--color-text-muted)] font-normal mt-1 tracking-wider">
                 {returnedOrders.length} {returnedOrders.length === 1 ? "return request in progress" : "return requests in progress"}
               </p>
             </div>
+            <Link
+              to="/returns"
+              className="text-xs font-semibold text-[#06492D] hover:underline uppercase tracking-wider flex items-center gap-1.5 cursor-pointer text-decoration-none"
+            >
+              <span>View All</span>
+              <span className="text-sm">→</span>
+            </Link>
           </div>
 
           <div className="flex flex-col gap-5">
-            {returnedOrders.map((ret) => {
+            {returnedOrders.slice(0, 1).map((ret) => {
               const formattedReturnDate = new Date(ret.returnDate || ret.createdAt || Date.now()).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
               return (
@@ -802,12 +828,12 @@ function Profile() {
                             </div>
 
                             <div className="flex flex-col gap-2 w-full sm:w-52 shrink-0">
-                              <Link 
-                                to={`/order-details?orderId=${ret._id}`} 
-                                className="order-action-btn-purple text-center text-decoration-none"
+                              <button 
+                                onClick={() => handleOpenReturnStatusModal(ret)} 
+                                className="order-action-btn cursor-pointer text-center"
                               >
                                 View Return Status
-                              </Link>
+                              </button>
                             </div>
 
                           </div>
@@ -1659,6 +1685,13 @@ function Profile() {
         isOpen={isTrackingModalOpen}
         onClose={() => setIsTrackingModalOpen(false)}
         order={selectedTrackingOrder}
+      />
+
+      {/* Return Tracking Modal */}
+      <ReturnTrackingModal
+        isOpen={isReturnTrackingModalOpen}
+        onClose={() => setIsReturnTrackingModalOpen(false)}
+        returnOrder={selectedReturnStatusOrder}
       />
 
       {/* Tax Invoice Modal */}

@@ -32,7 +32,7 @@ function Cart() {
   }
 
   return (
-    <div className="cart-page-wrapper">
+    <div style={{marginTop:'30px',marginBottom:'30px'}} className="cart-page-wrapper">
       <div className="container cart-page-container">
         
         {/* Header */}

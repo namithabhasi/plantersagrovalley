@@ -118,6 +118,7 @@ function Review() {
     const newReviewObj = {
       id: Date.now(),
       productId: targetId,
+      productName: product.name || '',
       author: finalAuthor,
       avatar: avatarChar,
       date: currentDate,

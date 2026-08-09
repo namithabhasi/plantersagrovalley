@@ -7,6 +7,7 @@ import {
   getMyOrders,
   getOrderById,
   cancelOrder,
+  requestReturn,
   getAllOrders,
   updateOrderStatus,
   deleteOrder,
@@ -89,6 +90,11 @@ router.put(
   orderIdValidator,
   validationMiddleware,
   cancelOrder
+);
+
+router.put(
+  "/:id/return",
+  requestReturn
 );
 
 router.delete(

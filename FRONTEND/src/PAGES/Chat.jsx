@@ -159,7 +159,7 @@ function Chat() {
 
   return (
     <>
-      {/* 1. FLOATING CHAT TRIGGER BUTTON (PIC 1) */}
+      {/* 1. FLOATING CHAT TRIGGER BUTTON (WITH CHAT TITLE & PERFECT CENTER ALIGNMENT) */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
