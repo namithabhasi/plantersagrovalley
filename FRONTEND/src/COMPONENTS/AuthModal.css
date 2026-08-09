@@ -52,6 +52,17 @@
   transition: background-color 0.2s ease;
   margin-top: var(--space-3);
 }
+
+.auth-submit-btn:hover {
+  background-color: var(--color-primary);
+}
+
+.auth-submit-btn:disabled {
+  background-color: var(--color-text-light);
+  cursor: not-allowed;
+}
+
+.auth-modal-close-btn {
   position: absolute;
   top: 16px;
   right: 16px;
@@ -97,7 +108,7 @@
   background: none;
   border: none;
   font-family: var(--font-family-heading);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-md);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-muted);
   cursor: pointer;
@@ -150,32 +161,6 @@
 .auth-input-row {
   display: flex;
   gap: var(--space-3);
-}
-
-.auth-submit-btn {
-  background-color: var(--color-primary-dark);
-  color: #ffffff;
-  border: none;
-  border-radius: 3px;
-  padding: 12px;
-  font-family: var(--font-family-heading);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s ease;
-  margin-top: var(--space-3);
-}
-
-.auth-submit-btn:hover {
-  background-color: var(--color-primary);
-}
-
-.auth-submit-btn:disabled {
-  background-color: var(--color-text-light);
-  cursor: not-allowed;
 }
 
 .auth-toggle-prompt {
