@@ -53,6 +53,9 @@ const OrderStatusColors = {
   Shipped: { bg: "#f3e5f5", color: "#4a148c" },
   Delivered: { bg: "success.light", color: "success.main" },
   Cancelled: { bg: "#ffebee", color: "#b71c1c" },
+  "Return Requested": { bg: "#f3e5f5", color: "#6b21a8" },
+  Returned: { bg: "#f3e5f5", color: "#7e22ce" },
+  "Return Approved": { bg: "#e8f5e9", color: "#2e7d32" },
 };
 
 const PaymentStatusColors = {
@@ -313,6 +316,9 @@ const Orders = () => {
               <MenuItem value="Shipped">Shipped</MenuItem>
               <MenuItem value="Delivered">Delivered</MenuItem>
               <MenuItem value="Cancelled">Cancelled</MenuItem>
+              <MenuItem value="Return Requested">Return Requested</MenuItem>
+              <MenuItem value="Returned">Returned</MenuItem>
+              <MenuItem value="Return Approved">Return Approved</MenuItem>
             </Select>
           </FormControl>
 
@@ -850,6 +856,9 @@ const Orders = () => {
                   <MenuItem value="Shipped">Shipped</MenuItem>
                   <MenuItem value="Delivered">Delivered</MenuItem>
                   <MenuItem value="Cancelled">Cancelled</MenuItem>
+                  <MenuItem value="Return Requested">Return Requested</MenuItem>
+                  <MenuItem value="Returned">Returned</MenuItem>
+                  <MenuItem value="Return Approved">Return Approved</MenuItem>
                 </Select>
               </FormControl>
 

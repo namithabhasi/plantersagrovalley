@@ -673,11 +673,11 @@ function Payment() {
 
               {/* Policy Footer Links Row */}
               <div className="checkout-policies-footer">
-                <a href="#refund" className="policy-link">Refund policy</a>
-                <a href="#shipping" className="policy-link">Shipping policy</a>
-                <a href="#privacy" className="policy-link">Privacy policy</a>
-                <a href="#terms" className="policy-link">Terms of service</a>
-                <a href="#contact" className="policy-link">Contact information</a>
+                <Link to="/cancel-refund" target="_blank" rel="noopener noreferrer" className="policy-link">Refund policy</Link>
+                <Link to="/shipping-policy" target="_blank" rel="noopener noreferrer" className="policy-link">Shipping policy</Link>
+                <Link to="/privacy-policy" target="_blank" rel="noopener noreferrer" className="policy-link">Privacy policy</Link>
+                <Link to="/terms-conditions" target="_blank" rel="noopener noreferrer" className="policy-link">Terms of service</Link>
+                <Link to="/contact" target="_blank" rel="noopener noreferrer" className="policy-link">Contact information</Link>
               </div>
 
             </div>
@@ -834,7 +834,24 @@ function Payment() {
                       style={{ marginTop: '3px' }}
                     />
                     <span style={{ fontSize: '13px', lineHeight: '1.4' }}>
-                      I accept the <a href="#privacy" style={{ textDecoration: 'underline', color: 'var(--color-primary-dark)' }}>Privacy Policy</a> and <a href="#terms" style={{ textDecoration: 'underline', color: 'var(--color-primary-dark)' }}>Terms and Conditions</a>
+                      I accept the{' '}
+                      <Link 
+                        to="/privacy-policy" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        style={{ textDecoration: 'underline', color: 'var(--color-primary-dark)' }}
+                      >
+                        Privacy Policy
+                      </Link>{' '}
+                      and{' '}
+                      <Link 
+                        to="/terms-conditions" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        style={{ textDecoration: 'underline', color: 'var(--color-primary-dark)' }}
+                      >
+                        Terms and Conditions
+                      </Link>
                     </span>
                   </label>
                   {errors.acceptTerms && <span className="checkout-error-text" style={{ marginTop: '6px' }}>{errors.acceptTerms}</span>}

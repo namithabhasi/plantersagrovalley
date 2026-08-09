@@ -320,7 +320,12 @@ function Productdetails() {
         }
 
         // 2. Fetch from backend API
-        const { data } = await axios.get(`/products/${id}`);
+        const cleanProdId = (typeof id === 'object') ? (id?._id || id?.id) : id;
+        if (!cleanProdId || String(cleanProdId) === '[object Object]') {
+          setLoading(false);
+          return;
+        }
+        const { data } = await axios.get(`/products/${cleanProdId}`);
         if (data.success && data.product) {
           const apiProd = data.product;
           setProduct({
