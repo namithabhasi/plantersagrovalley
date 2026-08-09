@@ -6,8 +6,10 @@ import axios from "../api/axiosInstance";
 import { useSelector } from "react-redux";
 import { useCart } from "../context/CartContext";
 import haworthiaImg from "../assets/Haworthia.jpg";
+import { getItemImage } from "../utils/itemImageHelper";
 import OrderTrackingModal from "../COMPONENTS/OrderTrackingModal";
 import InvoiceModal from "../COMPONENTS/InvoiceModal";
+import OrderSummaryModal from "../COMPONENTS/OrderSummaryModal";
 
 function MyOrders() {
   const { user } = useSelector((state) => state.auth);
@@ -23,6 +25,8 @@ function MyOrders() {
   const [openInvoiceOrderId, setOpenInvoiceOrderId] = useState(null);
   const [invoiceModalOrder, setInvoiceModalOrder] = useState(null);
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+  const [summaryModalOrder, setSummaryModalOrder] = useState(null);
+  const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
 
   const [returnedOrders, setReturnedOrders] = useState(() => {
     try {
@@ -302,7 +306,7 @@ function MyOrders() {
                                   style={{ right: 0, top: '100%', marginTop: '4px', zIndex: 999, minWidth: '220px', width: 'max-content' }}
                                 >
                                   <Link 
-                                    to={`/order-details?orderId=${order._id}`} 
+                                    to={`/order-details?orderId=${order._id}&print=true`} 
                                     onClick={() => setOpenInvoiceOrderId(null)}
                                     className="sort-dropdown-item text-decoration-none block whitespace-nowrap"
                                     style={{ fontSize: '13px', padding: '8px 16px', color: '#1d4ed8', fontWeight: 500 }}
@@ -332,8 +336,14 @@ function MyOrders() {
                       <div style={{ padding: '10px' }} className="p-3.5 sm:p-5 flex flex-col gap-4 text-left leading-relaxed">
                         {/* Status Heading Line */}
                         <div>
-                          <h3 className="text-base sm:text-lg font-bold text-gray-900 m-0 leading-snug uppercase">
-                            {order.orderStatus === 'Delivered' ? `DELIVERED ${formattedDeliveryDate.toUpperCase()}` : `STATUS: ${order.orderStatus.toUpperCase()}`}
+                          <h3 className={`text-base sm:text-lg font-bold m-0 leading-snug uppercase ${order.orderStatus === 'Return Approved' ? 'text-green-700' : 'text-gray-900'}`}>
+                            {order.orderStatus === 'Delivered' 
+                              ? `DELIVERED ${formattedDeliveryDate.toUpperCase()}` 
+                              : order.orderStatus === 'Return Approved'
+                              ? 'STATUS: RETURN APPROVED'
+                              : order.orderStatus === 'Returned' || order.orderStatus === 'Return Requested'
+                              ? 'STATUS: RETURN REQUESTED'
+                              : `STATUS: ${order.orderStatus.toUpperCase()}`}
                           </h3>
                           <p className="text-sm text-gray-700 mt-0.5 m-0 leading-normal">
                             {order.orderStatus === 'Delivered' 
@@ -345,7 +355,7 @@ function MyOrders() {
                         {/* Products List & Side Action Stack */}
                         <div className="flex flex-col gap-5">
                           {order.items.map((item, idx) => {
-                            const itemImage = item.image || haworthiaImg;
+                            const itemImage = getItemImage(item);
                             return (
                               <div key={idx} className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100 pb-4 last:border-b-0 last:pb-0">
                                 

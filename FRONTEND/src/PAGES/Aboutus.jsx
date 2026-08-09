@@ -54,7 +54,7 @@ function Aboutus() {
           {/* Middle Column: Text Details */}
           <div className="about-story-text">
             <span className="about-pre-title green">OUR STORY</span>
-            <h2 className="about-section-title">Cultivating Green Dreams Since Day One</h2>
+            <h2 className="section-title">Cultivating Green Dreams Since Day One</h2>
             <p className="about-story-paragraph">
               Planters Agro Valley began with a simple idea - to connect people with nature through high-quality plants and gardening essentials. What started as a small passion project has now grown into a trusted destination for plant lovers across the country.
             </p>
@@ -91,7 +91,7 @@ function Aboutus() {
         <div className="container">
           <div className="about-values-header">
             <span className="about-pre-title">OUR VALUES</span>
-            <h2 className="about-section-title text-center">What Drives Us Every Day</h2>
+            <h2 className="section-title">What Drives Us Every Day</h2>
           </div>
 
           <div className="about-values-grid">

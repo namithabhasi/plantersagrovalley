@@ -2913,3 +2913,64 @@ div.container {
   font-weight: var(--font-weight-regular) !important;
   line-height: var(--line-height-normal) !important;
 }
+
+/* ==========================================================================
+   PRINT MEDIA STYLES (CLEAN PDF & INVOICE EXPORT)
+   ========================================================================== */
+@media print {
+  @page {
+    size: portrait;
+    margin: 10mm 12mm;
+  }
+
+  /* Hide website navbar, headers, footers, sidebars, floating chat button & modals */
+  nav,
+  header,
+  footer,
+  .navbar,
+  .site-header,
+  .site-footer,
+  .chat-widget,
+  .chat-trigger-btn,
+  .chat-window-modal,
+  [class*="chat-trigger"],
+  [class*="chat-window"],
+  [class*="chat-modal"],
+  .print-hidden,
+  .print\:hidden {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+
+  body,
+  html,
+  #root {
+    background: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    box-shadow: none !important;
+  }
+
+  /* Reset container paddings and constraints on print */
+  .min-h-screen,
+  .min-h-\[calc\(100vh-80px\)\],
+  .container {
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    background: transparent !important;
+  }
+
+  .printable-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+}

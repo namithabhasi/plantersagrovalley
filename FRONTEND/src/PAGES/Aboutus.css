@@ -22,13 +22,18 @@
   color: var(--color-primary);
 }
 
+.section-title,
 .about-section-title {
   font-family: var(--font-family-heading);
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-primary-dark);
+  font-size: 32px;
+  font-weight: 300;
+  letter-spacing: 0.6px;
+  line-height: 42px;
+  color: var(--color-primary-dark); /* #06492D */
+  display: block;
+  text-align: center;
+  text-transform: uppercase;
   margin-bottom: var(--space-4);
-  line-height: 1.3;
 }
 
 .about-hero-section {
@@ -60,10 +65,12 @@
 
 .about-hero-title {
   font-family: var(--font-family-heading);
-  font-size: clamp(32px, 5vw, 48px);
-  font-weight: var(--font-weight-semibold);
+  font-size: 32px;
+  font-weight: 300;
+  letter-spacing: 0.6px;
+  line-height: 42px;
   color: var(--color-primary-dark);
-  line-height: 1.2;
+  text-transform: uppercase;
   margin-bottom: var(--space-5);
 }
 
@@ -138,15 +145,18 @@
   color: var(--color-text-main);
   line-height: 1.6;
   margin-bottom: var(--space-4);
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
 }
 
-/* Checklist column (NO ICONS) */
+/* Checklist column (NO ICONS, NO VERTICAL DIVIDER) */
 .about-story-checklist {
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
-  border-left: 1px solid var(--color-border);
-  padding-left: var(--space-6);
+  border-left: none;
+  padding-left: 0;
   height: 380px;
   justify-content: center;
 }

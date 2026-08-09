@@ -13,8 +13,9 @@ function Review() {
   const location = useLocation();
   const { id } = useParams();
   const [searchParams] = useSearchParams();
-  const productIdFromQuery = searchParams.get("productId") || searchParams.get("id");
-  const targetProductId = id || productIdFromQuery;
+  const rawProductIdFromQuery = searchParams.get("productId") || searchParams.get("id");
+  const rawTargetProductId = id || rawProductIdFromQuery;
+  const targetProductId = (typeof rawTargetProductId === 'object') ? (rawTargetProductId?._id || rawTargetProductId?.id) : rawTargetProductId;
 
   const fileInputRef = useRef(null);
   const { user } = useSelector((state) => state.auth || {});
@@ -30,9 +31,10 @@ function Review() {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      if (targetProductId && targetProductId !== 'default' && (!location.state?.product || location.state?.product?._id !== targetProductId)) {
+      const cleanId = String(targetProductId || '');
+      if (cleanId && cleanId !== 'default' && cleanId !== '[object Object]' && (!location.state?.product || location.state?.product?._id !== cleanId)) {
         try {
-          const { data } = await axios.get(`/products/${targetProductId}`);
+          const { data } = await axios.get(`/products/${cleanId}`);
           if (data.success && data.product) {
             const fetchedProd = data.product;
             const prodImg = fetchedProd.images && fetchedProd.images[0] ? fetchedProd.images[0].url : haworthiaImg;

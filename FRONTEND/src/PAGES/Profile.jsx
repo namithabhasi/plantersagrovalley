@@ -7,8 +7,10 @@ import axios from '../api/axiosInstance';
 import { useCart } from '../context/CartContext';
 import Anthurium from '../assets/Anthurium.png';
 import haworthiaImg from '../assets/Haworthia.jpg';
+import { getItemImage } from '../utils/itemImageHelper';
 import OrderTrackingModal from '../COMPONENTS/OrderTrackingModal';
 import InvoiceModal from '../COMPONENTS/InvoiceModal';
+import OrderSummaryModal from '../COMPONENTS/OrderSummaryModal';
 import './Plants.css';
 
 const NAV_ITEMS = [
@@ -43,6 +45,8 @@ function Profile() {
   const [openInvoiceOrderId, setOpenInvoiceOrderId] = useState(null);
   const [invoiceModalOrder, setInvoiceModalOrder] = useState(null);
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+  const [summaryModalOrder, setSummaryModalOrder] = useState(null);
+  const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
 
   const handleOpenTrackingModal = (order) => {
     setSelectedTrackingOrder(order);
@@ -426,7 +430,7 @@ function Profile() {
           </div>
 
           <div className="flex flex-col gap-5">
-            {orders.map((order) => {
+            {orders.slice(0, 1).map((order) => {
               const orderDate = new Date(order.createdAt || Date.now());
               const deliveryDate = order.deliveredAt ? new Date(order.deliveredAt) : new Date(orderDate.getTime() + 24 * 60 * 60 * 1000);
               const returnCutoffDate = new Date(deliveryDate.getTime() + 7 * 24 * 60 * 60 * 1000);
@@ -520,7 +524,7 @@ function Profile() {
                               style={{ right: 0, top: '100%', marginTop: '4px', zIndex: 999, minWidth: '220px', width: 'max-content' }}
                             >
                               <Link 
-                                to={`/order-details?orderId=${order._id}`} 
+                                to={`/order-details?orderId=${order._id}&print=true`} 
                                 onClick={() => setOpenInvoiceOrderId(null)}
                                 className="sort-dropdown-item text-decoration-none block whitespace-nowrap"
                                 style={{ fontSize: '13px', padding: '8px 16px', color: '#1d4ed8', fontWeight: 500 }}
@@ -550,8 +554,14 @@ function Profile() {
                   <div style={{ padding: '10px' }} className="p-3.5 sm:p-5 flex flex-col gap-4 text-left leading-relaxed">
                     {/* Status Heading Line */}
                     <div>
-                      <h3 className="text-base sm:text-lg font-bold text-gray-900 m-0 leading-snug uppercase">
-                        {order.orderStatus === 'Delivered' ? `DELIVERED ${formattedDeliveryDate.toUpperCase()}` : `STATUS: ${order.orderStatus.toUpperCase()}`}
+                      <h3 className={`text-base sm:text-lg font-bold m-0 leading-snug uppercase ${order.orderStatus === 'Return Approved' ? 'text-green-700' : order.orderStatus === 'Returned' || order.orderStatus === 'Return Requested' ? 'text-purple-700' : 'text-gray-900'}`}>
+                        {order.orderStatus === 'Delivered' 
+                          ? `DELIVERED ${formattedDeliveryDate.toUpperCase()}` 
+                          : order.orderStatus === 'Return Approved'
+                          ? 'STATUS: RETURN APPROVED'
+                          : order.orderStatus === 'Returned' || order.orderStatus === 'Return Requested'
+                          ? 'STATUS: RETURN REQUESTED'
+                          : `STATUS: ${order.orderStatus.toUpperCase()}`}
                       </h3>
                       <p className="text-sm text-gray-700 mt-0.5 m-0 leading-normal">
                         {order.orderStatus === 'Delivered' 
@@ -563,7 +573,7 @@ function Profile() {
                     {/* Products List & Side Action Stack */}
                     <div className="flex flex-col gap-5">
                       {order.items.map((item, idx) => {
-                        const itemImage = item.image || Anthurium;
+                        const itemImage = getItemImage(item);
                         return (
                           <div key={idx} className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100 pb-4 last:border-b-0 last:pb-0">
                             
@@ -701,93 +711,114 @@ function Profile() {
     }
 
     return (
-      <div  className="w-full space-y-6 text-left">
+      <div style={{ marginTop: '40px' }} className="w-full space-y-6 text-left">
         <div>
           <div className="mb-4 pb-2 border-b border-gray-100 flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-[var(--font-family-heading)] font-normal text-[var(--color-primary-dark)] uppercase tracking-wide">
+              <h4 className="text-2xl font-[var(--font-family-heading)] font-normal text-[var(--color-primary-dark)] uppercase tracking-wide m-0">
                 Returns & Refunds
-              </h2>
+              </h4>
               <p className="text-[var(--font-size-xs)] text-[var(--color-text-muted)] font-normal mt-1 tracking-wider">
-                {returnedOrders.length} {returnedOrders.length === 1 ? "return request" : "return requests"} active
+                {returnedOrders.length} {returnedOrders.length === 1 ? "return request in progress" : "return requests in progress"}
               </p>
             </div>
           </div>
 
-          <div className="flex flex-col gap-4">
-            {returnedOrders.map((ret) => (
-              <div
-                key={ret._id || ret.orderNumber}
-                className="bg-white rounded-none border border-gray-200/80 p-4 sm:p-5 flex flex-col gap-4 transition-all duration-200 shadow-sm hover:shadow-md"
-              >
-                {/* Return Top Bar Info */}
-                <div className="bg-purple-50/60 p-3 sm:p-4 border border-purple-100 flex flex-wrap gap-4 justify-between items-center text-xs">
-                  <div className="flex items-center gap-6 flex-wrap">
-                    <div>
-                      <p className="text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Order Number</p>
-                      <p className="font-bold text-gray-900 text-sm">#{ret.orderNumber}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Requested Date</p>
-                      <p className="font-semibold text-gray-700 flex items-center gap-1">
-                        <FiCalendar size={13} className="text-[#06492D]" />
-                        {new Date(ret.returnDate || ret.createdAt).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Refund Amount</p>
-                      <p className="font-bold text-[#06492D] text-sm">
-                        Rs. {ret.totalAmount}.00
-                      </p>
-                    </div>
-                  </div>
+          <div className="flex flex-col gap-5">
+            {returnedOrders.map((ret) => {
+              const formattedReturnDate = new Date(ret.returnDate || ret.createdAt || Date.now()).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
-                  <div className="flex items-center gap-2">
-                    <span className="px-2.5 py-1 text-[11px] font-semibold border rounded-none bg-purple-100 text-purple-800 border-purple-200 whitespace-nowrap">
-                      {ret.returnStatus || "Return Requested"}
-                    </span>
-                    <span className="px-2.5 py-1 text-[11px] font-semibold border rounded-none bg-yellow-50 text-yellow-800 border-yellow-200 whitespace-nowrap">
-                      {ret.refundStatus || "Refund Processing"}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Return Reason */}
-                <div className="bg-gray-50 p-3 text-xs text-gray-700 border border-gray-100">
-                  <span className="font-bold text-[#06492D]">Reason for Return: </span>
-                  <span>{ret.returnReason}</span>
-                </div>
-
-                {/* Items */}
-                <div className="flex flex-col gap-3 py-1">
-                  {ret.items && ret.items.map((item, index) => {
-                    const itemImage = item.image || Anthurium;
-                    return (
-                      <div key={index} className="flex gap-4 items-center">
-                        <div className="w-14 h-14 bg-white border border-gray-200 rounded-none overflow-hidden shrink-0">
-                          <img
-                            src={itemImage}
-                            alt={item.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-sm font-semibold text-gray-800 truncate mb-0.5">
-                            {item.name}
-                          </h4>
-                          <p className="text-xs text-gray-500">
-                            Qty: {item.quantity} × Rs. {item.price}.00
-                          </p>
-                        </div>
-                        <div className="text-right text-sm font-semibold text-gray-900">
-                          Rs. {item.subtotal}.00
-                        </div>
+              return (
+                <div 
+                  style={{ padding: '10px' }} 
+                  key={ret._id || ret.orderNumber}
+                  className="bg-white rounded-lg border border-gray-300 overflow-hidden text-left flex flex-col gap-0 shadow-xs transition-all duration-200 hover:shadow-md"
+                >
+                  {/* Top Bar Header (Matching My Orders) */}
+                  <div style={{ padding: '10px' }} className="bg-[#f6f6f6] border-b border-gray-200 flex flex-wrap justify-between items-center text-sm gap-3 py-2.5 px-3.5 sm:px-4 text-gray-700 leading-tight rounded-t-md">
+                    <div className="flex flex-wrap items-center gap-4 sm:gap-8">
+                      <div>
+                        <p className="uppercase text-xs font-semibold text-gray-700 tracking-wide m-0">REQUESTED DATE</p>
+                        <p className="font-medium text-gray-800 text-sm mt-0.5 m-0">{formattedReturnDate}</p>
                       </div>
-                    );
-                  })}
+                      <div>
+                        <p className="uppercase text-xs font-semibold text-gray-700 tracking-wide m-0">REFUND AMOUNT</p>
+                        <p className="font-semibold text-gray-800 text-sm mt-0.5 m-0">₹{ret.totalAmount || 499}.00</p>
+                      </div>
+                      <div>
+                        <p className="uppercase text-xs font-semibold text-gray-700 tracking-wide m-0">RETURN STATUS</p>
+                        <p className="font-semibold text-purple-700 text-sm mt-0.5 m-0">{ret.returnStatus || 'Return Requested'}</p>
+                      </div>
+                    </div>
+
+                    <div className="text-right flex flex-col items-start sm:items-end gap-1">
+                      <p className="text-xs font-semibold text-gray-700 tracking-wide m-0 uppercase">
+                        ORDER # <span className="text-gray-700 font-mono">{ret.orderNumber}</span>
+                      </p>
+                      <Link to={`/order-details?orderId=${ret._id}`} className="hover:underline text-blue-700 font-semibold text-xs text-decoration-none">
+                        View order details
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Main Body Content (Matching My Orders) */}
+                  <div style={{ padding: '10px' }} className="p-3.5 sm:p-5 flex flex-col gap-4 text-left leading-relaxed">
+                    <div>
+                      <h3 className="text-base sm:text-lg font-bold text-purple-800 m-0 leading-snug uppercase">
+                        RETURN IN PROGRESS
+                      </h3>
+                      <p className="text-sm text-gray-700 mt-0.5 m-0 leading-normal">
+                        <span className="font-semibold text-[#06492D]">Reason for Return: </span>{ret.returnReason || "Item damaged / Quality issue"}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col gap-5">
+                      {ret.items && ret.items.map((item, idx) => {
+                        const itemImage = getItemImage(item);
+                        return (
+                          <div key={idx} className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100 pb-4 last:border-b-0 last:pb-0">
+                            
+                            <div className="flex items-start gap-4 flex-1 min-w-0">
+                              <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white border border-gray-200 rounded-md overflow-hidden shrink-0 p-1">
+                                <img src={itemImage} alt={item.name} className="w-full h-full object-cover rounded-sm" />
+                              </div>
+
+                              <div className="flex flex-col gap-1 flex-1 min-w-0 leading-snug">
+                                <Link 
+                                  to={`/product/${item.product || item._id}`} 
+                                  className="text-sm sm:text-base font-medium text-blue-700 hover:text-orange-600 hover:underline leading-snug truncate-2-lines text-decoration-none"
+                                >
+                                  {item.name}
+                                </Link>
+                                
+                                <p className="text-sm text-gray-700 m-0 font-medium">
+                                  Qty: {item.quantity} × ₹{item.price}.00
+                                </p>
+
+                                <p className="text-xs text-purple-700 font-medium mt-1">
+                                  Refund Status: <span className="font-semibold">{ret.refundStatus || 'Refund Processing'}</span>
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="flex flex-col gap-2 w-full sm:w-52 shrink-0">
+                              <Link 
+                                to={`/order-details?orderId=${ret._id}`} 
+                                className="order-action-btn-purple text-center text-decoration-none"
+                              >
+                                View Return Status
+                              </Link>
+                            </div>
+
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
