@@ -8,6 +8,7 @@ import { useCart } from '../context/CartContext';
 import Anthurium from '../assets/Anthurium.png';
 import haworthiaImg from '../assets/Haworthia.jpg';
 import OrderTrackingModal from '../COMPONENTS/OrderTrackingModal';
+import InvoiceModal from '../COMPONENTS/InvoiceModal';
 import './Plants.css';
 
 const NAV_ITEMS = [
@@ -38,6 +39,11 @@ function Profile() {
   const [selectedTrackingOrder, setSelectedTrackingOrder] = useState(null);
   const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
 
+  const [openShipToOrderId, setOpenShipToOrderId] = useState(null);
+  const [openInvoiceOrderId, setOpenInvoiceOrderId] = useState(null);
+  const [invoiceModalOrder, setInvoiceModalOrder] = useState(null);
+  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+
   const handleOpenTrackingModal = (order) => {
     setSelectedTrackingOrder(order);
     setIsTrackingModalOpen(true);
@@ -58,6 +64,15 @@ function Profile() {
     };
   }, [showStatsDropdown]);
 
+  useEffect(() => {
+    const closeDropdowns = () => {
+      setOpenShipToOrderId(null);
+      setOpenInvoiceOrderId(null);
+    };
+    window.addEventListener('click', closeDropdowns);
+    return () => window.removeEventListener('click', closeDropdowns);
+  }, []);
+
   // Local user state (no Redux)
   const [currentUser, setCurrentUser] = useState(() => {
     const saved = localStorage.getItem('user');
@@ -74,14 +89,20 @@ function Profile() {
       email: 'namitha3@gmail.com',
       phone: '8304004975',
       address: 'Ernakulam, Kerala\nIndia - 682001',
+      pincode: '682001',
     };
   });
 
   const [formData, setFormData] = useState({
-    firstName: currentUser.firstName,
-    lastName: currentUser.lastName,
-    phone: currentUser.phone || '',
-    address: currentUser.address || '',
+    firstName: currentUser.firstName || 'NAMITHA',
+    lastName: currentUser.lastName || 'BHASI',
+    phone: currentUser.phone || '8304004975',
+    address: currentUser.address || 'northparavur ernakulam kerala india',
+    apartment: currentUser.apartment || '',
+    city: currentUser.city || 'Ernakulam',
+    state: currentUser.state || 'Kerala',
+    pincode: currentUser.pincode || '683594',
+    country: currentUser.country || 'India',
   });
 
   const [loading, setLoading] = useState(false);
@@ -230,6 +251,7 @@ function Profile() {
         lastName: formData.lastName,
         phone: formData.phone,
         address: formData.address,
+        pincode: formData.pincode,
       };
 
       setCurrentUser(updatedUser);
@@ -433,12 +455,41 @@ function Profile() {
                         <p className="uppercase text-xs font-semibold text-gray-700 tracking-wide m-0">TOTAL</p>
                         <p className="font-semibold text-gray-800 text-sm mt-0.5 m-0">₹{order.totalAmount}.00</p>
                       </div>
-                      <div>
+                      <div className="relative">
                         <p className="uppercase text-xs font-semibold text-gray-700 tracking-wide m-0">SHIP TO</p>
-                        <p className="font-semibold text-blue-700 hover:underline cursor-pointer text-sm mt-0.5 flex items-center gap-0.5 m-0">
+                        <p 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setOpenShipToOrderId(openShipToOrderId === order._id ? null : order._id);
+                          }}
+                          className="font-semibold text-blue-700 hover:underline cursor-pointer text-sm mt-0.5 flex items-center gap-0.5 m-0"
+                        >
                           <span>{currentUser?.firstName ? `${currentUser.firstName} ${currentUser.lastName || ''}`.toUpperCase() : "NAMITHA BHASI"}</span>
                           <FiChevronDown size={14} />
                         </p>
+                        {openShipToOrderId === order._id && (
+                          <div 
+                            style={{ padding: '10px' }}
+                            className="absolute top-full left-0 mt-1 z-30 bg-white border border-gray-300 rounded-[4px] shadow-xl w-64 text-xs text-left text-gray-800"
+                          >
+                            <div className="flex justify-between items-center pb-1 mb-1.5 border-b border-gray-100">
+                              <span className="font-bold text-[#06492D] uppercase text-[11px]">Shipping Address</span>
+                              <button onClick={(e) => { e.stopPropagation(); setOpenShipToOrderId(null); }} className="text-gray-400 hover:text-gray-600 font-bold border-none bg-transparent p-0 cursor-pointer text-sm">✕</button>
+                            </div>
+                            <p className="font-semibold text-gray-900 m-0 uppercase">
+                              {order.shippingAddress?.fullName || `${currentUser?.firstName || 'Namitha'} ${currentUser?.lastName || 'Bhasi'}`}
+                            </p>
+                            <p className="whitespace-pre-line text-gray-700 m-0 mt-1 leading-relaxed">
+                              {order.shippingAddress?.address || currentUser?.address || 'Ernakulam, KERALA\nIndia - 682001'}
+                            </p>
+                            <p className="text-gray-700 m-0 mt-1 font-medium">
+                              PIN: {order.shippingAddress?.postalCode || order.shippingAddress?.pincode || currentUser?.pincode || '682001'}
+                            </p>
+                            <p className="text-gray-600 m-0 mt-0.5 font-medium">
+                              Phone: {order.shippingAddress?.phone || currentUser?.phone || '8304004975'}
+                            </p>
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -451,9 +502,46 @@ function Profile() {
                           View order details
                         </Link>
                         <span className="text-gray-300 font-normal">|</span>
-                        <span className="hover:underline cursor-pointer text-blue-700 font-semibold flex items-center gap-0.5">
-                          Invoice <FiChevronDown size={12} />
-                        </span>
+                        <div className="relative">
+                          <span 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setOpenInvoiceOrderId(openInvoiceOrderId === order._id ? null : order._id);
+                            }}
+                            className="hover:underline cursor-pointer text-blue-700 font-semibold flex items-center gap-0.5"
+                          >
+                            Invoice <FiChevronDown size={12} />
+                          </span>
+
+                          {openInvoiceOrderId === order._id && (
+                            <div 
+                              onClick={(e) => e.stopPropagation()} 
+                              className="sort-dropdown-menu" 
+                              style={{ right: 0, top: '100%', marginTop: '4px', zIndex: 999, minWidth: '220px', width: 'max-content' }}
+                            >
+                              <Link 
+                                to={`/order-details?orderId=${order._id}`} 
+                                onClick={() => setOpenInvoiceOrderId(null)}
+                                className="sort-dropdown-item text-decoration-none block whitespace-nowrap"
+                                style={{ fontSize: '13px', padding: '8px 16px', color: '#1d4ed8', fontWeight: 500 }}
+                              >
+                                Printable Order Summary
+                              </Link>
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setOpenInvoiceOrderId(null);
+                                  setInvoiceModalOrder(order);
+                                  setIsInvoiceModalOpen(true);
+                                }}
+                                className="sort-dropdown-item whitespace-nowrap"
+                                style={{ fontSize: '13px', padding: '8px 16px', color: '#1d4ed8', fontWeight: 500 }}
+                              >
+                                Invoice
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1051,10 +1139,15 @@ function Profile() {
                 type="button"
                 onClick={() => {
                   setFormData({
-                    firstName: currentUser.firstName,
-                    lastName: currentUser.lastName,
-                    phone: currentUser.phone || '',
-                    address: currentUser.address || '',
+                    firstName: currentUser.firstName || 'NAMITHA',
+                    lastName: currentUser.lastName || 'BHASI',
+                    phone: currentUser.phone || '8304004975',
+                    address: currentUser.address || 'northparavur ernakulam kerala india',
+                    apartment: currentUser.apartment || '',
+                    city: currentUser.city || 'Ernakulam',
+                    state: currentUser.state || 'Kerala',
+                    pincode: currentUser.pincode || '683594',
+                    country: currentUser.country || 'India',
                   });
                   setIsEditing(true);
                 }}
@@ -1129,123 +1222,175 @@ function Profile() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: '20px',
+              padding: '16px',
               overflowY: 'auto'
             }}
             onClick={() => setIsEditing(false)}
           >
             <div
               style={{
+                padding: '10px',
                 backgroundColor: '#ffffff',
                 border: '1px solid #cbd5e1',
                 width: '100%',
-                maxWidth: '540px',
-                padding: '28px 32px',
+                maxWidth: '560px',
                 boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)',
                 position: 'relative',
                 boxSizing: 'border-box',
-                borderRadius: '0px'
+                borderRadius: '0px',
+                maxHeight: '90vh',
+                overflowY: 'auto'
               }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #e2e8f0', paddingBottom: '14px', marginBottom: '22px' }}>
-                <h3 style={{ fontSize: '14px', fontWeight: '600', color: '#06492D', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>
-                  EDIT PROFILE DETAILS
+              <div style={{ paddingBottom: '4px', marginBottom: '14px' }}>
+                <h3 style={{ fontSize: 'var(--font-size-lg, 1.125rem)', fontWeight: '600', fontFamily: 'var(--font-family-heading, "Poppins", sans-serif)', color: 'var(--color-primary-dark, #06492D)', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>
+                  EDIT PROFILE / DELIVERY ADDRESS
                 </h3>
-                <button
-                  type="button"
-                  onClick={() => setIsEditing(false)}
-                  style={{ color: '#94a3b8', fontSize: '20px', fontWeight: 'bold', border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', lineHeight: 1 }}
-                >
-                  ✕
-                </button>
               </div>
 
-              {/* Form Body */}
-              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <label style={{ fontSize: '11px', fontWeight: '600', color: '#06492D', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      First Name
-                    </label>
+              {/* Form Body matching Delivery Address layout */}
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                
+                {/* Country */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <select
+                    name="country"
+                    value={formData.country || 'India'}
+                    onChange={handleChange}
+                    style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--color-border, #cbd5e1)', fontSize: 'var(--font-size-md, 1rem)', color: 'var(--color-charcoal-dark, #1F2937)', outline: 'none', boxSizing: 'border-box', backgroundColor: '#ffffff' }}
+                  >
+                    <option value="India">India</option>
+                  </select>
+                </div>
+
+                {/* First Name & Last Name (NON-EDITABLE) */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <input
                       type="text"
                       name="firstName"
                       value={formData.firstName}
-                      onChange={handleChange}
-                      style={{ width: '100%', padding: '9px 12px', border: '1px solid #cbd5e1', fontSize: '13px', color: '#1e293b', outline: 'none', boxSizing: 'border-box', borderRadius: '0px', backgroundColor: '#ffffff' }}
-                      required
+                      disabled
+                      readOnly
+                      style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--color-border, #e2e8f0)', fontSize: 'var(--font-size-md, 1rem)', color: 'var(--color-charcoal-medium, #374151)', backgroundColor: '#f8fafc', outline: 'none', boxSizing: 'border-box', cursor: 'not-allowed', textTransform: 'uppercase' }}
                     />
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <label style={{ fontSize: '11px', fontWeight: '600', color: '#06492D', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      Last Name
-                    </label>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <input
                       type="text"
                       name="lastName"
                       value={formData.lastName}
+                      disabled
+                      readOnly
+                      style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--color-border, #e2e8f0)', fontSize: 'var(--font-size-md, 1rem)', color: 'var(--color-charcoal-medium, #374151)', backgroundColor: '#f8fafc', outline: 'none', boxSizing: 'border-box', cursor: 'not-allowed', textTransform: 'uppercase' }}
+                    />
+                  </div>
+                </div>
+
+                {/* Address (House no., Building, Street) */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <input
+                    type="text"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
+                    maxLength={120}
+                    placeholder="Address (House no., Building, Street)"
+                    style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--color-border, #cbd5e1)', fontSize: 'var(--font-size-md, 1rem)', color: 'var(--color-charcoal-dark, #1F2937)', outline: 'none', boxSizing: 'border-box', backgroundColor: '#ffffff' }}
+                    required
+                  />
+                </div>
+
+                {/* Apartment, suite, etc. (optional) */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <input
+                    type="text"
+                    name="apartment"
+                    value={formData.apartment}
+                    onChange={handleChange}
+                    maxLength={80}
+                    placeholder="Apartment, suite, etc. (optional)"
+                    style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--color-border, #cbd5e1)', fontSize: 'var(--font-size-md, 1rem)', color: 'var(--color-charcoal-dark, #1F2937)', outline: 'none', boxSizing: 'border-box', backgroundColor: '#ffffff' }}
+                  />
+                </div>
+
+                {/* City | State | PIN code */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <input
+                      type="text"
+                      name="city"
+                      value={formData.city}
                       onChange={handleChange}
-                      style={{ width: '100%', padding: '9px 12px', border: '1px solid #cbd5e1', fontSize: '13px', color: '#1e293b', outline: 'none', boxSizing: 'border-box', borderRadius: '0px', backgroundColor: '#ffffff' }}
+                      maxLength={50}
+                      placeholder="City"
+                      style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--color-border, #cbd5e1)', fontSize: 'var(--font-size-md, 1rem)', color: 'var(--color-charcoal-dark, #1F2937)', outline: 'none', boxSizing: 'border-box', backgroundColor: '#ffffff' }}
+                      required
+                    />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <select
+                      name="state"
+                      value={formData.state || 'Kerala'}
+                      onChange={handleChange}
+                      style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--color-border, #cbd5e1)', fontSize: 'var(--font-size-md, 1rem)', color: 'var(--color-charcoal-dark, #1F2937)', outline: 'none', boxSizing: 'border-box', backgroundColor: '#ffffff' }}
+                    >
+                      <option value="Kerala">Kerala</option>
+                      <option value="Tamil Nadu">Tamil Nadu</option>
+                      <option value="Karnataka">Karnataka</option>
+                      <option value="Maharashtra">Maharashtra</option>
+                    </select>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <input
+                      type="text"
+                      name="pincode"
+                      value={formData.pincode}
+                      onChange={handleChange}
+                      maxLength={10}
+                      placeholder="PIN code"
+                      style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--color-border, #cbd5e1)', fontSize: 'var(--font-size-md, 1rem)', color: 'var(--color-charcoal-dark, #1F2937)', outline: 'none', boxSizing: 'border-box', backgroundColor: '#ffffff' }}
                       required
                     />
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <label style={{ fontSize: '11px', fontWeight: '600', color: '#06492D', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      value={currentUser.email}
-                      style={{ width: '100%', padding: '9px 12px', border: '1px solid #e2e8f0', fontSize: '13px', color: '#94a3b8', backgroundColor: '#f8fafc', outline: 'none', boxSizing: 'border-box', borderRadius: '0px', cursor: 'not-allowed' }}
-                      disabled
-                    />
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <label style={{ fontSize: '11px', fontWeight: '600', color: '#06492D', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      style={{ width: '100%', padding: '9px 12px', border: '1px solid #cbd5e1', fontSize: '13px', color: '#1e293b', outline: 'none', boxSizing: 'border-box', borderRadius: '0px', backgroundColor: '#ffffff' }}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <label style={{ fontSize: '11px', fontWeight: '600', color: '#06492D', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    Shipping Address
-                  </label>
-                  <textarea
-                    name="address"
-                    value={formData.address}
-                    onChange={handleChange}
-                    rows="3"
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid #cbd5e1', fontSize: '13px', color: '#1e293b', outline: 'none', boxSizing: 'border-box', borderRadius: '0px', backgroundColor: '#ffffff', minHeight: '80px', resize: 'vertical' }}
+                {/* Mobile Number (NON-EDITABLE) */}
+                <div style={{ display: 'grid', gridTemplateColumns: '95px 1fr', gap: '10px' }}>
+                  <select
+                    disabled
+                    readOnly
+                    style={{ width: '100%', padding: '10px 8px', border: '1px solid var(--color-border, #e2e8f0)', fontSize: 'var(--font-size-md, 1rem)', color: 'var(--color-charcoal-medium, #374151)', backgroundColor: '#f8fafc', outline: 'none', cursor: 'not-allowed' }}
+                  >
+                    <option>+91 (IN)</option>
+                  </select>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    disabled
+                    readOnly
+                    style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--color-border, #e2e8f0)', fontSize: 'var(--font-size-md, 1rem)', color: 'var(--color-charcoal-medium, #374151)', backgroundColor: '#f8fafc', outline: 'none', boxSizing: 'border-box', cursor: 'not-allowed' }}
                   />
                 </div>
 
                 {/* Modal Footer Buttons */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '12px', borderTop: '1px solid #e2e8f0', paddingTop: '18px', marginTop: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '12px', paddingTop: '10px', marginTop: '6px' }}>
                   <button
                     type="button"
                     onClick={() => setIsEditing(false)}
-                    className="modal-cancel-btn"
+                    className="btn btn-wishlist uppercase text-xs cursor-pointer"
+                    style={{ padding: '8px 20px' }}
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={loading}
-                    className="modal-save-btn"
-                    style={{ opacity: loading ? 0.6 : 1 }}
+                    className="btn btn-primary uppercase text-xs cursor-pointer"
+                    style={{ padding: '8px 22px', opacity: loading ? 0.6 : 1 }}
                   >
                     {loading ? 'Saving...' : 'Save Changes'}
                   </button>
@@ -1483,6 +1628,14 @@ function Profile() {
         isOpen={isTrackingModalOpen}
         onClose={() => setIsTrackingModalOpen(false)}
         order={selectedTrackingOrder}
+      />
+
+      {/* Tax Invoice Modal */}
+      <InvoiceModal
+        isOpen={isInvoiceModalOpen}
+        onClose={() => setIsInvoiceModalOpen(false)}
+        order={invoiceModalOrder}
+        user={currentUser}
       />
     </div>
   );

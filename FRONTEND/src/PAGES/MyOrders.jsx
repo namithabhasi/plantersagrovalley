@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { useCart } from "../context/CartContext";
 import haworthiaImg from "../assets/Haworthia.jpg";
 import OrderTrackingModal from "../COMPONENTS/OrderTrackingModal";
+import InvoiceModal from "../COMPONENTS/InvoiceModal";
 
 function MyOrders() {
   const { user } = useSelector((state) => state.auth);
@@ -17,6 +18,11 @@ function MyOrders() {
   const [pagination, setPagination] = useState(null);
   const [page, setPage] = useState(1);
   const itemsPerPage = 4;
+
+  const [openShipToOrderId, setOpenShipToOrderId] = useState(null);
+  const [openInvoiceOrderId, setOpenInvoiceOrderId] = useState(null);
+  const [invoiceModalOrder, setInvoiceModalOrder] = useState(null);
+  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
 
   const [returnedOrders, setReturnedOrders] = useState(() => {
     try {
@@ -34,6 +40,15 @@ function MyOrders() {
       console.error("Error saving returned orders:", e);
     }
   }, [returnedOrders]);
+
+  useEffect(() => {
+    const closeDropdowns = () => {
+      setOpenShipToOrderId(null);
+      setOpenInvoiceOrderId(null);
+    };
+    window.addEventListener('click', closeDropdowns);
+    return () => window.removeEventListener('click', closeDropdowns);
+  }, []);
 
   const [isReturnModalOpen, setIsReturnModalOpen] = useState(false);
   const [selectedReturnOrder, setSelectedReturnOrder] = useState(null);
@@ -222,12 +237,41 @@ function MyOrders() {
                             <p className="uppercase text-xs font-semibold text-gray-700 tracking-wide m-0">TOTAL</p>
                             <p className="font-semibold text-gray-800 text-sm mt-0.5 m-0">₹{order.totalAmount}.00</p>
                           </div>
-                          <div>
+                          <div className="relative">
                             <p className="uppercase text-xs font-semibold text-gray-700 tracking-wide m-0">SHIP TO</p>
-                            <p className="font-semibold text-blue-700 hover:underline cursor-pointer text-sm mt-0.5 flex items-center gap-0.5 m-0">
+                            <p 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setOpenShipToOrderId(openShipToOrderId === order._id ? null : order._id);
+                              }}
+                              className="font-semibold text-blue-700 hover:underline cursor-pointer text-sm mt-0.5 flex items-center gap-0.5 m-0"
+                            >
                               <span>{user?.firstName ? `${user.firstName} ${user.lastName || ''}`.toUpperCase() : "NAMITHA BHASI"}</span>
                               <FiChevronDown size={14} />
                             </p>
+                            {openShipToOrderId === order._id && (
+                              <div 
+                                style={{ padding: '10px' }}
+                                className="absolute top-full left-0 mt-1 z-30 bg-white border border-gray-300 rounded-[4px] shadow-xl w-64 text-xs text-left text-gray-800"
+                              >
+                                <div className="flex justify-between items-center pb-1 mb-1.5 border-b border-gray-100">
+                                  <span className="font-bold text-[#06492D] uppercase text-[11px]">Shipping Address</span>
+                                  <button onClick={(e) => { e.stopPropagation(); setOpenShipToOrderId(null); }} className="text-gray-400 hover:text-gray-600 font-bold border-none bg-transparent p-0 cursor-pointer text-sm">✕</button>
+                                </div>
+                                <p className="font-semibold text-gray-900 m-0 uppercase">
+                                  {order.shippingAddress?.fullName || `${user?.firstName || 'Namitha'} ${user?.lastName || 'Bhasi'}`}
+                                </p>
+                                <p className="whitespace-pre-line text-gray-700 m-0 mt-1 leading-relaxed">
+                                  {order.shippingAddress?.address || user?.address || 'Ernakulam, KERALA\nIndia - 682001'}
+                                </p>
+                                <p className="text-gray-700 m-0 mt-1 font-medium">
+                                  PIN: {order.shippingAddress?.postalCode || order.shippingAddress?.pincode || user?.pincode || '682001'}
+                                </p>
+                                <p className="text-gray-600 m-0 mt-0.5 font-medium">
+                                  Phone: {order.shippingAddress?.phone || user?.phone || '8304004975'}
+                                </p>
+                              </div>
+                            )}
                           </div>
                         </div>
 
@@ -240,9 +284,46 @@ function MyOrders() {
                               View order details
                             </Link>
                             <span className="text-gray-300 font-normal">|</span>
-                            <span className="hover:underline cursor-pointer text-blue-700 font-semibold flex items-center gap-0.5">
-                              Invoice <FiChevronDown size={12} />
-                            </span>
+                            <div className="relative">
+                              <span 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setOpenInvoiceOrderId(openInvoiceOrderId === order._id ? null : order._id);
+                                }}
+                                className="hover:underline cursor-pointer text-blue-700 font-semibold flex items-center gap-0.5"
+                              >
+                                Invoice <FiChevronDown size={12} />
+                              </span>
+
+                              {openInvoiceOrderId === order._id && (
+                                <div 
+                                  onClick={(e) => e.stopPropagation()} 
+                                  className="sort-dropdown-menu" 
+                                  style={{ right: 0, top: '100%', marginTop: '4px', zIndex: 999, minWidth: '220px', width: 'max-content' }}
+                                >
+                                  <Link 
+                                    to={`/order-details?orderId=${order._id}`} 
+                                    onClick={() => setOpenInvoiceOrderId(null)}
+                                    className="sort-dropdown-item text-decoration-none block whitespace-nowrap"
+                                    style={{ fontSize: '13px', padding: '8px 16px', color: '#1d4ed8', fontWeight: 500 }}
+                                  >
+                                    Printable Order Summary
+                                  </Link>
+                                  <button 
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setOpenInvoiceOrderId(null);
+                                      setInvoiceModalOrder(order);
+                                      setIsInvoiceModalOpen(true);
+                                    }}
+                                    className="sort-dropdown-item whitespace-nowrap"
+                                    style={{ fontSize: '13px', padding: '8px 16px', color: '#1d4ed8', fontWeight: 500 }}
+                                  >
+                                    Invoice
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -483,6 +564,14 @@ function MyOrders() {
         isOpen={isTrackingModalOpen}
         onClose={() => setIsTrackingModalOpen(false)}
         order={selectedTrackingOrder}
+      />
+
+      {/* Tax Invoice Modal */}
+      <InvoiceModal
+        isOpen={isInvoiceModalOpen}
+        onClose={() => setIsInvoiceModalOpen(false)}
+        order={invoiceModalOrder}
+        user={user}
       />
     </div>
   );
