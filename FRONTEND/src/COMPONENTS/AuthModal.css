@@ -20,7 +20,7 @@
 
 .auth-modal-card {
   background-color: #ffffff;
-  border-radius: 8px;
+  border-radius: 0px !important;
   width: 100%;
   max-width: 440px;
   box-shadow: 0 12px 40px rgba(6, 42, 27, 0.15);
@@ -32,7 +32,26 @@
   animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.auth-modal-close-btn {
+.checkout-input {
+  border-radius: 0px !important;
+}
+
+.auth-submit-btn {
+  background-color: var(--color-primary-dark);
+  color: #ffffff;
+  border: none;
+  border-radius: 0px !important;
+  padding: 12px;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  margin-top: var(--space-3);
+}
   position: absolute;
   top: 16px;
   right: 16px;

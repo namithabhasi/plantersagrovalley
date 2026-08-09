@@ -2974,3 +2974,21 @@ div.container {
     width: 100% !important;
   }
 }
+
+/* Google Sign In Container Styling */
+#google-signin-btn {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+  margin: 0 auto !important;
+}
+
+#google-signin-btn > div,
+#google-signin-btn iframe {
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
+}

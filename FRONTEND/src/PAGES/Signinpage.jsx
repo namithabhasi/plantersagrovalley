@@ -39,19 +39,27 @@ function Signinpage() {
     if (!clientId) return;
 
     const initializeGoogleSignIn = () => {
-      if (window.google?.accounts?.id) {
+      const container = document.getElementById("google-signin-btn");
+      if (window.google?.accounts?.id && container) {
         window.google.accounts.id.initialize({
           client_id: clientId,
           callback: handleGoogleCredentialResponse,
         });
+
+        container.innerHTML = "";
+
+        const btnWidth = Math.min(container.clientWidth || 280, 300);
+
         window.google.accounts.id.renderButton(
-          document.getElementById("google-signin-btn"),
+          container,
           {
+            type: "standard",
             theme: "outline",
             size: "large",
-            width: "100%",
             text: "signin_with",
-            shape: "square"
+            shape: "rectangular",
+            logo_alignment: "left",
+            width: btnWidth || 280
           }
         );
       }
@@ -103,7 +111,12 @@ function Signinpage() {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    const val = type === 'checkbox' ? checked : value;
+    let val = type === 'checkbox' ? checked : value;
+
+    // Enforce 10-digit numbers only for phone field
+    if (name === 'phone' && typeof val === 'string') {
+      val = val.replace(/\D/g, '').slice(0, 10);
+    }
 
     setFormData((prev) => ({
       ...prev,
@@ -163,9 +176,9 @@ function Signinpage() {
     }
 
     if (!formData.phone || !formData.phone.trim()) {
-      newErrors.phone = 'Phone number is required';
-    } else if (!/^\+?[0-9\s\-()]{10,15}$/.test(formData.phone.trim())) {
-      newErrors.phone = 'Please enter a valid phone number';
+      newErrors.phone = 'Mobile number is required';
+    } else if (!/^[0-9]{10}$/.test(formData.phone.trim())) {
+      newErrors.phone = 'Mobile number must be exactly 10 digits';
     }
 
     if (!formData.email.trim()) {
@@ -302,7 +315,7 @@ function Signinpage() {
             className="!w-auto object-contain"
           />
         </Link>
-        <div className="text-xs font-[var(--font-family-heading)] font-semibold tracking-[2px] text-[#2c3e50] uppercase text-center mt-0.5">
+        <div className="text-[var(--font-size-md)] font-[var(--font-family-heading)] font-semibold tracking-[2px] text-[#2c3e50] uppercase text-center mt-0.5" style={{ fontSize: 'var(--font-size-md)' }}>
           {isRegister ? 'Register' : 'Sign In'}
         </div>
       </div>
@@ -331,14 +344,17 @@ function Signinpage() {
 
             <div className="flex flex-col gap-0.5">
               <label className="text-[10px] font-semibold uppercase tracking-wider text-black">
-                Phone Number
+                Mobile Number
               </label>
               <input
                 type="tel"
                 name="phone"
+                inputMode="numeric"
+                maxLength={10}
+                pattern="[0-9]{10}"
                 value={formData.phone}
                 onChange={handleInputChange}
-                placeholder="Enter your phone number"
+                placeholder="10-digit mobile number"
                 className={`w-full bg-[#fcfcfc] border px-3 py-1.5 text-xs focus:bg-white outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-300 ${errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
                   }`}
               />
@@ -481,17 +497,22 @@ function Signinpage() {
           {loading ? 'Please wait...' : (isRegister ? 'Register' : 'Sign In')}
         </button>
 
-        {/* Divider */}
-        <div className="flex items-center my-0.5">
-          <div className="flex-grow border-t border-gray-200"></div>
-          <span className="flex-shrink mx-3 text-gray-400 text-[10px] uppercase tracking-wider font-semibold">or</span>
-          <div className="flex-grow border-t border-gray-200"></div>
-        </div>
+        {/* Google Sign In Button - Only for Sign In mode */}
+        {!isRegister && (
+          <>
+            {/* Divider */}
+            <div className="flex items-center my-0.5">
+              <div className="flex-grow border-t border-gray-200"></div>
+              <span className="flex-shrink mx-3 text-gray-400 text-[10px] uppercase tracking-wider font-semibold">or</span>
+              <div className="flex-grow border-t border-gray-200"></div>
+            </div>
 
-        {/* Google Sign In Button */}
-        <div className="w-full flex justify-center mt-0.5">
-          <div id="google-signin-btn" className="w-full"></div>
-        </div>
+            {/* Google Sign In Button */}
+            <div className="w-full flex justify-center mt-0.5">
+              <div id="google-signin-btn" className="w-full flex justify-center"></div>
+            </div>
+          </>
+        )}
       </form>
 
       {/* Toggle Account Action */}
