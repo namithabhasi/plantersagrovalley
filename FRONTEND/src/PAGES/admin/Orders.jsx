@@ -102,29 +102,56 @@ const Orders = () => {
     try {
       setLoading(true);
       const params = {
-        page,
-        limit: 10,
+        page: 1,
+        limit: 50,
       };
 
       if (searchQuery.trim()) {
         params.search = searchQuery.trim();
       }
 
-      if (orderStatusFilter !== "all") {
-        params.status = orderStatusFilter;
-      }
-
-      if (paymentStatusFilter !== "all") {
-        params.paymentStatus = paymentStatusFilter;
-      }
-
       const { data } = await axios.get("/orders", { params });
       if (data.success) {
-        setOrders(data.orders || []);
-        setTotalPages(data.pagination?.totalPages || 1);
-        setTotalOrders(data.pagination?.totalOrders || 0);
+        let rawOrders = data.orders || [];
+
+        // Check local return requests
+        let localReturnReqs = [];
+        try {
+          localReturnReqs = JSON.parse(localStorage.getItem('planters_return_requests') || '[]');
+        } catch (e) {}
+
+        // Sync return requests onto orders
+        let processedOrders = rawOrders.map(order => {
+          const hasReturnReq = localReturnReqs.find(r => 
+            (r.orderId && String(r.orderId) === String(order._id)) || 
+            (r.orderNumber && String(r.orderNumber) === String(order.orderNumber)) ||
+            (order.orderNumber && String(r.orderNumber).includes(String(order.orderNumber).slice(-6)))
+          );
+          if (hasReturnReq && order.orderStatus !== "Returned" && order.orderStatus !== "Return Approved") {
+            return {
+              ...order,
+              orderStatus: hasReturnReq.returnStatus || hasReturnReq.orderStatus || "Return Requested"
+            };
+          }
+          return order;
+        });
+
+        // Apply Order Status Filter
+        if (orderStatusFilter !== "all") {
+          processedOrders = processedOrders.filter(o => o.orderStatus === orderStatusFilter);
+        }
+
+        // Apply Payment Status Filter
+        if (paymentStatusFilter !== "all") {
+          processedOrders = processedOrders.filter(o => o.paymentStatus === paymentStatusFilter);
+        }
+
+        setOrders(processedOrders);
+        setTotalPages(Math.max(1, Math.ceil(processedOrders.length / 10)));
+        setTotalOrders(processedOrders.length);
       }
     } catch (error) {
+      console.error("Error fetching admin orders:", error);
       toast.error(error.response?.data?.message || "Failed to fetch orders");
     } finally {
       setLoading(false);
@@ -171,6 +198,26 @@ const Orders = () => {
     e.preventDefault();
     try {
       setSubmitting(true);
+
+      // Sync updated status to local return requests storage
+      try {
+        let localReturnReqs = JSON.parse(localStorage.getItem('planters_return_requests') || '[]');
+        localReturnReqs = localReturnReqs.map(r => {
+          if (
+            (r.orderId && String(r.orderId) === String(selectedOrder._id)) ||
+            (r.orderNumber && String(r.orderNumber) === String(selectedOrder.orderNumber))
+          ) {
+            return {
+              ...r,
+              orderStatus: updateData.orderStatus,
+              returnStatus: updateData.orderStatus
+            };
+          }
+          return r;
+        });
+        localStorage.setItem('planters_return_requests', JSON.stringify(localReturnReqs));
+      } catch (err) {}
+
       const { data } = await axios.put(`/orders/${selectedOrder._id}/status`, {
         orderStatus: updateData.orderStatus,
         paymentStatus: updateData.paymentStatus,

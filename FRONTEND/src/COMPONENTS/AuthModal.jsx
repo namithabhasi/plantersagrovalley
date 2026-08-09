@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FiX } from "react-icons/fi";
 import { toast } from "react-toastify";
 import axiosInstance from "../api/axiosInstance";
-import { setUser, closeAuthModal, openAuthModal } from "../redux/auth/authSlice";
+import { setUser, closeAuthModal } from "../redux/auth/authSlice";
 import { useCart } from "../context/CartContext";
 import logo from "../assets/logo.png";
 import "./AuthModal.css";
@@ -25,41 +25,78 @@ function AuthModal() {
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
 
+  // Inline Validation Errors State
+  const [errors, setErrors] = useState({});
+
   // Sync isLogin state when authModalTab from Redux changes
   React.useEffect(() => {
     setIsLogin(authModalTab === "login");
+    setErrors({});
   }, [authModalTab]);
 
   if (!isAuthModalOpen) return null;
 
   const handleClose = () => {
     dispatch(closeAuthModal());
+    setErrors({});
   };
 
   const handleToggleMode = () => {
     setIsLogin(!isLogin);
+    setErrors({});
+  };
+
+  const handlePhoneChange = (e) => {
+    const val = e.target.value.replace(/\D/g, "").slice(0, 10);
+    setPhone(val);
+    if (errors.phone) {
+      setErrors((prev) => ({ ...prev, phone: "" }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!email.trim()) {
+      newErrors.email = "Email address is required";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    if (!password) {
+      newErrors.password = "Password is required";
+    }
+
+    if (!isLogin) {
+      if (!firstName.trim()) {
+        newErrors.firstName = "First name is required";
+      }
+      if (!lastName.trim()) {
+        newErrors.lastName = "Last name is required";
+      }
+      if (!phone.trim()) {
+        newErrors.phone = "Mobile number is required";
+      } else if (!/^[0-9]{10}$/.test(phone.trim())) {
+        newErrors.phone = "Mobile number must be exactly 10 digits";
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email || !password) {
-      toast.error("Please fill in email and password.");
-      return;
-    }
-
-    if (!isLogin && (!firstName || !lastName || !phone)) {
-      toast.error("Please fill in all registration fields.");
-      return;
-    }
+    if (!validateForm()) return;
 
     try {
       setLoading(true);
 
       const endpoint = isLogin ? "/auth/login" : "/auth/register";
       const payload = isLogin
-        ? { email, password }
-        : { firstName, lastName, email, password, phone };
+        ? { email: email.trim(), password }
+        : { firstName: firstName.trim(), lastName: lastName.trim(), email: email.trim(), password, phone: phone.trim() };
 
       const { data } = await axiosInstance.post(endpoint, payload);
 
@@ -83,6 +120,7 @@ function AuthModal() {
       setFirstName("");
       setLastName("");
       setPhone("");
+      setErrors({});
 
       // Close modal
       handleClose();
@@ -94,9 +132,8 @@ function AuthModal() {
         navigate(pendingRedirect);
       }
     } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Something went wrong. Please try again."
-      );
+      const serverMsg = error.response?.data?.message || "Something went wrong. Please try again.";
+      toast.error(serverMsg);
     } finally {
       setLoading(false);
     }
@@ -104,7 +141,7 @@ function AuthModal() {
 
   return (
     <div className="auth-modal-overlay" onClick={handleClose}>
-      <div className="auth-modal-card" onClick={(e) => e.stopPropagation()}>
+      <div className="auth-modal-card" style={{ borderRadius: "0px" }} onClick={(e) => e.stopPropagation()}>
         <button className="auth-modal-close-btn" onClick={handleClose}>
           <FiX size={20} />
         </button>
@@ -114,13 +151,13 @@ function AuthModal() {
           <div className="auth-modal-tabs">
             <button
               className={`auth-modal-tab-btn ${isLogin ? "active" : ""}`}
-              onClick={() => setIsLogin(true)}
+              onClick={() => handleToggleMode()}
             >
               Sign In
             </button>
             <button
               className={`auth-modal-tab-btn ${!isLogin ? "active" : ""}`}
-              onClick={() => setIsLogin(false)}
+              onClick={() => handleToggleMode()}
             >
               Register
             </button>
@@ -128,7 +165,7 @@ function AuthModal() {
         </div>
 
         <div className="auth-modal-body">
-          <form className="auth-form" onSubmit={handleSubmit}>
+          <form className="auth-form" onSubmit={handleSubmit} noValidate>
             {!isLogin && (
               <>
                 <div className="auth-input-row">
@@ -137,32 +174,53 @@ function AuthModal() {
                     <input
                       type="text"
                       className="checkout-input"
+                      style={{ borderRadius: "0px" }}
                       placeholder="John"
                       value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
+                      onChange={(e) => {
+                        setFirstName(e.target.value);
+                        if (errors.firstName) setErrors((prev) => ({ ...prev, firstName: "" }));
+                      }}
                     />
+                    {errors.firstName && (
+                      <span className="text-[10px] text-red-600 mt-0.5">{errors.firstName}</span>
+                    )}
                   </div>
                   <div className="auth-input-group" style={{ flex: 1 }}>
                     <label>Last Name</label>
                     <input
                       type="text"
                       className="checkout-input"
+                      style={{ borderRadius: "0px" }}
                       placeholder="Doe"
                       value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
+                      onChange={(e) => {
+                        setLastName(e.target.value);
+                        if (errors.lastName) setErrors((prev) => ({ ...prev, lastName: "" }));
+                      }}
                     />
+                    {errors.lastName && (
+                      <span className="text-[10px] text-red-600 mt-0.5">{errors.lastName}</span>
+                    )}
                   </div>
                 </div>
 
                 <div className="auth-input-group">
-                  <label>Phone Number</label>
+                  <label>Mobile Number</label>
                   <input
                     type="tel"
+                    inputMode="numeric"
+                    maxLength={10}
+                    pattern="[0-9]{10}"
                     className="checkout-input"
-                    placeholder="9876543210"
+                    style={{ borderRadius: "0px" }}
+                    placeholder="10-digit mobile number"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={handlePhoneChange}
                   />
+                  {errors.phone && (
+                    <span className="text-[10px] text-red-600 mt-0.5">{errors.phone}</span>
+                  )}
                 </div>
               </>
             )}
@@ -172,10 +230,17 @@ function AuthModal() {
               <input
                 type="email"
                 className="checkout-input"
+                style={{ borderRadius: "0px" }}
                 placeholder="email@example.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (errors.email) setErrors((prev) => ({ ...prev, email: "" }));
+                }}
               />
+              {errors.email && (
+                <span className="text-[10px] text-red-600 mt-0.5">{errors.email}</span>
+              )}
             </div>
 
             <div className="auth-input-group">
@@ -183,13 +248,20 @@ function AuthModal() {
               <input
                 type="password"
                 className="checkout-input"
+                style={{ borderRadius: "0px" }}
                 placeholder="••••••••"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (errors.password) setErrors((prev) => ({ ...prev, password: "" }));
+                }}
               />
+              {errors.password && (
+                <span className="text-[10px] text-red-600 mt-0.5">{errors.password}</span>
+              )}
             </div>
 
-            <button type="submit" className="auth-submit-btn" disabled={loading}>
+            <button type="submit" className="auth-submit-btn" style={{ borderRadius: "0px" }} disabled={loading}>
               {loading ? "Please wait..." : isLogin ? "Sign In" : "Register"}
             </button>
           </form>

@@ -21,7 +21,8 @@ import {
   FiHome,
   FiCamera,
   FiArrowUpRight,
-  FiUser
+  FiUser,
+  FiTrash2
 } from 'react-icons/fi';
 import { FaStar } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -38,51 +39,90 @@ import haworthiaImg from '../assets/Haworthia.jpg';
 import { getItemImage } from '../utils/itemImageHelper';
 import '../index.css';
 
-// Initial reviews sample matching Pic 3 & 4 format
-const initialMockReviews = [
-  {
-    id: 1,
-    author: 'Namitha Bhasi',
-    avatar: 'R',
-    date: '17 June 2026',
-    rating: 5,
-    title: 'Great buy',
-    size: 'Standard',
-    color: 'Green',
-    comment: 'I have not only purchased this for myself, but for my mum and my dad, this is the most comfortable pair. I have used it for a really long time and I recommend it to everyone.',
-    verified: true,
-    likes: 18,
-    helpfulText: 'One person found this helpful'
-  },
-  {
-    id: 2,
-    author: 'Navaneeth Bhasi',
-    avatar: 'V',
-    date: '18 January 2026',
-    rating: 5,
-    title: 'The product is light and comfortable',
-    size: 'Medium',
-    color: 'Green',
-    comment: 'Excellent quality and comfort. Everyone should go for it. Arrived securely packed and in pristine condition.',
-    verified: true,
-    likes: 12,
-    helpfulText: '2 people found this helpful'
-  },
-  {
-    id: 3,
-    author: 'Nithin Bhasi',
-    avatar: 'A',
-    date: '28 May 2026',
-    rating: 4,
-    title: 'Very satisfied with the build',
-    size: 'Standard',
-    color: 'Natural',
-    comment: 'Looks sleek and fits nicely in my living space. Very easy to set up and maintain.',
-    verified: true,
-    likes: 7,
-    helpfulText: null
+// Dynamic Product-Specific Mock Reviews Generator
+const getProductSpecificMockReviews = (product) => {
+  const prodName = product?.name || 'plant';
+  const isPlant = product?.isPlant !== false;
+  const todayFormatted = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  if (isPlant) {
+    return [
+      {
+        id: 'mock_1_' + (product?._id || 'p'),
+        author: 'Namitha Bhasi',
+        avatar: 'N',
+        date: todayFormatted,
+        rating: 5,
+        title: `Lush and extremely healthy ${prodName}!`,
+        size: 'Standard',
+        color: 'Vibrant Green',
+        comment: `I ordered this ${prodName} and it arrived in immaculate condition! The packaging kept the root ball moist and protected. Looks stunning in my living room.`,
+        verified: true,
+        likes: 18,
+        helpfulText: 'One person found this helpful'
+      },
+      {
+        id: 'mock_2_' + (product?._id || 'p'),
+        author: 'Navaneeth Bhasi',
+        avatar: 'N',
+        date: todayFormatted,
+        rating: 5,
+        title: 'Super fast delivery and healthy specimen',
+        size: 'Medium',
+        color: 'Fresh Green',
+        comment: `Excellent quality. The ${prodName} started showing new shoots within a week of unboxing. Highly recommend Planters Agro Valley!`,
+        verified: true,
+        likes: 12,
+        helpfulText: '2 people found this helpful'
+      },
+      {
+        id: 'mock_3_' + (product?._id || 'p'),
+        author: 'Nithin Bhasi',
+        avatar: 'N',
+        date: todayFormatted,
+        rating: 4,
+        title: 'Very satisfied with the build and care',
+        size: 'Standard',
+        color: 'Natural',
+        comment: `Great addition to our space. Very easy to care for and arrived securely packed with clear care instructions.`,
+        verified: true,
+        likes: 7,
+        helpfulText: null
+      }
+    ];
+  } else {
+    return [
+      {
+        id: 'mock_1_' + (product?._id || 'p'),
+        author: 'Namitha Bhasi',
+        avatar: 'N',
+        date: todayFormatted,
+        rating: 5,
+        title: `Extremely durable ${prodName}!`,
+        size: 'Standard',
+        color: 'Matte Finish',
+        comment: `Built with top-grade weather-resistant materials. The ${prodName} holds up wonderfully and enhances our home decor.`,
+        verified: true,
+        likes: 15,
+        helpfulText: 'One person found this helpful'
+      },
+      {
+        id: 'mock_2_' + (product?._id || 'p'),
+        author: 'Navaneeth Bhasi',
+        avatar: 'N',
+        date: todayFormatted,
+        rating: 5,
+        title: 'Sleek design and super sturdy',
+        size: 'Medium',
+        color: 'Black/Dark',
+        comment: `Arrived safely packaged. Exactly as shown in the pictures and very easy to set up.`,
+        verified: true,
+        likes: 10,
+        helpfulText: '2 people found this helpful'
+      }
+    ];
   }
-];
+};
 
 // Bank Offers data
 const bankOffersData = [
@@ -142,27 +182,39 @@ function Productdetails() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   // Real-time Reviews State
-  const [reviewsList, setReviewsList] = useState(initialMockReviews);
+  const [reviewsList, setReviewsList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedTag, setSelectedTag] = useState(null);
   const reviewsPerPage = 3;
 
-  // Load customer reviews from LocalStorage on mount
+  // Load customer reviews from LocalStorage filtered STRICTLY for THIS product
   useEffect(() => {
+    if (!product) return;
+
     try {
       const saved = JSON.parse(localStorage.getItem('planters_custom_reviews') || '[]');
-      if (saved && saved.length > 0) {
-        const todayStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-        const cleanedSaved = saved.map(r => ({
-          ...r,
-          date: (r.date === 'Today' || r.date === '6 August 2026') ? todayStr : r.date
-        }));
-        setReviewsList([...cleanedSaved, ...initialMockReviews]);
-      }
+      const pId = String(product._id || product.id || '').toLowerCase();
+      const pName = String(product.name || '').toLowerCase();
+
+      // Filter custom reviews specifically for THIS product
+      const productCustomReviews = saved.filter(r => {
+        const rId = String(r.productId || '').toLowerCase();
+        const rName = String(r.productName || r.product || '').toLowerCase();
+        return (rId && rId === pId) || (rName && rName === pName);
+      });
+
+      const todayStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+      const cleanedSaved = productCustomReviews.map(r => ({
+        ...r,
+        date: (r.date === 'Today' || r.date === '6 August 2026') ? todayStr : r.date
+      }));
+
+      const defaultMockReviews = getProductSpecificMockReviews(product);
+      setReviewsList([...cleanedSaved, ...defaultMockReviews]);
     } catch (err) {
-      console.error("Error loading reviews:", err);
+      console.error("Error loading product reviews:", err);
     }
-  }, []);
+  }, [product]);
 
   // Calculate Real-Time Tag Counts dynamically based on reviews
   const tagCounts = useMemo(() => {
@@ -511,6 +563,21 @@ function Productdetails() {
   const handleLikeReview = (reviewId) => {
     setReviewsList(prev => prev.map(r => r.id === reviewId ? { ...r, likes: r.likes + 1, helpfulText: `${r.likes + 1} people found this helpful` } : r));
     toast.success("Thank you for your feedback!");
+  };
+
+  // Delete Review / Comment
+  const handleDeleteReview = (reviewId) => {
+    setReviewsList(prev => prev.filter(r => r.id !== reviewId));
+
+    try {
+      const saved = JSON.parse(localStorage.getItem('planters_custom_reviews') || '[]');
+      const updated = saved.filter(r => r.id !== reviewId);
+      localStorage.setItem('planters_custom_reviews', JSON.stringify(updated));
+    } catch (err) {
+      console.error("Error deleting review from local storage:", err);
+    }
+
+    toast.success("Comment deleted successfully.");
   };
 
   // Submit New Review (Pic 5 format)
@@ -1040,15 +1107,25 @@ function Productdetails() {
                       <p className="text-xs text-slate-500 pt-1">{rev.helpfulText}</p>
                     )}
 
-                    {/* Redesigned Helpful Pill Chip Button & Report link */}
-                    <div style={{ marginTop: '10px', marginBottom: '10px',padding:'5px'}}  className="flex items-center gap-4 pt-2 text-xs">
+                    {/* Redesigned Helpful Pill Chip Button & Delete button */}
+                    <div style={{ marginTop: '10px', marginBottom: '10px', padding: '5px' }} className="flex items-center gap-3 pt-2 text-xs">
                       <button
                         onClick={() => handleLikeReview(rev.id)}
-                        className="inline-flex items-center gap-1.5 px-4 py-1.5  text-xs font-semibold text-slate-700 hover:border-[#06492D] hover:bg-[#f3f8f3] hover:text-[#06492D] transition-all cursor-pointer shadow-2xs no-underline"
+                        className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold text-slate-700 hover:border-[#06492D] hover:bg-[#f3f8f3] hover:text-[#06492D] transition-all cursor-pointer shadow-2xs !no-underline"
+                        style={{ textDecoration: 'none' }}
                       >
                         <FiThumbsUp size={13} className="text-slate-500" />
-                        <span className="no-underline" >Helpful</span>
+                        <span style={{ textDecoration: 'none' }}>Helpful</span>
                         {rev.likes > 0 && <span className="text-[#06492D] font-bold">({rev.likes})</span>}
+                      </button>
+
+                      <button
+                        onClick={() => handleDeleteReview(rev.id)}
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-[#06492D] hover:underline cursor-pointer bg-transparent border-0 p-0 shadow-none ml-2"
+                        title="Delete comment"
+                      >
+                        <FiTrash2 size={13} className="text-[#06492D]" />
+                        <span>Delete</span>
                       </button>
                     </div>
 

@@ -93,16 +93,18 @@ function Chat() {
     }
   }, [isOpen, sessionId, user]);
 
-  // Auto-scroll to bottom of chat
+  const [hasUserSentMessage, setHasUserSentMessage] = useState(false);
+
+  // Auto-scroll to bottom of chat ONLY when user actively sends a message or bot replies
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && hasUserSentMessage) {
       scrollToBottom();
     }
-  }, [messages, isOpen, isTyping]);
+  }, [messages, isTyping, isOpen, hasUserSentMessage]);
 
   const handleOpenAuth = () => {
     dispatch(openAuthModal({ tab: "login" }));
@@ -111,6 +113,8 @@ function Chat() {
   const handleSendMessage = (textToSend = null) => {
     const text = textToSend || inputMessage.trim();
     if (!text && !selectedFile) return;
+
+    setHasUserSentMessage(true);
 
     const userMsg = {
       id: Date.now(),
@@ -198,7 +202,10 @@ function Chat() {
                 {isExpanded ? <FiMinimize2 /> : <FiMaximize2 />}
               </button>
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  setHasUserSentMessage(false);
+                }}
                 className="chat-control-icon-btn"
                 title="Minimize chat"
               >
