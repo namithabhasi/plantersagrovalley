@@ -592,6 +592,57 @@ export const cancelOrder = async (req, res) => {
 };
 
 /**
+ * @desc Request Order Return
+ * @route PUT /api/orders/:id/return
+ * @access Private (Customer / User)
+ */
+export const requestReturn = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    const { returnReason } = req.body;
+    const userId = req.user._id;
+
+    let order = await Order.findById(orderId);
+    if (!order) {
+      order = await Order.findOne({ $or: [{ _id: orderId }, { orderNumber: orderId }] });
+    }
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found.",
+      });
+    }
+
+    // Update order status to Return Requested
+    order.orderStatus = "Return Requested";
+    if (returnReason) {
+      order.notes = `Return Reason: ${returnReason}`;
+    }
+    if (!order.statusHistory) {
+      order.statusHistory = [];
+    }
+    order.statusHistory.push({
+      status: "Return Requested",
+      updatedAt: new Date(),
+    });
+
+    await order.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Return request submitted successfully.",
+      order,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+/**
  * @desc Get All Orders
  * @route GET /api/orders
  * @access Private (Admin/Shipping Manager)

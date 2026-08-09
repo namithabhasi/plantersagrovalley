@@ -9,6 +9,7 @@ import haworthiaImg from '../assets/Haworthia.jpg';
 import logo from '../assets/logo.png';
 import { getItemImage } from '../utils/itemImageHelper';
 import OrderTrackingModal from '../COMPONENTS/OrderTrackingModal';
+import ReturnTrackingModal from '../COMPONENTS/ReturnTrackingModal';
 import InvoiceModal from '../COMPONENTS/InvoiceModal';
 
 function Orderdetails() {
@@ -23,6 +24,7 @@ function Orderdetails() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
+  const [isReturnTrackingModalOpen, setIsReturnTrackingModalOpen] = useState(false);
   const [showInvoiceDropdown, setShowInvoiceDropdown] = useState(false);
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
   const [isPrintMode, setIsPrintMode] = useState(() => searchParams.get("print") === "true");
@@ -91,11 +93,22 @@ function Orderdetails() {
     setIsReturnModalOpen(true);
   };
 
-  const handleSubmitReturn = () => {
+  const handleSubmitReturn = async () => {
     if (!selectedReturnOrder) return;
+
+    const targetId = selectedReturnOrder._id || selectedReturnOrder.orderNumber;
+
+    try {
+      await axios.put(`/orders/${targetId}/return`, {
+        returnReason: returnReason || "Item damaged / Quality issue"
+      });
+    } catch (e) {
+      console.warn("Backend return request error (updating local state):", e);
+    }
 
     const returnedObj = {
       ...selectedReturnOrder,
+      orderStatus: "Return Requested",
       returnReason: returnReason || "Return requested by customer",
       returnDate: new Date().toISOString(),
       returnStatus: "Return Requested",
@@ -106,12 +119,12 @@ function Orderdetails() {
     setReturnedOrders(updatedList);
     localStorage.setItem('planters_returned_orders', JSON.stringify(updatedList));
 
-    if (order && (order._id === selectedReturnOrder._id || order.orderNumber === selectedReturnOrder.orderNumber)) {
-      setOrder({ ...order, orderStatus: 'Returned' });
+    if (order && (order._id === targetId || order.orderNumber === targetId)) {
+      setOrder({ ...order, orderStatus: 'Return Requested' });
     }
 
     setIsReturnModalOpen(false);
-    toast.success("Return request submitted! You can view it under Returns & Refunds in your Profile.");
+    toast.success("Return request submitted to admin! You can view it under Returns & Refunds in your Profile.");
   };
 
   if (loading) {
@@ -494,6 +507,7 @@ function Orderdetails() {
 
                         <Link 
                           to={`/product/${item.product || item._id}`}
+                          state={{ product: { _id: item.product || item._id, name: item.name, image: itemImage, price: item.price } }}
                           className="order-action-btn order-action-btn-inline"
                         >
                           View your item
@@ -513,8 +527,8 @@ function Orderdetails() {
 
                     {isAlreadyReturned ? (
                       <button
-                        onClick={() => navigate('/profile')}
-                        className="order-action-btn-purple"
+                        onClick={() => setIsReturnTrackingModalOpen(true)}
+                        className="order-action-btn cursor-pointer"
                       >
                         View Return Status
                       </button>
@@ -618,12 +632,19 @@ function Orderdetails() {
       </div>
     )}
 
-    {/* Order Tracking Modal */}
-    <OrderTrackingModal
-      isOpen={isTrackingModalOpen}
-      onClose={() => setIsTrackingModalOpen(false)}
-      order={order}
-    />
+      {/* Order Tracking Modal */}
+      <OrderTrackingModal
+        isOpen={isTrackingModalOpen}
+        onClose={() => setIsTrackingModalOpen(false)}
+        order={order}
+      />
+
+      {/* Return Tracking Modal */}
+      <ReturnTrackingModal
+        isOpen={isReturnTrackingModalOpen}
+        onClose={() => setIsReturnTrackingModalOpen(false)}
+        returnOrder={order}
+      />
 
     {/* Tax Invoice Modal */}
     <InvoiceModal

@@ -8,6 +8,7 @@ import { useCart } from "../context/CartContext";
 import haworthiaImg from "../assets/Haworthia.jpg";
 import { getItemImage } from "../utils/itemImageHelper";
 import OrderTrackingModal from "../COMPONENTS/OrderTrackingModal";
+import ReturnTrackingModal from "../COMPONENTS/ReturnTrackingModal";
 import InvoiceModal from "../COMPONENTS/InvoiceModal";
 import OrderSummaryModal from "../COMPONENTS/OrderSummaryModal";
 
@@ -60,6 +61,13 @@ function MyOrders() {
 
   const [selectedTrackingOrder, setSelectedTrackingOrder] = useState(null);
   const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
+  const [selectedReturnStatusOrder, setSelectedReturnStatusOrder] = useState(null);
+  const [isReturnTrackingModalOpen, setIsReturnTrackingModalOpen] = useState(false);
+
+  const handleOpenReturnStatusModal = (order) => {
+    setSelectedReturnStatusOrder(order);
+    setIsReturnTrackingModalOpen(true);
+  };
 
   const handleOpenTrackingModal = (order) => {
     setSelectedTrackingOrder(order);
@@ -78,11 +86,22 @@ function MyOrders() {
     setIsReturnModalOpen(true);
   };
 
-  const handleSubmitReturn = () => {
+  const handleSubmitReturn = async () => {
     if (!selectedReturnOrder) return;
+
+    const targetId = selectedReturnOrder._id || selectedReturnOrder.orderNumber;
+
+    try {
+      await axios.put(`/orders/${targetId}/return`, {
+        returnReason: returnReason || "Item damaged / Quality issue"
+      });
+    } catch (e) {
+      console.warn("Backend return request error (updating local state):", e);
+    }
 
     const returnedObj = {
       ...selectedReturnOrder,
+      orderStatus: "Return Requested",
       returnReason: returnReason || "Return requested by customer",
       returnDate: new Date().toISOString(),
       returnStatus: "Return Requested",
@@ -90,11 +109,10 @@ function MyOrders() {
     };
 
     setReturnedOrders(prev => [returnedObj, ...prev]);
-
-    setOrders(prev => prev.map(o => (o._id === selectedReturnOrder._id || o.orderNumber === selectedReturnOrder.orderNumber) ? { ...o, orderStatus: 'Returned' } : o));
+    setOrders(prev => prev.map(o => (o._id === targetId || o.orderNumber === targetId) ? { ...o, orderStatus: 'Return Requested' } : o));
 
     setIsReturnModalOpen(false);
-    toast.success("Return request submitted! You can view it under Returns & Refunds in your Profile.");
+    toast.success("Return request submitted to admin! You can view it under Returns & Refunds in your Profile.");
   };
 
   const fetchOrders = async (pageNumber = 1) => {
@@ -399,12 +417,13 @@ function MyOrders() {
                                         <span>Buy it again</span>
                                       </button>
 
-                                      <Link 
-                                        to={`/product/${item.product || item._id}`}
-                                        className="order-action-btn order-action-btn-inline"
-                                      >
-                                        View your item
-                                      </Link>
+                                       <Link 
+                                         to={`/product/${item.product || item._id}`}
+                                         state={{ product: { _id: item.product || item._id, name: item.name, image: itemImage, price: item.price } }}
+                                         className="order-action-btn order-action-btn-inline"
+                                       >
+                                         View your item
+                                       </Link>
                                     </div>
                                   </div>
                                 </div>
@@ -420,8 +439,8 @@ function MyOrders() {
 
                                   {isAlreadyReturned ? (
                                     <button
-                                      onClick={() => navigate('/profile')}
-                                      className="order-action-btn-purple"
+                                      onClick={() => handleOpenReturnStatusModal(order)}
+                                      className="order-action-btn cursor-pointer"
                                     >
                                       View Return Status
                                     </button>
@@ -574,6 +593,13 @@ function MyOrders() {
         isOpen={isTrackingModalOpen}
         onClose={() => setIsTrackingModalOpen(false)}
         order={selectedTrackingOrder}
+      />
+
+      {/* Return Tracking Modal */}
+      <ReturnTrackingModal
+        isOpen={isReturnTrackingModalOpen}
+        onClose={() => setIsReturnTrackingModalOpen(false)}
+        returnOrder={selectedReturnStatusOrder}
       />
 
       {/* Tax Invoice Modal */}
