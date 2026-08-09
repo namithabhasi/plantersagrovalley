@@ -56,27 +56,37 @@ function Payment() {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Pre-fill fields if user is logged in
+  // Pre-fill fields if user is logged in or profile is in localStorage
   useEffect(() => {
-    if (user) {
-      setEmail(user.email || '');
-      setFirstName(user.firstName || user.name?.split(' ')[0] || '');
-      setLastName(user.lastName || user.name?.split(' ')[1] || '');
-      setPhone(user.phone || '');
-
-      // Populate address details if available
-      const savedAddress = user.address || user.streetAddress || user.addresses?.[0]?.street || '';
-      const savedApartment = user.apartment || user.addresses?.[0]?.apartment || '';
-      const savedCity = user.city || user.addresses?.[0]?.city || '';
-      const savedState = user.state || user.addresses?.[0]?.state || 'Kerala';
-      const savedPincode = user.pinCode || user.pincode || user.addresses?.[0]?.pincode || '';
-
-      setAddress(savedAddress);
-      setApartment(savedApartment);
-      setCity(savedCity);
-      setStateVal(savedState);
-      setPinCode(savedPincode);
+    let u = user;
+    if (!u) {
+      try {
+        const saved = localStorage.getItem('user');
+        if (saved) u = JSON.parse(saved);
+      } catch (e) {
+        console.error(e);
+      }
     }
+
+    const effectiveEmail = u?.email || 'namithabhasi@gmail.com';
+    const effectiveFirstName = u?.firstName || u?.name?.split(' ')[0] || 'NAMITHA';
+    const effectiveLastName = u?.lastName || u?.name?.split(' ')[1] || 'BHASI';
+    const effectivePhone = u?.phone || '8304004975';
+    const effectiveAddress = u?.address || u?.streetAddress || u?.addresses?.[0]?.street || 'KATHANAPARAMBIL HOUSE, PANDIPADAM ROAD, NEAR MALAVANA VISHNUMAYA TEMPLE';
+    const effectiveApartment = u?.apartment || u?.addresses?.[0]?.apartment || '';
+    const effectiveCity = u?.city || u?.addresses?.[0]?.city || 'Ernakulam';
+    const effectiveState = u?.state || u?.addresses?.[0]?.state || 'Kerala';
+    const effectivePincode = u?.pinCode || u?.pincode || u?.addresses?.[0]?.pincode || '682001';
+
+    setEmail(effectiveEmail);
+    setFirstName(effectiveFirstName);
+    setLastName(effectiveLastName);
+    setPhone(effectivePhone);
+    setAddress(effectiveAddress);
+    setApartment(effectiveApartment);
+    setCity(effectiveCity);
+    setStateVal(effectiveState);
+    setPinCode(effectivePincode);
   }, [user]);
 
   // Handle Coupon Apply
@@ -86,7 +96,7 @@ function Payment() {
 
     const cleanCode = couponInput.trim().toUpperCase();
     if (!cleanCode) {
-      setCouponError('Please enter a coupon code.');
+      setCouponError('Invalid coupon code.');
       return;
     }
 
@@ -101,7 +111,7 @@ function Payment() {
       setAppliedCoupon({ code: 'SAVE100', type: 'flat', value: 100, desc: '₹100 Flat Discount Applied' });
       toast.success('Coupon SAVE100 applied (₹100 OFF)!');
     } else {
-      setCouponError('Invalid coupon code. Try PLANTERS10, WELCOME20, or SAVE100.');
+      setCouponError('Invalid coupon code.');
       toast.error('Invalid coupon code.');
     }
   };
@@ -113,13 +123,45 @@ function Payment() {
     toast.info('Coupon removed.');
   };
 
-  // Dynamic Estimated Delivery Calculation Logic (Current Date + 3 to 5 business days)
+  // Dynamic Estimated Delivery Calculation Logic based on Kerala PIN Code Proximity (7 Days max delivery policy)
   const getDynamicEstimatedDelivery = () => {
+    const activePin = (pinCode || user?.pincode || user?.pinCode || '683594').trim();
+    const pinPrefix = activePin.substring(0, 3);
     const now = new Date();
-    const minDate = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
-    const maxDate = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000);
 
+    let minDays = 3;
+    let maxDays = 5;
+
+    // 1. Nearest Store Region (Ernakulam & Thrissur): 2 Days Delivery
+    if (['682', '683', '684', '685', '680', '681'].includes(pinPrefix)) {
+      minDays = 2;
+      maxDays = 2;
+    }
+    // 2. Central Kerala Districts (Kottayam, Alappuzha, Palakkad): 3 - 4 Days Delivery
+    else if (['686', '687', '688', '678', '679'].includes(pinPrefix)) {
+      minDays = 3;
+      maxDays = 4;
+    }
+    // 3. North & South Kerala Districts (Trivandrum, Kollam, Pathanamthitta, Kozhikode, Malappuram, Wayanad, Kannur, Kasaragod): 5 - 7 Days Delivery
+    else if (['695', '691', '689', '673', '676', '670', '671'].includes(pinPrefix)) {
+      minDays = 5;
+      maxDays = 7;
+    }
+    // 4. Default fallback within 7 days policy
+    else {
+      minDays = 3;
+      maxDays = 5;
+    }
+
+    const minDate = new Date(now.getTime() + minDays * 24 * 60 * 60 * 1000);
     const minFormatted = minDate.toLocaleDateString("en-GB", { day: "numeric", month: "long" });
+
+    if (minDays === maxDays) {
+      const yearStr = minDate.toLocaleDateString("en-GB", { year: "numeric" });
+      return `${minFormatted} ${yearStr}`;
+    }
+
+    const maxDate = new Date(now.getTime() + maxDays * 24 * 60 * 60 * 1000);
     const maxFormatted = maxDate.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
     return `${minFormatted} - ${maxFormatted}`;
@@ -327,8 +369,8 @@ function Payment() {
     }
   };
 
-  // Readonly flag for logged-in users
-  const isReadOnly = Boolean(user) && isAddressLocked;
+  // Delivery Address is auto-filled and non-editable by client at payment.jsx page
+  const isReadOnly = true;
 
   return (
     <div className="checkout-page-wrapper">
@@ -387,33 +429,6 @@ function Payment() {
                   <a href="#signin" onClick={handleSignInPrompt} className="account-prompt-link">
                     Sign in &rarr;
                   </a>
-                </div>
-              )}
-
-              {/* Saved Account Notice for Logged-In Users */}
-              {user && (
-                <div className="bg-[#edf3ed] border border-[#06492D]/20 p-4 rounded-[4px] flex justify-between items-center text-xs">
-                  <div className="flex items-center gap-2 text-[#06492D] font-semibold">
-                    <FiLock size={15} />
-                    <span>Saved Account Address ({isAddressLocked ? 'Locked for Security' : 'Editable Mode'})</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setIsAddressLocked(!isAddressLocked)}
-                    className="text-xs text-[#06492D] underline font-semibold flex items-center gap-1 cursor-pointer bg-transparent border-none p-0"
-                  >
-                    {isAddressLocked ? (
-                      <>
-                        <FiUnlock size={12} />
-                        <span>Unlock to Edit</span>
-                      </>
-                    ) : (
-                      <>
-                        <FiLock size={12} />
-                        <span>Lock Address</span>
-                      </>
-                    )}
-                  </button>
                 </div>
               )}
 
@@ -503,6 +518,7 @@ function Payment() {
                   <input
                     type="text"
                     id="address"
+                    maxLength={120}
                     placeholder="Address (House no., Building, Street)"
                     value={address}
                     readOnly={isReadOnly}
@@ -518,6 +534,7 @@ function Payment() {
                 <div className="form-group">
                   <input
                     type="text"
+                    maxLength={80}
                     placeholder="Apartment, suite, etc. (optional)"
                     value={apartment}
                     readOnly={isReadOnly}
@@ -692,7 +709,7 @@ function Payment() {
                 </div>
 
                 {/* Coupon Code Section */}
-                <div className="border-t border-b border-gray-100 py-3 my-3">
+                <div className="border-t border-b border-gray-100 py-3" style={{ marginTop: '5px', marginBottom: '5px' }}>
                   <label className="text-xs font-semibold text-[#06492D] uppercase tracking-wider block mb-1.5 flex items-center gap-1">
                     <FiTag size={13} />
                     <span>Apply Coupon Code</span>
@@ -716,7 +733,7 @@ function Payment() {
                     <div className="flex gap-2">
                       <input
                         type="text"
-                        placeholder="Enter Coupon (e.g. PLANTERS10)"
+                        placeholder="Enter Coupon Code"
                         value={couponInput}
                         onChange={(e) => {
                           setCouponInput(e.target.value);
@@ -776,11 +793,8 @@ function Payment() {
                   <div className="delivery-text-wrap">
                     <span className="delivery-title">Estimated Delivery</span>
                     <span className="delivery-date">{getDynamicEstimatedDelivery()}</span>
-                    <span className="delivery-location">Delivering to {pinCode || user?.pincode || user?.pinCode || '560001'}</span>
+                    <span className="delivery-location">Delivering to {pinCode || user?.pincode || user?.pinCode || '683594'}</span>
                   </div>
-                  <a href="#change" onClick={(e) => { e.preventDefault(); setIsAddressLocked(false); }} className="delivery-change-link">
-                    Change
-                  </a>
                 </div>
 
                 {/* Security guarantees list (NO ICONS) */}

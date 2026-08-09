@@ -90,6 +90,15 @@ function Balconygarden() {
 
   const [errors, setErrors] = useState({});
   const [dynamicServices, setDynamicServices] = useState([]);
+  const [expandedServices, setExpandedServices] = useState([]);
+  const [showAllCustomServices, setShowAllCustomServices] = useState(false);
+  const [showAllPortfolio, setShowAllPortfolio] = useState(false);
+
+  const toggleServiceExpand = (id) => {
+    setExpandedServices(prev => 
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
 
   useEffect(() => {
     const fetchDynamicServices = async () => {
@@ -107,7 +116,12 @@ function Balconygarden() {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    const val = type === 'checkbox' ? checked : value;
+    let val = type === 'checkbox' ? checked : value;
+
+    if (name === 'phone') {
+      val = val.replace(/\D/g, '').slice(0, 10);
+    }
+
     setFormData((prev) => ({ ...prev, [name]: val }));
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
@@ -121,13 +135,13 @@ function Balconygarden() {
     }
     if (!formData.email.trim()) {
       newErrors.email = 'Email address is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
       newErrors.email = 'Please enter a valid email address';
     }
     if (!formData.phone.trim()) {
       newErrors.phone = 'Phone number is required';
-    } else if (!/^\+?[0-9]{7,15}$/.test(formData.phone.replace(/[\s-]/g, ''))) {
-      newErrors.phone = 'Please enter a valid phone number';
+    } else if (!/^[6-9]\d{9}$/.test(formData.phone.trim())) {
+      newErrors.phone = 'Please enter a valid 10-digit mobile number';
     }
     if (!formData.comment.trim()) {
       newErrors.comment = 'Comment is required';
@@ -192,12 +206,12 @@ function Balconygarden() {
                 Premium Balcony Styling
               </span>
               <h1
-                className="font-[var(--font-family-heading)] text-3xl md:text-[40px] font-normal leading-tight text-[var(--color-primary-dark)] uppercase"
+                className="section-title text-center md:text-left"
                 style={{ marginBottom: '24px' }}
               >
                 Balcony Garden Services
               </h1>
-              <p className="font-[var(--font-family-base)] text-sm text-[var(--color-text-main)] leading-relaxed mb-8 max-w-lg">
+              <p className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed mb-8 max-w-lg">
                 Breathe life into your balcony with our custom balcony garden styling. 
                 Whether a cozy compact space or a large high-rise deck, we design vertical privacy screens, 
                 self-watering planter grids, custom seating backdrops, and select stunning greenery 
@@ -220,28 +234,42 @@ function Balconygarden() {
 
       {/* 2. Image Gallery Showcase */}
       <section className="bg-[var(--color-primary-bg)] border-b border-gray-100" style={{ paddingTop: '80px', paddingBottom: '80px' }}>
-        <div className="container">
-          <div className="text-center" style={{ marginBottom: '48px' }}>
-            <span className="text-[10px] font-semibold uppercase tracking-[3px] text-gray-500 mb-2 block">
-              Our Portfolio
-            </span>
-            <h2 className="font-[var(--font-family-heading)] text-2xl md:text-3xl font-normal text-[var(--color-primary-dark)] uppercase">
-              Showcase of Our Works
-            </h2>
+        <div className="container mx-auto px-4 md:px-6 max-w-6xl w-full">
+          <div className="relative flex flex-col md:flex-row items-center justify-center w-full mb-[30px]">
+            <div className="text-center">
+              <span className="text-[10px] font-semibold uppercase tracking-[3px] text-gray-500 mb-2 block">
+                Our Portfolio
+              </span>
+              <h2 className="section-title" style={{ marginBottom: '10px' }}>
+                Showcase of Our Works
+              </h2>
+            </div>
+            {galleryItems.length > 6 && (
+              <button
+                type="button"
+                onClick={() => setShowAllPortfolio(prev => !prev)}
+                className="md:absolute right-0 text-xs font-semibold tracking-wider text-[#06492D] hover:underline uppercase cursor-pointer transition-colors flex items-center gap-1 mt-2 md:mt-0"
+              >
+                {showAllPortfolio ? 'VIEW LESS ↑' : 'VIEW ALL →'}
+              </button>
+            )}
           </div>
 
           <div className="product-grid">
-            {galleryItems.map((item) => (
+            {(showAllPortfolio ? galleryItems : galleryItems.slice(0, 6)).map((item) => (
               <div key={item.id} className="product-card-wrapper">
                 <div className="product-card" style={{ flexGrow: 1 }}>
                   <div className="product-card-image">
                     <img src={item.image} alt={item.title} />
                   </div>
                   <div className="product-card-content text-center">
-                    <h4 className="product-title uppercase tracking-wider text-xs font-semibold text-gray-800 mb-2">
+                    <h4 className="product-title uppercase tracking-wider text-xs font-semibold text-[#06492D] mb-2 text-center">
                       {item.title}
                     </h4>
-                    <p className="font-[var(--font-family-base)] text-[11px] text-[var(--color-text-muted)] leading-relaxed">
+                    <p 
+                      className="font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed px-1"
+                      style={{ textAlign: 'justify', textJustify: 'inter-word', textAlignLast: 'left' }}
+                    >
                       {item.description}
                     </p>
                   </div>
@@ -252,54 +280,114 @@ function Balconygarden() {
         </div>
       </section>
 
-      {/* Dynamic Services Section */}
-      {dynamicServices.length > 0 && (
-        <section className="bg-white border-b border-gray-100" style={{ paddingTop: '100px', paddingBottom: '100px' }}>
-          <div className="container mx-auto">
-            <div className="text-center">
-              <h2 
-                className="font-[var(--font-family-heading)] text-2xl md:text-3xl font-normal text-[var(--color-primary-dark)] uppercase"
-                style={{ marginBottom: '48px' }}
-              >
-                OUR CUSTOM SERVICES
-              </h2>
-            </div>
-            <div className="flex flex-wrap justify-center gap-12 max-w-6xl mx-auto">
-              {dynamicServices.map((service) => (
-                <div key={service._id} className="product-card custom-service-card max-w-[var(--card-max-width)] w-full flex flex-col">
-                  {service.image && (
-                    <div className="product-card-image">
-                      <img src={service.image} alt={service.title} className="w-full h-full object-cover" />
+      {/* Dynamic & Fallback Custom Services Section */}
+      {(() => {
+        const fallbackCustomServices = [
+          {
+            _id: 'static-balcony-1',
+            title: 'BALCONY PRIVACY SCREENS & GREEN WALLS',
+            image: img4,
+            description: 'Custom vertical green walls and leafy privacy screens designed to shade your outdoor space while creating a private natural retreat.'
+          },
+          {
+            _id: 'static-balcony-2',
+            title: 'AUTOMATED IRRIGATION FOR BALCONY PLANTERS',
+            image: img6,
+            description: 'Smart drip irrigation systems fitted directly onto balcony railings and corner planter boxes for effortless, automated plant watering.'
+          }
+        ];
+
+        const allCustomServices = dynamicServices.length > 0 
+          ? [...dynamicServices, ...fallbackCustomServices] 
+          : fallbackCustomServices;
+
+        const displayedCustomServices = showAllCustomServices 
+          ? allCustomServices 
+          : allCustomServices.slice(0, 3);
+
+        return (
+          <section className="bg-white overflow-hidden" style={{ paddingTop: '50px', paddingBottom: '50px' }}>
+            <div className="container mx-auto px-4 md:px-6 max-w-6xl w-full">
+              <div className="relative flex flex-col md:flex-row items-center justify-center w-full mb-[30px]">
+                <h2 className="section-title text-center" style={{ marginBottom: '10px' }}>
+                  OUR CUSTOM SERVICES
+                </h2>
+                {allCustomServices.length > 3 && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAllCustomServices(prev => !prev)}
+                    className="md:absolute right-0 text-xs font-semibold tracking-wider text-[#06492D] hover:underline uppercase cursor-pointer transition-colors flex items-center gap-1 mt-2 md:mt-0"
+                  >
+                    {showAllCustomServices ? 'VIEW LESS ↑' : 'VIEW ALL →'}
+                  </button>
+                )}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto items-stretch justify-items-center w-full">
+                {displayedCustomServices.map((service) => {
+                  const isExpanded = expandedServices.includes(service._id);
+                  return (
+                    <div key={service._id} className="product-card-wrapper w-full flex justify-center">
+                      <div className="product-card w-full max-w-[340px] flex flex-col h-full bg-white shadow-sm border border-gray-100">
+                        {service.image && (
+                          <div className="product-card-image w-full h-56 md:h-60 overflow-hidden flex-shrink-0">
+                            <img src={service.image} alt={service.title} className="w-full h-full object-cover" />
+                          </div>
+                        )}
+                        <div className="product-card-content text-center p-6 flex-grow flex flex-col">
+                          <h4 className="product-title uppercase tracking-wider text-[var(--font-size-md)] font-semibold text-[#06492D] mb-3 text-center">
+                            {service.title}
+                          </h4>
+                          <p 
+                            className={`font-[var(--font-family-base)] text-[var(--font-size-md)] text-[var(--color-text-main)] leading-relaxed mt-auto ${
+                              !isExpanded ? 'line-clamp-3 overflow-hidden text-ellipsis' : ''
+                            }`}
+                            style={{
+                              textAlign: 'justify',
+                              textJustify: 'inter-word',
+                              textAlignLast: 'left',
+                              wordBreak: 'break-word',
+                              letterSpacing: '-0.01em',
+                              ...(!isExpanded ? {
+                                display: '-webkit-box',
+                                WebkitLineClamp: 3,
+                                WebkitBoxOrient: 'vertical',
+                                overflow: 'hidden'
+                              } : {})
+                            }}
+                          >
+                            {service.description}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => toggleServiceExpand(service._id)}
+                            className="mt-3 text-xs font-semibold uppercase tracking-wider text-[#06492D] hover:underline cursor-pointer transition-colors self-center"
+                          >
+                            {isExpanded ? 'Read Less ↑' : 'Read More ↓'}
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  )}
-                  <div className="product-card-content text-center flex-grow flex flex-col">
-                    <h4 className="product-title uppercase tracking-wider text-sm font-semibold text-gray-800 mb-2">
-                      {service.title}
-                    </h4>
-                    <p className="font-[var(--font-family-base)] text-xs text-[var(--color-text-muted)] leading-relaxed mt-auto">
-                      {service.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        </section>
-      )}
+          </section>
+        );
+      })()}
 
       {/* 3. Contact Form Section */}
-      <section id="contact-form-section" className="bg-[#fcfdfc]" style={{ paddingTop: '100px', paddingBottom: '120px' }}>
-        <div className="container max-w-[800px]">
+      <section id="contact-form-section" className="bg-[var(--color-primary-bg)] px-4 md:px-6" style={{ paddingTop: '50px', paddingBottom: '70px' }}>
+        <div className="container mx-auto max-w-[800px]">
           <div className="text-left">
             <h2
-              className="font-[var(--font-family-heading)] text-2xl md:text-3xl font-normal text-[#2c3e50] tracking-wide uppercase"
+              className="section-title text-left"
               style={{ marginBottom: '40px' }}
             >
               Get in touch
             </h2>
           </div>
 
-          <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5 w-full">
+          <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4 w-full">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1 w-full">
                 <input
@@ -308,11 +396,11 @@ function Balconygarden() {
                   value={formData.name}
                   onChange={handleInputChange}
                   placeholder="Name"
-                  className={`w-full bg-[#f5f7f6] border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 focus:bg-white ${
-                    errors.name ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                  className={`w-full bg-white border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-[var(--color-text-main)] placeholder-gray-400 ${
+                    errors.name ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-[#06492D]'
                   }`}
                 />
-                {errors.name && <span className="text-[10px] text-red-600 mt-0.5">{errors.name}</span>}
+                {errors.name && <span className="text-xs text-red-500 mt-1 font-medium text-left">{errors.name}</span>}
               </div>
 
               <div className="flex flex-col gap-1 w-full">
@@ -322,45 +410,48 @@ function Balconygarden() {
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder="Email"
-                  className={`w-full bg-[#f5f7f6] border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 focus:bg-white ${
-                    errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                  className={`w-full bg-white border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-[var(--color-text-main)] placeholder-gray-400 ${
+                    errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-[#06492D]'
                   }`}
                 />
-                {errors.email && <span className="text-[10px] text-red-600 mt-0.5">{errors.email}</span>}
+                {errors.email && <span className="text-xs text-red-500 mt-1 font-medium text-left">{errors.email}</span>}
               </div>
             </div>
 
             <div className="flex flex-col gap-1 w-full">
               <input
-                type="text"
+                type="tel"
                 name="phone"
+                maxLength={10}
+                inputMode="numeric"
+                pattern="[0-9]*"
                 value={formData.phone}
                 onChange={handleInputChange}
-                placeholder="Phone number"
-                className={`w-full bg-[#f5f7f6] border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 focus:bg-white ${
-                  errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                placeholder="10-digit Phone number"
+                className={`w-full bg-white border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-[var(--color-text-main)] placeholder-gray-400 ${
+                  errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-[#06492D]'
                 }`}
               />
-              {errors.phone && <span className="text-[10px] text-red-600 mt-0.5">{errors.phone}</span>}
+              {errors.phone && <span className="text-xs text-red-500 mt-1 font-medium text-left">{errors.phone}</span>}
             </div>
 
             <div className="flex flex-col gap-1 w-full">
               <textarea
                 name="comment"
-                rows={6}
+                rows={4}
                 value={formData.comment}
                 onChange={handleInputChange}
                 placeholder="Comment"
-                className={`w-full bg-[#f5f7f6] border px-4 py-3.5 text-xs outline-none rounded-none transition-colors duration-200 text-gray-800 placeholder-gray-400 resize-none focus:bg-white ${
-                  errors.comment ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-[#06492D]'
+                className={`w-full bg-white border px-4 py-3.5 text-[var(--font-size-md)] outline-none rounded-none transition-colors duration-200 text-[var(--color-text-main)] placeholder-gray-400 resize-none ${
+                  errors.comment ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-[#06492D]'
                 }`}
               />
-              {errors.comment && <span className="text-[10px] text-red-600 mt-0.5">{errors.comment}</span>}
+              {errors.comment && <span className="text-xs text-red-500 mt-1 font-medium text-left">{errors.comment}</span>}
             </div>
 
             {/* Privacy Checkbox */}
-            <div className="flex flex-col gap-1.5 mt-1">
-              <label className="flex items-center space-x-2.5 cursor-pointer group text-gray-400 font-light text-[11px]">
+            <div className="flex flex-col gap-1 mt-1 relative">
+              <label className="flex items-center gap-3 cursor-pointer group text-[var(--color-text-main)] font-light text-[var(--font-size-md)] text-left">
                 <input
                   type="checkbox"
                   name="agreePrivacy"
@@ -368,8 +459,8 @@ function Balconygarden() {
                   onChange={handleInputChange}
                   className="sr-only"
                 />
-                <div className={`w-3.5 h-3.5 flex items-center justify-center border rounded-none transition-all duration-200 ${
-                  formData.agreePrivacy ? 'bg-[#06492D] border-[#06492D] text-white' : 'border-gray-200 group-hover:border-gray-300'
+                <div className={`w-4 h-4 flex items-center justify-center border rounded-none shrink-0 transition-all duration-200 ${
+                  formData.agreePrivacy ? 'bg-[#06492D] border-[#06492D] text-white' : 'bg-white border-gray-300 group-hover:border-[#06492D]'
                 }`}>
                   {formData.agreePrivacy && (
                     <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 20 20">
@@ -385,7 +476,7 @@ function Balconygarden() {
                 </span>
               </label>
               {errors.agreePrivacy && (
-                <span className="text-[10px] text-red-600 block">{errors.agreePrivacy}</span>
+                <span className="text-xs text-red-500 mt-1 font-medium text-left block">{errors.agreePrivacy}</span>
               )}
             </div>
 

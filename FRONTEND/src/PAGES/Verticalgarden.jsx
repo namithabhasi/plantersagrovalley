@@ -78,6 +78,7 @@ function Verticalgarden() {
   const [dynamicServices, setDynamicServices] = useState([]);
   const [expandedServices, setExpandedServices] = useState([]);
   const [showAllCustomServices, setShowAllCustomServices] = useState(false);
+  const [showAllPortfolio, setShowAllPortfolio] = useState(false);
 
   const toggleServiceExpand = (id) => {
     setExpandedServices(prev => 
@@ -218,18 +219,29 @@ function Verticalgarden() {
 
       {/* 2. Image Gallery Showcase */}
       <section className="bg-[var(--color-primary-bg)] border-b border-gray-100" style={{ paddingTop: '80px', paddingBottom: '80px' }}>
-        <div className="container">
-          <div className="text-center" style={{ marginBottom: '48px' }}>
-            <span className="text-[10px] font-semibold uppercase tracking-[3px] text-gray-500 mb-2 block">
-              Our Portfolio
-            </span>
-            <h2 className="section-title" style={{ marginBottom: '30px' }}>
-              Showcase of Our Works
-            </h2>
+        <div className="container mx-auto px-4 md:px-6 max-w-6xl w-full">
+          <div className="relative flex flex-col md:flex-row items-center justify-center w-full mb-[30px]">
+            <div className="text-center">
+              <span className="text-[10px] font-semibold uppercase tracking-[3px] text-gray-500 mb-2 block">
+                Our Portfolio
+              </span>
+              <h2 className="section-title" style={{ marginBottom: '10px' }}>
+                Showcase of Our Works
+              </h2>
+            </div>
+            {galleryItems.length > 6 && (
+              <button
+                type="button"
+                onClick={() => setShowAllPortfolio(prev => !prev)}
+                className="md:absolute right-0 text-xs font-semibold tracking-wider text-[#06492D] hover:underline uppercase cursor-pointer transition-colors flex items-center gap-1 mt-2 md:mt-0"
+              >
+                {showAllPortfolio ? 'VIEW LESS ↑' : 'VIEW ALL →'}
+              </button>
+            )}
           </div>
 
           <div className="product-grid">
-            {galleryItems.map((item) => (
+            {(showAllPortfolio ? galleryItems : galleryItems.slice(0, 6)).map((item) => (
               <div key={item.id} className="product-card-wrapper">
                 <div className="product-card" style={{ flexGrow: 1 }}>
                   <div className="product-card-image">

@@ -7,6 +7,7 @@ import { useCart } from '../context/CartContext';
 import Anthurium from '../assets/Anthurium.png';
 import haworthiaImg from '../assets/Haworthia.jpg';
 import OrderTrackingModal from '../COMPONENTS/OrderTrackingModal';
+import InvoiceModal from '../COMPONENTS/InvoiceModal';
 
 function Orderdetails() {
   const { id } = useParams();
@@ -20,6 +21,8 @@ function Orderdetails() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
+  const [showInvoiceDropdown, setShowInvoiceDropdown] = useState(false);
+  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
 
   const [returnedOrders, setReturnedOrders] = useState(() => {
     try {
@@ -56,6 +59,14 @@ function Orderdetails() {
 
     fetchOrderDetails();
   }, [targetOrderId]);
+
+  useEffect(() => {
+    const closeDropdown = () => {
+      setShowInvoiceDropdown(false);
+    };
+    window.addEventListener('click', closeDropdown);
+    return () => window.removeEventListener('click', closeDropdown);
+  }, []);
 
   const [isReturnModalOpen, setIsReturnModalOpen] = useState(false);
   const [selectedReturnOrder, setSelectedReturnOrder] = useState(null);
@@ -159,14 +170,48 @@ function Orderdetails() {
             </p>
           </div>
 
-          <div className="text-right">
+          <div className="text-right relative">
             <span 
-              onClick={() => window.print()}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowInvoiceDropdown(!showInvoiceDropdown);
+              }}
               className="text-xs text-blue-700 hover:underline font-medium cursor-pointer inline-flex items-center gap-1"
             >
               <span>Invoice</span>
               <FiChevronDown size={14} />
             </span>
+
+            {showInvoiceDropdown && (
+              <div 
+                onClick={(e) => e.stopPropagation()} 
+                className="sort-dropdown-menu" 
+                style={{ right: 0, top: '100%', marginTop: '4px', zIndex: 999, minWidth: '220px', width: 'max-content' }}
+              >
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowInvoiceDropdown(false);
+                    window.print();
+                  }}
+                  className="sort-dropdown-item whitespace-nowrap"
+                  style={{ fontSize: '13px', padding: '8px 16px', color: '#1d4ed8', fontWeight: 500 }}
+                >
+                  Printable Order Summary
+                </button>
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowInvoiceDropdown(false);
+                    setIsInvoiceModalOpen(true);
+                  }}
+                  className="sort-dropdown-item whitespace-nowrap"
+                  style={{ fontSize: '13px', padding: '8px 16px', color: '#1d4ed8', fontWeight: 500 }}
+                >
+                  Invoice
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -435,6 +480,13 @@ function Orderdetails() {
     <OrderTrackingModal
       isOpen={isTrackingModalOpen}
       onClose={() => setIsTrackingModalOpen(false)}
+      order={order}
+    />
+
+    {/* Tax Invoice Modal */}
+    <InvoiceModal
+      isOpen={isInvoiceModalOpen}
+      onClose={() => setIsInvoiceModalOpen(false)}
       order={order}
     />
   </div>
