@@ -153,13 +153,13 @@ function AuthModal() {
               className={`auth-modal-tab-btn ${isLogin ? "active" : ""}`}
               onClick={() => handleToggleMode()}
             >
-              Sign In
+              SIGN IN
             </button>
             <button
               className={`auth-modal-tab-btn ${!isLogin ? "active" : ""}`}
               onClick={() => handleToggleMode()}
             >
-              Register
+              REGISTER
             </button>
           </div>
         </div>
@@ -262,7 +262,7 @@ function AuthModal() {
             </div>
 
             <button type="submit" className="auth-submit-btn" style={{ borderRadius: "0px" }} disabled={loading}>
-              {loading ? "Please wait..." : isLogin ? "Sign In" : "Register"}
+              {loading ? "PLEASE WAIT..." : isLogin ? "SIGN IN" : "REGISTER"}
             </button>
           </form>
 

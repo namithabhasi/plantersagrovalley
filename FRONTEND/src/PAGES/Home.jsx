@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { openAuthModal } from '../redux/auth/authSlice'
 import HeroCarousel from '../COMPONENTS/HeroCarousel'
@@ -92,6 +92,19 @@ function Home() {
   const [dbBonsaiPlants] = useState(mockBonsaiProducts);
   const [dbFruitPlants, setDbFruitPlants] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (window.location.hash === '#buy-bonsai') {
+      const el = document.getElementById('buy-bonsai');
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }, 150);
+      }
+    }
+  }, [location]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -366,7 +379,7 @@ function Home() {
       <BringLifeSection />
 
       {/* Bonsai Plants Section */}
-      <section className="page-section alt-bg border-t border-[var(--color-border)]">
+      <section id="buy-bonsai" className="page-section alt-bg border-t border-[var(--color-border)]">
         <div className="container">
           <div className="section-header">
             <h3 className="section-title">BUY BONSAI PLANTS</h3>

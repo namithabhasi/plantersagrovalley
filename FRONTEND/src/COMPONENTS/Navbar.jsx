@@ -253,7 +253,7 @@ function Navbar() {
                       <h4 className="mega-dropdown-title">Top 10 Plants</h4>
                       <ul className="mega-dropdown-list">
                         <li><Link to="/plants?category=indoor-plants">Top 10 Air Purifier Plants</Link></li>
-                        <li><Link to="/plants?category=summer-flowers">Top 10 Flowering Plants</Link></li>
+                        <li><Link to="/plants?category=flowering-plants">Top 10 Flowering Plants</Link></li>
                         <li><Link to="/plants?category=fragrant-plants">Top 10 Fragrant Plants</Link></li>
                         <li><Link to="/plants?category=outdoor-plants">Top 10 Hardy Plants</Link></li>
                       </ul>
