@@ -108,8 +108,10 @@
   background: none;
   border: none;
   font-family: var(--font-family-heading);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
   color: var(--color-text-muted);
   cursor: pointer;
   position: relative;
@@ -161,6 +163,25 @@
 .auth-input-row {
   display: flex;
   gap: var(--space-3);
+}
+
+.auth-submit-btn {
+  background-color: var(--color-primary-dark);
+  color: #ffffff;
+  border: none;
+  border-radius: 0px !important;
+  padding: 12px;
+  font-family: var(--font-family-heading);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  margin-top: var(--space-3);
 }
 
 .auth-toggle-prompt {

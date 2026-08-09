@@ -25,12 +25,27 @@ const getFallbackImage = (slug, name) => {
   return plantsImg;
 };
 
-const getCategoryLink = (slug) => {
+const getCategoryLink = (slug, name = '') => {
   const s = (slug || '').toLowerCase();
+  const n = (name || '').toLowerCase();
+  if (s.includes('bonsai') || n.includes('bonsai')) return '/#buy-bonsai';
+  if (s.includes('palm') || n.includes('palm')) return '/plants?category=bamboos';
   if (s === 'seeds') return '/seeds';
   if (s === 'pots-planters') return '/planters';
   if (s === 'fertilizer' || s === 'fertilizers') return '/fertilizer';
   if (s === 'garden-decor' || s === 'garden-accessories') return '/garden-decor';
+  if (s === 'fruit-plants' || s === 'fruitplants' || s === 'fruit-plant' || s.includes('fruit')) {
+    return '/plants?category=fruit-plants';
+  }
+  if (s === 'cactus-plants' || s === 'catus' || s === 'cactus' || s.includes('catus') || s.includes('cactus')) {
+    return '/plants?category=cactus-plants';
+  }
+  if (s === 'medicinal-plants' || s === 'medicinalplants' || s === 'medicinal-plant') {
+    return '/plants?category=medicinal-plants';
+  }
+  if (s === 'flowering-plants' || s === 'floweringplants' || s === 'flowering-plant') {
+    return '/plants?category=flowering-plants';
+  }
   if (s === 'climbers-creepers' || s === 'climbers-and-creepers' || s === 'climbersandcreapers') {
     return '/plants?category=climbers-creepers';
   }
@@ -96,7 +111,17 @@ function CategorySection() {
           {displayedCategories.map((category) => (
             <Link 
               key={category._id} 
-              to={getCategoryLink(category.slug)} 
+              to={getCategoryLink(category.slug, category.name)} 
+              onClick={(e) => {
+                const targetLink = getCategoryLink(category.slug, category.name);
+                if (targetLink === '/#buy-bonsai') {
+                  const el = document.getElementById('buy-bonsai');
+                  if (el) {
+                    e.preventDefault();
+                    el.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }
+              }}
               className="plantsguru-category-card"
             >
               <img 

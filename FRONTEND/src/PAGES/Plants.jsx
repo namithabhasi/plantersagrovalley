@@ -85,7 +85,91 @@ import climb9 from '../assets/climbersandcreapers/image copy 8.png';
 import climb10 from '../assets/climbersandcreapers/image copy 9.png';
 import climb11 from '../assets/climbersandcreapers/image copy 10.png';
 
+// Flowering Plants
+import flow1 from '../assets/floweringplants/image.png';
+import flow2 from '../assets/floweringplants/image copy.png';
+import flow3 from '../assets/floweringplants/image copy 2.png';
+import flow4 from '../assets/floweringplants/image copy 3.png';
+import flow5 from '../assets/floweringplants/image copy 4.png';
+import flow6 from '../assets/floweringplants/image copy 5.png';
+import flow7 from '../assets/floweringplants/image copy 6.png';
+import flow8 from '../assets/floweringplants/image copy 7.png';
+import flow9 from '../assets/floweringplants/image copy 8.png';
+import flow10 from '../assets/floweringplants/image copy 9.png';
+import flow11 from '../assets/floweringplants/image copy 10.png';
+import flow12 from '../assets/floweringplants/image copy 11.png';
+
+// Medicinal Plants
+import med1 from '../assets/medicinalplants/image.png';
+import med2 from '../assets/medicinalplants/image copy.png';
+import med3 from '../assets/medicinalplants/image copy 2.png';
+import med4 from '../assets/medicinalplants/image copy 3.png';
+import med5 from '../assets/medicinalplants/image copy 4.png';
+import med6 from '../assets/medicinalplants/image copy 5.png';
+import med7 from '../assets/medicinalplants/image copy 6.png';
+
+// Cactus Plants
+import cac1 from '../assets/catus/image.png';
+import cac2 from '../assets/catus/image copy.png';
+import cac3 from '../assets/catus/image copy 2.png';
+import cac4 from '../assets/catus/image copy 3.png';
+import cac5 from '../assets/catus/image copy 4.png';
+import cac6 from '../assets/catus/image copy 5.png';
+import cac7 from '../assets/catus/image copy 6.png';
+
+// Fruit Plants
+import fr1 from '../assets/fruitplants/image.png';
+import fr2 from '../assets/fruitplants/image copy.png';
+import fr3 from '../assets/fruitplants/image copy 2.png';
+import fr4 from '../assets/fruitplants/image copy 3.png';
+import fr5 from '../assets/fruitplants/image copy 4.png';
+import fr6 from '../assets/fruitplants/image copy 5.png';
+import fr7 from '../assets/fruitplants/image copy 6.png';
+import fr8 from '../assets/fruitplants/image copy 7.png';
+
 export const plantProducts = [
+    // Fruit Plants Collection
+    { id: 'fruit-1', category: 'fruit-plants', name: 'All Time Mango Grafted Plant', price: 499, originalPrice: 599, discount: '-16%', rating: 5, image: fr1, date: '2026-03-01', inStock: true, space: 'outdoors' },
+    { id: 'fruit-2', category: 'fruit-plants', name: 'Dwarf Meyer Lemon Pot', price: 349, rating: 5, image: fr2, date: '2026-03-02', inStock: true, space: 'outdoors' },
+    { id: 'fruit-3', category: 'fruit-plants', name: 'Organic Hass Avocado Plant', price: 599, originalPrice: 699, discount: '-14%', rating: 5, image: fr3, date: '2026-03-03', inStock: true, space: 'outdoors' },
+    { id: 'fruit-4', category: 'fruit-plants', name: 'Sweet Guava Pink Hybrid', price: 299, rating: 5, image: fr4, date: '2026-03-04', inStock: true, space: 'outdoors' },
+    { id: 'fruit-5', category: 'fruit-plants', name: 'Pomegranate Anar Sapling', price: 329, rating: 5, image: fr5, date: '2026-03-05', inStock: true, space: 'outdoors' },
+    { id: 'fruit-6', category: 'fruit-plants', name: 'Hybrid Chikoo Sapodilla', price: 379, rating: 5, image: fr6, date: '2026-03-06', inStock: true, space: 'outdoors' },
+    { id: 'fruit-7', category: 'fruit-plants', name: 'Sweet Orange Citrus Bush', price: 429, originalPrice: 499, discount: '-14%', rating: 5, image: fr7, date: '2026-03-07', inStock: true, space: 'outdoors' },
+    { id: 'fruit-8', category: 'fruit-plants', name: 'Dwarf Fig Anjeer Pot', price: 399, rating: 5, image: fr8, date: '2026-03-08', inStock: true, space: 'outdoors' },
+
+    // Cactus Collection
+    { id: 'cac-1', category: 'cactus-plants', name: 'Golden Barrel Cactus Pot', price: 299, rating: 5, image: cac1, date: '2026-03-01', inStock: true, space: 'outdoors' },
+    { id: 'cac-2', category: 'cactus-plants', name: 'Miniature Succulent Cluster', price: 199, originalPrice: 249, discount: '-20%', rating: 5, image: cac2, date: '2026-03-02', inStock: true, space: 'indoors' },
+    { id: 'cac-3', category: 'cactus-plants', name: 'Prickly Pear Desert Cactus', price: 349, rating: 5, image: cac3, date: '2026-03-03', inStock: true, space: 'outdoors' },
+    { id: 'cac-4', category: 'cactus-plants', name: 'Echeveria Rosette Succulent', price: 229, rating: 5, image: cac4, date: '2026-03-04', inStock: true, space: 'indoors' },
+    { id: 'cac-5', category: 'cactus-plants', name: 'Haworthia Zebra Cactus', price: 279, originalPrice: 329, discount: '-15%', rating: 5, image: cac5, date: '2026-03-05', inStock: true, space: 'indoors' },
+    { id: 'cac-6', category: 'cactus-plants', name: 'Moon Grafted Cactus Red', price: 399, rating: 5, image: cac6, date: '2026-03-06', inStock: true, space: 'indoors' },
+    { id: 'cac-7', category: 'cactus-plants', name: 'Jade Succulent Fortune Pot', price: 249, rating: 5, image: cac7, date: '2026-03-07', inStock: true, space: 'indoors' },
+
+    // Medicinal Plants Collection
+    { id: 'med-1', category: 'medicinal-plants', name: 'Herbal Tulsi Sacred Plant', price: 199, rating: 5, image: med1, date: '2026-03-01', inStock: true, space: 'outdoors' },
+    { id: 'med-2', category: 'medicinal-plants', name: 'Organic Aloe Vera Miracle Pot', price: 249, originalPrice: 299, discount: '-16%', rating: 5, image: med2, date: '2026-03-02', inStock: true, space: 'indoors' },
+    { id: 'med-3', category: 'medicinal-plants', name: 'Neem Herbal Medicinal Tree', price: 299, rating: 5, image: med3, date: '2026-03-03', inStock: true, space: 'outdoors' },
+    { id: 'med-4', category: 'medicinal-plants', name: 'Fresh Mint Peppermint Herb', price: 149, rating: 5, image: med4, date: '2026-03-04', inStock: true, space: 'indoors' },
+    { id: 'med-5', category: 'medicinal-plants', name: 'Ashwagandha Healing Plant', price: 349, originalPrice: 399, discount: '-12%', rating: 5, image: med5, date: '2026-03-05', inStock: true, space: 'outdoors' },
+    { id: 'med-6', category: 'medicinal-plants', name: 'Giloy Tinospora Herbal Vine', price: 229, rating: 5, image: med6, date: '2026-03-06', inStock: true, space: 'outdoors' },
+    { id: 'med-7', category: 'medicinal-plants', name: 'Lemongrass Aromatic Bush', price: 179, rating: 5, image: med7, date: '2026-03-07', inStock: true, space: 'outdoors' },
+
+    // Flowering Plants Collection
+    { id: 'flow-1', category: 'flowering-plants', name: 'Exotic Red Hibiscus Bloom', price: 299, originalPrice: 399, discount: '-25%', rating: 5, image: flow1, date: '2026-03-01', inStock: true, space: 'outdoors' },
+    { id: 'flow-2', category: 'flowering-plants', name: 'Royal Crimson Rose Bush', price: 349, rating: 5, image: flow2, date: '2026-03-02', inStock: true, space: 'outdoors' },
+    { id: 'flow-3', category: 'flowering-plants', name: 'Pink Bougainvillea Climber', price: 279, rating: 5, image: flow3, date: '2026-03-03', inStock: true, space: 'outdoors' },
+    { id: 'flow-4', category: 'flowering-plants', name: 'Jasmine Fragrant Bush', price: 249, rating: 5, image: flow4, date: '2026-03-04', inStock: true, space: 'outdoors' },
+    { id: 'flow-5', category: 'flowering-plants', name: 'Purple Petunia Flower Pot', price: 199, originalPrice: 249, discount: '-20%', rating: 5, image: flow5, date: '2026-03-05', inStock: true, space: 'outdoors' },
+    { id: 'flow-6', category: 'flowering-plants', name: 'Golden Marigold Cluster', price: 179, rating: 5, image: flow6, date: '2026-03-06', inStock: true, space: 'outdoors' },
+    { id: 'flow-7', category: 'flowering-plants', name: 'Desert Rose Adenium Plant', price: 499, originalPrice: 599, discount: '-16%', rating: 5, image: flow7, date: '2026-03-07', inStock: true, space: 'outdoors' },
+    { id: 'flow-8', category: 'flowering-plants', name: 'Hydrangea Flowering Shrub', price: 449, rating: 5, image: flow8, date: '2026-03-08', inStock: true, space: 'outdoors' },
+    { id: 'flow-9', category: 'flowering-plants', name: 'Peace Lily White Bloom', price: 329, rating: 5, image: flow9, date: '2026-03-09', inStock: true, space: 'indoors' },
+    { id: 'flow-10', category: 'flowering-plants', name: 'Gerbera Daisy Vibrance', price: 219, rating: 5, image: flow10, date: '2026-03-10', inStock: true, space: 'outdoors' },
+    { id: 'flow-11', category: 'flowering-plants', name: 'Carnation Pastel Pink Shrub', price: 289, rating: 5, image: flow11, date: '2026-03-11', inStock: true, space: 'outdoors' },
+    { id: 'flow-12', category: 'flowering-plants', name: 'Yellow Allamanda Vine', price: 319, rating: 5, image: flow12, date: '2026-03-12', inStock: true, space: 'outdoors' },
+    
     // Beautiful Flowering Plants, Climbers, and Creepers (Shown in the first rows when category is 'all')
     { id: 'climb-6', category: 'climbers-creepers', name: 'Wisteria Flowering Vine', price: 499, originalPrice: 599, discount: '-16%', rating: 5, image: climb6, date: '2026-03-06', inStock: true, space: 'outdoors' },
     { id: 'climb-3', category: 'climbers-creepers', name: 'Star Jasmine Climber', price: 349, rating: 5, image: climb3, date: '2026-03-03', inStock: true, space: 'outdoors' },
@@ -169,6 +253,10 @@ export const plantProducts = [
 
 const plantCategories = [
     { id: 'all', name: 'All Plants' },
+    { id: 'fruit-plants', name: 'Fruit Plants' },
+    { id: 'cactus-plants', name: 'Cactus & Succulents' },
+    { id: 'medicinal-plants', name: 'Medicinal Plants' },
+    { id: 'flowering-plants', name: 'Flowering Plants' },
     { id: 'air-plants', name: 'Air Plants' },
     { id: 'aquatic-plants', name: 'Aquatic Plants' },
     { id: 'avenue-trees', name: 'Avenue Trees' },
@@ -315,7 +403,7 @@ function Plants() {
                     </h1>
 
                     <p className="plants-page-description font-[var(--font-family-base)] text-sm text-[#4b5563] max-w-[800px] leading-relaxed">
-                        Buy plants online from Plantsguru — India's most trusted <span className="underline font-semibold cursor-pointer">plant nursery</span> for healthy <span className="underline font-semibold cursor-pointer">indoor</span>, outdoor, and <span className="underline font-semibold cursor-pointer">flowering plants</span>. We deliver <span className="underline font-semibold cursor-pointer">live plants</span> across India.
+                        Buy plants online from Planters Agro Valley — India's most trusted plant nursery for healthy indoor, outdoor, and flowering plants. We deliver live plants across India.
                     </p>
                 </div>
             </section>
