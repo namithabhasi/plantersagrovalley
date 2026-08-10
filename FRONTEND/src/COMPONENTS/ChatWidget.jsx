@@ -140,15 +140,16 @@ export default function ChatWidget() {
 
   return (
     <>
-      {/* 1. FLOATING CHAT TRIGGER BUTTON (PIC 1 FIX) */}
+      {/* 1. FLOATING CHAT TRIGGER BUTTON (STACKED CLEANLY ABOVE SCROLL TO TOP) */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-5 right-5 z-50 flex items-center justify-center gap-2.5 bg-white text-gray-800 font-medium text-sm px-5 py-2.5 rounded-full shadow-md hover:shadow-xl border border-gray-200/90 transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95"
+          className="fixed bottom-[74px] right-4 sm:bottom-[88px] sm:right-6 z-[9997] flex items-center justify-center gap-2 bg-[#06492D] text-white font-medium text-xs sm:text-sm px-4 py-2.5 rounded-full shadow-xl hover:bg-[#04331f] border border-white/20 transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95"
           aria-label="Open chat"
+          title="Chat with us"
         >
-          <FiMessageSquare className="w-4 h-4 text-gray-700 shrink-0" />
-          <span className="leading-none select-none">Chat</span>
+          <FiMessageSquare className="w-4 h-4 text-white shrink-0" />
+          <span className="leading-none select-none font-semibold">Chat</span>
         </button>
       )}
 

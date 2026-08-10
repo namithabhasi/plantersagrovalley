@@ -210,7 +210,7 @@ const Footer = () => {
       {showScroll && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[9998] w-11 h-11 sm:w-12 sm:h-12 p-3 rounded-full bg-[#06492D] text-white shadow-xl hover:bg-[#04331f] transition-all duration-300 flex items-center justify-center cursor-pointer border border-white/20 hover:scale-110 active:scale-95"
+          className="fixed bottom-4 right-11 sm:bottom-6 sm:right-[52px] z-[9998] w-11 h-11 sm:w-12 sm:h-12 p-3 rounded-full bg-[#06492D] text-white shadow-xl hover:bg-[#04331f] transition-all duration-300 flex items-center justify-center cursor-pointer border border-white/20 hover:scale-110 active:scale-95"
           aria-label="Scroll to top"
         >
           <IoArrowUp size={22} />
