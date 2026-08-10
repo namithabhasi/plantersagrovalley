@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useCart, getMongoIdFromMockId } from '../context/CartContext';
 import axiosInstance from '../api/axiosInstance';
 import { useNavigate, Link } from 'react-router-dom';
-import { FiTruck, FiArrowLeft, FiLock, FiUnlock, FiTag, FiCheck } from 'react-icons/fi';
+import { FiTruck, FiArrowLeft, FiLock, FiUnlock, FiTag, FiCheck, FiMapPin } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
 import logo from '../assets/logo.png';
@@ -56,7 +56,7 @@ function Payment() {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Pre-fill fields if user is logged in or profile is in localStorage
+  // Pre-fill fields directly from profile user state (no fake hardcoded address fallbacks)
   useEffect(() => {
     let u = user;
     if (!u) {
@@ -68,15 +68,15 @@ function Payment() {
       }
     }
 
-    const effectiveEmail = u?.email || 'namithabhasi@gmail.com';
-    const effectiveFirstName = u?.firstName || u?.name?.split(' ')[0] || 'NAMITHA';
-    const effectiveLastName = u?.lastName || u?.name?.split(' ')[1] || 'BHASI';
-    const effectivePhone = u?.phone || '8304004975';
-    const effectiveAddress = u?.address || u?.streetAddress || u?.addresses?.[0]?.street || 'KATHANAPARAMBIL HOUSE, PANDIPADAM ROAD, NEAR MALAVANA VISHNUMAYA TEMPLE';
+    const effectiveEmail = u?.email || '';
+    const effectiveFirstName = u?.firstName || u?.name?.split(' ')[0] || '';
+    const effectiveLastName = u?.lastName || u?.name?.split(' ')[1] || '';
+    const effectivePhone = u?.phone || '';
+    const effectiveAddress = u?.address || u?.streetAddress || u?.addresses?.[0]?.street || '';
     const effectiveApartment = u?.apartment || u?.addresses?.[0]?.apartment || '';
-    const effectiveCity = u?.city || u?.addresses?.[0]?.city || 'Ernakulam';
+    const effectiveCity = u?.city || u?.addresses?.[0]?.city || '';
     const effectiveState = u?.state || u?.addresses?.[0]?.state || 'Kerala';
-    const effectivePincode = u?.pinCode || u?.pincode || u?.addresses?.[0]?.pincode || '682001';
+    const effectivePincode = u?.pinCode || u?.pincode || u?.addresses?.[0]?.pincode || '';
 
     setEmail(effectiveEmail);
     setFirstName(effectiveFirstName);
@@ -88,6 +88,11 @@ function Payment() {
     setStateVal(effectiveState);
     setPinCode(effectivePincode);
   }, [user]);
+
+  // Check if profile delivery address is incomplete
+  const isAddressIncomplete = () => {
+    return !address || !address.trim() || !city || !city.trim() || !stateVal || !stateVal.trim() || !pinCode || !pinCode.trim() || !phone || !phone.trim() || !firstName || !firstName.trim();
+  };
 
   // Handle Coupon Apply
   const handleApplyCoupon = (e) => {
@@ -201,6 +206,12 @@ function Payment() {
 
     if (cartItems.length === 0) {
       toast.error("Your cart is empty. Please add items before checking out.");
+      return;
+    }
+
+    if (isAddressIncomplete()) {
+      toast.info("Update address for smooth delivery");
+      navigate('/profile?editAddress=true');
       return;
     }
     
@@ -464,6 +475,36 @@ function Payment() {
               {/* Delivery Address */}
               <div className="checkout-card">
                 <h3 className="checkout-section-title">Delivery Address</h3>
+
+                {isAddressIncomplete() && (
+                  <div style={{
+                    backgroundColor: '#fffbeb',
+                    border: '1.5px solid #fef3c7',
+                    borderLeft: '4px solid #f59e0b',
+                    borderRadius: '4px',
+                    padding: '14px 16px',
+                    marginBottom: '16px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#92400e', fontWeight: '600', fontSize: '14px' }}>
+                      <FiMapPin size={18} style={{ color: '#d97706' }} />
+                      <span>Update address for smooth delivery</span>
+                    </div>
+                    <p style={{ fontSize: '13px', color: '#78350f', margin: 0, lineHeight: '1.4' }}>
+                      Your delivery address in My Profile is incomplete. Please update your full address to complete checkout and enjoy smooth delivery.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/profile?editAddress=true')}
+                      className="btn btn-primary text-xs uppercase cursor-pointer"
+                      style={{ alignSelf: 'flex-start', marginTop: '4px' }}
+                    >
+                      UPDATE ADDRESS
+                    </button>
+                  </div>
+                )}
                 
                 <div className="form-group">
                   <label className="input-label-hidden" htmlFor="country">Country / Region</label>
@@ -709,8 +750,8 @@ function Payment() {
                 </div>
 
                 {/* Coupon Code Section */}
-                <div className="border-t border-b border-gray-100 py-3" style={{ marginTop: '5px', marginBottom: '5px' }}>
-                  <label className="text-xs font-semibold text-[#06492D] uppercase tracking-wider block mb-1.5 flex items-center gap-1">
+                <div className="py-4 my-5">
+                  <label className="text-xs font-semibold text-[#06492D] uppercase tracking-wider block mb-2 flex items-center gap-1">
                     <FiTag size={13} />
                     <span>Apply Coupon Code</span>
                   </label>
@@ -861,10 +902,10 @@ function Payment() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="btn btn-primary"
+                  className="btn btn-primary uppercase tracking-wider text-xs font-bold"
                   style={{ padding: 'var(--space-3) var(--space-4)', borderRadius: '3px' }}
                 >
-                  {isSubmitting ? 'Processing...' : `Proceed to Pay  ₹${total.toFixed(2)}`}
+                  {isSubmitting ? 'PROCESSING...' : `PROCEED TO PAY  ₹${total.toFixed(2)}`}
                 </button>
               </div>
 

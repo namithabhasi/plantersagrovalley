@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from '../redux/auth/authSlice';
 import { FiUser, FiPackage, FiRefreshCw, FiHeart, FiHeadphones, FiMapPin, FiChevronRight, FiEdit2, FiPhone, FiMail, FiCalendar, FiTruck, FiShoppingBag, FiCamera, FiBarChart2, FiShoppingCart, FiShare2, FiTrash2, FiArrowRight, FiChevronLeft, FiChevronDown } from 'react-icons/fi';
 import { FaStar } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -32,12 +34,22 @@ function Row({ label, value }) {
 
 function Profile() {
   const { addToCart } = useCart();
+  const dispatch = useDispatch();
+  const location = useLocation();
   const fileInputRef = useRef(null);
   const dropdownRef = useRef(null);
 
   const [active, setActive] = useState('profile');
   const [isEditing, setIsEditing] = useState(false);
   const [showStatsDropdown, setShowStatsDropdown] = useState(false);
+
+  // Auto-open Edit Profile / Address Modal if navigated from Payment page with ?editAddress=true
+  useEffect(() => {
+    if (location.search.includes('editAddress=true') || location.search.includes('edit=true')) {
+      setActive('profile');
+      setIsEditing(true);
+    }
+  }, [location.search]);
 
   const [selectedTrackingOrder, setSelectedTrackingOrder] = useState(null);
   const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
@@ -267,18 +279,36 @@ function Profile() {
     e.preventDefault();
     setLoading(true);
     try {
-      const updatedUser = {
-        ...currentUser,
+      const payload = {
         firstName: formData.firstName,
         lastName: formData.lastName,
         phone: formData.phone,
         address: formData.address,
+        apartment: formData.apartment,
+        city: formData.city,
+        state: formData.state,
         pincode: formData.pincode,
+        country: formData.country || 'India',
       };
 
+      let updatedUser = {
+        ...currentUser,
+        ...payload,
+      };
+
+      try {
+        const { data } = await axios.put('/auth/profile', payload);
+        if (data?.success && data?.user) {
+          updatedUser = data.user;
+        }
+      } catch (apiErr) {
+        console.warn("Backend profile update API error, fallback to local state:", apiErr);
+      }
+
       setCurrentUser(updatedUser);
+      dispatch(setUser(updatedUser));
       localStorage.setItem('user', JSON.stringify(updatedUser));
-      toast.success("Profile updated successfully!");
+      toast.success("Profile and delivery address updated successfully!");
       setIsEditing(false);
     } catch (error) {
       toast.error("Failed to update profile details.");

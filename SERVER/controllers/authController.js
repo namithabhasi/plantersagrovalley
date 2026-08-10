@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import generateToken from "../utils/generateToken.js";
+import { sendWelcomeEmail, sendProfileUpdateEmail } from "../utils/orderEmailHelper.js";
 
 /**
  * @desc Register User
@@ -36,8 +37,11 @@ export const register = async (req, res) => {
       email: email.toLowerCase(),
       password,
       phone,
-     role: "customer",
+      role: "customer",
     });
+
+    // Send welcome email asking user to complete delivery address
+    sendWelcomeEmail(user);
 
     // Generate JWT
     const token = generateToken(user._id, user.role);
@@ -221,6 +225,8 @@ export const googleLogin = async (req, res) => {
         isVerified: true,
         role: "customer",
       });
+
+      sendWelcomeEmail(user);
     }
 
     // Generate JWT
@@ -263,3 +269,65 @@ export const getCurrentUser = async (req, res) => {
     user: req.user,
   });
 };
+
+/**
+ * @desc Update User Profile & Delivery Address
+ * @route PUT /api/auth/profile
+ * @access Private
+ */
+export const updateProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
+    }
+
+    const {
+      firstName,
+      lastName,
+      phone,
+      address,
+      apartment,
+      city,
+      state,
+      pincode,
+      country,
+      profileImage,
+    } = req.body;
+
+    if (firstName !== undefined) user.firstName = firstName;
+    if (lastName !== undefined) user.lastName = lastName;
+    if (phone !== undefined) user.phone = phone;
+    if (address !== undefined) user.address = address;
+    if (apartment !== undefined) user.apartment = apartment;
+    if (city !== undefined) user.city = city;
+    if (state !== undefined) user.state = state;
+    if (pincode !== undefined) user.pincode = pincode;
+    if (country !== undefined) user.country = country;
+    if (profileImage !== undefined) user.profileImage = profileImage;
+
+    await user.save();
+
+    const userData = user.toObject();
+    delete userData.password;
+
+    // Trigger email notification for profile & address update
+    sendProfileUpdateEmail(userData);
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully.",
+      user: userData,
+    });
+  } catch (error) {
+    console.error("Update Profile Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
