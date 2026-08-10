@@ -517,7 +517,7 @@ function Plantrental() {
           <section className="bg-white border-b border-gray-100 overflow-hidden" style={{ paddingTop: '50px', paddingBottom: '50px' }}>
             <div className="container mx-auto px-4 md:px-6 max-w-6xl w-full">
               <div className="relative flex flex-col md:flex-row items-center justify-center w-full mb-[30px]">
-                <h2 className="section-title text-center" style={{ marginBottom: 0 }}>
+                <h2 className="section-title text-center" style={{ marginBottom: '10px' }}>
                   OUR CUSTOM SERVICES
                 </h2>
                 {allCustomServices.length > 3 && (
