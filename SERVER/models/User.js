@@ -41,6 +41,42 @@ const userSchema = new mongoose.Schema(
       default: "",
     },
 
+    address: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    apartment: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    city: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    state: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    pincode: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    country: {
+      type: String,
+      default: "India",
+      trim: true,
+    },
+
     role: {
       type: String,
       enum: ["super-admin", "admin", "shipping-manager", "customer"],
