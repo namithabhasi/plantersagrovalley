@@ -211,6 +211,19 @@ function Seeds() {
     const paginatedProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct);
     const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
 
+    const getPageNumbers = (current, total) => {
+        if (total <= 5) {
+            return Array.from({ length: total }, (_, i) => i + 1);
+        }
+        if (current <= 3) {
+            return [1, 2, 3, 4, '...', total];
+        }
+        if (current >= total - 2) {
+            return [1, '...', total - 3, total - 2, total - 1, total];
+        }
+        return [1, '...', current - 1, current, current + 1, '...', total];
+    };
+
     // Dynamic counts for stock and space filters based on active Category
     const categoryProducts = activeCategory === 'all'
         ? seedProducts
@@ -239,18 +252,41 @@ function Seeds() {
                             : seedCategories.find(c => c.id === activeCategory)?.name || 'Seeds'}
                     </h1>
 
-                    <p className="seeds-page-description font-[var(--font-family-base)] text-sm text-[#4b5563] max-w-[800px] leading-relaxed">
+                    <p className="seeds-page-description font-[var(--font-family-base)] text-xs sm:text-sm text-[#4b5563] max-w-[800px] leading-relaxed">
                         Explore our premium range of organic seeds. Buy high-quality flower seeds, organic vegetable seeds, herb seeds, exotic flower bulbs, forestry tree seeds, and lush green lawn grass seeds online with guaranteed germination.
                     </p>
+
+                    {/* Mobile Category Select Dropdown */}
+                    <div className="seeds-mobile-cat-dropdown-wrap mt-4 mb-5 sm:hidden">
+                        <label className="text-[11px] font-bold text-[#06492D] uppercase tracking-wider block mb-1.5">
+                            Category Filter
+                        </label>
+                        <select
+                            value={activeCategory}
+                            onChange={(e) => setActiveCategory(e.target.value)}
+                            className="w-full bg-white border border-[#06492D]/40 text-[#06492D] text-xs font-semibold py-2.5 px-3 rounded-[3px] shadow-sm outline-none cursor-pointer focus:border-[#06492D]"
+                        >
+                            {seedCategories.map((cat) => {
+                                const count = cat.id === 'all'
+                                    ? seedProducts.length
+                                    : seedProducts.filter(p => p.category === cat.id).length;
+                                return (
+                                    <option key={cat.id} value={cat.id}>
+                                        {cat.name} ({count})
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </div>
                 </div>
             </section>
 
             {/* Main Catalog Workspace */}
-            <section className="seeds-catalog-section py-12">
+            <section className="seeds-catalog-section py-6 sm:py-12">
                 <div className="container seeds-layout-container">
 
                     {/* Left Column: Sidebar Filters */}
-                    <div className="seeds-sidebar">
+                    <div className="seeds-sidebar seeds-sidebar-desktop">
 
                         {/* 1. Category Accordion */}
                         <div className="filter-accordion">
@@ -579,18 +615,27 @@ function Seeds() {
                                     &larr; Previous
                                 </button>
 
-                                {[...Array(totalPages)].map((_, index) => (
-                                    <button
-                                        key={index + 1}
-                                        onClick={() => {
-                                            setCurrentPage(index + 1);
-                                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                                        }}
-                                        className={`pagination-btn ${currentPage === index + 1 ? 'active' : ''}`}
-                                    >
-                                        {index + 1}
-                                    </button>
-                                ))}
+                                {getPageNumbers(currentPage, totalPages).map((page, index) => {
+                                    if (page === '...') {
+                                        return (
+                                            <span key={`ellipsis-${index}`} className="pagination-ellipsis px-1.5 text-gray-400 text-xs self-center select-none">
+                                                ...
+                                            </span>
+                                        );
+                                    }
+                                    return (
+                                        <button
+                                            key={page}
+                                            onClick={() => {
+                                                setCurrentPage(page);
+                                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                            }}
+                                            className={`pagination-btn ${currentPage === page ? 'active' : ''}`}
+                                        >
+                                            {page}
+                                        </button>
+                                    );
+                                })}
 
                                 <button
                                     onClick={() => {

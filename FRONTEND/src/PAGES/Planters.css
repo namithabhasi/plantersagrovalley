@@ -329,89 +329,145 @@
   border-color: var(--color-primary);
 }
 
-/* Product Grid Tweaks */
-.planters-grid {
-  margin-top: 0;
-  padding-top: 0;
+/* Prevent horizontal scrollbar on Planters page */
+.planters-page-wrapper {
+  background-color: #ffffff;
+  overflow-x: hidden !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+  box-sizing: border-box !important;
+}
+
+/* Mobile Category Select Dropdown Wrapper */
+.planters-mobile-cat-dropdown-wrap {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 20px !important;
+}
+
+.planters-mobile-cat-dropdown-wrap select {
+  font-family: var(--font-family-base);
 }
 
 /* 3. Responsiveness Overrides */
 @media (max-width: 992px) {
+  .planters-sidebar-desktop {
+    display: none !important;
+  }
+
   .planters-layout-container {
-    grid-template-columns: 1fr;
-    gap: var(--space-6);
-    margin-top: 24px;
-    padding-left: var(--space-4);
-    padding-right: var(--space-4);
+    display: block !important;
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+    margin-top: 8px;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
-  .planters-sidebar {
-    padding: var(--space-4);
-    gap: var(--space-3);
+  .planters-main-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
-  .planters-category-list {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    max-height: none;
-    gap: var(--space-2);
-    padding-bottom: 0;
-  }
-
-  .planters-cat-btn {
-    white-space: nowrap;
-    padding: 6px 14px;
-  }
-}
-
-@media (max-width: 480px) {
   .planters-toolbar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-3);
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    margin-top: 16px !important;
+    margin-bottom: 20px !important;
+    box-sizing: border-box !important;
   }
 
-  .planters-sort-container {
-    width: 100%;
-    justify-content: space-between;
-  }
-}
-
-@media (max-width: 768px) {
-  /* Force exactly 2 columns of product cards to fit mobile screens beautifully */
   .planters-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 12px !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
   }
 
-  /* Prevent card content overflow by scaling down wrapper layout */
   .product-card-wrapper {
     min-width: 0 !important;
     width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
   }
 
   .product-card {
     min-width: 0 !important;
     width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .product-card-image {
-    height: 150px !important; /* Balanced scale height for mobile card columns */
+    width: 100% !important;
+    height: 140px !important;
+    overflow: hidden !important;
+  }
+
+  .product-card-image img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
   }
 
   .product-card-content {
-    padding: 10px !important;
+    padding: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .product-title {
-    font-size: var(--font-size-sm) !important;
+    font-size: 12px !important;
     line-height: 1.3 !important;
-    margin-bottom: var(--space-1) !important;
+    margin-bottom: 4px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    width: 100% !important;
+  }
+
+  .product-price-row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 4px !important;
   }
 
   .price-current,
   .price-original {
-    font-size: var(--font-size-sm) !important;
+    font-size: 12px !important;
+  }
+
+  .product-card-wrapper .btn {
+    font-size: 11px !important;
+    padding: 8px 4px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .planters-count-text {
+    display: none !important;
+  }
+
+  .planters-sort-container {
+    width: auto !important;
+  }
+
+  .sort-dropdown-btn {
+    padding: 6px 10px !important;
+    font-size: 11px !important;
   }
 }
