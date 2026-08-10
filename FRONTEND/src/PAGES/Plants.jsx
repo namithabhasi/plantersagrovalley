@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { openAuthModal } from '../redux/auth/authSlice';
 import { useCart } from '../context/CartContext';
 import { FaStar } from 'react-icons/fa';
-import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { FiChevronDown, FiChevronUp, FiSliders, FiX, FiFilter } from 'react-icons/fi';
 import './Plants.css';
 
 // Air Plants
@@ -277,6 +277,7 @@ function Plants() {
     const [activeCategory, setActiveCategory] = useState('all');
     const [sortBy, setSortBy] = useState('best-selling');
     const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
+    const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
     const { addToCart } = useCart();
     const location = useLocation();
 
@@ -374,7 +375,19 @@ function Plants() {
     const paginatedProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct);
     const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
 
-    // Dynamic counts for stock and space filters based on active Category
+    const getPageNumbers = (current, total) => {
+        if (total <= 5) {
+            return Array.from({ length: total }, (_, i) => i + 1);
+        }
+        if (current <= 3) {
+            return [1, 2, 3, 4, '...', total];
+        }
+        if (current >= total - 2) {
+            return [1, '...', total - 3, total - 2, total - 1, total];
+        }
+        return [1, '...', current - 1, current, current + 1, '...', total];
+    };
+
     const categoryProducts = activeCategory === 'all'
         ? plantProducts
         : plantProducts.filter(p => p.category === activeCategory);
@@ -384,11 +397,239 @@ function Plants() {
     const indoorsCount = categoryProducts.filter(p => p.space === 'indoors').length;
     const outdoorsCount = categoryProducts.filter(p => p.space === 'outdoors').length;
 
+    // Active filter badge count
+    const activeFilterCount = (activeCategory !== 'all' ? 1 : 0) +
+        (inStockOnly || outOfStockOnly ? 1 : 0) +
+        (minPrice > 0 || maxPrice < 8500 ? 1 : 0) +
+        (indoorsChecked || outdoorsChecked ? 1 : 0);
+
+    const resetAllFilters = () => {
+        setActiveCategory('all');
+        setInStockOnly(false);
+        setOutOfStockOnly(false);
+        setMinPrice(0);
+        setMaxPrice(8500);
+        setIndoorsChecked(false);
+        setOutdoorsChecked(false);
+        setSortBy('best-selling');
+    };
+
+    // Reusable Filter Accordions JSX
+    const renderFilterAccordions = () => (
+        <>
+            {/* 1. Category Accordion */}
+            <div className="filter-accordion">
+                <div
+                    className="filter-accordion-header"
+                    onClick={() => setCatsOpen(!catsOpen)}
+                >
+                    <h3 className="filter-accordion-title">Categories</h3>
+                    {catsOpen ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
+                </div>
+
+                {catsOpen && (
+                    <div className="filter-accordion-content">
+                        <button
+                            onClick={() => setActiveCategory('all')}
+                            className="filter-reset-link"
+                        >
+                            Reset
+                        </button>
+                        <div className="plants-category-list">
+                            {plantCategories.map((cat) => {
+                                const count = cat.id === 'all'
+                                    ? plantProducts.length
+                                    : plantProducts.filter(p => p.category === cat.id).length;
+                                return (
+                                    <button
+                                        key={cat.id}
+                                        onClick={() => {
+                                            setActiveCategory(cat.id);
+                                            setIsMobileFilterOpen(false);
+                                        }}
+                                        className={`plants-cat-btn ${activeCategory === cat.id ? 'active' : ''}`}
+                                    >
+                                        <span className="cat-name">{cat.name}</span>
+                                        <span className="cat-count">({count})</span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <hr className="filter-divider" />
+
+            {/* 2. Availability Accordion */}
+            <div className="filter-accordion">
+                <div
+                    className="filter-accordion-header"
+                    onClick={() => setAvailOpen(!availOpen)}
+                >
+                    <h3 className="filter-accordion-title">Availability</h3>
+                    {availOpen ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
+                </div>
+
+                {availOpen && (
+                    <div className="filter-accordion-content">
+                        <button
+                            onClick={() => {
+                                setInStockOnly(false);
+                                setOutOfStockOnly(false);
+                            }}
+                            className="filter-reset-link"
+                        >
+                            Reset
+                        </button>
+
+                        <label className="filter-checkbox-label">
+                            <input
+                                type="checkbox"
+                                checked={inStockOnly}
+                                onChange={(e) => setInStockOnly(e.target.checked)}
+                                className="filter-checkbox-input"
+                            />
+                            <span>In stock ({inStockCount})</span>
+                        </label>
+
+                        <label className="filter-checkbox-label">
+                            <input
+                                type="checkbox"
+                                checked={outOfStockOnly}
+                                onChange={(e) => setOutOfStockOnly(e.target.checked)}
+                                className="filter-checkbox-input"
+                            />
+                            <span>Out of stock ({outOfStockCount})</span>
+                        </label>
+                    </div>
+                )}
+            </div>
+
+            <hr className="filter-divider" />
+
+            {/* 3. Price Accordion */}
+            <div className="filter-accordion">
+                <div
+                    className="filter-accordion-header"
+                    onClick={() => setPriceOpen(!priceOpen)}
+                >
+                    <h3 className="filter-accordion-title">Price</h3>
+                    {priceOpen ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
+                </div>
+
+                {priceOpen && (
+                    <div className="filter-accordion-content">
+                        <button
+                            onClick={() => {
+                                setMinPrice(0);
+                                setMaxPrice(8500);
+                            }}
+                            className="filter-reset-link"
+                        >
+                            Reset
+                        </button>
+
+                        <div className="price-slider-outer">
+                            <div className="double-slider-container">
+                                <span className="currency-symbol">₹</span>
+                                <div className="double-slider-wrapper">
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="8500"
+                                        step="50"
+                                        value={minPrice}
+                                        onChange={(e) => {
+                                            const val = Math.min(Number(e.target.value), maxPrice - 100);
+                                            setMinPrice(val);
+                                        }}
+                                        className="slider-thumb slider-thumb-left"
+                                    />
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="8500"
+                                        step="50"
+                                        value={maxPrice}
+                                        onChange={(e) => {
+                                            const val = Math.max(Number(e.target.value), minPrice + 100);
+                                            setMaxPrice(val);
+                                        }}
+                                        className="slider-thumb slider-thumb-right"
+                                    />
+                                    <div className="slider-track" />
+                                    <div
+                                        className="slider-range-bar"
+                                        style={{
+                                            left: `${(minPrice / 8500) * 100}%`,
+                                            right: `${100 - (maxPrice / 8500) * 100}%`
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                            <div className="filter-price-text">
+                                Price: Rs. {minPrice} – Rs. {maxPrice}
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <hr className="filter-divider" />
+
+            {/* 4. Suitable Space Accordion */}
+            <div className="filter-accordion">
+                <div
+                    className="filter-accordion-header"
+                    onClick={() => setSpaceOpen(!spaceOpen)}
+                >
+                    <h3 className="filter-accordion-title">Suitable space</h3>
+                    {spaceOpen ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
+                </div>
+
+                {spaceOpen && (
+                    <div className="filter-accordion-content">
+                        <button
+                            onClick={() => {
+                                setIndoorsChecked(false);
+                                setOutdoorsChecked(false);
+                            }}
+                            className="filter-reset-link"
+                        >
+                            Reset
+                        </button>
+
+                        <label className="filter-checkbox-label">
+                            <input
+                                type="checkbox"
+                                checked={indoorsChecked}
+                                onChange={(e) => setIndoorsChecked(e.target.checked)}
+                                className="filter-checkbox-input"
+                            />
+                            <span>Indoors ({indoorsCount})</span>
+                        </label>
+
+                        <label className="filter-checkbox-label">
+                            <input
+                                type="checkbox"
+                                checked={outdoorsChecked}
+                                onChange={(e) => setOutdoorsChecked(e.target.checked)}
+                                className="filter-checkbox-input"
+                            />
+                            <span>Outdoors ({outdoorsCount})</span>
+                        </label>
+                    </div>
+                )}
+            </div>
+        </>
+    );
+
     return (
         <div className="plants-page-wrapper text-[#1c2c21]">
 
-            {/* Left Aligned Breadcrumbs and Title Section (pic2) */}
-            <section className="plants-header-section pt-16 pb-12">
+            {/* Left Aligned Breadcrumbs and Title Section */}
+            <section className="plants-header-section pt-10 sm:pt-16 pb-6 sm:pb-12">
                 <div className="container">
                     <div className="plants-breadcrumbs text-xs text-gray-400 mb-3">
                         <Link to="/" className="hover:underline text-gray-400">Home</Link>
@@ -396,236 +637,57 @@ function Plants() {
                         <span className="text-gray-600">Plants</span>
                     </div>
 
-                    <h1 className="plants-page-title text-xl font-normal mb-3 text-[#1c2c21]">
+                    <h1 className="plants-page-title text-2xl sm:text-3xl font-normal mb-3 text-[#1c2c21]">
                         {activeCategory === 'all'
                             ? 'All Plants'
                             : plantCategories.find(c => c.id === activeCategory)?.name || 'Plants'}
                     </h1>
 
-                    <p className="plants-page-description font-[var(--font-family-base)] text-sm text-[#4b5563] max-w-[800px] leading-relaxed">
+                    <p className="plants-page-description font-[var(--font-family-base)] text-xs sm:text-sm text-[#4b5563] max-w-[800px] leading-relaxed">
                         Buy plants online from Planters Agro Valley — India's most trusted plant nursery for healthy indoor, outdoor, and flowering plants. We deliver live plants across India.
                     </p>
+
+                    {/* Mobile Category Select Dropdown */}
+                    <div className="plants-mobile-cat-dropdown-wrap mt-4 mb-5 sm:hidden">
+                        <label className="text-[11px] font-bold text-[#06492D] uppercase tracking-wider block mb-1.5">
+                            Category Filter
+                        </label>
+                        <select
+                            value={activeCategory}
+                            onChange={(e) => setActiveCategory(e.target.value)}
+                            className="w-full bg-white border border-[#06492D]/40 text-[#06492D] text-xs font-semibold py-2.5 px-3 rounded-[3px] shadow-sm outline-none cursor-pointer focus:border-[#06492D]"
+                        >
+                            {plantCategories.map((cat) => {
+                                const count = cat.id === 'all'
+                                    ? plantProducts.length
+                                    : plantProducts.filter(p => p.category === cat.id).length;
+                                return (
+                                    <option key={cat.id} value={cat.id}>
+                                        {cat.name} ({count})
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </div>
                 </div>
             </section>
 
             {/* Main Catalog Workspace */}
-            <section className="plants-catalog-section py-12">
+            <section className="plants-catalog-section py-6 sm:py-12">
                 <div className="container plants-layout-container">
 
-                    {/* Left Column: Sidebar Filters */}
-                    <div className="plants-sidebar">
-
-                        {/* 1. Category Accordion */}
-                        <div className="filter-accordion">
-                            <div
-                                className="filter-accordion-header"
-                                onClick={() => setCatsOpen(!catsOpen)}
-                            >
-                                <h3 className="filter-accordion-title">Categories</h3>
-                                {catsOpen ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
-                            </div>
-
-                            {catsOpen && (
-                                <div className="filter-accordion-content">
-                                    <button
-                                        onClick={() => setActiveCategory('all')}
-                                        className="filter-reset-link"
-                                    >
-                                        Reset
-                                    </button>
-                                    <div className="plants-category-list">
-                                        {plantCategories.map((cat) => {
-                                            const count = cat.id === 'all'
-                                                ? plantProducts.length
-                                                : plantProducts.filter(p => p.category === cat.id).length;
-                                            return (
-                                                <button
-                                                    key={cat.id}
-                                                    onClick={() => setActiveCategory(cat.id)}
-                                                    className={`plants-cat-btn ${activeCategory === cat.id ? 'active' : ''}`}
-                                                >
-                                                    <span className="cat-name">{cat.name}</span>
-                                                    <span className="cat-count">({count})</span>
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        <hr className="filter-divider" />
-
-                        {/* 2. Availability Accordion (pic1) */}
-                        <div className="filter-accordion">
-                            <div
-                                className="filter-accordion-header"
-                                onClick={() => setAvailOpen(!availOpen)}
-                            >
-                                <h3 className="filter-accordion-title">Availability</h3>
-                                {availOpen ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
-                            </div>
-
-                            {availOpen && (
-                                <div className="filter-accordion-content">
-                                    <button
-                                        onClick={() => {
-                                            setInStockOnly(false);
-                                            setOutOfStockOnly(false);
-                                        }}
-                                        className="filter-reset-link"
-                                    >
-                                        Reset
-                                    </button>
-
-                                    <label className="filter-checkbox-label">
-                                        <input
-                                            type="checkbox"
-                                            checked={inStockOnly}
-                                            onChange={(e) => setInStockOnly(e.target.checked)}
-                                            className="filter-checkbox-input"
-                                        />
-                                        <span>In stock ({inStockCount})</span>
-                                    </label>
-
-                                    <label className="filter-checkbox-label">
-                                        <input
-                                            type="checkbox"
-                                            checked={outOfStockOnly}
-                                            onChange={(e) => setOutOfStockOnly(e.target.checked)}
-                                            className="filter-checkbox-input"
-                                        />
-                                        <span>Out of stock ({outOfStockCount})</span>
-                                    </label>
-                                </div>
-                            )}
-                        </div>
-
-                        <hr className="filter-divider" />
-
-                        {/* 3. Price Accordion (pic1) */}
-                        <div className="filter-accordion">
-                            <div
-                                className="filter-accordion-header"
-                                onClick={() => setPriceOpen(!priceOpen)}
-                            >
-                                <h3 className="filter-accordion-title">Price</h3>
-                                {priceOpen ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
-                            </div>
-
-                            {priceOpen && (
-                                <div className="filter-accordion-content">
-                                    <button
-                                        onClick={() => {
-                                            setMinPrice(0);
-                                            setMaxPrice(8500);
-                                        }}
-                                        className="filter-reset-link"
-                                    >
-                                        Reset
-                                    </button>
-
-                                    <div className="price-slider-outer">
-                                        <div className="double-slider-container">
-                                            <span className="currency-symbol">₹</span>
-                                            <div className="double-slider-wrapper">
-                                                <input
-                                                    type="range"
-                                                    min="0"
-                                                    max="8500"
-                                                    step="50"
-                                                    value={minPrice}
-                                                    onChange={(e) => {
-                                                        const val = Math.min(Number(e.target.value), maxPrice - 100);
-                                                        setMinPrice(val);
-                                                    }}
-                                                    className="slider-thumb slider-thumb-left"
-                                                />
-                                                <input
-                                                    type="range"
-                                                    min="0"
-                                                    max="8500"
-                                                    step="50"
-                                                    value={maxPrice}
-                                                    onChange={(e) => {
-                                                        const val = Math.max(Number(e.target.value), minPrice + 100);
-                                                        setMaxPrice(val);
-                                                    }}
-                                                    className="slider-thumb slider-thumb-right"
-                                                />
-                                                <div className="slider-track" />
-                                                <div
-                                                    className="slider-range-bar"
-                                                    style={{
-                                                        left: `${(minPrice / 8500) * 100}%`,
-                                                        right: `${100 - (maxPrice / 8500) * 100}%`
-                                                    }}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="filter-price-text">
-                                            Price: Rs. {minPrice} – Rs. {maxPrice}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        <hr className="filter-divider" />
-
-                        {/* 4. Suitable Space Accordion (pic1) */}
-                        <div className="filter-accordion">
-                            <div
-                                className="filter-accordion-header"
-                                onClick={() => setSpaceOpen(!spaceOpen)}
-                            >
-                                <h3 className="filter-accordion-title">Suitable space</h3>
-                                {spaceOpen ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
-                            </div>
-
-                            {spaceOpen && (
-                                <div className="filter-accordion-content">
-                                    <button
-                                        onClick={() => {
-                                            setIndoorsChecked(false);
-                                            setOutdoorsChecked(false);
-                                        }}
-                                        className="filter-reset-link"
-                                    >
-                                        Reset
-                                    </button>
-
-                                    <label className="filter-checkbox-label">
-                                        <input
-                                            type="checkbox"
-                                            checked={indoorsChecked}
-                                            onChange={(e) => setIndoorsChecked(e.target.checked)}
-                                            className="filter-checkbox-input"
-                                        />
-                                        <span>Indoors ({indoorsCount})</span>
-                                    </label>
-
-                                    <label className="filter-checkbox-label">
-                                        <input
-                                            type="checkbox"
-                                            checked={outdoorsChecked}
-                                            onChange={(e) => setOutdoorsChecked(e.target.checked)}
-                                            className="filter-checkbox-input"
-                                        />
-                                        <span>Outdoors ({outdoorsCount})</span>
-                                    </label>
-                                </div>
-                            )}
-                        </div>
-
+                    {/* Desktop Left Column: Sidebar Filters */}
+                    <div className="plants-sidebar plants-sidebar-desktop">
+                        {renderFilterAccordions()}
                     </div>
 
                     {/* Right Column: Grid and Toolbar */}
                     <div className="plants-main-content">
 
                         {/* Toolbar Area */}
-                        <div className="plants-toolbar mb-8">
-                            <span className="plants-count-text text-sm text-gray-500 font-[var(--font-family-base)]">
+                        <div className="plants-toolbar mb-6 sm:mb-8">
+
+                            <span className="plants-count-text text-xs sm:text-sm text-gray-500 font-[var(--font-family-base)]">
                                 Showing {sortedProducts.length} {sortedProducts.length === 1 ? 'plant' : 'plants'}
                             </span>
 
@@ -742,18 +804,27 @@ function Plants() {
                                     &larr; Previous
                                 </button>
 
-                                {[...Array(totalPages)].map((_, index) => (
-                                    <button
-                                        key={index + 1}
-                                        onClick={() => {
-                                            setCurrentPage(index + 1);
-                                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                                        }}
-                                        className={`pagination-btn ${currentPage === index + 1 ? 'active' : ''}`}
-                                    >
-                                        {index + 1}
-                                    </button>
-                                ))}
+                                {getPageNumbers(currentPage, totalPages).map((page, index) => {
+                                    if (page === '...') {
+                                        return (
+                                            <span key={`ellipsis-${index}`} className="pagination-ellipsis px-1.5 text-gray-400 text-xs self-center select-none">
+                                                ...
+                                            </span>
+                                        );
+                                    }
+                                    return (
+                                        <button
+                                            key={page}
+                                            onClick={() => {
+                                                setCurrentPage(page);
+                                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                            }}
+                                            className={`pagination-btn ${currentPage === page ? 'active' : ''}`}
+                                        >
+                                            {page}
+                                        </button>
+                                    );
+                                })}
 
                                 <button
                                     onClick={() => {
