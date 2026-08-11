@@ -99,28 +99,42 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
   const drawerContent = (
     <Box sx={{ height: "100%", overflowY: "auto" }}>
       <Toolbar sx={{ display: "flex", alignItems: "center", justifyContent: "center", py: 1.5 }}>
-        {logo ? (
-          <Box
-            component="img"
-            src={logo}
-            alt={storeName}
-            sx={{
-              height: 45,
-              width: "auto",
-              maxHeight: 50,
-              maxWidth: 220,
-              objectFit: "contain",
-            }}
-          />
-        ) : (
-          <Typography
-            variant="h6"
-            fontWeight="bold"
-            color="success.main"
-          >
-            🌿 {storeName}
-          </Typography>
-        )}
+        <Box
+          component={Link}
+          to="/"
+          title="Go to Home Page"
+          sx={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textDecoration: "none",
+            cursor: "pointer",
+            width: "100%",
+          }}
+        >
+          {logo ? (
+            <Box
+              component="img"
+              src={logo}
+              alt={storeName}
+              sx={{
+                height: 45,
+                width: "auto",
+                maxHeight: 50,
+                maxWidth: 220,
+                objectFit: "contain",
+              }}
+            />
+          ) : (
+            <Typography
+              variant="h6"
+              fontWeight="bold"
+              color="success.main"
+            >
+              🌿 {storeName}
+            </Typography>
+          )}
+        </Box>
       </Toolbar>
 
       <Divider />

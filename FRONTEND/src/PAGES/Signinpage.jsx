@@ -83,13 +83,16 @@ function Signinpage() {
       
       if (data.success) {
         dispatch(setUser({ user: data.user, token: data.token }));
-        try {
-          await syncLocalCartToBackend(cartItems);
-        } catch (err) {
-          console.error("Cart sync error:", err);
+        const isAdminUser = ["super-admin", "admin", "shipping-manager"].includes(data.user?.role) || data.user?.isAdmin;
+        if (!isAdminUser) {
+          try {
+            await syncLocalCartToBackend(cartItems);
+          } catch (err) {
+            console.error("Cart sync error:", err);
+          }
         }
         const userName = data.user?.firstName || data.user?.name || data.user?.email?.split('@')[0] || 'User';
-        toast.success(`Welcome, ${userName}!`);
+        toast.success(`Welcome ${userName}!`);
         const pendingRedirect = sessionStorage.getItem("postLoginRedirect");
         if (pendingRedirect) {
           sessionStorage.removeItem("postLoginRedirect");
@@ -235,7 +238,7 @@ function Signinpage() {
             console.error('Cart sync error:', err);
           }
           const userName = data.user?.firstName || data.user?.name || 'User';
-          toast.success(`Welcome, ${userName}!`);
+          toast.success(`Welcome ${userName}!`);
           const pendingRedirect = sessionStorage.getItem("postLoginRedirect");
           if (pendingRedirect) {
             sessionStorage.removeItem("postLoginRedirect");
@@ -264,13 +267,16 @@ function Signinpage() {
         const { data } = await axiosInstance.post('/auth/login', payload);
         if (data.success) {
           dispatch(setUser({ user: data.user, token: data.token }));
-          try {
-            await syncLocalCartToBackend(cartItems);
-          } catch (err) {
-            console.error('Cart sync error:', err);
+          const isAdminUser = ["super-admin", "admin", "shipping-manager"].includes(data.user?.role) || data.user?.isAdmin;
+          if (!isAdminUser) {
+            try {
+              await syncLocalCartToBackend(cartItems);
+            } catch (err) {
+              console.error('Cart sync error:', err);
+            }
           }
           const loginUserName = data.user?.firstName || data.user?.name || data.user?.email?.split('@')[0] || 'User';
-          toast.success(`Welcome, ${loginUserName}!`);
+          toast.success(`Welcome ${loginUserName}!`);
           const pendingRedirect = sessionStorage.getItem("postLoginRedirect");
           if (pendingRedirect) {
             sessionStorage.removeItem("postLoginRedirect");

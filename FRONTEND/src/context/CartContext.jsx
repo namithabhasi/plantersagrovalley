@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import axiosInstance from '../api/axiosInstance';
 
 const CartContext = createContext();
@@ -30,11 +31,28 @@ export const CartProvider = ({ children }) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { user } = useSelector((state) => state.auth);
 
-  const openCart = () => setIsCartOpen(true);
+  const isAdmin = Boolean(
+    user && (
+      user.role === 'admin' || 
+      user.role === 'super-admin' || 
+      user.role === 'superadmin' || 
+      user.role === 'shipping-manager' || 
+      user.isAdmin === true
+    )
+  );
+
+  const openCart = () => {
+    if (isAdmin) {
+      toast.info("Cart is disabled for Admin / Super Admin accounts.");
+      return;
+    }
+    setIsCartOpen(true);
+  };
   const closeCart = () => setIsCartOpen(false);
 
   // Sync guest cart to backend upon login
   const syncLocalCartToBackend = async (localItems) => {
+    if (isAdmin) return;
     try {
       // Clear DB cart first
       await axiosInstance.delete('/cart');
@@ -51,6 +69,11 @@ export const CartProvider = ({ children }) => {
   };
 
   const addToCart = (product) => {
+    if (isAdmin) {
+      toast.info("Add to Cart is disabled for Admin / Super Admin accounts.");
+      return;
+    }
+
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.id === product.id && item.name === product.name);
       if (existingItem) {
@@ -112,14 +135,14 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const cartTotalCount = cartItems.reduce((total, item) => total + item.quantity, 0);
-  const cartSubtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  const cartTotalCount = isAdmin ? 0 : cartItems.reduce((total, item) => total + item.quantity, 0);
+  const cartSubtotal = isAdmin ? 0 : cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
   return (
     <CartContext.Provider
       value={{
-        cartItems,
-        isCartOpen,
+        cartItems: isAdmin ? [] : cartItems,
+        isCartOpen: isAdmin ? false : isCartOpen,
         openCart,
         closeCart,
         addToCart,
@@ -129,6 +152,7 @@ export const CartProvider = ({ children }) => {
         syncLocalCartToBackend,
         cartTotalCount,
         cartSubtotal,
+        isAdmin,
       }}
     >
       {children}

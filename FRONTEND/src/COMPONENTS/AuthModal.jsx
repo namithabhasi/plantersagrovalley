@@ -112,7 +112,7 @@ function AuthModal() {
       await syncLocalCartToBackend(cartItems);
 
       const userName = data.user?.firstName || data.user?.name || data.user?.email?.split('@')[0] || 'User';
-      toast.success(`Welcome, ${userName}!`);
+      toast.success(`Welcome ${userName}!`);
       
       // Clear form inputs
       setEmail("");
