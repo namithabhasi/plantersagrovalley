@@ -541,11 +541,11 @@ export const cancelOrder = async (req, res) => {
       });
     }
 
-    // Customers can only cancel when order is Pending, Confirmed, or Processing
-    if (!isAdmin && !["Pending", "Confirmed", "Processing"].includes(order.orderStatus)) {
+    // Customers can cancel when order is Pending, Confirmed, Processing, or Packed
+    if (!isAdmin && !["Pending", "Confirmed", "Processing", "Packed"].includes(order.orderStatus)) {
       return res.status(400).json({
         success: false,
-        message: `Order status is "${order.orderStatus}". Packed, shipped or delivered orders cannot be cancelled by customer.`,
+        message: `Order status is "${order.orderStatus}". Shipped or delivered orders cannot be cancelled by customer.`,
       });
     }
 
@@ -563,8 +563,10 @@ export const cancelOrder = async (req, res) => {
       });
     }
 
-    // Update order status
+    // Update order status & save cancellation reason
+    const reason = req.body.cancellationReason || req.body.reason || "Accidentally placed the order";
     order.orderStatus = "Cancelled";
+    order.notes = `Cancellation Reason: ${reason}`;
     order.cancelledAt = new Date();
     order.statusHistory.push({
       status: "Cancelled",
@@ -726,10 +728,10 @@ export const updateOrderStatus = async (req, res) => {
         });
       }
 
-      if (oldStatus === "Delivered") {
+      if (oldStatus === "Delivered" && !["Return Requested", "Returned", "Return Approved"].includes(orderStatus)) {
         return res.status(400).json({
           success: false,
-          message: "Cannot transition out of a Delivered state.",
+          message: "Cannot transition out of a Delivered state except for Return processing.",
         });
       }
 

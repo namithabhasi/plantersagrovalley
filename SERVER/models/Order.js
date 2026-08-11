@@ -225,15 +225,6 @@ statusHistory: [
   {
     status: {
       type: String,
-      enum: [
-        "Pending",
-        "Confirmed",
-        "Processing",
-        "Packed",
-        "Shipped",
-        "Delivered",
-        "Cancelled",
-      ],
       required: true,
     },
     updatedAt: {

@@ -15,29 +15,18 @@ import orangeJasmine from "../assets/FRAGRANTPLANTS/Orange Jasmine.jpg";
 import mograJasmine from "../assets/FRAGRANTPLANTS/mogra flower.jpg";
 import tuberose from "../assets/FRAGRANTPLANTS/tuberose_flowers.jpg";
 
+import cac1 from "../assets/catus/image.png";
+import fr1 from "../assets/fruitplants/image.png";
+
 import { plantProducts } from "../PAGES/Plants";
 
 export const getItemImage = (item) => {
-  // 1. Direct valid image string on item
-  if (item?.image && typeof item.image === 'string' && item.image.trim() !== '' && !item.image.includes('placeholder')) {
-    return item.image;
+  const name = (item?.name || item?.product?.name || '').toLowerCase();
+
+  // 1. High-priority keyword asset overrides (e.g. Golden Barrel Cactus)
+  if (name.includes('golden barrel') || name.includes('cactus') || name.includes('catus') || name.includes('barrel')) {
+    return cac1;
   }
-
-  const name = (item?.name || '').toLowerCase();
-
-  // 2. Direct catalog match from plantProducts array by name or ID
-  if (plantProducts && Array.isArray(plantProducts)) {
-    const match = plantProducts.find(p => 
-      (p.name && p.name.toLowerCase() === name) || 
-      p.id === item?.product || 
-      p.id === item?._id
-    );
-    if (match && match.image) {
-      return match.image;
-    }
-  }
-
-  // 3. Keyword asset fallback mappings
   if (name.includes('star jasmine') || (name.includes('jasmine') && name.includes('climber'))) {
     return starJasmine;
   }
@@ -83,9 +72,49 @@ export const getItemImage = (item) => {
   if (name.includes('lily') || name.includes('spathiphyllum')) {
     return peaceLily;
   }
+  if (name.includes('mango') || name.includes('fruit')) {
+    return fr1;
+  }
 
-  // 4. Deterministic hash fallback
-  const imageList = [starJasmine, wisteriaVine, orangeJasmine, peaceLily, rubberPlant, avocado, succulent, parlorPalm, Anthurium, haworthiaImg, bougainvillea];
-  const charCodeSum = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  return imageList[charCodeSum % imageList.length];
+  // 2. Direct catalog match from plantProducts array by name or ID
+  if (plantProducts && Array.isArray(plantProducts)) {
+    const match = plantProducts.find(p => 
+      (p.name && p.name.toLowerCase() === name) || 
+      (p.name && p.name.toLowerCase().includes(name)) ||
+      (name && name.includes((p.name || '').toLowerCase())) ||
+      p.id === item?.product || 
+      p.id === item?._id ||
+      p.id === item?.product?._id
+    );
+    if (match && match.image) {
+      return match.image;
+    }
+  }
+
+  // 3. Direct valid image string on item
+  if (item?.image && typeof item.image === 'string' && item.image.trim() !== '' && !item.image.includes('placeholder')) {
+    return item.image;
+  }
+  
+  if (Array.isArray(item?.images) && item.images.length > 0) {
+    const firstImg = item.images[0]?.url || item.images[0];
+    if (typeof firstImg === 'string' && firstImg.trim() !== '' && !firstImg.includes('placeholder')) {
+      return firstImg;
+    }
+  }
+
+  if (item?.product) {
+    if (typeof item.product.image === 'string' && item.product.image.trim() !== '') {
+      return item.product.image;
+    }
+    if (Array.isArray(item.product.images) && item.product.images.length > 0) {
+      const prodImg = item.product.images[0]?.url || item.product.images[0];
+      if (typeof prodImg === 'string' && prodImg.trim() !== '') {
+        return prodImg;
+      }
+    }
+  }
+
+  // 4. Fallback default
+  return cac1;
 };

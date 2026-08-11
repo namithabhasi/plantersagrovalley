@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import axiosInstance from '../api/axiosInstance';
 
 const CartContext = createContext();
@@ -37,13 +38,31 @@ export const CartProvider = ({ children }) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { user } = useSelector((state) => state.auth);
 
-  const openCart = () => setIsCartOpen(true);
+  const isAdmin = Boolean(
+    user && (
+      user.role === 'admin' || 
+      user.role === 'super-admin' || 
+      user.role === 'superadmin' || 
+      user.role === 'shipping-manager' || 
+      user.isAdmin === true
+    )
+  );
+
+  const openCart = () => {
+    if (isAdmin) {
+      toast.info("Cart is disabled for Admin / Super Admin accounts.");
+      return;
+    }
+    setIsCartOpen(true);
+  };
   const closeCart = () => setIsCartOpen(false);
+
 
   // Fetch cart items from backend for logged in user
   const fetchCartFromBackend = useCallback(async () => {
     const token = localStorage.getItem('token');
     if (!token) return;
+
 
     try {
       const { data } = await axiosInstance.get('/cart');
@@ -130,6 +149,11 @@ export const CartProvider = ({ children }) => {
   }, [user, syncLocalCartToBackend, fetchCartFromBackend]);
 
   const addToCart = (product, qty = 1) => {
+    if (isAdmin) {
+      toast.info("Add to Cart is disabled for Admin / Super Admin accounts.");
+      return;
+    }
+
     const quantityToAdd = typeof qty === 'number' && qty > 0 ? qty : 1;
     const productId = product.id || product._id;
     const productName = product.name;
@@ -145,6 +169,7 @@ export const CartProvider = ({ children }) => {
       quantity: quantityToAdd,
       stock: product.stock,
     };
+
 
     setCartItems((prevItems) => {
       const existingIndex = prevItems.findIndex(
@@ -242,14 +267,16 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const cartTotalCount = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
-  const cartSubtotal = cartItems.reduce((total, item) => total + (item.price || 0) * (item.quantity || 1), 0);
+
+  const cartTotalCount = isAdmin ? 0 : cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
+  const cartSubtotal = isAdmin ? 0 : cartItems.reduce((total, item) => total + (item.price || 0) * (item.quantity || 1), 0);
+
 
   return (
     <CartContext.Provider
       value={{
-        cartItems,
-        isCartOpen,
+        cartItems: isAdmin ? [] : cartItems,
+        isCartOpen: isAdmin ? false : isCartOpen,
         openCart,
         closeCart,
         addToCart,
@@ -260,6 +287,7 @@ export const CartProvider = ({ children }) => {
         fetchCartFromBackend,
         cartTotalCount,
         cartSubtotal,
+        isAdmin,
       }}
     >
       {children}

@@ -95,29 +95,52 @@ function Payment() {
   };
 
   // Handle Coupon Apply
-  const handleApplyCoupon = (e) => {
+  const handleApplyCoupon = async (e) => {
     e.preventDefault();
     setCouponError('');
 
     const cleanCode = couponInput.trim().toUpperCase();
     if (!cleanCode) {
-      setCouponError('Invalid coupon code.');
+      setCouponError('Please enter a coupon code.');
       return;
     }
 
-    // Supported coupons logic
-    if (cleanCode === 'PLANTERS10') {
-      setAppliedCoupon({ code: 'PLANTERS10', type: 'percent', value: 0.10, desc: '10% OFF Discount Applied' });
-      toast.success('Coupon PLANTERS10 applied (10% OFF)!');
-    } else if (cleanCode === 'WELCOME20') {
-      setAppliedCoupon({ code: 'WELCOME20', type: 'percent', value: 0.20, desc: '20% OFF Welcome Discount Applied' });
-      toast.success('Coupon WELCOME20 applied (20% OFF)!');
-    } else if (cleanCode === 'FREESHIP' || cleanCode === 'SAVE100') {
-      setAppliedCoupon({ code: 'SAVE100', type: 'flat', value: 100, desc: '₹100 Flat Discount Applied' });
-      toast.success('Coupon SAVE100 applied (₹100 OFF)!');
-    } else {
-      setCouponError('Invalid coupon code.');
-      toast.error('Invalid coupon code.');
+    try {
+      const { data } = await axios.post('/orders/validate-coupon', { couponCode: cleanCode });
+      if (data?.success) {
+        const discVal = data.discountAmount || 0;
+        setAppliedCoupon({
+          code: data.coupon?.code || cleanCode,
+          type: data.coupon?.discountType === 'percentage' ? 'percent' : 'flat',
+          value: discVal,
+          discountAmount: discVal,
+          desc: `${data.coupon?.name || cleanCode} Applied`
+        });
+        toast.success(`Coupon ${cleanCode} applied! Discount: ₹${discVal}`);
+        return;
+      }
+    } catch (apiErr) {
+      const apiMsg = apiErr.response?.data?.message;
+      
+      // Fallback for default demo codes if not in DB or backend offline
+      if (cleanCode === 'PLANTERS10' || cleanCode === 'WELCOME10') {
+        const val = Math.round(subtotal * 0.10);
+        setAppliedCoupon({ code: cleanCode, type: 'percent', value: 0.10, discountAmount: val, desc: '10% OFF Discount Applied' });
+        toast.success(`Coupon ${cleanCode} applied (10% OFF)!`);
+        return;
+      } else if (cleanCode === 'WELCOME20') {
+        const val = Math.round(subtotal * 0.20);
+        setAppliedCoupon({ code: cleanCode, type: 'percent', value: 0.20, discountAmount: val, desc: '20% OFF Welcome Discount Applied' });
+        toast.success('Coupon WELCOME20 applied (20% OFF)!');
+        return;
+      } else if (cleanCode === 'FREESHIP' || cleanCode === 'SAVE100') {
+        setAppliedCoupon({ code: 'SAVE100', type: 'flat', value: 100, discountAmount: 100, desc: '₹100 Flat Discount Applied' });
+        toast.success('Coupon SAVE100 applied (₹100 OFF)!');
+        return;
+      }
+
+      setCouponError(apiMsg || 'Invalid coupon code.');
+      toast.error(apiMsg || 'Invalid coupon code.');
     }
   };
 
@@ -179,7 +202,9 @@ function Payment() {
   const subtotal = cartSubtotal;
   let discountAmount = 0;
   if (appliedCoupon) {
-    if (appliedCoupon.type === 'percent') {
+    if (typeof appliedCoupon.discountAmount === 'number') {
+      discountAmount = appliedCoupon.discountAmount;
+    } else if (appliedCoupon.type === 'percent') {
       discountAmount = subtotal * appliedCoupon.value;
     } else if (appliedCoupon.type === 'flat') {
       discountAmount = Math.min(subtotal, appliedCoupon.value);
@@ -211,7 +236,7 @@ function Payment() {
 
     if (isAddressIncomplete()) {
       toast.info("Update address for smooth delivery");
-      navigate('/profile?editAddress=true');
+      navigate('/profile?editAddress=true&returnTo=payment');
       return;
     }
     
@@ -497,7 +522,7 @@ function Payment() {
                     </p>
                     <button
                       type="button"
-                      onClick={() => navigate('/profile?editAddress=true')}
+                      onClick={() => navigate('/profile?editAddress=true&returnTo=payment')}
                       className="btn btn-primary text-xs uppercase cursor-pointer"
                       style={{ alignSelf: 'flex-start', marginTop: '4px' }}
                     >

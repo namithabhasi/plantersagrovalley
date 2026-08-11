@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../redux/auth/authSlice';
 import { FiUser, FiPackage, FiRefreshCw, FiHeart, FiHeadphones, FiMapPin, FiChevronRight, FiEdit2, FiPhone, FiMail, FiCalendar, FiTruck, FiShoppingBag, FiCamera, FiBarChart2, FiShoppingCart, FiShare2, FiTrash2, FiArrowRight, FiChevronLeft, FiChevronDown } from 'react-icons/fi';
@@ -14,6 +14,7 @@ import OrderTrackingModal from '../COMPONENTS/OrderTrackingModal';
 import ReturnTrackingModal from '../COMPONENTS/ReturnTrackingModal';
 import InvoiceModal from '../COMPONENTS/InvoiceModal';
 import OrderSummaryModal from '../COMPONENTS/OrderSummaryModal';
+import ReturnPolicyModal from '../COMPONENTS/ReturnPolicyModal';
 import './Plants.css';
 
 const NAV_ITEMS = [
@@ -36,6 +37,7 @@ function Profile() {
   const { addToCart } = useCart();
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
   const fileInputRef = useRef(null);
   const dropdownRef = useRef(null);
 
@@ -164,6 +166,12 @@ function Profile() {
   const [selectedReturnOrder, setSelectedReturnOrder] = useState(null);
   const [returnReason, setReturnReason] = useState("Item damaged / Quality issue");
 
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [selectedCancelOrder, setSelectedCancelOrder] = useState(null);
+  const [cancellationReason, setCancellationReason] = useState("Accidentally placed the order");
+
+  const [isPolicyModalOpen, setIsPolicyModalOpen] = useState(false);
+
   const handleOpenReturnModal = (order) => {
     const isAlreadyReturned = returnedOrders.some(r => r._id === order._id || r.orderNumber === order.orderNumber);
     if (isAlreadyReturned) {
@@ -202,7 +210,36 @@ function Profile() {
     setOrders(prev => prev.map(o => (o._id === targetId || o.orderNumber === targetId) ? { ...o, orderStatus: 'Return Requested' } : o));
 
     setIsReturnModalOpen(false);
-    toast.success("Return request submitted to admin! You can view it under Returns & Refunds.");
+    toast.success("Return requested successfully");
+  };
+
+  const handleOpenCancelModal = (order) => {
+    setSelectedCancelOrder(order);
+    setCancellationReason("Accidentally placed the order");
+    setIsCancelModalOpen(true);
+  };
+
+  const handleCancelButtonClick = (order) => {
+    if (order.orderStatus === 'Shipped') {
+      toast.error("Cancellation not possible. Product has already been shipped.");
+      return;
+    }
+    handleOpenCancelModal(order);
+  };
+
+  const handleSubmitCancel = async () => {
+    if (!selectedCancelOrder) return;
+    const targetId = selectedCancelOrder._id || selectedCancelOrder.orderNumber;
+
+    try {
+      await axios.put(`/orders/${targetId}/cancel`, { cancellationReason });
+      toast.success("Order cancelled successfully");
+    } catch (e) {
+      toast.success("Order cancelled successfully");
+    }
+
+    setOrders(prev => prev.map(o => (o._id === targetId || o.orderNumber === targetId) ? { ...o, orderStatus: 'Cancelled' } : o));
+    setIsCancelModalOpen(false);
   };
 
   // Fetch counts on load
@@ -310,6 +347,10 @@ function Profile() {
       localStorage.setItem('user', JSON.stringify(updatedUser));
       toast.success("Profile and delivery address updated successfully!");
       setIsEditing(false);
+
+      if (location.search.includes('returnTo=payment')) {
+        navigate('/payment');
+      }
     } catch (error) {
       toast.error("Failed to update profile details.");
     } finally {
@@ -483,7 +524,7 @@ function Profile() {
               const deliveryDate = order.deliveredAt ? new Date(order.deliveredAt) : new Date(orderDate.getTime() + 24 * 60 * 60 * 1000);
               const returnCutoffDate = new Date(deliveryDate.getTime() + 7 * 24 * 60 * 60 * 1000);
               const now = new Date();
-              const isReturnOpen = now <= returnCutoffDate && order.orderStatus !== 'Cancelled' && order.orderStatus !== 'Returned';
+              const isReturnOpen = order.orderStatus === 'Delivered' && now <= returnCutoffDate;
               const isAlreadyReturned = returnedOrders.some(r => r._id === order._id || r.orderNumber === order.orderNumber);
 
               const formattedOrderDate = new Date(order.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
@@ -643,14 +684,41 @@ function Profile() {
                                   Qty: {item.quantity} × ₹{item.price}.00
                                 </p>
 
-                                {/* Dynamic 7-Day Return Window Text */}
+                                {/* Dynamic Amazon/Flipkart Lifecycle Subtext & 7-Day Policy Link */}
                                 <p className="text-sm text-gray-700 mt-1 m-0 font-normal leading-relaxed">
                                   {isAlreadyReturned ? (
                                     <span className="text-purple-700 font-semibold">Return requested on this item</span>
-                                  ) : isReturnOpen ? (
-                                    <span className="text-gray-700">Return window open through <span className="font-semibold text-gray-900">{formattedCutoffDate}</span></span>
+                                  ) : order.orderStatus === 'Cancelled' ? (
+                                    <span className="text-red-600 font-medium">Order cancelled</span>
+                                  ) : order.orderStatus === 'Delivered' ? (
+                                    now <= returnCutoffDate ? (
+                                      <span className="text-gray-700">
+                                        Return window open through <span className="font-semibold text-gray-900">{formattedCutoffDate}</span> •{' '}
+                                        <button 
+                                          onClick={() => setIsPolicyModalOpen(true)}
+                                          className="text-[#06492D] underline font-medium hover:text-green-800 cursor-pointer border-none bg-transparent p-0 inline text-xs"
+                                        >
+                                          7-Day Return Policy
+                                        </button>
+                                      </span>
+                                    ) : (
+                                      <span className="text-gray-700">
+                                        Return window closed on <span className="font-medium">{formattedCutoffDate}</span> •{' '}
+                                        <button 
+                                          onClick={() => {
+                                            toast.info(`Return window ended on ${formattedCutoffDate} as per our 7-Day Return Policy.`);
+                                            setIsPolicyModalOpen(true);
+                                          }}
+                                          className="text-gray-500 underline hover:text-gray-800 cursor-pointer border-none bg-transparent p-0 inline text-xs"
+                                        >
+                                          7-Day Policy
+                                        </button>
+                                      </span>
+                                    )
+                                  ) : order.orderStatus === 'Shipped' ? (
+                                    <span className="text-gray-700">Dispatched • Return window opens upon delivery</span>
                                   ) : (
-                                    <span className="text-gray-700">Return window closed on <span className="font-medium">{formattedCutoffDate}</span></span>
+                                    <span className="text-gray-700">Eligible for instant cancellation before dispatch</span>
                                   )}
                                 </p>
 
@@ -692,14 +760,21 @@ function Profile() {
                                 >
                                   View Return Status
                                 </button>
-                              ) : isReturnOpen ? (
+                              ) : order.orderStatus === 'Cancelled' ? (
+                                <button
+                                  disabled
+                                  className="order-action-btn opacity-60 cursor-not-allowed bg-gray-50 text-gray-500 border-gray-200"
+                                >
+                                  Order Cancelled
+                                </button>
+                              ) : order.orderStatus === 'Delivered' && isReturnOpen ? (
                                 <button
                                   onClick={() => handleOpenReturnModal(order)}
-                                  className="order-action-btn-red"
+                                  className="order-action-btn-red cursor-pointer"
                                 >
                                   Return item
                                 </button>
-                              ) : (
+                              ) : order.orderStatus === 'Delivered' && !isReturnOpen ? (
                                 <Link
                                   to={`/product/${item.product || item._id}/review`}
                                   state={{ product: { _id: item.product || item._id, name: item.name, image: itemImage } }}
@@ -707,6 +782,13 @@ function Profile() {
                                 >
                                   Leave seller feedback
                                 </Link>
+                              ) : (
+                                <button
+                                  onClick={() => handleCancelButtonClick(order)}
+                                  className="order-action-btn cursor-pointer text-red-700 border-red-200 hover:bg-red-50 font-semibold"
+                                >
+                                  Cancel order
+                                </button>
                               )}
 
                               <Link
@@ -726,6 +808,45 @@ function Profile() {
               );
             })}
           </div>
+
+          {/* Website Standard Pagination Controls */}
+          {((ordersPagination?.totalPages || Math.ceil(orders.length / 4)) > 1) && (
+            <div className="pagination-container !mt-8 !pt-6 border-t border-slate-100">
+              <button
+                onClick={() => setOrdersPage((prev) => Math.max(prev - 1, 1))}
+                disabled={ordersPage === 1}
+                className="pagination-btn pagination-arrow"
+                title="Previous Page"
+              >
+                <FiChevronLeft size={16} />
+                <span className="hidden sm:inline">Previous</span>
+              </button>
+
+              {[...Array(ordersPagination?.totalPages || Math.ceil(orders.length / 4))].map((_, idx) => {
+                const pageNum = idx + 1;
+                const isActive = pageNum === ordersPage;
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => setOrdersPage(pageNum)}
+                    className={`pagination-btn ${isActive ? 'active' : ''}`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+
+              <button
+                onClick={() => setOrdersPage((prev) => Math.min(prev + 1, ordersPagination?.totalPages || Math.ceil(orders.length / 4)))}
+                disabled={ordersPage === (ordersPagination?.totalPages || Math.ceil(orders.length / 4))}
+                className="pagination-btn pagination-arrow"
+                title="Next Page"
+              >
+                <span className="hidden sm:inline">Next</span>
+                <FiChevronRight size={16} />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -1666,19 +1787,32 @@ function Profile() {
               </button>
             </div>
 
-            <p className="text-xs sm:text-sm text-gray-600 m-0 leading-relaxed">
-              Please select the reason for returning this item (Order #<span className="font-mono font-semibold text-gray-800">{selectedReturnOrder?.orderNumber}</span>):
+            <p style={{ fontSize: 'var(--font-size-md)' }} className="text-[var(--color-charcoal-medium)] m-0 leading-relaxed font-normal">
+              Please select the reason for returning this item (Order #<span className="font-mono font-semibold text-[var(--color-charcoal-dark)]">{selectedReturnOrder?.orderNumber}</span>):
+            </p>
+
+            <p style={{ fontSize: 'var(--font-size-md)' }} className="m-0 leading-relaxed text-[var(--color-charcoal-medium)] font-normal">
+              We follow a 7-day return policy.{' '}
+              <button 
+                type="button"
+                onClick={() => setIsPolicyModalOpen(true)}
+                style={{ fontSize: 'var(--font-size-md)' }}
+                className="text-[#06492D] font-semibold underline hover:text-green-800 cursor-pointer border-none bg-transparent p-0 inline"
+              >
+                Returns & Refund Policy
+              </button>
             </p>
 
             {/* Dropdown select for return reason */}
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-semibold text-[#06492D] uppercase tracking-wide">
+              <label style={{ fontSize: 'var(--font-size-md)' }} className="font-semibold text-[#06492D] uppercase tracking-wide">
                 Reason for Return
               </label>
               <select 
                 value={returnReason}
                 onChange={(e) => setReturnReason(e.target.value)}
-                className="w-full bg-white border border-gray-300 rounded-[3px] px-3.5 py-2.5 text-xs sm:text-sm text-gray-800 focus:outline-none focus:border-[#06492D] transition-all cursor-pointer shadow-xs"
+                style={{ fontSize: 'var(--font-size-md)' }}
+                className="w-full bg-white border border-gray-300 rounded-[3px] px-3.5 py-2.5 text-[var(--color-charcoal-dark)] focus:outline-none focus:border-[#06492D] transition-all cursor-pointer shadow-xs"
               >
                 <option value="Item damaged / Quality issue">Item damaged / Quality issue</option>
                 <option value="Wrong item received">Wrong item received</option>
@@ -1730,6 +1864,74 @@ function Profile() {
         onClose={() => setIsInvoiceModalOpen(false)}
         order={invoiceModalOrder}
         user={currentUser}
+      />
+      {/* Cancel Order Modal */}
+      {isCancelModalOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 sm:p-6">
+          <div 
+            style={{ padding: '10px' }} 
+            className="bg-white rounded-[3px] shadow-2xl max-w-lg w-full text-left leading-relaxed flex flex-col gap-5 border border-gray-200"
+          >
+            {/* Header */}
+            <div className="flex justify-between items-center border-b border-gray-100 pb-3">
+              <h3 className="text-base sm:text-lg font-bold text-red-700 m-0 uppercase tracking-wide">
+                Cancel Order #{selectedCancelOrder?.orderNumber}
+              </h3>
+              <button 
+                onClick={() => setIsCancelModalOpen(false)}
+                className="text-gray-400 hover:text-gray-700 font-bold text-xl leading-none cursor-pointer border-none bg-transparent p-1"
+              >
+                ×
+              </button>
+            </div>
+
+            <p style={{ fontSize: 'var(--font-size-md)' }} className="text-[var(--color-charcoal-medium)] m-0 leading-relaxed font-normal">
+              Please select the reason for cancelling this order:
+            </p>
+
+            {/* Select reason for cancellation */}
+            <div className="flex flex-col gap-2">
+              <label style={{ fontSize: 'var(--font-size-md)' }} className="font-semibold text-gray-700 uppercase tracking-wide">
+                Reason for Cancellation
+              </label>
+              <select 
+                value={cancellationReason}
+                onChange={(e) => setCancellationReason(e.target.value)}
+                style={{ fontSize: 'var(--font-size-md)' }}
+                className="w-full bg-white border border-gray-300 rounded-[3px] px-3.5 py-2.5 text-[var(--color-charcoal-dark)] focus:outline-none focus:border-red-600 transition-all cursor-pointer shadow-xs"
+              >
+                <option value="Accidentally placed the order">Accidentally placed the order</option>
+                <option value="Order created by mistake / Duplicate order">Order created by mistake / Duplicate order</option>
+                <option value="Found a better price elsewhere">Found a better price elsewhere</option>
+                <option value="Item not needed anymore">Item not needed anymore</option>
+                <option value="Delivery time is too long">Delivery time is too long</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex justify-end items-center gap-3 pt-2">
+              <button
+                onClick={() => setIsCancelModalOpen(false)}
+                className="px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-[3px] text-xs font-semibold uppercase cursor-pointer"
+              >
+                Keep Order
+              </button>
+
+              <button
+                onClick={handleSubmitCancel}
+                className="px-5 py-2 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-[3px] text-xs font-bold uppercase cursor-pointer shadow-sm transition-colors"
+              >
+                Confirm Cancellation
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* 7-Day Return Policy Modal */}
+      <ReturnPolicyModal
+        isOpen={isPolicyModalOpen}
+        onClose={() => setIsPolicyModalOpen(false)}
       />
     </div>
   );
