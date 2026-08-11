@@ -58,10 +58,6 @@ export const CartProvider = ({ children }) => {
   const closeCart = () => setIsCartOpen(false);
 
 
-  // Sync guest cart to backend upon login
-  const syncLocalCartToBackend = async (localItems) => {
-    if (isAdmin) return;
-
   // Fetch cart items from backend for logged in user
   const fetchCartFromBackend = useCallback(async () => {
     const token = localStorage.getItem('token');
@@ -153,6 +149,11 @@ export const CartProvider = ({ children }) => {
   }, [user, syncLocalCartToBackend, fetchCartFromBackend]);
 
   const addToCart = (product, qty = 1) => {
+    if (isAdmin) {
+      toast.info("Add to Cart is disabled for Admin / Super Admin accounts.");
+      return;
+    }
+
     const quantityToAdd = typeof qty === 'number' && qty > 0 ? qty : 1;
     const productId = product.id || product._id;
     const productName = product.name;
@@ -168,13 +169,6 @@ export const CartProvider = ({ children }) => {
       quantity: quantityToAdd,
       stock: product.stock,
     };
-
-
-  const addToCart = (product) => {
-    if (isAdmin) {
-      toast.info("Add to Cart is disabled for Admin / Super Admin accounts.");
-      return;
-    }
 
 
     setCartItems((prevItems) => {
@@ -274,11 +268,8 @@ export const CartProvider = ({ children }) => {
   };
 
 
-  const cartTotalCount = isAdmin ? 0 : cartItems.reduce((total, item) => total + item.quantity, 0);
-  const cartSubtotal = isAdmin ? 0 : cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-
-  const cartTotalCount = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
-  const cartSubtotal = cartItems.reduce((total, item) => total + (item.price || 0) * (item.quantity || 1), 0);
+  const cartTotalCount = isAdmin ? 0 : cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
+  const cartSubtotal = isAdmin ? 0 : cartItems.reduce((total, item) => total + (item.price || 0) * (item.quantity || 1), 0);
 
 
   return (
