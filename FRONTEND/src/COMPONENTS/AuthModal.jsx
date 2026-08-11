@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { FiX } from "react-icons/fi";
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
 import axiosInstance from "../api/axiosInstance";
 import { setUser, closeAuthModal } from "../redux/auth/authSlice";
@@ -21,6 +22,9 @@ function AuthModal() {
   // Form Fields
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
@@ -43,6 +47,10 @@ function AuthModal() {
 
   const handleToggleMode = () => {
     setIsLogin(!isLogin);
+    setPassword("");
+    setConfirmPassword("");
+    setShowPassword(false);
+    setShowConfirmPassword(false);
     setErrors({});
   };
 
@@ -78,6 +86,15 @@ function AuthModal() {
         newErrors.phone = "Mobile number is required";
       } else if (!/^[0-9]{10}$/.test(phone.trim())) {
         newErrors.phone = "Mobile number must be exactly 10 digits";
+      }
+
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>\-_=+\[\]\\/';]).{8,}$/;
+      if (!passwordRegex.test(password)) {
+        newErrors.password = "Password does not meet complexity requirements";
+      }
+
+      if (password !== confirmPassword) {
+        newErrors.confirmPassword = "Passwords do not match";
       }
     }
 
@@ -117,6 +134,7 @@ function AuthModal() {
       // Clear form inputs
       setEmail("");
       setPassword("");
+      setConfirmPassword("");
       setFirstName("");
       setLastName("");
       setPhone("");
@@ -245,21 +263,103 @@ function AuthModal() {
 
             <div className="auth-input-group">
               <label>Password</label>
-              <input
-                type="password"
-                className="checkout-input"
-                style={{ borderRadius: "0px" }}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  if (errors.password) setErrors((prev) => ({ ...prev, password: "" }));
-                }}
-              />
+              <div style={{ position: "relative", width: "100%" }}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  className="checkout-input"
+                  style={{ borderRadius: "0px", width: "100%", paddingRight: "40px" }}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (errors.password) setErrors((prev) => ({ ...prev, password: "" }));
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    background: "none",
+                    border: "none",
+                    color: "#6b7280",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center"
+                  }}
+                >
+                  {showPassword ? <IoEyeOffOutline size={16} /> : <IoEyeOutline size={16} />}
+                </button>
+              </div>
               {errors.password && (
                 <span className="text-[10px] text-red-600 mt-0.5">{errors.password}</span>
               )}
+
+              {!isLogin && (
+                <div className="mt-1.5 p-2 bg-gray-50 border border-gray-200 rounded-none text-[11px]">
+                  <p className="font-semibold text-gray-700 mb-1">Password Requirements:</p>
+                  <div className="space-y-0.5">
+                    {[
+                      { label: "At least 8 characters", met: password.length >= 8 },
+                      { label: "1 uppercase letter (A-Z)", met: /[A-Z]/.test(password) },
+                      { label: "1 lowercase letter (a-z)", met: /[a-z]/.test(password) },
+                      { label: "1 number (0-9)", met: /[0-9]/.test(password) },
+                      { label: "1 special character (!@#$%^&*)", met: /[!@#$%^&*(),.?":{}|<>\-_=+\[\]\\/';]/.test(password) }
+                    ].map((req, idx) => (
+                      <div key={idx} className={`flex items-center gap-1.5 text-[10.5px] transition-colors duration-200 ${req.met ? 'text-emerald-700 font-medium' : 'text-gray-500'}`}>
+                        <span className={`inline-flex items-center justify-center w-3.5 h-3.5 text-[9px] font-bold rounded-full ${req.met ? 'bg-emerald-600 text-white' : 'bg-gray-200 text-gray-500'}`}>
+                          {req.met ? '✓' : '✕'}
+                        </span>
+                        <span>{req.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
+
+            {!isLogin && (
+              <div className="auth-input-group">
+                <label>Confirm Password</label>
+                <div style={{ position: "relative", width: "100%" }}>
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    className="checkout-input"
+                    style={{ borderRadius: "0px", width: "100%", paddingRight: "40px" }}
+                    placeholder="••••••••"
+                    value={confirmPassword}
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value);
+                      if (errors.confirmPassword) setErrors((prev) => ({ ...prev, confirmPassword: "" }));
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    style={{
+                      position: "absolute",
+                      right: "10px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      background: "none",
+                      border: "none",
+                      color: "#6b7280",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center"
+                    }}
+                  >
+                    {showConfirmPassword ? <IoEyeOffOutline size={16} /> : <IoEyeOutline size={16} />}
+                  </button>
+                </div>
+                {errors.confirmPassword && (
+                  <span className="text-[10px] text-red-600 mt-0.5">{errors.confirmPassword}</span>
+                )}
+              </div>
+            )}
 
             <button type="submit" className="auth-submit-btn" style={{ borderRadius: "0px" }} disabled={loading}>
               {loading ? "PLEASE WAIT..." : isLogin ? "SIGN IN" : "REGISTER"}
