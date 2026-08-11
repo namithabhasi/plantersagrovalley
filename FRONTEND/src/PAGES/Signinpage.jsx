@@ -413,10 +413,26 @@ function Signinpage() {
               {showPassword ? <IoEyeOffOutline size={16} /> : <IoEyeOutline size={16} />}
             </button>
           </div>
-          {isRegister && isPasswordFocused && (
-            <p className="text-[9.5px] text-red-600 font-medium leading-normal mt-0.5">
-              Password must be min 8 characters, with at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 symbol.
-            </p>
+          {isRegister && (
+            <div className="mt-1.5 p-2 bg-gray-50 border border-gray-200 rounded-none text-[11px]">
+              <p className="font-semibold text-gray-700 mb-1">Password Requirements:</p>
+              <div className="space-y-0.5">
+                {[
+                  { label: "At least 8 characters", met: formData.password.length >= 8 },
+                  { label: "1 uppercase letter (A-Z)", met: /[A-Z]/.test(formData.password) },
+                  { label: "1 lowercase letter (a-z)", met: /[a-z]/.test(formData.password) },
+                  { label: "1 number (0-9)", met: /[0-9]/.test(formData.password) },
+                  { label: "1 special character (!@#$%^&*)", met: /[!@#$%^&*(),.?":{}|<>\-_=+\[\]\\/';]/.test(formData.password) }
+                ].map((req, idx) => (
+                  <div key={idx} className={`flex items-center gap-1.5 text-[10.5px] transition-colors duration-200 ${req.met ? 'text-emerald-700 font-medium' : 'text-gray-500'}`}>
+                    <span className={`inline-flex items-center justify-center w-3.5 h-3.5 text-[9px] font-bold rounded-full ${req.met ? 'bg-emerald-600 text-white' : 'bg-gray-200 text-gray-500'}`}>
+                      {req.met ? '✓' : '✕'}
+                    </span>
+                    <span>{req.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
           {errors.password && (
             <span className="text-[10px] text-red-600 mt-0.5">{errors.password}</span>
