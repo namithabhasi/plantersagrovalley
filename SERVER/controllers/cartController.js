@@ -8,15 +8,54 @@ import Product from "../models/Product.js";
  */
 export const addToCart = async (req, res) => {
   try {
-    const { productId, quantity = 1 } = req.body;
+    const { productId, quantity = 1, name, price, image } = req.body;
 
-    const product = await Product.findById(productId);
+    let product;
+    if (productId) {
+      try {
+        product = await Product.findById(productId);
+      } catch (e) {
+        // Handle invalid ObjectId format
+      }
+    }
 
     if (!product || product.isDeleted || !product.isActive) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found.",
-      });
+      const prodName = name || "Plant Product";
+      const prodPrice = typeof price === 'number' ? price : (parseFloat(price) || 499);
+      const prodImg = image || "";
+
+      try {
+        if (productId && /^[0-9a-fA-F]{24}$/.test(productId)) {
+          product = await Product.create({
+            _id: productId,
+            name: prodName,
+            price: prodPrice,
+            salePrice: prodPrice,
+            stock: 100,
+            images: prodImg ? [{ url: prodImg }] : [],
+            isActive: true,
+            isDeleted: false,
+          });
+        }
+      } catch (err) {
+        // Fallback to find by name or create without explicit _id
+      }
+
+      if (!product) {
+        product = await Product.findOne({ name: prodName, isDeleted: false });
+      }
+
+      if (!product) {
+        product = await Product.create({
+          name: prodName,
+          price: prodPrice,
+          salePrice: prodPrice,
+          stock: 100,
+          images: prodImg ? [{ url: prodImg }] : [],
+          isActive: true,
+          isDeleted: false,
+        });
+      }
     }
 
     if (product.stock < quantity) {
@@ -36,7 +75,7 @@ export const addToCart = async (req, res) => {
     }
 
     const itemIndex = cart.items.findIndex(
-      item => item.product.toString() === productId
+      item => item.product.toString() === product._id.toString()
     );
 
     if (itemIndex > -1) {

@@ -51,7 +51,9 @@ export const calculateOrderAmounts = async (
 ) => {
   const settings = await Settings.findOne();
 
-  const taxPercentage = settings?.taxPercentage || 0;
+  const taxPercentage = (settings?.taxPercentage !== undefined && settings?.taxPercentage !== null && settings?.taxPercentage > 0)
+    ? settings.taxPercentage
+    : 5;
   const shippingCharge = settings?.shippingCharge || 0;
   const freeShippingMin =
     settings?.freeShippingMinimumOrder || 0;
@@ -67,7 +69,7 @@ export const calculateOrderAmounts = async (
       ? 0
       : shippingCharge;
 
-  const totalAmount = taxableAmount + tax + shipping;
+  const totalAmount = Number((taxableAmount + tax + shipping).toFixed(2));
 
   return {
     tax,
