@@ -22,7 +22,7 @@ const loadRazorpayScript = () => {
 };
 
 function Payment() {
-  const { cartItems, cartSubtotal, clearCart, openCart, syncLocalCartToBackend } = useCart();
+  const { cartItems, cartSubtotal, clearCart, openCart } = useCart();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -296,8 +296,6 @@ function Payment() {
           price: item.price,
           quantity: item.quantity
         }));
-      } else {
-        await syncLocalCartToBackend(cartItems);
       }
 
       // 3. Create order on backend

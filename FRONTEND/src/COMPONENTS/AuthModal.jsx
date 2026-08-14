@@ -14,7 +14,7 @@ function AuthModal() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthModalOpen, authModalTab } = useSelector((state) => state.auth);
-  const { cartItems, syncLocalCartToBackend } = useCart();
+  const { cartItems } = useCart();
 
   const [isLogin, setIsLogin] = useState(authModalTab === "login");
   const [loading, setLoading] = useState(false);
@@ -110,44 +110,64 @@ function AuthModal() {
     try {
       setLoading(true);
 
-      const endpoint = isLogin ? "/auth/login" : "/auth/register";
-      const payload = isLogin
-        ? { email: email.trim(), password }
-        : { firstName: firstName.trim(), lastName: lastName.trim(), email: email.trim(), password, phone: phone.trim() };
+      if (!isLogin) {
+        // --- REGISTRATION FLOW ---
+        const payload = {
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          email: email.trim(),
+          password,
+          phone: phone.trim(),
+        };
 
-      const { data } = await axiosInstance.post(endpoint, payload);
+        const { data } = await axiosInstance.post("/auth/register", payload);
 
-      if (!data.success) {
-        toast.error(data.message || "Authentication failed.");
-        return;
-      }
+        if (!data.success) {
+          toast.error(data.message || "Registration failed.");
+          return;
+        }
 
-      // Save user to Redux state & localStorage
-      dispatch(setUser({ user: data.user, token: data.token }));
+        toast.success("Registration successful! Please sign in with your credentials.");
 
-      // Synchronize local cart to database
-      await syncLocalCartToBackend(cartItems);
+        // Clear password & registration fields, and switch to SIGN IN tab
+        setPassword("");
+        setConfirmPassword("");
+        setFirstName("");
+        setLastName("");
+        setPhone("");
+        setErrors({});
+        setIsLogin(true);
+      } else {
+        // --- LOGIN FLOW ---
+        const payload = { email: email.trim(), password };
+        const { data } = await axiosInstance.post("/auth/login", payload);
 
-      const userName = data.user?.firstName || data.user?.name || data.user?.email?.split('@')[0] || 'User';
-      toast.success(`Welcome ${userName}!`);
-      
-      // Clear form inputs
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
-      setFirstName("");
-      setLastName("");
-      setPhone("");
-      setErrors({});
+        if (!data.success) {
+          toast.error(data.message || "Authentication failed.");
+          return;
+        }
 
-      // Close modal
-      handleClose();
+        // Save user to Redux state & localStorage
+        dispatch(setUser({ user: data.user, token: data.token }));
 
-      // Check for pending redirect
-      const pendingRedirect = sessionStorage.getItem("postLoginRedirect");
-      if (pendingRedirect) {
+        const userName = data.user?.firstName || data.user?.name || data.user?.email?.split('@')[0] || 'User';
+        toast.success(`Welcome ${userName}!`);
+        
+        // Clear form inputs
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+        setFirstName("");
+        setLastName("");
+        setPhone("");
+        setErrors({});
+
+        // Close modal
+        handleClose();
+
+        // Navigate to home page on successful login
         sessionStorage.removeItem("postLoginRedirect");
-        navigate(pendingRedirect);
+        navigate("/");
       }
     } catch (error) {
       const serverMsg = error.response?.data?.message || "Something went wrong. Please try again.";

@@ -508,14 +508,12 @@ function Productdetails() {
     const productImage = product.images && product.images[0] ? product.images[0].url : haworthiaImg;
     const displayPrice = product.salePrice && product.salePrice < product.price ? product.salePrice : (product.price || 0);
 
-    for (let i = 0; i < quantity; i++) {
-      addToCart({
-        id: product._id,
-        name: product.name,
-        price: displayPrice,
-        image: productImage
-      });
-    }
+    addToCart({
+      id: product._id,
+      name: product.name,
+      price: displayPrice,
+      image: productImage
+    }, quantity);
 
     if (openCart) openCart();
   };
@@ -542,14 +540,12 @@ function Productdetails() {
       const productImage = product.images && product.images[0] ? product.images[0].url : haworthiaImg;
       const displayPrice = product.salePrice && product.salePrice < product.price ? product.salePrice : (product.price || 0);
 
-      for (let i = 0; i < quantity; i++) {
-        addToCart({
-          id: product._id,
-          name: product.name,
-          price: displayPrice,
-          image: productImage
-        });
-      }
+      addToCart({
+        id: product._id,
+        name: product.name,
+        price: displayPrice,
+        image: productImage
+      }, quantity);
     }
 
     if (openCart) {

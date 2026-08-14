@@ -89,18 +89,44 @@ export const CartProvider = ({ children }) => {
               stock: p.stock,
             };
           });
-        setCartItems(formatted);
+        setCartItems((prevItems) => {
+          if (!formatted || formatted.length === 0) return prevItems;
+          const mergedMap = new Map();
+          prevItems.forEach(item => {
+            const key = (item.id || item._id || item.name).toString();
+            mergedMap.set(key, item);
+          });
+          formatted.forEach(item => {
+            const key = (item.id || item._id || item.name).toString();
+            mergedMap.set(key, item);
+          });
+          const result = Array.from(mergedMap.values());
+          localStorage.setItem('user_cart', JSON.stringify(result));
+          return result;
+        });
       }
     } catch (error) {
       console.error("Failed to fetch cart from backend:", error);
     }
   }, []);
 
-  // Sync guest cart to backend upon login without wiping existing DB cart
-  const syncLocalCartToBackend = useCallback(async (localItems) => {
+  // Sync guest cart to backend upon login without compounding DB items
+  const syncLocalCartToBackend = useCallback(async () => {
     try {
-      if (localItems && localItems.length > 0) {
-        for (const item of localItems) {
+      const guestCartRaw = localStorage.getItem('guest_cart');
+      localStorage.removeItem('guest_cart'); // Clear immediately to prevent duplicate execution
+
+      let guestCart = [];
+      if (guestCartRaw) {
+        try {
+          guestCart = JSON.parse(guestCartRaw);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      if (guestCart && guestCart.length > 0) {
+        for (const item of guestCart) {
           const prodId = getMongoIdFromMockId(item.id || item._id);
           if (prodId) {
             await axiosInstance.post('/cart', {
@@ -109,7 +135,6 @@ export const CartProvider = ({ children }) => {
             });
           }
         }
-        localStorage.removeItem('guest_cart');
       }
     } catch (error) {
       console.error("Failed to sync cart to backend:", error);
@@ -122,15 +147,8 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     if (user && (user.role === 'customer' || !user.role)) {
       const guestCartRaw = localStorage.getItem('guest_cart');
-      let guestCart = [];
-      try {
-        if (guestCartRaw) guestCart = JSON.parse(guestCartRaw);
-      } catch (e) {
-        console.error(e);
-      }
-
-      if (guestCart && guestCart.length > 0) {
-        syncLocalCartToBackend(guestCart);
+      if (guestCartRaw) {
+        syncLocalCartToBackend();
       } else {
         fetchCartFromBackend();
       }
@@ -173,7 +191,7 @@ export const CartProvider = ({ children }) => {
 
     setCartItems((prevItems) => {
       const existingIndex = prevItems.findIndex(
-        (item) => (item.id === productId || item._id === productId) && item.name === productName
+        (item) => (item.id === productId || item._id === productId) || item.name === productName
       );
       let updated;
       if (existingIndex > -1) {
@@ -186,9 +204,7 @@ export const CartProvider = ({ children }) => {
         updated = [...prevItems, newItem];
       }
 
-      if (!user) {
-        localStorage.setItem('guest_cart', JSON.stringify(updated));
-      }
+      localStorage.setItem(user ? 'user_cart' : 'guest_cart', JSON.stringify(updated));
       return updated;
     });
 
@@ -199,6 +215,9 @@ export const CartProvider = ({ children }) => {
         axiosInstance.post('/cart', {
           productId: mongoId,
           quantity: quantityToAdd,
+          name: productName,
+          price: productPrice,
+          image: productImage,
         })
         .then(() => fetchCartFromBackend())
         .catch(err => console.error("Error adding to DB cart:", err));
