@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -29,6 +30,11 @@ import {
 
 export default function ChatSupport() {
   const { user } = useSelector((state) => state.auth || {});
+
+  // Restrict access for shipping-manager
+  if (user?.role === "shipping-manager") {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const [conversations, setConversations] = useState([]);
   const [selectedConv, setSelectedConv] = useState(null);

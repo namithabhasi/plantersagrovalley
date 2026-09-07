@@ -398,7 +398,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
         )}
 
         {/* Live Chat Support */}
-        {(role === "super-admin" || role === "admin" || role === "shipping-manager") && (
+        {(role === "super-admin" || role === "admin") && (
           <ListItemButton
             component={Link}
             to="/dashboard/chat-support"

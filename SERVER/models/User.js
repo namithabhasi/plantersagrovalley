@@ -30,11 +30,12 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
 
-    phone: {
-      type: String,
-      default: "",
-      trim: true,
-    },
+   phone: {
+  type: String,
+  trim: true,
+  unique: true,
+  sparse: true,
+},
 
     profileImage: {
       type: String,
