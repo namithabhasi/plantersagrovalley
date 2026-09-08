@@ -17,6 +17,7 @@ import Home from "./PAGES/Home";
 import Dashboard from "./PAGES/admin/Dashboard";
 import SuperAdminLogin from "./PAGES/admin/SuperAdminLogin";
 import AdminLayout from "./layouts/AdminLayout";
+import ProtectedRoute from "./COMPONENTS/ProtectedRoute";
 import AllUsers from "./PAGES/admin/users/AllUsers";
 import AddUser from "./PAGES/admin/users/AddUser";
 import Categories from "./PAGES/admin/Categories";
@@ -55,6 +56,7 @@ import Verticalgarden from "./PAGES/Verticalgarden";
 import Balconygarden from "./PAGES/Balconygarden";
 import SearchPage from "./PAGES/SearchPage";
 import Forgotpassword from "./PAGES/Forgotpassword";
+import Resetpassword from "./PAGES/Resetpassword";
 import Blog from "./PAGES/Blog";
 import Productdetails from "./PAGES/Productdetails";
 import Profile from "./PAGES/Profile";
@@ -74,7 +76,8 @@ function App() {
     location.pathname === '/admin' ||
     location.pathname === '/payment' ||
     location.pathname === '/signin' ||
-    location.pathname === '/forgot-password';
+    location.pathname === '/forgot-password' ||
+    location.pathname.startsWith('/reset-password');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -89,6 +92,7 @@ function App() {
       <Routes>
         <Route path="/signin" element={<Signinpage />} />
         <Route path="/forgot-password" element={<Forgotpassword />} />
+        <Route path="/reset-password/:token" element={<Resetpassword />} />
         <Route path="/privacy-policy" element={<Privacypolicy />} />
         <Route path="/terms-conditions" element={<Terms />} />
         <Route path="/cancel-refund" element={<Cancelandrefund />} />
@@ -125,7 +129,14 @@ function App() {
         <Route path="/chat" element={<Chat />} />
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<SuperAdminLogin />} />
-        <Route path="/dashboard" element={<AdminLayout />}>
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["super-admin", "admin", "shipping-manager"]}>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<Dashboard />} />
           <Route path="users" element={<AllUsers />} />
           <Route key="super-admins" path="users/super-admins" element={<AllUsers preselectedRole="super-admin" />} />

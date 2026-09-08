@@ -19,10 +19,10 @@ import { setUser } from "../../redux/auth/authSlice";
 const SuperAdminLogin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
-console.log("Redux user:", user);
+  const allowedRoles = ["super-admin", "admin", "shipping-manager"];
+
   useEffect(() => {
-    if (user) {
+    if (user && allowedRoles.includes(user.role)) {
       navigate("/dashboard");
     }
   }, [user, navigate]);
@@ -60,8 +60,7 @@ console.log("Redux user:", user);
       }
 
       // Allow Super Admin, Admin, and Shipping Manager
-      const allowedRoles = ["super-admin", "admin", "shipping-manager"];
-      if (!allowedRoles.includes(data.user.role)) {
+      if (!allowedRoles.includes(data.user?.role)) {
         toast.error("Access denied. Unauthorized role.");
         return;
       }

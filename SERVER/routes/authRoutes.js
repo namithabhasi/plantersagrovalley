@@ -7,6 +7,12 @@ import {
   logout,
   getCurrentUser,
   updateProfile,
+  forgotPassword,
+  resetPassword,
+  sendPhoneOTP,
+  verifyPhoneOTP,
+  sendResetOTP,
+  verifyResetOTP,
 } from "../controllers/authController.js";
 
 import { authenticate } from "../middleware/authMiddleware.js";
@@ -21,6 +27,14 @@ const router = express.Router();
 router.post("/register", registerValidator, register);
 router.post("/login", loginValidator, login);
 router.post("/google", googleLogin);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password/:token", resetPassword);
+
+// OTP Routes
+router.post("/send-phone-otp", sendPhoneOTP);
+router.post("/verify-phone-otp", verifyPhoneOTP);
+router.post("/send-reset-otp", sendResetOTP);
+router.post("/verify-reset-otp", verifyResetOTP);
 
 // Protected Routes
 router.post("/logout", authenticate, logout);

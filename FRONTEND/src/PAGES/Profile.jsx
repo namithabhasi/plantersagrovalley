@@ -17,6 +17,34 @@ import OrderSummaryModal from '../COMPONENTS/OrderSummaryModal';
 import ReturnPolicyModal from '../COMPONENTS/ReturnPolicyModal';
 import './Plants.css';
 
+const COUNTRY_CODES = [
+  { code: '+91', country: 'IN', label: 'India (+91)' },
+  { code: '+1', country: 'US', label: 'United States (+1)' },
+  { code: '+44', country: 'GB', label: 'United Kingdom (+44)' },
+  { code: '+971', country: 'AE', label: 'United Arab Emirates (+971)' },
+  { code: '+966', country: 'SA', label: 'Saudi Arabia (+966)' },
+  { code: '+974', country: 'QA', label: 'Qatar (+974)' },
+  { code: '+968', country: 'OM', label: 'Oman (+968)' },
+  { code: '+965', country: 'KW', label: 'Kuwait (+965)' },
+  { code: '+973', country: 'BH', label: 'Bahrain (+973)' },
+  { code: '+65', country: 'SG', label: 'Singapore (+65)' },
+  { code: '+61', country: 'AU', label: 'Australia (+61)' },
+  { code: '+49', country: 'DE', label: 'Germany (+49)' },
+  { code: '+33', country: 'FR', label: 'France (+33)' },
+  { code: '+81', country: 'JP', label: 'Japan (+81)' },
+  { code: '+86', country: 'CN', label: 'China (+86)' },
+];
+
+const parsePhoneAndCountryCode = (phoneStr) => {
+  if (!phoneStr) return { code: '+91', number: '' };
+  const str = String(phoneStr).trim();
+  const matched = COUNTRY_CODES.find(c => str.startsWith(c.code));
+  if (matched) {
+    return { code: matched.code, number: str.slice(matched.code.length) };
+  }
+  return { code: '+91', number: str.replace(/^\+91/, '') };
+};
+
 const NAV_ITEMS = [
   { key: 'profile', label: 'My Profile', icon: FiUser },
   { key: 'orders', label: 'My Orders', icon: FiPackage },
@@ -44,12 +72,30 @@ function Profile() {
   const [active, setActive] = useState('profile');
   const [isEditing, setIsEditing] = useState(false);
   const [showStatsDropdown, setShowStatsDropdown] = useState(false);
+  const [profileCountryCode, setProfileCountryCode] = useState('+91');
+
+  const openEditModal = () => {
+    const { code, number } = parsePhoneAndCountryCode(currentUser.phone);
+    setProfileCountryCode(code);
+    setFormData({
+      firstName: currentUser.firstName || '',
+      lastName: currentUser.lastName || '',
+      phone: number,
+      address: currentUser.address || '',
+      apartment: currentUser.apartment || '',
+      city: currentUser.city || 'Ernakulam',
+      state: currentUser.state || 'Kerala',
+      pincode: currentUser.pincode || '',
+      country: currentUser.country || 'India',
+    });
+    setIsEditing(true);
+  };
 
   // Auto-open Edit Profile / Address Modal if navigated from Payment page with ?editAddress=true
   useEffect(() => {
     if (location.search.includes('editAddress=true') || location.search.includes('edit=true')) {
       setActive('profile');
-      setIsEditing(true);
+      openEditModal();
     }
   }, [location.search]);
 
@@ -316,10 +362,25 @@ function Profile() {
     e.preventDefault();
     setLoading(true);
     try {
+      const cleanPhoneDigits = formData.phone.trim().replace(/\D/g, '');
+      const fullPhone = cleanPhoneDigits ? `${profileCountryCode}${cleanPhoneDigits}` : '';
+
+      if (!formData.firstName.trim() || !formData.lastName.trim()) {
+        toast.error("First Name and Last Name are required.");
+        setLoading(false);
+        return;
+      }
+
+      if (!cleanPhoneDigits || cleanPhoneDigits.length < 7) {
+        toast.error("Please enter a valid mobile phone number.");
+        setLoading(false);
+        return;
+      }
+
       const payload = {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        phone: formData.phone,
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        phone: fullPhone,
         address: formData.address,
         apartment: formData.apartment,
         city: formData.city,
@@ -328,18 +389,15 @@ function Profile() {
         country: formData.country || 'India',
       };
 
+      const { data } = await axios.put('/auth/profile', payload);
+
       let updatedUser = {
         ...currentUser,
         ...payload,
       };
 
-      try {
-        const { data } = await axios.put('/auth/profile', payload);
-        if (data?.success && data?.user) {
-          updatedUser = data.user;
-        }
-      } catch (apiErr) {
-        console.warn("Backend profile update API error, fallback to local state:", apiErr);
+      if (data?.success && data?.user) {
+        updatedUser = data.user;
       }
 
       setCurrentUser(updatedUser);
@@ -352,7 +410,9 @@ function Profile() {
         navigate('/payment');
       }
     } catch (error) {
-      toast.error("Failed to update profile details.");
+      console.error("Profile update error:", error);
+      const errorMsg = error.response?.data?.message || error.message || "Failed to update profile details.";
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -1345,20 +1405,7 @@ function Profile() {
               {/* Edit Profile button */}
               <button
                 type="button"
-                onClick={() => {
-                  setFormData({
-                    firstName: currentUser.firstName || 'NAMITHA',
-                    lastName: currentUser.lastName || 'BHASI',
-                    phone: currentUser.phone || '8304004975',
-                    address: currentUser.address || 'northparavur ernakulam kerala india',
-                    apartment: currentUser.apartment || '',
-                    city: currentUser.city || 'Ernakulam',
-                    state: currentUser.state || 'Kerala',
-                    pincode: currentUser.pincode || '683594',
-                    country: currentUser.country || 'India',
-                  });
-                  setIsEditing(true);
-                }}
+                onClick={openEditModal}
                 className="inline-flex items-center gap-1.5 text-xs text-[#06492D] hover:text-[#0b633e] font-semibold bg-transparent border-none p-0 cursor-pointer transition-colors whitespace-nowrap"
               >
                 <FiEdit2 size={13} />
@@ -1473,26 +1520,30 @@ function Profile() {
                   </select>
                 </div>
 
-                {/* First Name & Last Name (NON-EDITABLE) */}
+                {/* First Name & Last Name */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <label style={{ fontSize: '11px', fontWeight: '600', color: '#06492D', textTransform: 'uppercase' }}>First Name</label>
                     <input
                       type="text"
                       name="firstName"
                       value={formData.firstName}
-                      disabled
-                      readOnly
-                      style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--color-border, #e2e8f0)', fontSize: 'var(--font-size-md, 1rem)', color: 'var(--color-charcoal-medium, #374151)', backgroundColor: '#f8fafc', outline: 'none', boxSizing: 'border-box', cursor: 'not-allowed', textTransform: 'uppercase' }}
+                      onChange={handleChange}
+                      placeholder="First Name"
+                      style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--color-border, #cbd5e1)', fontSize: 'var(--font-size-md, 1rem)', color: 'var(--color-charcoal-dark, #1F2937)', backgroundColor: '#ffffff', outline: 'none', boxSizing: 'border-box' }}
+                      required
                     />
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <label style={{ fontSize: '11px', fontWeight: '600', color: '#06492D', textTransform: 'uppercase' }}>Last Name</label>
                     <input
                       type="text"
                       name="lastName"
                       value={formData.lastName}
-                      disabled
-                      readOnly
-                      style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--color-border, #e2e8f0)', fontSize: 'var(--font-size-md, 1rem)', color: 'var(--color-charcoal-medium, #374151)', backgroundColor: '#f8fafc', outline: 'none', boxSizing: 'border-box', cursor: 'not-allowed', textTransform: 'uppercase' }}
+                      onChange={handleChange}
+                      placeholder="Last Name"
+                      style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--color-border, #cbd5e1)', fontSize: 'var(--font-size-md, 1rem)', color: 'var(--color-charcoal-dark, #1F2937)', backgroundColor: '#ffffff', outline: 'none', boxSizing: 'border-box' }}
+                      required
                     />
                   </div>
                 </div>
@@ -1565,23 +1616,32 @@ function Profile() {
                   </div>
                 </div>
 
-                {/* Mobile Number (NON-EDITABLE) */}
-                <div style={{ display: 'grid', gridTemplateColumns: '95px 1fr', gap: '10px' }}>
-                  <select
-                    disabled
-                    readOnly
-                    style={{ width: '100%', padding: '10px 8px', border: '1px solid var(--color-border, #e2e8f0)', fontSize: 'var(--font-size-md, 1rem)', color: 'var(--color-charcoal-medium, #374151)', backgroundColor: '#f8fafc', outline: 'none', cursor: 'not-allowed' }}
-                  >
-                    <option>+91 (IN)</option>
-                  </select>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    disabled
-                    readOnly
-                    style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--color-border, #e2e8f0)', fontSize: 'var(--font-size-md, 1rem)', color: 'var(--color-charcoal-medium, #374151)', backgroundColor: '#f8fafc', outline: 'none', boxSizing: 'border-box', cursor: 'not-allowed' }}
-                  />
+                {/* Mobile Number & Country Code */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: '600', color: '#06492D', textTransform: 'uppercase' }}>Mobile Phone Number</label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '110px 1fr', gap: '10px' }}>
+                    <select
+                      value={profileCountryCode}
+                      onChange={(e) => setProfileCountryCode(e.target.value)}
+                      style={{ width: '100%', padding: '10px 8px', border: '1px solid var(--color-border, #cbd5e1)', fontSize: 'var(--font-size-md, 1rem)', color: 'var(--color-charcoal-dark, #1F2937)', backgroundColor: '#ffffff', outline: 'none', cursor: 'pointer' }}
+                    >
+                      {COUNTRY_CODES.map((c) => (
+                        <option key={c.code} value={c.code}>
+                          {c.code} ({c.country})
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      maxLength={15}
+                      placeholder="Mobile Phone Number"
+                      style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--color-border, #cbd5e1)', fontSize: 'var(--font-size-md, 1rem)', color: 'var(--color-charcoal-dark, #1F2937)', backgroundColor: '#ffffff', outline: 'none', boxSizing: 'border-box' }}
+                      required
+                    />
+                  </div>
                 </div>
 
                 {/* Modal Footer Buttons */}
