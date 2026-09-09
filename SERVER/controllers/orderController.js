@@ -706,7 +706,7 @@ export const getAllOrders = async (req, res) => {
  */
 export const updateOrderStatus = async (req, res) => {
   try {
-    const { orderStatus, paymentStatus, trackingNumber, estimatedDelivery } = req.body;
+    const { orderStatus, paymentStatus, trackingNumber, courierPartner, estimatedDelivery } = req.body;
 
     const order = await Order.findById(req.params.id);
 
@@ -755,11 +755,36 @@ export const updateOrderStatus = async (req, res) => {
         }
       }
 
-      // If transition to Delivered
+      // Sync transit status with main order status
       if (orderStatus === "Delivered") {
         order.deliveredAt = new Date();
-        order.paymentStatus = "Paid"; // Delievered implies paid (especially COD)
+        order.paymentStatus = "Paid"; // Delivered implies paid (especially COD)
         order.paidAt = order.paidAt || new Date();
+        order.transitStatus = "Delivered";
+      } else if (orderStatus === "Shipped") {
+        order.dispatchedAt = order.dispatchedAt || new Date();
+        order.transitStatus = "In Transit";
+      } else if (orderStatus === "Out for Delivery") {
+        order.transitStatus = "Out for Delivery";
+      } else if (orderStatus === "Return Requested") {
+        order.transitStatus = "RTO Initiated";
+      } else if (orderStatus === "Return Approved") {
+        order.transitStatus = "RTO In Transit";
+      } else if (orderStatus === "Returned") {
+        order.transitStatus = "RTO Delivered";
+      }
+
+      // If transition to Returned
+      if (orderStatus === "Returned") {
+        // Restore inventory stock for returned products
+        for (const item of order.items) {
+          await Product.findByIdAndUpdate(item.product, {
+            $inc: { stock: item.quantity },
+          });
+        }
+        if (order.paymentStatus === "Paid") {
+          order.paymentStatus = "Refunded";
+        }
       }
 
       order.orderStatus = orderStatus;
@@ -784,6 +809,13 @@ export const updateOrderStatus = async (req, res) => {
 
     if (trackingNumber !== undefined) {
       order.trackingNumber = trackingNumber;
+      if (trackingNumber) {
+        order.awbTrackingNumber = trackingNumber;
+      }
+    }
+
+    if (courierPartner !== undefined) {
+      order.courierPartner = courierPartner;
     }
 
     if (estimatedDelivery !== undefined) {

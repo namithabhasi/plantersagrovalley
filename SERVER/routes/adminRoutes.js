@@ -1,6 +1,7 @@
 import express from "express";
-import { getUsers, createUser, updateUser, deleteUser, globalSearch } from "../controllers/adminController.js";
-import { authenticate, authorizeRoles } from "../middleware/authMiddleware.js";
+import { getUsers, createUser, updateUser, deleteUser, purgeUser, getAuditLogs, globalSearch } from "../controllers/adminController.js";
+import { authenticate } from "../middleware/authMiddleware.js";
+import { authorizeRoles, checkPermission } from "../middleware/roleMiddleware.js";
 
 const router = express.Router();
 
@@ -19,49 +20,73 @@ router.get(
 /**
  * @route   GET /api/admin/users
  * @desc    Get all users with search, filters, and pagination
- * @access  Private (Super Admin, Admin)
+ * @access  Private (Requires userManagement permission)
  */
 router.get(
   "/users",
   authenticate,
-  authorizeRoles("super-admin"),
+  checkPermission("userManagement"),
   getUsers
 );
 
 /**
  * @route   POST /api/admin/users
  * @desc    Create a new user
- * @access  Private (Super Admin)
+ * @access  Private (Requires userManagement permission)
  */
 router.post(
   "/users",
   authenticate,
-  authorizeRoles("super-admin"),
+  checkPermission("userManagement"),
   createUser
 );
 
 /**
  * @route   PUT /api/admin/users/:id
  * @desc    Update a user
- * @access  Private (Super Admin)
+ * @access  Private (Requires userManagement permission)
  */
 router.put(
   "/users/:id",
   authenticate,
-  authorizeRoles("super-admin"),
+  checkPermission("userManagement"),
   updateUser
 );
 
 /**
  * @route   DELETE /api/admin/users/:id
  * @desc    Delete a user
- * @access  Private (Super Admin)
+ * @access  Private (Requires userManagement permission)
  */
 router.delete(
   "/users/:id",
   authenticate,
-  authorizeRoles("super-admin"),
+  checkPermission("userManagement"),
   deleteUser
+);
+
+/**
+ * @route   DELETE /api/admin/users/:id/purge
+ * @desc    Hard purge a user from database (Super Admin Only)
+ * @access  Private (Super Admin Only)
+ */
+router.delete(
+  "/users/:id/purge",
+  authenticate,
+  authorizeRoles("super-admin"),
+  purgeUser
+);
+
+/**
+ * @route   GET /api/admin/audit-logs
+ * @desc    Get system audit logs
+ * @access  Private (Requires systemGovernance permission)
+ */
+router.get(
+  "/audit-logs",
+  authenticate,
+  checkPermission("systemGovernance"),
+  getAuditLogs
 );
 
 export default router;

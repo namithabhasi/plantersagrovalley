@@ -40,7 +40,7 @@ import {
 import axios from "../../../api/axiosInstance";
 import { toast } from "react-toastify";
 
-const UserTable = ({ users, loading, onRefresh }) => {
+const UserTable = ({ users, loading, onRefresh, rolesList }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
@@ -135,9 +135,13 @@ const UserTable = ({ users, loading, onRefresh }) => {
     return !Object.values(newErrors).some((err) => err !== "");
   };
 
-  const formatRole = (role) => {
-    if (!role) return "";
-    return role
+  const formatRole = (roleCode) => {
+    if (!roleCode) return "";
+    if (rolesList && rolesList.length > 0) {
+      const found = rolesList.find((r) => r.code === roleCode);
+      if (found) return found.name;
+    }
+    return roleCode
       .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
@@ -561,10 +565,20 @@ const UserTable = ({ users, loading, onRefresh }) => {
                   disabled={loadingAction}
                   sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
                 >
-                  <MenuItem value="customer">Customer</MenuItem>
-                  <MenuItem value="shipping-manager">Shipping Manager</MenuItem>
-                  <MenuItem value="admin">Admin</MenuItem>
-                  <MenuItem value="super-admin">Super Admin</MenuItem>
+                  {rolesList && rolesList.length > 0 ? (
+                    rolesList.map((r) => (
+                      <MenuItem key={r.code} value={r.code}>
+                        {r.name}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <>
+                      <MenuItem value="customer">Customer</MenuItem>
+                      <MenuItem value="shipping-manager">Shipping Manager</MenuItem>
+                      <MenuItem value="admin">Admin</MenuItem>
+                      <MenuItem value="super-admin">Super Admin</MenuItem>
+                    </>
+                  )}
                 </TextField>
               </Grid>
 

@@ -11,8 +11,11 @@ import UserTable from "../../../COMPONENTS/admin/users/UserTable";
 import UserPagination from "../../../COMPONENTS/admin/users/UserPagination";
 import axios from "../../../api/axiosInstance";
 
+import { useParams } from "react-router-dom";
+
 const AllUsers = ({ preselectedRole }) => {
   const dispatch = useDispatch();
+  const { roleCode } = useParams();
   const globalSearchQuery = useSelector((state) => state.search.query);
 
   const [users, setUsers] = useState([]);
@@ -20,11 +23,31 @@ const AllUsers = ({ preselectedRole }) => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
-  const [role, setRole] = useState(preselectedRole || "all");
+  const [role, setRole] = useState(preselectedRole || roleCode || "all");
   const [status, setStatus] = useState("all");
+  const [rolesList, setRolesList] = useState([]);
+
+  const getRoles = async () => {
+    try {
+      const { data } = await axios.get("/roles");
+      if (data.success) {
+        setRolesList(data.roles);
+      }
+    } catch (err) {
+      console.log("Failed to fetch roles", err);
+    }
+  };
 
   const getTitle = () => {
-    switch (preselectedRole) {
+    const activeRole = preselectedRole || roleCode;
+    if (!activeRole) return "All Users";
+
+    if (rolesList && rolesList.length > 0) {
+      const found = rolesList.find(r => r.code === activeRole);
+      if (found) return `${found.name}s`;
+    }
+
+    switch (activeRole) {
       case "super-admin":
         return "Super Admins";
       case "admin":
@@ -67,12 +90,13 @@ const AllUsers = ({ preselectedRole }) => {
   }, [globalSearchQuery]);
 
   useEffect(() => {
-    setRole(preselectedRole || "all");
+    setRole(preselectedRole || roleCode || "all");
     setPage(1);
     setStatus("all");
-  }, [preselectedRole]);
+  }, [preselectedRole, roleCode]);
 
   useEffect(() => {
+    getRoles();
     getUsers();
   }, [page, search, role, status]);
 
@@ -126,6 +150,7 @@ const AllUsers = ({ preselectedRole }) => {
             status={status}
             setStatus={handleStatusChange}
             hideRoleFilter={!!preselectedRole}
+            rolesList={rolesList}
           />
         </Stack>
 
@@ -161,7 +186,7 @@ const AllUsers = ({ preselectedRole }) => {
         users={users}
         loading={loading}
         onRefresh={getUsers}
-        
+        rolesList={rolesList}
       />
       </Box>
 

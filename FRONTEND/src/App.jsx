@@ -31,6 +31,10 @@ import AdminBlogs from "./PAGES/admin/Blogs";
 import AdminServices from "./PAGES/admin/Services";
 import Subscribers from "./PAGES/admin/Subscribers";
 import ChatSupport from "./PAGES/admin/ChatSupport";
+import ShippingDashboard from "./PAGES/admin/ShippingDashboard";
+import RoleManagement from "./PAGES/admin/RoleManagement";
+import AuditLogs from "./PAGES/admin/AuditLogs";
+import RecycleBin from "./PAGES/admin/RecycleBin";
 
 
 import Payment from "./PAGES/Payment";
@@ -132,7 +136,7 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute allowedRoles={["super-admin", "admin", "shipping-manager"]}>
+            <ProtectedRoute requireAdmin={true}>
               <AdminLayout />
             </ProtectedRoute>
           }
@@ -143,6 +147,7 @@ function App() {
           <Route key="admins" path="users/admins" element={<AllUsers preselectedRole="admin" />} />
           <Route key="shipping-managers" path="users/shipping-managers" element={<AllUsers preselectedRole="shipping-manager" />} />
           <Route key="customers" path="users/customers" element={<AllUsers preselectedRole="customer" />} />
+          <Route path="users/role/:roleCode" element={<AllUsers />} />
           <Route path="users/add" element={<AddUser />} />
           <Route path="categories" element={<Categories />} />
           <Route path="products" element={<Products />} />
@@ -155,6 +160,10 @@ function App() {
           <Route path="services" element={<AdminServices />} />
           <Route path="subscribers" element={<Subscribers />} />
           <Route path="chat-support" element={<ChatSupport />} />
+          <Route path="shipping" element={<ShippingDashboard />} />
+          <Route path="roles" element={<RoleManagement />} />
+          <Route path="audit-logs" element={<AuditLogs />} />
+          <Route path="recycle-bin" element={<RecycleBin />} />
         </Route>
 
       </Routes>
