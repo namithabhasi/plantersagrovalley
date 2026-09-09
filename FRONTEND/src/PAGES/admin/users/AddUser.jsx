@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -42,6 +42,22 @@ const AddUser = () => {
 
   const [countryCode, setCountryCode] = useState("+91");
   const [loading, setLoading] = useState(false);
+  const [rolesList, setRolesList] = useState([]);
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const { data } = await axios.get("/roles");
+        if (data.success) {
+          setRolesList(data.roles);
+        }
+      } catch (error) {
+        console.error("Failed to fetch roles:", error);
+      }
+    };
+    fetchRoles();
+  }, []);
+
   const [errors, setErrors] = useState({
     firstName: "",
     lastName: "",
@@ -370,9 +386,20 @@ const AddUser = () => {
                   }}
                   sx={{ "& .MuiOutlinedInput-root": { borderRadius: "var(--radius-lg)" } }}
                 >
-                  <MenuItem value="shipping-manager">Shipping Manager</MenuItem>
-                  <MenuItem value="admin">Admin</MenuItem>
-                  <MenuItem value="super-admin">Super Admin</MenuItem>
+                  {rolesList.length > 0 ? (
+                    rolesList.map((r) => (
+                      <MenuItem key={r.code} value={r.code}>
+                        {r.name}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <>
+                      <MenuItem value="shipping-manager">Shipping Manager</MenuItem>
+                      <MenuItem value="admin">Admin</MenuItem>
+                      <MenuItem value="super-admin">Super Admin</MenuItem>
+                      <MenuItem value="customer">Customer</MenuItem>
+                    </>
+                  )}
                 </TextField>
               </Grid>
 

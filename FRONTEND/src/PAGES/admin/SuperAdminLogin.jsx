@@ -19,6 +19,7 @@ import { setUser } from "../../redux/auth/authSlice";
 const SuperAdminLogin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
   const allowedRoles = ["super-admin", "admin", "shipping-manager"];
 
   useEffect(() => {

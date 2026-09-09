@@ -175,17 +175,6 @@ const Dashboard = () => {
     );
   }
 
-  if (role === "admin") {
-    return (
-      <AdminDashboard
-        statistics={statistics}
-        monthlySales={monthlySales}
-        recentOrders={recentOrders}
-        topSellingProducts={topSellingProducts}
-      />
-    );
-  }
-
   if (role === "shipping-manager") {
     return (
       <ShippingDashboard
@@ -195,12 +184,14 @@ const Dashboard = () => {
     );
   }
 
+  // Generic dashboard for any other staff/admin roles (admin and custom roles)
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography color="error">
-        Access Denied. You do not have permission to view the dashboard.
-      </Typography>
-    </Box>
+    <AdminDashboard
+      statistics={statistics}
+      monthlySales={monthlySales}
+      recentOrders={recentOrders}
+      topSellingProducts={topSellingProducts}
+    />
   );
 };
 

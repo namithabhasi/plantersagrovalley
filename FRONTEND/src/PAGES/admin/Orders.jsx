@@ -93,6 +93,7 @@ const Orders = () => {
   const [updateData, setUpdateData] = useState({
     orderStatus: "",
     paymentStatus: "",
+    courierPartner: "Delhivery",
     trackingNumber: "",
     estimatedDelivery: "",
   });
@@ -179,7 +180,8 @@ const Orders = () => {
     setUpdateData({
       orderStatus: order.orderStatus || "",
       paymentStatus: order.paymentStatus || "",
-      trackingNumber: order.trackingNumber || "",
+      courierPartner: order.courierPartner || "Delhivery",
+      trackingNumber: order.trackingNumber || order.awbTrackingNumber || "",
       estimatedDelivery: order.estimatedDelivery 
         ? new Date(order.estimatedDelivery).toISOString().substring(0, 10) 
         : "",
@@ -218,12 +220,17 @@ const Orders = () => {
         localStorage.setItem('planters_return_requests', JSON.stringify(localReturnReqs));
       } catch (err) {}
 
-      const { data } = await axios.put(`/orders/${selectedOrder._id}/status`, {
+      const payload = {
         orderStatus: updateData.orderStatus,
         paymentStatus: updateData.paymentStatus,
+        courierPartner: updateData.courierPartner,
         trackingNumber: updateData.trackingNumber,
-        estimatedDelivery: updateData.estimatedDelivery || null,
-      });
+      };
+      if (updateData.estimatedDelivery && updateData.estimatedDelivery.trim() !== "") {
+        payload.estimatedDelivery = updateData.estimatedDelivery;
+      }
+
+      const { data } = await axios.put(`/orders/${selectedOrder._id}/status`, payload);
 
       if (data.success) {
         toast.success("Order status updated successfully");
@@ -361,6 +368,7 @@ const Orders = () => {
               <MenuItem value="Processing">Processing</MenuItem>
               <MenuItem value="Packed">Packed</MenuItem>
               <MenuItem value="Shipped">Shipped</MenuItem>
+              <MenuItem value="Out for Delivery">Out for Delivery</MenuItem>
               <MenuItem value="Delivered">Delivered</MenuItem>
               <MenuItem value="Cancelled">Cancelled</MenuItem>
               <MenuItem value="Return Requested">Return Requested</MenuItem>
@@ -761,12 +769,16 @@ const Orders = () => {
                       </Stack>
                     </Paper>
 
-                    {selectedOrder.trackingNumber && (
+                    {(selectedOrder.trackingNumber || selectedOrder.awbTrackingNumber || selectedOrder.courierPartner) && (
                       <Box sx={{ p: 2, bgcolor: "#f1f8e9", borderRadius: "var(--radius-lg)", display: "flex", gap: 1.5, alignItems: "center", border: "1px solid #dcedc8" }}>
                         <ShippingIcon color="success" />
                         <Box>
-                          <Typography variant="caption" color="success.main" fontWeight={700}>TRACKING CODE</Typography>
-                          <Typography variant="body2" fontWeight={700}>{selectedOrder.trackingNumber}</Typography>
+                          <Typography variant="caption" color="success.main" fontWeight={700}>
+                            SHIPPING & TRACKING {selectedOrder.courierPartner ? `(${selectedOrder.courierPartner})` : ""}
+                          </Typography>
+                          <Typography variant="body2" fontWeight={700}>
+                            {selectedOrder.trackingNumber || selectedOrder.awbTrackingNumber || "No tracking code assigned"}
+                          </Typography>
                         </Box>
                       </Box>
                     )}
@@ -901,6 +913,7 @@ const Orders = () => {
                   <MenuItem value="Processing">Processing</MenuItem>
                   <MenuItem value="Packed">Packed</MenuItem>
                   <MenuItem value="Shipped">Shipped</MenuItem>
+                  <MenuItem value="Out for Delivery">Out for Delivery</MenuItem>
                   <MenuItem value="Delivered">Delivered</MenuItem>
                   <MenuItem value="Cancelled">Cancelled</MenuItem>
                   <MenuItem value="Return Requested">Return Requested</MenuItem>
@@ -922,6 +935,26 @@ const Orders = () => {
                   <MenuItem value="Paid">Paid</MenuItem>
                   <MenuItem value="Failed">Failed</MenuItem>
                   <MenuItem value="Refunded" disabled={role === "shipping-manager"}>Refunded</MenuItem>
+                </Select>
+              </FormControl>
+
+              <FormControl fullWidth>
+                <InputLabel id="update-courier-partner-label">Courier Partner</InputLabel>
+                <Select
+                  labelId="update-courier-partner-label"
+                  value={updateData.courierPartner}
+                  label="Courier Partner"
+                  onChange={handleInputChange}
+                  name="courierPartner"
+                >
+                  <MenuItem value="Delhivery">Delhivery</MenuItem>
+                  <MenuItem value="BlueDart">BlueDart</MenuItem>
+                  <MenuItem value="DTDC">DTDC</MenuItem>
+                  <MenuItem value="FedEx">FedEx</MenuItem>
+                  <MenuItem value="India Post">India Post</MenuItem>
+                  <MenuItem value="Ekart">Ekart</MenuItem>
+                  <MenuItem value="Shadowfax">Shadowfax</MenuItem>
+                  <MenuItem value="Other">Other</MenuItem>
                 </Select>
               </FormControl>
 

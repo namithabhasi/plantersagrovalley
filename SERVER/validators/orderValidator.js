@@ -87,7 +87,7 @@ export const updateOrderStatusValidator = [
 
   body("orderStatus")
     .optional()
-    .isIn(["Pending", "Confirmed", "Processing", "Packed", "Shipped", "Delivered", "Cancelled", "Return Requested", "Returned", "Return Approved"])
+    .isIn(["Pending", "Confirmed", "Processing", "Packed", "Shipped", "Out for Delivery", "Delivered", "Cancelled", "Return Requested", "Returned", "Return Approved"])
     .withMessage("Invalid order status."),
 
   body("paymentStatus")
@@ -96,17 +96,20 @@ export const updateOrderStatusValidator = [
     .withMessage("Invalid payment status."),
 
   body("trackingNumber")
-    
     .optional()
-.trim()
-.isLength({ max: 100 })
-.withMessage("Tracking number is too long."),
+    .trim()
+    .isLength({ max: 100 })
+    .withMessage("Tracking number is too long."),
+
+  body("courierPartner")
+    .optional()
+    .trim(),
    
 
   body("estimatedDelivery")
-    .optional()
-.isISO8601()
-.toDate()
+    .optional({ checkFalsy: true, nullable: true })
+    .isISO8601()
+    .toDate()
     .withMessage("Estimated delivery must be a valid date."),
 ];
 export const orderIdValidator = [

@@ -122,6 +122,7 @@ const orderSchema = new mongoose.Schema(
         "Processing",
         "Packed",
         "Shipped",
+        "Out for Delivery",
         "Delivered",
         "Cancelled",
         "Return Requested",
@@ -242,6 +243,47 @@ statusHistory: [
       type: Boolean,
       default: false,
     },
+
+    // Logistics & Shipping Manager extensions
+    courierPartner: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    awbTrackingNumber: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    dispatchedAt: {
+      type: Date,
+      default: null,
+    },
+
+    shippingNotes: {
+      type: String,
+      default: "",
+    },
+
+    shippingManifestId: {
+      type: String,
+      default: "",
+    },
+
+    transitStatus: {
+      type: String,
+      default: "Pending Dispatch",
+    },
+
+    internalNotes: [
+      {
+        note: { type: String, required: true },
+        addedBy: { type: String, required: true },
+        createdAt: { type: Date, default: Date.now },
+      },
+    ],
   },
   {
     timestamps: true,

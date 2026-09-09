@@ -107,6 +107,7 @@ export const getProducts = async (req, res) => {
 
     let filter = {
       isDeleted: false,
+      isDelisted: { $ne: true },
     };
 
     if (req.query.activeOnly === "true") {
@@ -508,3 +509,144 @@ export const getBestSellingProducts = async (req, res) => {
     });
   }
 };
+
+/**
+ * @desc    Delist Product (Move to Recycle Bin)
+ * @route   PUT /api/products/:id/delist
+ * @access  Private (Admin, Super Admin)
+ */
+export const delistProduct = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found." });
+    }
+
+    product.isDelisted = true;
+    product.isActive = false;
+    await product.save();
+
+    return res.status(200).json({
+      success: true,
+      message: `Product '${product.name}' delisted and moved to Recycle Bin.`,
+      product,
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * @desc    Restore Product from Recycle Bin
+ * @route   PUT /api/products/:id/restore
+ * @access  Private (Admin, Super Admin)
+ */
+export const restoreProduct = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found." });
+    }
+
+    product.isDeleted = false;
+    product.isDelisted = false;
+    product.isActive = true;
+    await product.save();
+
+    return res.status(200).json({
+      success: true,
+      message: `Product '${product.name}' restored successfully.`,
+      product,
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * @desc    Get Recycle Bin Products (Delisted or Soft Deleted)
+ * @route   GET /api/products/recycle-bin
+ * @access  Private (Admin, Super Admin)
+ */
+export const getRecycleBinProducts = async (req, res) => {
+  try {
+    const products = await Product.find({
+      $or: [{ isDeleted: true }, { isDelisted: true }],
+    }).populate("category", "name").sort({ updatedAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      products,
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * @desc    Bulk Import Products from JSON list
+ * @route   POST /api/products/bulk-import
+ * @access  Private (Admin, Super Admin)
+ */
+export const bulkImportProducts = async (req, res) => {
+  try {
+    const { products } = req.body;
+
+    if (!Array.isArray(products) || products.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Request body must contain an array of 'products'.",
+      });
+    }
+
+    const created = [];
+    const skipped = [];
+
+    for (const item of products) {
+      if (!item.name || !item.sku || !item.price || !item.category) {
+        skipped.push({ sku: item.sku || "UNKNOWN", reason: "Missing required fields (name, sku, price, category)" });
+        continue;
+      }
+
+      const slug = item.slug || item.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+      const existing = await Product.findOne({
+        $or: [{ sku: item.sku }, { slug }],
+      });
+
+      if (existing) {
+        skipped.push({ sku: item.sku, reason: "Product with duplicate SKU or slug already exists" });
+        continue;
+      }
+
+      const newProduct = new Product({
+        name: item.name,
+        slug,
+        sku: item.sku.toUpperCase(),
+        description: item.description || item.name,
+        shortDescription: item.shortDescription || "",
+        category: item.category,
+        price: item.price,
+        salePrice: item.salePrice || 0,
+        stock: item.stock || 0,
+        brand: item.brand || "",
+        tags: item.tags || [],
+        images: item.images || [{ url: "https://via.placeholder.com/300", public_id: "placeholder" }],
+        isActive: item.isActive !== undefined ? item.isActive : true,
+      });
+
+      await newProduct.save();
+      created.push(newProduct);
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `Bulk import finished: ${created.length} created, ${skipped.length} skipped.`,
+      importedCount: created.length,
+      skippedCount: skipped.length,
+      skipped,
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
