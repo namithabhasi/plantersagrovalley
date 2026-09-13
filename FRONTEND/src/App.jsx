@@ -63,6 +63,8 @@ import MyOrders from "./PAGES/MyOrders";
 import Return from "./PAGES/Return";
 import Orderdetails from "./PAGES/Orderdetails";
 import Chat from "./PAGES/Chat";
+import Customplant from "./PAGES/Customplant";
+import Suggestions from "./PAGES/Suggestions";
 
 import Review from "./PAGES/Review";
 
@@ -122,6 +124,10 @@ function App() {
         <Route path="/return" element={<Return />} />
         <Route path="/order-details" element={<Orderdetails />} />
         <Route path="/order-details/:id" element={<Orderdetails />} />
+        <Route path="/custom-plant" element={<Customplant />} />
+        <Route path="/customplant" element={<Customplant />} />
+        <Route path="/custom-garden-kit" element={<Customplant />} />
+        <Route path="/suggestions" element={<Suggestions />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<SuperAdminLogin />} />

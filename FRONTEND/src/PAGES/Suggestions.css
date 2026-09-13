@@ -1,0 +1,330 @@
+/* ==========================================================================
+   Suggestions Page - Responsive Styles & Mobile Enhancements
+   ========================================================================== */
+
+/* 1. Hero Container & Layout */
+.suggestions-hero-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0px;
+  align-items: stretch;
+}
+
+.suggestions-hero-left {
+  flex: 1 1 340px;
+  min-width: 280px;
+  background-color: #06492D;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 36px 30px;
+  border-radius: 0px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.suggestions-weather-card {
+  flex: 1 1 540px;
+  min-width: 320px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 18px 22px;
+  border-radius: 0px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 2. Weather 5-Metrics Grid */
+.suggestions-weather-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.suggestions-metric-box {
+  background-color: #f8faf7;
+  border: 1px solid #e2e8f0;
+  padding: 8px 4px;
+  text-align: center;
+  border-radius: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+/* Delivery sub-card badge wrap */
+.suggestions-delivery-badges {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #bbf7d0;
+  font-size: 11px;
+  font-weight: 600;
+  color: #166534;
+}
+
+/* 3. Section 3: Not Sure What to Grow (NO BORDER, Robot GIF higher & taller) */
+.suggestions-notsure-box {
+  background-color: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 36px 24px;
+  border-radius: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.suggestions-notsure-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1 1 450px;
+}
+
+.suggestions-robot-gif {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-top: -12px;
+  transform: translateY(-6px);
+  filter: drop-shadow(0 4px 12px rgba(6, 73, 45, 0.18));
+  transition: transform 0.3s ease;
+}
+
+.suggestions-robot-gif:hover {
+  transform: translateY(-10px) scale(1.05);
+}
+
+/* 4. Section 4: Experience Center & Map */
+.suggestions-experience-container {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.suggestions-experience-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.suggestions-map-col {
+  flex: 1 1 450px;
+  min-width: 300px;
+  min-height: 340px;
+  background-color: #f1f5f9;
+}
+
+.suggestions-experience-details {
+  flex: 1 1 450px;
+  min-width: 300px;
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #ffffff;
+}
+
+/* ==========================================================================
+   MEDIA QUERIES - MOBILE & TABLET RESPONSIVENESS
+   ========================================================================== */
+
+@media (max-width: 991px) {
+  .suggestions-hero-container {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .suggestions-hero-left {
+    min-width: 100%;
+    padding: 28px 20px;
+  }
+  
+  .suggestions-weather-card {
+    min-width: 100%;
+    padding: 16px 16px;
+  }
+
+  .suggestions-notsure-content {
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Section 1 Weather Grid on Tablets/Mobile */
+  .suggestions-weather-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .suggestions-delivery-badges {
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-start;
+  }
+
+  /* Section 2 Recommended Products: STRICTLY 2 CARDS IN A ROW FOR MOBILE */
+  .suggestions-page-wrapper .product-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .suggestions-page-wrapper .product-card-image {
+    height: 165px !important;
+  }
+
+  .suggestions-page-wrapper .product-title {
+    font-size: 13px !important;
+    line-height: 1.25 !important;
+    height: 32px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .suggestions-page-wrapper .product-card-content {
+    padding: 10px !important;
+  }
+
+  .suggestions-page-wrapper .product-card-wrapper .btn {
+    padding: 9px 8px !important;
+    font-size: 11px !important;
+    letter-spacing: 0.3px !important;
+  }
+
+  /* Section 2 Header View All Link */
+  .suggestions-header-wrapper {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .suggestions-sec2-header-link {
+    margin-top: 4px !important;
+    display: inline-block;
+  }
+
+  /* Section 3 Not Sure Box (Borderless & Robot GIF higher) */
+  .suggestions-notsure-box {
+    padding: 24px 12px !important;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    gap: 20px;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .suggestions-notsure-content {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    gap: 14px;
+    flex: 1 1 100%;
+  }
+
+  .suggestions-robot-gif {
+    width: 88px;
+    height: 88px;
+    margin-top: -6px;
+    transform: translateY(-4px);
+  }
+
+  .suggestions-notsure-btn-wrap {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .suggestions-notsure-btn-wrap .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Section 4 Experience Center & Map */
+  .suggestions-experience-row {
+    flex-direction: column;
+  }
+
+  .suggestions-map-col {
+    min-width: 100%;
+    min-height: 250px;
+    height: 250px;
+  }
+
+  .suggestions-map-col iframe {
+    min-height: 250px !important;
+    height: 250px !important;
+  }
+
+  .suggestions-experience-details {
+    min-width: 100%;
+    padding: 24px 18px;
+  }
+
+  .suggestions-experience-details h3 {
+    font-size: 20px !important;
+  }
+
+  .suggestions-experience-details .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .suggestions-weather-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .suggestions-hero-left h1 {
+    font-size: 24px !important;
+  }
+
+  .suggestions-hero-left p {
+    font-size: 13px !important;
+  }
+
+  .suggestions-page-wrapper .product-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .suggestions-page-wrapper .product-card-image {
+    height: 145px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .suggestions-weather-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .suggestions-page-wrapper .product-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 6px !important;
+  }
+
+  .suggestions-page-wrapper .product-card-image {
+    height: 130px !important;
+  }
+
+  .suggestions-page-wrapper .product-title {
+    font-size: 12px !important;
+  }
+}

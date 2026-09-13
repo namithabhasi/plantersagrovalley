@@ -14,7 +14,7 @@ function AuthModal() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthModalOpen, authModalTab } = useSelector((state) => state.auth);
-  const { cartItems } = useCart();
+  const { cartItems, addToCart } = useCart();
 
   const [isLogin, setIsLogin] = useState(authModalTab === "login");
   const [loading, setLoading] = useState(false);
@@ -165,9 +165,33 @@ function AuthModal() {
         // Close modal
         handleClose();
 
-        // Navigate to home page on successful login
-        sessionStorage.removeItem("postLoginRedirect");
-        navigate("/");
+        const pendingAddToCartRaw = sessionStorage.getItem('pendingAddToCart');
+        if (pendingAddToCartRaw) {
+          try {
+            const pendingItem = JSON.parse(pendingAddToCartRaw);
+            addToCart(pendingItem, 1);
+            toast.success(`🛒 ${pendingItem.name || 'Product'} added to your cart!`);
+          } catch (err) {
+            console.error('Failed to parse pending add to cart item:', err);
+          }
+          sessionStorage.removeItem('pendingAddToCart');
+        }
+
+        const pendingKitRaw = sessionStorage.getItem('pendingCustomKit');
+        if (pendingKitRaw) {
+          try {
+            const pendingKit = JSON.parse(pendingKitRaw);
+            addToCart(pendingKit);
+            toast.success('🌿 Your Custom Garden Kit has been added to your cart!');
+          } catch (err) {
+            console.error('Failed to parse pending kit:', err);
+          }
+          sessionStorage.removeItem('pendingCustomKit');
+        }
+
+        const redirectPath = sessionStorage.getItem('postLoginRedirect') || '/cart';
+        sessionStorage.removeItem('postLoginRedirect');
+        navigate(redirectPath);
       }
     } catch (error) {
       const serverMsg = error.response?.data?.message || "Something went wrong. Please try again.";

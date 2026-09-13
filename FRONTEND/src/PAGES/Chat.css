@@ -1,8 +1,8 @@
 /* ==========================================================================
-   CUSTOMER SUPPORT CHAT WIDGET - PREMIUM SHOPIFY / INTERCOM DESIGN
+   CUSTOMER SUPPORT CHAT WIDGET - BEAUTIFUL INTERCOM / SHOPIFY DESIGN (PICTURE 1)
    ========================================================================== */
 
-/* 1. Floating Trigger Button (Positioned cleanly above Scroll to Top) */
+/* 1. Floating Trigger Button */
 .chat-trigger-btn {
   position: fixed;
   bottom: 88px;
@@ -10,16 +10,16 @@
   z-index: 9997;
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: #06492D;
+  gap: 10px;
+  background: #5B46F6;
   color: #ffffff;
-  font-family: var(--font-family-base), system-ui, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 14px;
   font-weight: 600;
-  padding: 10px 20px;
-  border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18), 0 2px 6px rgba(0, 0, 0, 0.08);
+  padding: 8px 20px 8px 14px;
+  border-radius: 30px !important;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 24px rgba(91, 70, 246, 0.35);
   cursor: pointer;
   outline: none;
   user-select: none;
@@ -28,13 +28,13 @@
 }
 
 .chat-trigger-btn:hover {
-  background: #04331f;
+  background: #4836dc;
   transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 10px 30px rgba(91, 70, 246, 0.5);
 }
 
 .chat-trigger-btn:active {
-  transform: scale(0.95);
+  transform: scale(0.96);
 }
 
 .chat-trigger-icon {
@@ -43,7 +43,7 @@
   flex-shrink: 0;
 }
 
-/* 2. Main Chat Window Container */
+/* 2. Main Chat Window Container (Picture 1 Rounded Corners & Shadow) */
 .chat-window-modal {
   position: fixed;
   bottom: 24px;
@@ -54,7 +54,7 @@
   max-width: calc(100vw - 32px);
   max-height: calc(100vh - 100px);
   background: #ffffff;
-  border-radius: 24px;
+  border-radius: 24px !important;
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.18), 0 10px 20px -5px rgba(0, 0, 0, 0.08);
   display: flex;
@@ -96,24 +96,24 @@
 }
 
 .chat-signin-btn {
-  background: #5B46F6;
-  color: #ffffff;
+  background: #5B46F6 !important;
+  color: #ffffff !important;
   font-size: 12px;
   font-weight: 600;
   padding: 7px 18px;
-  border-radius: 9999px;
+  border-radius: 20px !important;
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(91, 70, 246, 0.25);
+  box-shadow: 0 2px 8px rgba(91, 70, 246, 0.3);
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
 .chat-signin-btn:hover {
-  background: #4836dc;
-  box-shadow: 0 4px 12px rgba(91, 70, 246, 0.35);
+  background: #4836dc !important;
+  box-shadow: 0 4px 12px rgba(91, 70, 246, 0.4);
 }
 
 .chat-user-badge {
@@ -122,7 +122,7 @@
   font-size: 12px;
   font-weight: 600;
   padding: 6px 14px;
-  border-radius: 9999px;
+  border-radius: 20px !important;
   border: 1px solid #c7d2fe;
   display: flex;
   align-items: center;
@@ -138,7 +138,7 @@
 .chat-control-icon-btn {
   width: 32px;
   height: 32px;
-  border-radius: 50%;
+  border-radius: 50% !important;
   border: none;
   background: transparent;
   color: #64748b;
@@ -174,20 +174,20 @@
 
 .chat-body-scrollable::-webkit-scrollbar-thumb {
   background: #cbd5e1;
-  border-radius: 10px;
+  border-radius: 3px;
 }
 
 .chat-body-scrollable::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
 
-/* 5. Greeting Banner Section */
+/* 5. Greeting Banner Section with Picture 1 Gradient */
 .chat-greeting-banner {
   position: relative;
-  padding: 20px 18px 22px 18px;
+  padding: 16px 16px 18px 16px;
   background: linear-gradient(180deg, #f5f3ff 0%, #ffffff 100%);
   border-bottom: 1px solid #f1f5f9;
-  min-height: 145px;
+  min-height: 140px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -201,11 +201,12 @@
 }
 
 .chat-greeting-title {
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 800;
   color: #0f172a;
   margin: 0;
   line-height: 1.2;
+  letter-spacing: -0.2px;
 }
 
 .chat-greeting-desc {
@@ -219,66 +220,70 @@
 .chat-privacy-disclaimer {
   font-size: 10px;
   color: #94a3b8;
-  margin-top: 10px;
+  margin-top: 8px;
   line-height: 1.4;
 }
 
 .chat-privacy-disclaimer a {
-  color: #64748b;
+  color: #5B46F6;
   text-decoration: underline;
 }
 
 .chat-privacy-disclaimer a:hover {
-  color: #4338ca;
+  color: #4836dc;
 }
 
-/* Graphic Cards on Right */
+/* Tilted Plant Cards Graphic (Picture 1 exact graphic) */
 .chat-cards-graphic {
   position: absolute;
-  right: 12px;
-  top: 15px;
-  width: 120px;
-  height: 120px;
+  right: 8px;
+  top: 8px;
+  bottom: 8px;
+  width: 38%;
   pointer-events: none;
   user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .chat-plant-card {
   position: absolute;
   background: #ffffff;
-  border-radius: 12px;
-  padding: 5px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-radius: 12px !important;
+  padding: 6px;
   border: 1px solid #f1f5f9;
-  transition: transform 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .chat-plant-card.card-back {
-  top: 12px;
-  right: 4px;
+  top: 16px;
+  right: 6px;
   width: 82px;
   transform: rotate(-8deg);
   opacity: 0.9;
+  z-index: 1;
 }
 
 .chat-plant-card.card-front {
-  top: 2px;
-  right: 24px;
+  top: 4px;
+  right: 22px;
   width: 88px;
   transform: rotate(6deg);
   z-index: 2;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 .chat-card-img {
   width: 100%;
-  height: 60px;
+  height: 54px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 8px !important;
 }
 
 .chat-card-label {
   font-size: 8px;
-  font-weight: 600;
+  font-weight: 500;
   color: #334155;
   margin-top: 4px;
   white-space: nowrap;
@@ -288,19 +293,45 @@
 
 /* 6. Content Section (Chips & Messages) */
 .chat-content-container {
-  padding: 16px 16px 28px 16px;
+  padding: 16px 16px 24px 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
 .chat-chips-section-title {
-  font-size: 10px;
+  font-size: 10.5px;
   font-weight: 700;
   color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+}
+
+.chat-msg-block {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+.chat-msg-meta {
+  margin-top: 2px;
+  margin-bottom: 4px;
+}
+
+.chat-chips-below-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+.chat-chips-below-container .chat-question-chip-btn {
+  font-size: 11.5px;
+  padding: 6px 13px;
 }
 
 .chat-chips-grid {
@@ -315,8 +346,8 @@
   color: #334155;
   font-size: 12px;
   font-weight: 500;
-  padding: 7px 14px;
-  border-radius: 9999px;
+  padding: 7px 16px;
+  border-radius: 20px !important;
   cursor: pointer;
   text-align: left;
   transition: all 0.2s ease;
@@ -325,11 +356,11 @@
 }
 
 .chat-question-chip-btn:hover {
-  background: #f0fdf4;
-  border-color: #16a34a;
-  color: #15803d;
+  background: #eef2ff;
+  border-color: #818cf8;
+  color: #4338ca;
   transform: translateY(-1px);
-  box-shadow: 0 3px 8px rgba(22, 163, 74, 0.12);
+  box-shadow: 0 3px 8px rgba(91, 70, 246, 0.15);
 }
 
 .chat-question-chip-btn:active {
@@ -339,16 +370,17 @@
 /* 7. Message Bubbles */
 .chat-msg-row {
   display: flex;
-  flex-direction: column;
-  margin-bottom: 4px;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 6px;
 }
 
 .chat-msg-row.user-msg-row {
-  align-items: flex-end;
+  justify-content: flex-end;
 }
 
 .chat-msg-row.bot-msg-row {
-  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .chat-msg-bubble {
@@ -374,17 +406,17 @@
 }
 
 .user-msg-bubble {
-  background: #5B46F6;
-  color: #ffffff;
-  border-radius: 18px 18px 2px 18px;
+  background: #5B46F6 !important;
+  color: #ffffff !important;
+  border-radius: 18px 18px 4px 18px !important;
   font-weight: 500;
-  box-shadow: 0 2px 8px rgba(91, 70, 246, 0.2);
+  box-shadow: 0 2px 8px rgba(91, 70, 246, 0.25);
 }
 
 .bot-msg-bubble {
-  background: #f8fafc;
-  color: #1e293b;
-  border-radius: 18px 18px 18px 2px;
+  background: #f1f5f9 !important;
+  color: #1e293b !important;
+  border-radius: 18px 18px 18px 4px !important;
   font-weight: 400;
   border: 1px solid #e2e8f0;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
@@ -402,10 +434,10 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  background: #f8fafc;
+  background: #f1f5f9;
   border: 1px solid #e2e8f0;
   padding: 10px 16px;
-  border-radius: 18px 18px 18px 2px;
+  border-radius: 18px !important;
   width: fit-content;
 }
 
@@ -425,7 +457,7 @@
   40% { transform: scale(1.0); }
 }
 
-/* 8. Bottom Input Bar */
+/* 8. Bottom Input Bar (Picture 1 Rounded Pill Container) */
 .chat-input-footer {
   padding: 12px 16px;
   background: #ffffff;
@@ -434,26 +466,14 @@
   z-index: 10;
 }
 
-.chat-attachment-preview {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #eef2ff;
-  color: #4338ca;
-  font-size: 11px;
-  padding: 6px 12px;
-  border-radius: 8px;
-  margin-bottom: 8px;
-}
-
 .chat-input-pill-container {
   display: flex;
   align-items: center;
   gap: 8px;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-  border-radius: 9999px;
-  padding: 4px 6px 4px 12px;
+  border-radius: 24px !important;
+  padding: 5px 6px 5px 14px;
   transition: all 0.2s ease;
 }
 
@@ -470,7 +490,7 @@
   background: transparent;
   cursor: pointer;
   padding: 4px;
-  border-radius: 50%;
+  border-radius: 50% !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -496,10 +516,10 @@
 }
 
 .chat-send-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #5B46F6;
+  width: 34px;
+  height: 34px;
+  border-radius: 50% !important;
+  background: #a5b4fc !important;
   color: #ffffff;
   border: none;
   display: flex;
@@ -509,17 +529,137 @@
   transition: all 0.2s ease;
   font-size: 14px;
   flex-shrink: 0;
-  box-shadow: 0 2px 6px rgba(91, 70, 246, 0.25);
+}
+
+.chat-input-pill-container:focus-within .chat-send-btn,
+.chat-text-input:not(:placeholder-shown) ~ .chat-send-btn {
+  background: #5B46F6 !important;
+  box-shadow: 0 2px 8px rgba(91, 70, 246, 0.35);
 }
 
 .chat-send-btn:hover:not(:disabled) {
-  background: #4836dc;
+  background: #4836dc !important;
   transform: scale(1.05);
 }
 
 .chat-send-btn:disabled {
-  opacity: 0.35;
+  opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* Recommended Garden Kit Card inside Chat Bubble */
+.chat-rec-card {
+  margin-top: 10px;
+  background: #ffffff;
+  border: 1px solid #bbf7d0;
+  border-radius: 14px !important;
+  padding: 12px 14px;
+  box-shadow: 0 4px 16px rgba(6, 73, 45, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.chat-rec-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0fdf4;
+}
+
+.chat-rec-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #06492D;
+}
+
+.chat-rec-card-badge {
+  background: #06492D;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px !important;
+}
+
+.chat-rec-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chat-rec-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  gap: 8px;
+}
+
+.chat-rec-item-label {
+  color: #64748b;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.chat-rec-item-value {
+  color: #0f172a;
+  font-weight: 600;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 170px;
+}
+
+.chat-rec-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 2px;
+  padding-top: 8px;
+  border-top: 1px solid #f0fdf4;
+}
+
+.chat-rec-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 20px !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.chat-rec-btn.secondary {
+  background: #f0fdf4;
+  color: #06492D;
+  border: 1px solid #86efac;
+}
+
+.chat-rec-btn.secondary:hover {
+  background: #dcfce7;
+  border-color: #06492D;
+}
+
+.chat-rec-btn.primary {
+  background: linear-gradient(135deg, #06492D 0%, #16a34a 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(6, 73, 45, 0.25);
+}
+
+.chat-rec-btn.primary:hover {
+  background: linear-gradient(135deg, #04331f 0%, #15803d 100%);
+  box-shadow: 0 6px 16px rgba(6, 73, 45, 0.35);
+  transform: translateY(-1px);
 }
 
 /* Mobile Responsiveness */
@@ -527,10 +667,10 @@
   .chat-trigger-btn {
     bottom: 74px;
     right: 16px;
-    padding: 8px 16px;
+    padding: 6px 16px 6px 12px;
     font-size: 12px;
   }
-  
+
   .chat-window-modal {
     bottom: 12px;
     right: 12px;
@@ -539,6 +679,6 @@
     max-width: none;
     height: calc(100vh - 80px);
     max-height: 560px;
-    border-radius: 20px;
+    border-radius: 20px !important;
   }
 }
