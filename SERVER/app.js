@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
-import bannerRoutes from "./routes/bannerRoutes.js";
+
 import cartRoutes from "./routes/cartRoutes.js";
 import wishlistRoutes from "./routes/wishlistRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
@@ -71,8 +71,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/categories", categoryRoutes);
 
 app.use("/api/products", productRoutes);
-
-app.use("/api/banners", bannerRoutes);
 
 app.use("/api/cart", cartRoutes);
 
