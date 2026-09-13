@@ -17,6 +17,7 @@ import Home from "./PAGES/Home";
 import Dashboard from "./PAGES/admin/Dashboard";
 import SuperAdminLogin from "./PAGES/admin/SuperAdminLogin";
 import AdminLayout from "./layouts/AdminLayout";
+import ProtectedRoute from "./COMPONENTS/ProtectedRoute";
 import AllUsers from "./PAGES/admin/users/AllUsers";
 import AddUser from "./PAGES/admin/users/AddUser";
 import Categories from "./PAGES/admin/Categories";
@@ -30,6 +31,10 @@ import AdminBlogs from "./PAGES/admin/Blogs";
 import AdminServices from "./PAGES/admin/Services";
 import Subscribers from "./PAGES/admin/Subscribers";
 import ChatSupport from "./PAGES/admin/ChatSupport";
+import ShippingDashboard from "./PAGES/admin/ShippingDashboard";
+import RoleManagement from "./PAGES/admin/RoleManagement";
+import AuditLogs from "./PAGES/admin/AuditLogs";
+import RecycleBin from "./PAGES/admin/RecycleBin";
 
 
 import Payment from "./PAGES/Payment";
@@ -55,6 +60,7 @@ import Verticalgarden from "./PAGES/Verticalgarden";
 import Balconygarden from "./PAGES/Balconygarden";
 import SearchPage from "./PAGES/SearchPage";
 import Forgotpassword from "./PAGES/Forgotpassword";
+import Resetpassword from "./PAGES/Resetpassword";
 import Blog from "./PAGES/Blog";
 import Productdetails from "./PAGES/Productdetails";
 import Profile from "./PAGES/Profile";
@@ -76,7 +82,8 @@ function App() {
     location.pathname === '/admin' ||
     location.pathname === '/payment' ||
     location.pathname === '/signin' ||
-    location.pathname === '/forgot-password';
+    location.pathname === '/forgot-password' ||
+    location.pathname.startsWith('/reset-password');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -91,6 +98,7 @@ function App() {
       <Routes>
         <Route path="/signin" element={<Signinpage />} />
         <Route path="/forgot-password" element={<Forgotpassword />} />
+        <Route path="/reset-password/:token" element={<Resetpassword />} />
         <Route path="/privacy-policy" element={<Privacypolicy />} />
         <Route path="/terms-conditions" element={<Terms />} />
         <Route path="/cancel-refund" element={<Cancelandrefund />} />
@@ -131,13 +139,21 @@ function App() {
         <Route path="/chat" element={<Chat />} />
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<SuperAdminLogin />} />
-        <Route path="/dashboard" element={<AdminLayout />}>
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute requireAdmin={true}>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<Dashboard />} />
           <Route path="users" element={<AllUsers />} />
           <Route key="super-admins" path="users/super-admins" element={<AllUsers preselectedRole="super-admin" />} />
           <Route key="admins" path="users/admins" element={<AllUsers preselectedRole="admin" />} />
           <Route key="shipping-managers" path="users/shipping-managers" element={<AllUsers preselectedRole="shipping-manager" />} />
           <Route key="customers" path="users/customers" element={<AllUsers preselectedRole="customer" />} />
+          <Route path="users/role/:roleCode" element={<AllUsers />} />
           <Route path="users/add" element={<AddUser />} />
           <Route path="categories" element={<Categories />} />
           <Route path="products" element={<Products />} />
@@ -150,6 +166,10 @@ function App() {
           <Route path="services" element={<AdminServices />} />
           <Route path="subscribers" element={<Subscribers />} />
           <Route path="chat-support" element={<ChatSupport />} />
+          <Route path="shipping" element={<ShippingDashboard />} />
+          <Route path="roles" element={<RoleManagement />} />
+          <Route path="audit-logs" element={<AuditLogs />} />
+          <Route path="recycle-bin" element={<RecycleBin />} />
         </Route>
 
       </Routes>

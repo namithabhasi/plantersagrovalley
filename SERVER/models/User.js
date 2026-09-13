@@ -30,11 +30,12 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
 
-    phone: {
-      type: String,
-      default: "",
-      trim: true,
-    },
+   phone: {
+  type: String,
+  trim: true,
+  unique: true,
+  sparse: true,
+},
 
     profileImage: {
       type: String,
@@ -79,7 +80,6 @@ const userSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      enum: ["super-admin", "admin", "shipping-manager", "customer"],
       default: "customer",
     },
 
@@ -91,6 +91,14 @@ const userSchema = new mongoose.Schema(
     isVerified: {
       type: Boolean,
       default: false,
+    },
+
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
+
+    otp: {
+      code: String,
+      expiresAt: Date,
     },
   },
   {

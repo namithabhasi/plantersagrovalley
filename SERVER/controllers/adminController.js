@@ -2,6 +2,9 @@ import User from "../models/User.js";
 import Product from "../models/Product.js";
 import Order from "../models/Order.js";
 import Category from "../models/Category.js";
+import AuditLog from "../models/AuditLog.js";
+import Role from "../models/Role.js";
+import { logAudit } from "../utils/auditLogger.js";
 
 /**
  * @desc    Get all users with pagination, search, and filtering
@@ -106,12 +109,14 @@ export const createUser = async (req, res) => {
       });
     }
 
-    const allowedRoles = ["super-admin", "admin", "shipping-manager", "customer"];
-    if (role && !allowedRoles.includes(role)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid role selected.",
-      });
+    if (role) {
+      const roleExists = await Role.findOne({ code: role });
+      if (!roleExists) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid role selected.",
+        });
+      }
     }
 
     // Check if email already exists
@@ -200,8 +205,8 @@ export const updateUser = async (req, res) => {
     if (phone !== undefined) user.phone = phone;
 
     if (role !== undefined) {
-      const allowedRoles = ["super-admin", "admin", "shipping-manager", "customer"];
-      if (!allowedRoles.includes(role)) {
+      const roleExists = await Role.findOne({ code: role });
+      if (!roleExists) {
         return res.status(400).json({
           success: false,
           message: "Invalid role selected.",
@@ -360,6 +365,86 @@ export const globalSearch = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Global search failed.",
+      error: error.message,
+    });
+  }
+};
+
+/**
+ * @desc    Permanently Purge User Account (Super Admin Only)
+ * @route   DELETE /api/admin/users/:id/purge
+ * @access  Private (Super Admin Only)
+ */
+export const purgeUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User account not found.",
+      });
+    }
+
+    if (user.role === "super-admin" || user.role === "superadmin") {
+      return res.status(403).json({
+        success: false,
+        message: "Super Admin accounts cannot be hard purged.",
+      });
+    }
+
+    const email = user.email;
+    await User.findByIdAndDelete(id);
+
+    await logAudit(req, "HARD_PURGE_USER", "User Management", {
+      purgedUserId: id,
+      purgedEmail: email,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: `User ${email} permanently purged from system.`,
+    });
+  } catch (error) {
+    console.error("Purge User Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to purge user.",
+      error: error.message,
+    });
+  }
+};
+
+/**
+ * @desc    Get System Audit Logs (Super Admin Only)
+ * @route   GET /api/admin/audit-logs
+ * @access  Private (Super Admin Only)
+ */
+export const getAuditLogs = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 20;
+
+    const logs = await AuditLog.find()
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    const total = await AuditLog.countDocuments();
+
+    return res.status(200).json({
+      success: true,
+      logs,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    });
+  } catch (error) {
+    console.error("Get Audit Logs Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch audit logs.",
       error: error.message,
     });
   }

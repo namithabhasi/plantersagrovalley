@@ -34,8 +34,10 @@ import {
   Spa,
   MarkEmailRead,
   SupportAgent,
+  RestoreFromTrash,
+  History,
+  Security,
 } from "@mui/icons-material";
-
 
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -54,6 +56,8 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
   const [openCatalog, setOpenCatalog] = useState(false);
   const [logo, setLogo] = useState("");
   const [storeName, setStoreName] = useState("Planters Admin");
+  const [permissions, setPermissions] = useState(null);
+  const [allRoles, setAllRoles] = useState([]);
 
   useEffect(() => {
     const fetchLogo = async () => {
@@ -74,6 +78,63 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
 
     fetchLogo();
   }, []);
+
+  useEffect(() => {
+    const fetchRolesAndPermissions = async () => {
+      try {
+        const { data } = await axiosInstance.get("/roles");
+        if (data.success && data.roles) {
+          setAllRoles(data.roles);
+          if (role) {
+            const cleanRole = String(role).toLowerCase().trim().replace(/[-_]/g, "");
+            if (cleanRole === "superadmin") {
+              setPermissions({
+                userManagement: "ALLOW",
+                roleManagement: "ALLOW",
+                systemGovernance: "ALLOW",
+                catalogManagement: "ALLOW",
+                inventoryControl: "ALLOW",
+                orderLifecycle: "ALLOW",
+                fulfillmentShipping: "ALLOW",
+                marketingSales: "ALLOW",
+                reportsDashboard: "ALLOW",
+                crmSupport: "ALLOW",
+              });
+            } else {
+              const myRole = data.roles.find(
+                (r) =>
+                  r.code?.toLowerCase().replace(/[-_]/g, "") === cleanRole ||
+                  r.name?.toLowerCase().replace(/[-_]/g, "") === cleanRole
+              );
+              if (myRole && myRole.permissions) {
+                setPermissions(myRole.permissions);
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load roles/permissions in Sidebar", error);
+      }
+    };
+
+    fetchRolesAndPermissions();
+  }, [role, location.pathname]);
+
+  const isAllowed = (permKey) => {
+    const cleanRole = role ? String(role).toLowerCase().trim().replace(/[-_]/g, "") : "";
+    if (cleanRole === "superadmin") return true;
+    if (!permissions) return true; // Default fallback while loading
+    return permissions[permKey] === "ALLOW";
+  };
+
+  const getRoleIcon = (code) => {
+    switch (code) {
+      case "super-admin": return <AdminPanelSettings />;
+      case "admin": return <ManageAccounts />;
+      case "shipping-manager": return <LocalShipping />;
+      default: return <Person />;
+    }
+  };
 
   const handleItemClick = () => {
     if (isMobile && handleDrawerToggle) {
@@ -162,7 +223,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
 
         {/* User Management */}
 
-        {role === "super-admin" && (
+        {isAllowed("userManagement") && (
           <>
             <ListItemButton
               onClick={() => setOpenUsers(!openUsers)}
@@ -203,69 +264,48 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
                   <ListItemText primary="All Users" />
                 </ListItemButton>
 
-                <ListItemButton
-                  sx={{
-                    pl: 4,
-                    ...(location.pathname === "/dashboard/users/super-admins" ? activeStyle : {}),
-                  }}
-                  component={Link}
-                  to="/dashboard/users/super-admins"
-                  onClick={handleItemClick}
-                >
-                  <ListItemIcon>
-                    <AdminPanelSettings />
-                  </ListItemIcon>
-
-                  <ListItemText primary="Super Admins" />
-                </ListItemButton>
-
-                <ListItemButton
-                  sx={{
-                    pl: 4,
-                    ...(location.pathname === "/dashboard/users/admins" ? activeStyle : {}),
-                  }}
-                  component={Link}
-                  to="/dashboard/users/admins"
-                  onClick={handleItemClick}
-                >
-                  <ListItemIcon>
-                    <ManageAccounts />
-                  </ListItemIcon>
-
-                  <ListItemText primary="Admins" />
-                </ListItemButton>
-
-                <ListItemButton
-                  sx={{
-                    pl: 4,
-                    ...(location.pathname === "/dashboard/users/shipping-managers" ? activeStyle : {}),
-                  }}
-                  component={Link}
-                  to="/dashboard/users/shipping-managers"
-                  onClick={handleItemClick}
-                >
-                  <ListItemIcon>
-                    <LocalShipping />
-                  </ListItemIcon>
-
-                  <ListItemText primary="Shipping Managers" />
-                </ListItemButton>
-
-                <ListItemButton
-                  sx={{
-                    pl: 4,
-                    ...(location.pathname === "/dashboard/users/customers" ? activeStyle : {}),
-                  }}
-                  component={Link}
-                  to="/dashboard/users/customers"
-                  onClick={handleItemClick}
-                >
-                  <ListItemIcon>
-                    <Person />
-                  </ListItemIcon>
-
-                  <ListItemText primary="Customers" />
-                </ListItemButton>
+                {allRoles.length > 0 ? (
+                  allRoles.map((r) => (
+                    <ListItemButton
+                      key={r.code}
+                      sx={{
+                        pl: 4,
+                        ...(location.pathname === `/dashboard/users/${r.code}s` || location.pathname === `/dashboard/users/role/${r.code}` ? activeStyle : {}),
+                      }}
+                      component={Link}
+                      to={
+                        ["super-admin", "admin", "shipping-manager", "customer"].includes(r.code)
+                          ? `/dashboard/users/${r.code}s`
+                          : `/dashboard/users/role/${r.code}`
+                      }
+                      onClick={handleItemClick}
+                    >
+                      <ListItemIcon>
+                        {getRoleIcon(r.code)}
+                      </ListItemIcon>
+                      <ListItemText primary={r.name.endsWith('s') ? r.name : `${r.name}s`} />
+                    </ListItemButton>
+                  ))
+                ) : (
+                  <>
+                    <ListItemButton sx={{ pl: 4, ...(location.pathname === "/dashboard/users/super-admins" ? activeStyle : {}) }} component={Link} to="/dashboard/users/super-admins" onClick={handleItemClick}>
+                      <ListItemIcon><AdminPanelSettings /></ListItemIcon>
+                      <ListItemText primary="Super Admins" />
+                    </ListItemButton>
+                    <ListItemButton sx={{ pl: 4, ...(location.pathname === "/dashboard/users/admins" ? activeStyle : {}) }} component={Link} to="/dashboard/users/admins" onClick={handleItemClick}>
+                      <ListItemIcon><ManageAccounts /></ListItemIcon>
+                      <ListItemText primary="Admins" />
+                    </ListItemButton>
+                    <ListItemButton sx={{ pl: 4, ...(location.pathname === "/dashboard/users/shipping-managers" ? activeStyle : {}) }} component={Link} to="/dashboard/users/shipping-managers" onClick={handleItemClick}>
+                      <ListItemIcon><LocalShipping /></ListItemIcon>
+                      <ListItemText primary="Shipping Managers" />
+                    </ListItemButton>
+                    <ListItemButton sx={{ pl: 4, ...(location.pathname === "/dashboard/users/customers" ? activeStyle : {}) }} component={Link} to="/dashboard/users/customers" onClick={handleItemClick}>
+                      <ListItemIcon><Person /></ListItemIcon>
+                      <ListItemText primary="Customers" />
+                    </ListItemButton>
+                  </>
+                )}
 
               </List>
             </Collapse>
@@ -274,7 +314,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
 
         {/* Catalog */}
 
-        {(role === "super-admin" || role === "admin") && (
+        {(isAllowed("catalogManagement") || isAllowed("inventoryControl")) && (
           <>
             <ListItemButton
               onClick={() => setOpenCatalog(!openCatalog)}
@@ -299,36 +339,54 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
             >
               <List component="div" disablePadding>
 
+                {isAllowed("catalogManagement") && (
+                  <ListItemButton
+                    sx={{
+                      pl: 4,
+                      ...(location.pathname === "/dashboard/categories" ? activeStyle : {}),
+                    }}
+                    component={Link}
+                    to="/dashboard/categories"
+                    onClick={handleItemClick}
+                  >
+                    <ListItemIcon>
+                      <Category />
+                    </ListItemIcon>
+                    <ListItemText primary="Categories" />
+                  </ListItemButton>
+                )}
+
+                {isAllowed("inventoryControl") && (
+                  <ListItemButton
+                    sx={{
+                      pl: 4,
+                      ...(location.pathname === "/dashboard/products" ? activeStyle : {}),
+                    }}
+                    component={Link}
+                    to="/dashboard/products"
+                    onClick={handleItemClick}
+                  >
+                    <ListItemIcon>
+                      <Inventory2 />
+                    </ListItemIcon>
+                    <ListItemText primary="Products" />
+                  </ListItemButton>
+                )}
+
                 <ListItemButton
                   sx={{
                     pl: 4,
-                    ...(location.pathname === "/dashboard/categories" ? activeStyle : {}),
+                    ...(location.pathname === "/dashboard/recycle-bin" ? activeStyle : {}),
                   }}
                   component={Link}
-                  to="/dashboard/categories"
+                  to="/dashboard/recycle-bin"
                   onClick={handleItemClick}
                 >
                   <ListItemIcon>
-                    <Category />
+                    <RestoreFromTrash />
                   </ListItemIcon>
 
-                  <ListItemText primary="Categories" />
-                </ListItemButton>
-
-                <ListItemButton
-                  sx={{
-                    pl: 4,
-                    ...(location.pathname === "/dashboard/products" ? activeStyle : {}),
-                  }}
-                  component={Link}
-                  to="/dashboard/products"
-                  onClick={handleItemClick}
-                >
-                  <ListItemIcon>
-                    <Inventory2 />
-                  </ListItemIcon>
-
-                  <ListItemText primary="Products" />
+                  <ListItemText primary="Recycle Bin" />
                 </ListItemButton>
 
               </List>
@@ -338,26 +396,48 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
 
         {/* Orders */}
 
-        <ListItemButton
-          component={Link}
-          to="/dashboard/orders"
-          sx={
-            location.pathname === "/dashboard/orders"
-              ? activeStyle
-              : {}
-          }
-          onClick={handleItemClick}
-        >
-          <ListItemIcon>
-            <ShoppingCart />
-          </ListItemIcon>
+        {isAllowed("orderLifecycle") && (
+          <ListItemButton
+            component={Link}
+            to="/dashboard/orders"
+            sx={
+              location.pathname === "/dashboard/orders"
+                ? activeStyle
+                : {}
+            }
+            onClick={handleItemClick}
+          >
+            <ListItemIcon>
+              <ShoppingCart />
+            </ListItemIcon>
 
-          <ListItemText primary="Orders" />
-        </ListItemButton>
+            <ListItemText primary="Orders" />
+          </ListItemButton>
+        )}
+
+        {/* Logistics & Shipping */}
+        {isAllowed("fulfillmentShipping") && (
+          <ListItemButton
+            component={Link}
+            to="/dashboard/shipping"
+            sx={
+              location.pathname === "/dashboard/shipping"
+                ? activeStyle
+                : {}
+            }
+            onClick={handleItemClick}
+          >
+            <ListItemIcon>
+              <LocalShipping />
+            </ListItemIcon>
+
+            <ListItemText primary="Logistics & Shipping" />
+          </ListItemButton>
+        )}
 
         {/* Coupons */}
 
-        {(role === "super-admin" || role === "admin") && (
+        {isAllowed("marketingSales") && (
           <ListItemButton
             component={Link}
             to="/dashboard/coupons"
@@ -378,7 +458,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
 
         {/* Enquiries */}
 
-        {(role === "super-admin" || role === "admin") && (
+        {isAllowed("crmSupport") && (
           <ListItemButton
             component={Link}
             to="/dashboard/enquiries"
@@ -398,7 +478,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
         )}
 
         {/* Live Chat Support */}
-        {(role === "super-admin" || role === "admin" || role === "shipping-manager") && (
+        {isAllowed("crmSupport") && (
           <ListItemButton
             component={Link}
             to="/dashboard/chat-support"
@@ -419,7 +499,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
 
         {/* Subscribers */}
 
-        {(role === "super-admin" || role === "admin") && (
+        {isAllowed("crmSupport") && (
           <ListItemButton
             component={Link}
             to="/dashboard/subscribers"
@@ -440,7 +520,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
 
         {/* Blogs */}
 
-        {(role === "super-admin" || role === "admin") && (
+        {(isAllowed("marketingSales") || isAllowed("catalogManagement")) && (
           <ListItemButton
             component={Link}
             to="/dashboard/blogs"
@@ -459,7 +539,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
           </ListItemButton>
         )}
 
-        {(role === "super-admin" || role === "admin") && (
+        {(isAllowed("marketingSales") || isAllowed("catalogManagement")) && (
           <ListItemButton
             component={Link}
             to="/dashboard/services"
@@ -480,7 +560,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
 
         {/* Reports */}
 
-        {(role === "super-admin" || role === "admin") && (
+        {isAllowed("reportsDashboard") && (
           <ListItemButton
             component={Link}
             to="/dashboard/reports"
@@ -499,26 +579,65 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
           </ListItemButton>
         )}
 
+        {/* Roles & Governance */}
 
-        {/* Settings */}
-
-        {role === "super-admin" && (
+        {isAllowed("roleManagement") && (
           <ListItemButton
             component={Link}
-            to="/dashboard/settings"
+            to="/dashboard/roles"
             sx={
-              location.pathname === "/dashboard/settings"
+              location.pathname === "/dashboard/roles"
                 ? activeStyle
                 : {}
             }
             onClick={handleItemClick}
           >
             <ListItemIcon>
-              <Settings />
+              <Security />
             </ListItemIcon>
 
-            <ListItemText primary="Settings" />
+            <ListItemText primary="Roles & Governance" />
           </ListItemButton>
+        )}
+
+        {/* System Audit Logs & Settings */}
+
+        {isAllowed("systemGovernance") && (
+          <>
+            <ListItemButton
+              component={Link}
+              to="/dashboard/audit-logs"
+              sx={
+                location.pathname === "/dashboard/audit-logs"
+                  ? activeStyle
+                  : {}
+              }
+              onClick={handleItemClick}
+            >
+              <ListItemIcon>
+                <History />
+              </ListItemIcon>
+
+              <ListItemText primary="System Audit Logs" />
+            </ListItemButton>
+
+            <ListItemButton
+              component={Link}
+              to="/dashboard/settings"
+              sx={
+                location.pathname === "/dashboard/settings"
+                  ? activeStyle
+                  : {}
+              }
+              onClick={handleItemClick}
+            >
+              <ListItemIcon>
+                <Settings />
+              </ListItemIcon>
+
+              <ListItemText primary="Settings" />
+            </ListItemButton>
+          </>
         )}
 
       </List>

@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
 export const authenticate = async (req, res, next) => {
-   console.log("Cookies:", req.cookies);
   try {
     let token = req.cookies?.token;
 
@@ -10,7 +9,6 @@ export const authenticate = async (req, res, next) => {
     if (!token && req.headers.authorization?.startsWith("Bearer ")) {
       token = req.headers.authorization.split(" ")[1];
     }
-    console.log("Token:", token);
 
     if (!token) {
       return res.status(401).json({

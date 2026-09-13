@@ -1,5 +1,6 @@
 import Settings from "../models/Settings.js";
 import cloudinary from "../config/cloudinary.js";
+import { logAudit } from "../utils/auditLogger.js";
 
 /**
  * @desc Get Store Settings
@@ -31,6 +32,7 @@ export const getSettings = async (req, res) => {
           linkedin: "",
           pinterest: "",
         },
+        isMaintenanceMode: false,
       });
     }
 
@@ -49,12 +51,21 @@ export const getSettings = async (req, res) => {
 /**
  * @desc Update Store Settings
  * @route PUT /api/settings
- * @access Private (Super Admin Only)
+ * @access Private (Admin, Super Admin)
  */
 export const updateSettings = async (req, res) => {
   try {
     let settings = await Settings.findOne();
     let logoData = settings?.storeLogo || { url: "", public_id: "" };
+
+    // Check role permission for payment keys
+    const isSuperAdmin = req.user && (req.user.role === "super-admin" || req.user.role === "superadmin");
+    if (req.body.paymentKeys && !isSuperAdmin) {
+      return res.status(403).json({
+        success: false,
+        message: "Only Super Admin is authorized to modify payment gateway API keys.",
+      });
+    }
 
     // Handle logo upload
     if (req.file) {
@@ -89,7 +100,12 @@ export const updateSettings = async (req, res) => {
 
     parseJSONField("address");
     parseJSONField("socialLinks");
+    parseJSONField("paymentKeys");
 
+    // Don't allow regular admin to erase paymentKeys if not sent by superadmin
+    if (!isSuperAdmin && settings && settings.paymentKeys) {
+      updateFields.paymentKeys = settings.paymentKeys;
+    }
 
     if (!settings) {
       settings = new Settings(updateFields);
@@ -98,6 +114,11 @@ export const updateSettings = async (req, res) => {
     }
 
     await settings.save();
+
+    await logAudit(req, "UPDATE_SETTINGS", "System Governance", {
+      isMaintenanceMode: settings.isMaintenanceMode,
+      updatedByRole: req.user?.role,
+    });
 
     res.status(200).json({
       success: true,

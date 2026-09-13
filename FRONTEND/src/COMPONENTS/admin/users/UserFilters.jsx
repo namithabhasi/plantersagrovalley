@@ -12,6 +12,7 @@ const UserFilters = ({
   status,
   setStatus,
   hideRoleFilter,
+  rolesList,
 }) => {
   return (
     <Stack
@@ -42,13 +43,26 @@ const UserFilters = ({
               },
             }}
           >
-            <MenuItem value="all">All Roles</MenuItem>
-            <MenuItem value="super-admin">Super Admin</MenuItem>
-            <MenuItem value="admin">Admin</MenuItem>
-            <MenuItem value="shipping-manager">
-              Shipping Manager
-            </MenuItem>
-            <MenuItem value="customer">Customer</MenuItem>
+            {rolesList && rolesList.length > 0 ? (
+              [
+                <MenuItem key="all" value="all">All Roles</MenuItem>,
+                ...rolesList.map((r) => (
+                  <MenuItem key={r.code} value={r.code}>
+                    {r.name}
+                  </MenuItem>
+                ))
+              ]
+            ) : (
+              [
+                <MenuItem key="all" value="all">All Roles</MenuItem>,
+                <MenuItem key="super-admin" value="super-admin">Super Admin</MenuItem>,
+                <MenuItem key="admin" value="admin">Admin</MenuItem>,
+                <MenuItem key="shipping-manager" value="shipping-manager">
+                  Shipping Manager
+                </MenuItem>,
+                <MenuItem key="customer" value="customer">Customer</MenuItem>
+              ]
+            )}
           </Select>
         </FormControl>
       )}

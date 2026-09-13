@@ -6,6 +6,10 @@ import {
   getProductById,
   updateProduct,
   deleteProduct,
+  delistProduct,
+  restoreProduct,
+  getRecycleBinProducts,
+  bulkImportProducts,
   getFeaturedProducts,
   getLatestProducts,
   getRelatedProducts,
@@ -32,6 +36,21 @@ router.get("/featured", getFeaturedProducts);
 router.get("/latest", getLatestProducts);
 router.get("/bestselling", getBestSellingProducts);
 
+// Recycle Bin & Bulk Import (Admin/Super Admin)
+router.get(
+  "/recycle-bin",
+  authenticate,
+  authorizeRoles("super-admin", "admin"),
+  getRecycleBinProducts
+);
+
+router.post(
+  "/bulk-import",
+  authenticate,
+  authorizeRoles("super-admin", "admin"),
+  bulkImportProducts
+);
+
 router.get("/:id/related", getRelatedProducts);
 
 // Get single product
@@ -50,6 +69,22 @@ router.post(
   productValidator,
   createProduct
 );
+
+// Delist & Restore Product
+router.put(
+  "/:id/delist",
+  authenticate,
+  authorizeRoles("super-admin", "admin"),
+  delistProduct
+);
+
+router.put(
+  "/:id/restore",
+  authenticate,
+  authorizeRoles("super-admin", "admin"),
+  restoreProduct
+);
+
 // Update product
 router.put(
   "/:id",

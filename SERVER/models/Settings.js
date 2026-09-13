@@ -89,6 +89,18 @@ const settingsSchema = new mongoose.Schema(
 },
     },
 
+    isMaintenanceMode: {
+      type: Boolean,
+      default: false,
+    },
+
+    paymentKeys: {
+      razorpayKeyId: { type: String, default: "" },
+      razorpayKeySecret: { type: String, default: "" },
+      stripePublishableKey: { type: String, default: "" },
+      stripeSecretKey: { type: String, default: "" },
+    },
+
   },
   {
     timestamps: true,

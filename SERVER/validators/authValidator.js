@@ -28,8 +28,8 @@ export const registerValidator = [
     .trim()
     .notEmpty()
     .withMessage("Last name is required.")
-    .isLength({ min: 2, max: 50 })
-    .withMessage("Last name must be between 2 and 50 characters."),
+    .isLength({ min: 1, max: 50 })
+    .withMessage("Last name must be between 1 and 50 characters."),
 
   body("email")
     .trim()
@@ -37,7 +37,7 @@ export const registerValidator = [
     .withMessage("Email is required.")
     .isEmail()
     .withMessage("Please enter a valid email address.")
-    .normalizeEmail(),
+    .toLowerCase(),
 
   body("password")
     .notEmpty()
@@ -50,7 +50,7 @@ export const registerValidator = [
     .withMessage("Password must contain at least one lowercase letter.")
     .matches(/[0-9]/)
     .withMessage("Password must contain at least one number.")
-    .matches(/[!@#$%^&*(),.?":{}|<>]/)
+    .matches(/[!@#$%^&*(),.?":{}|<>\-_=+\[\]\\/';]/)
     .withMessage("Password must contain at least one special character."),
 
   body("phone")
@@ -71,7 +71,7 @@ export const loginValidator = [
     .withMessage("Email is required.")
     .isEmail()
     .withMessage("Please enter a valid email address.")
-    .normalizeEmail(),
+    .toLowerCase(),
 
   body("password")
     .notEmpty()
