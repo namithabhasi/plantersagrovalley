@@ -13,6 +13,7 @@ import {
 } from "react-icons/fi";
 import desiRose from "../assets/Anthurium.png";
 import flameVine from "../assets/Peace Lily (Spathiphyllum).jpg";
+import cuteRobotGif from "../assets/cute_robot_watering_plant.gif";
 import { getSmartBotResponse } from "../services/chat/chatBotEngine";
 import { getOrCreateChatSession, sendChatMessage } from "../services/chat/chatApi";
 import "./Chat.css";

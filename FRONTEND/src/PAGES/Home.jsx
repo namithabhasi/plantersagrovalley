@@ -5,9 +5,11 @@ import { openAuthModal } from '../redux/auth/authSlice'
 import HeroCarousel from '../COMPONENTS/HeroCarousel'
 import BringLifeSection from '../COMPONENTS/BringLifeSection'
 import CategorySection from '../COMPONENTS/CategorySection'
-import { FaStar, FaSeedling, FaTruck, FaUndo } from 'react-icons/fa'
+import { FaStar, FaSeedling, FaTruck, FaUndo, FaMagic } from 'react-icons/fa'
+import { FiArrowRight } from 'react-icons/fi'
 import { useCart } from '../context/CartContext'
 import axios from '../api/axiosInstance'
+import robotGif from '../assets/cute_robot_watering_plant.gif'
 
 // Import assets for best sellers
 import haworthiaImg from '../assets/Haworthia.jpg'
@@ -562,6 +564,80 @@ function Home() {
                 );
               })
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* NOT SURE WHAT TO GROW? CTA SECTION */}
+      <section style={{ backgroundColor: '#ffffff', paddingTop: '36px', paddingBottom: '36px' }}>
+        <div className="container">
+          <div className="suggestions-notsure-box">
+            
+            <div className="suggestions-notsure-content">
+              <img 
+                src={robotGif} 
+                alt="Agro Robot Assistant" 
+                className="suggestions-robot-gif"
+              />
+              <div>
+                <h3 
+                  style={{ 
+                    fontFamily: "var(--font-family-heading, 'Poppins', sans-serif)", 
+                    fontSize: '24px', 
+                    fontWeight: 300, 
+                    letterSpacing: '0.6px', 
+                    textTransform: 'uppercase', 
+                    color: '#06492D', 
+                    margin: '0 0 6px 0', 
+                    lineHeight: 1.2 
+                  }}
+                >
+                  NOT SURE WHAT TO GROW?
+                </h3>
+                <p style={{ fontFamily: "var(--font-family-base, 'Assistant', sans-serif)", fontSize: '14px', color: '#475569', fontWeight: 400, margin: 0, lineHeight: 1.5 }}>
+                  Tell us your space and purpose to get a personalized garden kit tailored to your location.
+                </p>
+              </div>
+            </div>
+
+            <div className="suggestions-notsure-btn-wrap">
+              <Link
+                to="/custom-plant"
+                className="btn btn-primary"
+                style={{ 
+                  position: 'relative',
+                  borderRadius: '0px', 
+                  padding: '14px 28px', 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  gap: '10px', 
+                  fontFamily: "var(--font-family-heading, 'Poppins', sans-serif)",
+                  fontWeight: 600,
+                  fontSize: '13px',
+                  letterSpacing: '0.5px',
+                  background: 'linear-gradient(135deg, #06492D 0%, #16a34a 50%, #052e1d 100%)',
+                  color: '#ffffff',
+                  border: 'none',
+                  boxShadow: '0 4px 16px rgba(6, 73, 45, 0.35)',
+                  overflow: 'visible'
+                }}
+              >
+                {/* Glowing Stars Decorative Overlay */}
+                <div style={{ position: 'absolute', top: '-10px', right: '-8px', display: 'flex', alignItems: 'flex-start', pointerEvents: 'none', zIndex: 10 }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="#FACC15" style={{ filter: 'drop-shadow(0 0 6px rgba(250, 204, 21, 0.9))' }}>
+                    <path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z" />
+                  </svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="#FACC15" style={{ marginTop: '6px', marginLeft: '-4px', filter: 'drop-shadow(0 0 4px rgba(250, 204, 21, 0.9))' }}>
+                    <path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z" />
+                  </svg>
+                </div>
+
+                <FaMagic size={14} color="#FACC15" style={{ filter: 'drop-shadow(0 0 4px rgba(250, 204, 21, 0.8))' }} />
+                <span>BUILD YOUR GARDEN KIT</span>
+                <FiArrowRight size={16} />
+              </Link>
+            </div>
+
           </div>
         </div>
       </section>

@@ -34,7 +34,42 @@ function Signinpage() {
   const [resendTimer, setResendTimer] = useState(0);
 
   const navigate = useNavigate();
+
+  const { cartItems, addToCart } = useCart();
+
+  // Helper to process pending custom garden kit & post-login redirect
+  const processPostLogin = () => {
+    const pendingAddToCartRaw = sessionStorage.getItem('pendingAddToCart');
+    if (pendingAddToCartRaw) {
+      try {
+        const pendingItem = JSON.parse(pendingAddToCartRaw);
+        addToCart(pendingItem, 1);
+        toast.success(`🛒 ${pendingItem.name || 'Product'} added to your cart!`);
+      } catch (e) {
+        console.error('Failed to parse pending add to cart item:', e);
+      }
+      sessionStorage.removeItem('pendingAddToCart');
+    }
+
+    const pendingKitRaw = sessionStorage.getItem('pendingCustomKit');
+    if (pendingKitRaw) {
+      try {
+        const pendingKit = JSON.parse(pendingKitRaw);
+        addToCart(pendingKit);
+        toast.success('🌿 Your Custom Garden Kit has been added to your cart!');
+      } catch (e) {
+        console.error('Failed to parse pending kit:', e);
+      }
+      sessionStorage.removeItem('pendingCustomKit');
+    }
+
+    const redirectPath = sessionStorage.getItem('postLoginRedirect') || '/cart';
+    sessionStorage.removeItem('postLoginRedirect');
+    navigate(redirectPath);
+  };
+
   const dispatch = useDispatch();
+
 
   // Form States
   const [formData, setFormData] = useState({
@@ -110,8 +145,7 @@ function Signinpage() {
         dispatch(setUser({ user: data.user, token: data.token }));
         const userName = data.user?.firstName || data.user?.name || data.user?.email?.split('@')[0] || 'User';
         toast.success(`Welcome ${userName}!`);
-        sessionStorage.removeItem("postLoginRedirect");
-        navigate("/");
+        processPostLogin();
       } else {
         toast.error(data.message || "Google Authentication failed.");
       }
@@ -339,8 +373,7 @@ function Signinpage() {
           dispatch(setUser({ user: data.user, token: data.token }));
           const loginUserName = data.user?.firstName || data.user?.name || data.user?.email?.split('@')[0] || 'User';
           toast.success(`Welcome ${loginUserName}!`);
-          sessionStorage.removeItem("postLoginRedirect");
-          navigate('/');
+          processPostLogin();
         } else {
           toast.error(data.message || 'Login failed.');
         }

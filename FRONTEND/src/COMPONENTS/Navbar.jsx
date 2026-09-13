@@ -3,7 +3,8 @@ import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import logo from '../assets/logo.png'; // The text logo is saved in logo.png
 import bush from '../assets/image.png'; // Background bush growing from the bottom-left corner
-import { FiSearch, FiUser, FiShoppingCart, FiMenu, FiX, FiChevronRight, FiChevronDown, FiLayout, FiLogOut, FiHeart, FiShoppingBag } from 'react-icons/fi';
+import { FiSearch, FiUser, FiShoppingCart, FiMenu, FiX, FiChevronRight, FiChevronDown, FiLayout, FiLogOut, FiHeart, FiShoppingBag, FiMapPin, FiNavigation, FiRotateCcw, FiTruck, FiCheckCircle, FiLayers } from 'react-icons/fi';
+import { FaMagic } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
 import axios from '../api/axiosInstance';
 import { openAuthModal, clearUser } from '../redux/auth/authSlice';
@@ -23,6 +24,132 @@ function Navbar() {
   const searchInputRef = React.useRef(null);
   const mobileSearchInputRef = React.useRef(null);
   const location = useLocation();
+
+  // Delivery Pincode & Location (Geomapping) State - Default to North Paravur (683513)
+  const [userPincode, setUserPincode] = useState(() => localStorage.getItem('planters_user_pincode') || '683513');
+  const [userCity, setUserCity] = useState(() => localStorage.getItem('planters_user_city') || 'North Paravur, Ernakulam, Kerala');
+  const [locationModalOpen, setLocationModalOpen] = useState(false);
+  const [inputPincode, setInputPincode] = useState(userPincode);
+  const [pincodeInfo, setPincodeInfo] = useState(null);
+  const [isGeoLoading, setIsGeoLoading] = useState(false);
+  const [bannerDismissed, setBannerDismissed] = useState(() => sessionStorage.getItem('planters_top_banner_dismissed') === 'true');
+
+  const handleCheckPincode = async (codeToTest) => {
+    const targetCode = codeToTest || inputPincode;
+    if (!targetCode || !/^\d{6}$/.test(targetCode.trim())) {
+      setPincodeInfo({ error: "Please enter a valid 6-digit Indian Pincode." });
+      return;
+    }
+    setIsGeoLoading(true);
+    try {
+      const res = await fetch(`https://api.postalpincode.in/pincode/${targetCode.trim()}`);
+      const data = await res.json();
+      if (data && data[0] && data[0].Status === "Success" && data[0].PostOffice?.length > 0) {
+        const po = data[0].PostOffice[0];
+        const detectedCity = po.District || po.Name || "India";
+        const detectedState = po.State || "";
+        const cityStateStr = `${detectedCity}${detectedState ? ', ' + detectedState : ''}`;
+        
+        setUserPincode(targetCode.trim());
+        setUserCity(cityStateStr);
+        localStorage.setItem('planters_user_pincode', targetCode.trim());
+        localStorage.setItem('planters_user_city', cityStateStr);
+        
+        setPincodeInfo({
+          success: true,
+          city: cityStateStr,
+          pincode: targetCode.trim(),
+          deliveryEst: "Standard 2 - 3 Days Delivery",
+          cod: "Cash on Delivery Available",
+          freeShip: "Eligible for Free Shipping above ₹499"
+        });
+      } else {
+        const cityStr = `PIN ${targetCode.trim()}`;
+        setUserPincode(targetCode.trim());
+        setUserCity(cityStr);
+        localStorage.setItem('planters_user_pincode', targetCode.trim());
+        localStorage.setItem('planters_user_city', cityStr);
+        setPincodeInfo({
+          success: true,
+          city: cityStr,
+          pincode: targetCode.trim(),
+          deliveryEst: "Standard 3 - 4 Days Delivery",
+          cod: "Cash on Delivery Available",
+          freeShip: "Eligible for Free Shipping above ₹499"
+        });
+      }
+    } catch (err) {
+      const cityStr = `PIN ${targetCode.trim()}`;
+      setUserPincode(targetCode.trim());
+      setUserCity(cityStr);
+      localStorage.setItem('planters_user_pincode', targetCode.trim());
+      localStorage.setItem('planters_user_city', cityStr);
+      setPincodeInfo({
+        success: true,
+        city: cityStr,
+        pincode: targetCode.trim(),
+        deliveryEst: "Standard 3 - 4 Days Delivery",
+        cod: "Cash on Delivery Available",
+        freeShip: "Eligible for Free Shipping above ₹499"
+      });
+    } finally {
+      setIsGeoLoading(false);
+    }
+  };
+
+  const handleDetectLocation = () => {
+    if (!navigator.geolocation) {
+      setPincodeInfo({ error: "Geolocation is not supported by your browser." });
+      return;
+    }
+    setIsGeoLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+          const geoData = await response.json();
+          const postcode = geoData.address?.postcode || '560001';
+          
+          const cleanPin = postcode.replace(/\s+/g, '').slice(0, 6);
+          const validPin = /^\d{6}$/.test(cleanPin) ? cleanPin : '560001';
+          
+          setInputPincode(validPin);
+          handleCheckPincode(validPin);
+        } catch (e) {
+          setInputPincode('560001');
+          handleCheckPincode('560001');
+        }
+      },
+      (error) => {
+        setIsGeoLoading(false);
+        setPincodeInfo({ error: "Could not detect location automatically. Please enter pincode." });
+      }
+    );
+  };
+
+  const handleResetLocation = () => {
+    localStorage.removeItem('planters_user_pincode');
+    localStorage.removeItem('planters_user_city');
+    setUserPincode('683513');
+    setUserCity('North Paravur, Ernakulam, Kerala');
+    setInputPincode('683513');
+    setPincodeInfo({
+      success: true,
+      city: 'North Paravur, Ernakulam, Kerala',
+      pincode: '683513',
+      deliveryEst: "Standard 2 - 3 Days Delivery",
+      cod: "Cash on Delivery Available",
+      freeShip: "Eligible for Free Shipping above ₹499",
+      isReset: true
+    });
+  };
+
+  const handleDismissBanner = () => {
+    setBannerDismissed(true);
+    sessionStorage.setItem('planters_top_banner_dismissed', 'true');
+  };
 
   useEffect(() => {
     if (location.pathname === "/search") {
@@ -385,6 +512,16 @@ function Navbar() {
 
         {/* Right Side: Thin Outline Action Icons */}
         <div className="planters-actions">
+          {/* Location Pin Icon */}
+          <button 
+            onClick={() => navigate('/suggestions')} 
+            className="navbar-action-btn flex items-center gap-1 cursor-pointer" 
+            aria-label="Plant Recommendations & Delivery Location"
+            title={`Plants that love your place - ${userPincode} (${userCity.split(',')[0]})`}
+          >
+            <FiMapPin size={21} />
+          </button>
+
           {/* Search Icon */}
           <button 
             onClick={() => setSearchOpen(!searchOpen)} 
@@ -536,6 +673,14 @@ function Navbar() {
 
           {/* Links list */}
           <nav className="planters-drawer-nav">
+            <NavLink
+              to="/custom-plant"
+              onClick={() => setMobileMenuOpen(false)}
+              className="navbar-link planters-drawer-link font-semibold text-[#06492D] bg-[#06492d0d]"
+            >
+              <span className="flex items-center gap-2">🌿 Custom Garden Kit</span>
+              <FiChevronRight size={18} />
+            </NavLink>
             <NavLink
               to="/plants"
               onClick={() => setMobileMenuOpen(false)}
@@ -697,6 +842,174 @@ function Navbar() {
                 }}
               >
                 Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Location & Delivery Estimator Modal */}
+      {locationModalOpen && (
+        <div className="auth-modal-overlay" style={{ display: 'flex' }} onClick={() => setLocationModalOpen(false)}>
+          <div 
+            className="auth-modal-card" 
+            style={{ maxWidth: '440px', padding: '24px', borderRadius: '16px', position: 'relative' }} 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button 
+              onClick={() => setLocationModalOpen(false)}
+              style={{ position: 'absolute', top: '16px', right: '16px', border: 'none', background: 'transparent', cursor: 'pointer', color: '#888' }}
+              aria-label="Close Location Modal"
+            >
+              <FiX size={20} />
+            </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#06492d15', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#06492D', flexShrink: 0 }}>
+                <FiMapPin size={22} />
+              </div>
+              <div>
+                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#06492D', margin: 0 }}>Delivery Location Estimator</h3>
+                <p style={{ fontSize: '12px', color: '#666', margin: 0 }}>Check delivery speed & COD availability for your pincode</p>
+              </div>
+            </div>
+
+            {/* Input & Check form */}
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleCheckPincode();
+              }}
+              style={{ display: 'flex', gap: '8px', marginBottom: '14px' }}
+            >
+              <input
+                type="text"
+                maxLength={6}
+                placeholder="Enter 6-digit Pincode"
+                value={inputPincode}
+                onChange={(e) => setInputPincode(e.target.value.replace(/\D/g, ''))}
+                style={{
+                  flex: 1,
+                  padding: '10px 14px',
+                  borderRadius: '8px',
+                  border: '1px solid #ddd',
+                  fontSize: '14px',
+                  outline: 'none'
+                }}
+              />
+              <button
+                type="submit"
+                disabled={isGeoLoading}
+                style={{
+                  padding: '10px 18px',
+                  borderRadius: '8px',
+                  background: '#06492D',
+                  color: '#fff',
+                  border: 'none',
+                  fontWeight: 600,
+                  fontSize: '13px',
+                  cursor: isGeoLoading ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {isGeoLoading ? 'Checking...' : 'Check'}
+              </button>
+            </form>
+
+            {/* Auto detect location button */}
+            <button
+              type="button"
+              onClick={handleDetectLocation}
+              disabled={isGeoLoading}
+              style={{
+                width: '100%',
+                padding: '9px',
+                borderRadius: '8px',
+                border: '1px dashed #06492D',
+                background: '#06492d08',
+                color: '#06492D',
+                fontSize: '13px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+                marginBottom: '16px'
+              }}
+            >
+              <FiNavigation size={14} />
+              <span>{isGeoLoading ? 'Detecting Location...' : 'Use My Current Location'}</span>
+            </button>
+
+            {/* Pincode Info Card */}
+            {pincodeInfo && (
+              <div style={{ padding: '14px', borderRadius: '10px', background: pincodeInfo.error ? '#fef2f2' : '#f0fdf4', border: `1px solid ${pincodeInfo.error ? '#fecaca' : '#bbf7d0'}`, marginBottom: '16px' }}>
+                {pincodeInfo.error ? (
+                  <p style={{ color: '#dc2626', fontSize: '13px', margin: 0, fontWeight: 500 }}>{pincodeInfo.error}</p>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: '13px', fontWeight: 700, color: '#06492D' }}>
+                        📍 {pincodeInfo.city} ({pincodeInfo.pincode})
+                      </span>
+                      <span style={{ fontSize: '11px', background: '#06492D', color: '#fff', padding: '2px 8px', borderRadius: '12px' }}>Active</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#166534' }}>
+                      <FiTruck size={14} />
+                      <span>{pincodeInfo.deliveryEst}</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#166534' }}>
+                      <FiCheckCircle size={14} />
+                      <span>{pincodeInfo.cod}</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#166534' }}>
+                      <FiCheckCircle size={14} />
+                      <span>{pincodeInfo.freeShip}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Action & Undo Footer */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid #eee' }}>
+              <button
+                type="button"
+                onClick={handleResetLocation}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: '6px',
+                  border: '1px solid #ccc',
+                  background: 'transparent',
+                  color: '#666',
+                  fontSize: '12px',
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+                title="Reset location back to default Bengaluru"
+              >
+                <FiRotateCcw size={12} />
+                <span>Reset Location (Undo)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setLocationModalOpen(false)}
+                style={{
+                  padding: '8px 20px',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: '#06492D',
+                  color: '#fff',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+              >
+                Done
               </button>
             </div>
           </div>
